@@ -1,0 +1,103 @@
+body{
+	background: #222;
+	padding:20px;
+}
+/* Post List */
+ul.listing{
+	margin:0;
+	padding:0;	
+}
+	ul.listing li{
+		float: left;
+		padding:0 0 20px;
+		margin: 0 1% 30px 0;
+		border-bottom:1px solid #333;
+		background: none;
+		padding:0;
+		width:49%;
+		height:140px;
+		overflow: hidden;
+		list-style: none;
+	}
+	ul.listing li:first-child{
+		border:none;
+		padding-top:0;
+		margin-top:0;
+	}
+	.content-area ul.listing li.even{
+		margin: 0 0 30px 1%;
+	}
+	
+	ul.listing li .img,
+	ul.listing li .text{
+		width: 25%;
+		float: left;
+	}
+	ul.listing li .text{
+		width: 70%;
+		padding:0;
+		margin:0 0 0 5%;
+	}
+	ul.listing li .text.no-image{
+		width:100%;
+		margin:0;
+	}
+	ul.listing li .img{
+		margin-top:3px;
+	}
+	.listing a img{
+		border:2px solid #444;
+		padding:1px;
+	}
+		.listing a:hover img{
+			border-color: #666;
+		}
+		
+/* Load More Posts Button */
+#load-more{ 
+	height:32px;
+	line-height: 32px;
+	cursor: pointer;
+	float: left;
+	width: auto;
+	margin:0 0 0 3px;
+	font-size: 16px;
+	font-size: 1.6rem;
+	font-family: sans-serif;
+	font-weight: 700;
+	text-transform: uppercase;
+	text-align: center;
+	transition:all .15s linear;
+	-moz-transition:all .15s linear;
+	-webkit-transition:all .15s linear;
+	color: #A79E8C;
+}
+	#load-more:hover{
+		color:#fff;
+	}
+	#load-more span{		
+		display: block;
+		height: 32px;
+		line-height: 36px;
+		float: right;
+	}
+	#load-more span.loader{
+		height:32px;
+		width: 32px;
+		background: none;
+		margin:2px 0 0 10px;
+	}
+	#load-more.loading span.loader{
+		background: url(images/ajax-loader.gif) no-repeat left center;
+		color:#000;
+	}
+	#load-more.done{
+		cursor: default;
+		opacity: 0.3;
+		filter: alpha(opacity=30);
+		color:#555 !important;
+		
+	}
+	#load-more.done span.loader{		
+		background: none;
+	}
