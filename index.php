@@ -10,10 +10,12 @@ Template Name: Home Page
 </h1>
 <?php endwhile; endif; ?>
 
+<!-- Ajax Load More script block -->
 <section id="ajax-load-more">
 	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>" data-post-type="post" data-tag="" data-display-posts="6" data-button-text="Load More">
 	<!-- Load Ajax Posts Here -->
 	</ul>
 </section>
+<!-- /Ajax Load More -->
 <?php get_footer(); ?>
 
