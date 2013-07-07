@@ -5,13 +5,13 @@ A simple Ajax based lazy loading of WordPress posts.
 This script accepts a number of paramaters for the WordPress query. These parameters are passed in via HTML5 data attributes.
 
 ##Markup Example
-'''
+```
 <section id="ajax-load-more">
 	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>" data-post-type="post" data-category="" data-taxonomy="" data-tag="" data-display-posts="6" data-button-text="Load More">
 	<!-- Load Ajax Posts Here -->
 	</ul>
 </section>
-'''
+```
 
 ##Parameters
 - 'data-path' = Path to the theme directory where ajax-load-more.php is located.
