@@ -61,9 +61,6 @@ if (have_posts()) :
 	<li <?php if($i == 2){ $i = 0; echo 'class="even"';}?>>		
 		<h3><a href="<?php the_permalink();?>"><?php the_title();?></a></h3>
 		<p class="meta">
-          <span class="likes">
-	          <?php zilla_likes(); ?>
-	      </span>
 	      <?php the_time('F j, Y'); ?>
         </p>
 		<?php the_excerpt(); ?>
