@@ -39,7 +39,7 @@ $(function() {
                 	pageNumber : page,
                 },
                 dataType   : "html",
-                url        : $path+"/load-more.php",
+                url        : $path+"/ajax-load-more.php",
                 beforeSend : function(){
                     if(page != 1){
                         $('#load-more').addClass('loading');
