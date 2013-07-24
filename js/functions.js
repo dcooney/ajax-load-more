@@ -11,11 +11,11 @@ $(function() {
 	        $path =  $content.attr('data-path');
 	        
 	        if($path === undefined){
-		        $path = '/blog/wp-content/themes/instincts/ajax-load-more.php';
+		        $path = '/wp-content/themes/your-theme-here/ajax-load-more.php';
 	        }
 	        //Define button text
     	    if($content.attr('data-button-text') === undefined){
-                $button = 'Load More';
+                $button = 'Older Posts';
             }else{
 	            $button = $content.attr('data-button-text');
             }
@@ -32,6 +32,7 @@ $(function() {
                 data    : {                	
                 	postType   : $content.attr('data-post-type'),
                 	category   : $content.attr('data-category'),
+                	author     : $content.attr('data-author'),
                 	taxonomy   : $content.attr('data-taxonomy'),
                 	tag        : $content.attr('data-tag'),
                 	postNotIn  : $content.attr('data-post-not-in'),
