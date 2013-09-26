@@ -6,7 +6,7 @@ require_once('../../../wp-load.php');
 // Our variables
 $postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
 $category = (isset($_GET['category'])) ? $_GET['category'] : '';
-$author_id = (isset($_GET['author'])) ? $_GET['taxonomy'] : '';
+$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
 $taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
 $tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
 $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
