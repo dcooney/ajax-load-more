@@ -1,4 +1,14 @@
-
+/*
+ * Wordpress Ajax Load More
+ * https://github.com/dcooney/wordpress-ajax-load-more
+ *
+ * Copyright 2013 Connekt Media - http://cnkt.ca/
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Author: Darren Cooney
+ * Twitter: @KaptonKaos
+*/
 $(function() {		
     
     if($("#ajax-load-more").length){
