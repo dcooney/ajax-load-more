@@ -2,7 +2,7 @@
  * Wordpress Ajax Load More
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
- * Copyright 2013 Connekt Media - http://cnkt.ca/
+ * Copyright 2014 Connekt Media - http://cnkt.ca/
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -10,35 +10,31 @@
  * Twitter: @KaptonKaos
 -->
 
-
 <?php
 // Our include
 define('WP_USE_THEMES', false);
 require_once('../../../wp-load.php');
 
 // Our variables
-$postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
-$category = (isset($_GET['category'])) ? $_GET['category'] : '';
-$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
-$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
-$tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
-$exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
-$numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
-$page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
+$postType 	= (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
+$category 	= (isset($_GET['category'])) ? $_GET['category'] : '';
+$author_id 	= (isset($_GET['author'])) ? $_GET['author'] : '';
+$taxonomy 	= (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
+$tag 				= (isset($_GET['tag'])) ? $_GET['tag'] : '';
+$exclude 		= (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
+$numPosts 	= (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
+$page 			= (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
 
 //Set up our initial query arguments
 $args = array(
-	'post_type' => $postType,
-	'category_name' => $category,
-	
-	'author' => $author_id,
-	
-	'posts_per_page' => $numPosts,
-	'paged'          => $page,
-	
-	'orderby'   => 'date',
-	'order'     => 'DESC',
-	'post_status' => 'publish',
+	'post_type' 			=> $postType,
+	'category_name' 	=> $category,	
+	'author' 					=> $author_id,
+	'posts_per_page' 	=> $numPosts,
+	'paged'          	=> $page,	
+	'orderby'   			=> 'date',
+	'order'     			=> 'DESC',
+	'post_status' 		=> 'publish',
 );
 
 // Excluded Posts Function

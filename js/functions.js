@@ -2,7 +2,7 @@
  * Wordpress Ajax Load More
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
- * Copyright 2013 Connekt Media - http://cnkt.ca/
+ * Copyright 2014 Connekt Media - http://cnkt.ca/
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -21,7 +21,7 @@ $(function() {
 	        $path =  $content.attr('data-path');
 	        
 	        if($path === undefined){
-		        $path = '/wp-content/themes/your-theme-here/ajax-load-more.php';
+		        $path = '/wp-content/themes/your-theme-here';
 	        }
 	        //Define button text
     	    if($content.attr('data-button-text') === undefined){

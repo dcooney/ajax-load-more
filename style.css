@@ -8,51 +8,16 @@ ul.listing{
 	padding:0;	
 }
 	ul.listing li{
-		float: left;
-		padding:0 0 20px;
-		margin: 0 1% 30px 0;
+		float: none;
+		padding:0;
+		margin: 15px 0;
 		border-bottom:1px solid #333;
 		background: none;
 		padding:0;
-		width:49%;
-		height:140px;
+		display: block;
 		overflow: hidden;
 		list-style: none;
-	}
-	ul.listing li:first-child{
-		border:none;
-		padding-top:0;
-		margin-top:0;
-	}
-	.content-area ul.listing li.even{
-		margin: 0 0 30px 1%;
-	}
-	
-	ul.listing li .img,
-	ul.listing li .text{
-		width: 25%;
-		float: left;
-	}
-	ul.listing li .text{
-		width: 70%;
-		padding:0;
-		margin:0 0 0 5%;
-	}
-	ul.listing li .text.no-image{
-		width:100%;
-		margin:0;
-	}
-	ul.listing li .img{
-		margin-top:3px;
-	}
-	.listing a img{
-		border:2px solid #444;
-		padding:1px;
-	}
-		.listing a:hover img{
-			border-color: #666;
-		}
-		
+	}			
 /* Load More Posts Button */
 #load-more{ 
 	height:32px;
@@ -95,8 +60,7 @@ ul.listing{
 		cursor: default;
 		opacity: 0.3;
 		filter: alpha(opacity=30);
-		color:#555 !important;
-		
+		color:#555 !important;		
 	}
 	#load-more.done span.loader{		
 		background: none;
