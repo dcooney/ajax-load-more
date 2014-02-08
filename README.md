@@ -34,5 +34,5 @@ This script accepts a number of paramaters for the WordPress query. These parame
 ```javascript
 $window.scroll(function(){ });
 ```
-* /ajax-load-more should be place in your theme directory
+* /ajax-load-more should be placed inside your theme directory
 
