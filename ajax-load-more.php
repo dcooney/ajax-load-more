@@ -2,7 +2,7 @@
  * Wordpress Ajax Load More
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
- * Copyright 2014 Connekt Media - http://cnkt.ca/
+ * Copyright 2014 Connekt Media - http://cnkt.ca/ajax-load-more/
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -10,31 +10,33 @@
  * Twitter: @KaptonKaos
 -->
 
+
 <?php
 // Our include
 define('WP_USE_THEMES', false);
-require_once('../../../wp-load.php');
+require_once('../../../../wp-load.php');
 
 // Our variables
-$postType 	= (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
-$category 	= (isset($_GET['category'])) ? $_GET['category'] : '';
-$author_id 	= (isset($_GET['author'])) ? $_GET['author'] : '';
-$taxonomy 	= (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
-$tag 				= (isset($_GET['tag'])) ? $_GET['tag'] : '';
-$exclude 		= (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
-$numPosts 	= (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
-$page 			= (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
+$postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
+$category = (isset($_GET['category'])) ? $_GET['category'] : '';
+$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
+$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
+$tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
+$exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
+$numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
+$page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
 
 //Set up our initial query arguments
 $args = array(
 	'post_type' 			=> $postType,
-	'category_name' 	=> $category,	
-	'author' 					=> $author_id,
-	'posts_per_page' 	=> $numPosts,
-	'paged'          	=> $page,	
+	'category_name' 		=> $category,	
+	'author' 				=> $author_id,
+	'posts_per_page' 		=> $numPosts,
+	'paged'          		=> $page,	
 	'orderby'   			=> 'date',
 	'order'     			=> 'DESC',
-	'post_status' 		=> 'publish',
+	'post_status' 			=> 'publish',
+	'ignore_sticky_posts' 	=> true,
 );
 
 // Excluded Posts Function
@@ -53,7 +55,6 @@ if(!empty($exclude)){
 	$exclude=explode(",",$exclude);
 	$args['post__not_in'] = $exclude;
 }
-
 // Query by Taxonomy
 if(empty($taxonomy)){
 	$args['tag'] = $tag;
@@ -65,17 +66,18 @@ query_posts($args);
 ?>
 <?php 
 // our loop  
-if (have_posts()) :  
-	$i =0;
+if (have_posts()) :
+	$i = 0;  
 	while (have_posts()):  
-	$i++;
-	the_post();?> 
-	<li <?php if($i == 2){ $i = 0; echo 'class="even"';}?>>		
-		<h3><a href="<?php the_permalink();?>"><?php the_title();?></a></h3>
-		<p class="meta">
-	      <?php the_time('F j, Y'); ?>
-        </p>
-		<?php the_excerpt(); ?>
-		</div>
-	</li>
-<?php endwhile; endif; wp_reset_query(); ?> 
+	the_post();
+	$i++;	
+?>
+	<?php get_template_part( '/ajax-load-more/includes/repeater-list'); ?>
+	<?php
+	if($i == 2){
+		echo '<div class="clear"></div>'; 
+		$i = 0;
+	}
+	?>
+<?php endwhile; endif; ?>
+<?php wp_reset_query(); ?> 
