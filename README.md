@@ -2,9 +2,11 @@
 
 A simple solution for lazy loading WordPress posts
 
-This script accepts a number of paramaters for the WordPress query. These parameters are passed in via HTML5 data attributes.
+View the example at http://cnkt.ca/ajax-load-more/
 
 ##Markup Example
+This script accepts a number of paramaters for the WordPress query. These parameters are passed in via HTML5 data attributes.
+
 ```
 <section id="ajax-load-more">
 	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>" data-post-type="post" data-category="design" data-taxonomy="" data-tag="" data-display-posts="2" data-button-text="Older Posts">
