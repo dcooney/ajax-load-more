@@ -15,10 +15,15 @@
 // ---------------------------------- //
 // - Load wp-load.php from the WordPress root directory
 // ---------------------------------- //
+
 define('WP_USE_THEMES', false);
 require_once($dir .'../../../../wp-load.php');
 
-// Our variables
+
+// ---------------------------------- //
+// - Set up our variables from ajax-load-more.js
+// ---------------------------------- //
+
 $postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
 $category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
@@ -27,6 +32,7 @@ $tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
 $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
 $numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
+
 
 // ---------------------------------- //
 // - Set up initial args
@@ -43,6 +49,7 @@ $args = array(
 	'post_status' 			=> 'publish',
 	'ignore_sticky_posts' 	=> true,
 );
+
 
 // ---------------------------------- //
 // - Excluded Posts Example Function
@@ -73,6 +80,7 @@ if(empty($taxonomy)){
 }else{
     $args[$taxonomy] = $tag;
 }
+
 
 // - query_posts as wp_query chokes on the paging.
 
