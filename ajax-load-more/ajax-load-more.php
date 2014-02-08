@@ -12,9 +12,11 @@
 
 
 <?php
-// Our include
+// ---------------------------------- //
+// - Load wp-load.php from the WordPress root directory
+// ---------------------------------- //
 define('WP_USE_THEMES', false);
-require_once('../../../../wp-load.php');
+require_once($dir .'../../../../wp-load.php');
 
 // Our variables
 $postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
@@ -26,11 +28,14 @@ $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
 $numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
 
-//Set up our initial query arguments
+// ---------------------------------- //
+// - Set up initial args
+// ---------------------------------- //
+
 $args = array(
 	'post_type' 			=> $postType,
 	'category_name' 		=> $category,	
-	'author' 				=> $author_id,
+	'author'				=> $author_id,
 	'posts_per_page' 		=> $numPosts,
 	'paged'          		=> $page,	
 	'orderby'   			=> 'date',
@@ -39,10 +44,13 @@ $args = array(
 	'ignore_sticky_posts' 	=> true,
 );
 
-// Excluded Posts Function
+// ---------------------------------- //
+// - Excluded Posts Example Function
+// ---------------------------------- //
+
 /* Create new array of excluded posts, for example, you may have a feature banner on the page and you may not want to incude these posts in your query.
 
-Example PHP array:
+Example post array:
 $features = array('7238', '6649', '6951'); // Array of posts
 if($features){			
    $postsNotIn = implode(",", $features); //Implode the posts and set a varible to pass to our data-post-not-in param.
@@ -51,33 +59,34 @@ Example HTML
 <ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>" data-post-type="post" data-post-not-in="<?php echo $postsNotIn; ?>" data-display-posts="6" data-button-text="Load More">
 */
 
+// - Exclude posts if needed
+
 if(!empty($exclude)){
 	$exclude=explode(",",$exclude);
 	$args['post__not_in'] = $exclude;
 }
-// Query by Taxonomy
+
+// - Query by Taxonomy
+
 if(empty($taxonomy)){
 	$args['tag'] = $tag;
 }else{
     $args[$taxonomy] = $tag;
 }
 
+// - query_posts as wp_query chokes on the paging.
+
 query_posts($args); 
-?>
-<?php 
-// our loop  
+
+// ---------------------------------- //
+// - Run our loop
+// ---------------------------------- //
+
 if (have_posts()) :
 	$i = 0;  
-	while (have_posts()):  
-	the_post();
-	$i++;	
-?>
-	<?php get_template_part( '/ajax-load-more/includes/repeater-list'); ?>
-	<?php
-	if($i == 2){
-		echo '<div class="clear"></div>'; 
-		$i = 0;
-	}
-	?>
-<?php endwhile; endif; ?>
-<?php wp_reset_query(); ?> 
+	while (have_posts()): the_post();
+		// - Run the repeater
+		get_template_part( '/ajax-load-more/includes/repeater-list'); 	
+	endwhile; endif;
+wp_reset_query(); 
+?> 
