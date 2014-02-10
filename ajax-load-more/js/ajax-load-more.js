@@ -14,6 +14,10 @@
   var AjaxLoadMore = {};
 
   AjaxLoadMore.init = function () {
+  	// Bug fix: Prevent loading of unnessasry posts by moving the user to top of page
+  	$('html').scrollTop(0); 
+  	
+  	//Set vars
     var page = 1,
       $init = true,
       $loading = true,
@@ -85,10 +89,13 @@
             $data.hide();
             $content.append($data);
             $.each($data, function (e) {
-              $(this).delay(e * $delay).slideDown(250);
-            });
-            $loading = false;
-            $button.delay(200).removeClass('loading');
+              $(this).delay(e * $delay).fadeIn(500, function(){
+	              if(e === $data.length - 1){
+		            $loading = false;
+		            $button.delay(200).removeClass('loading');	              
+	              }
+              });              
+            });            
 
           } else {
             $button.delay(200).removeClass('loading').addClass('done');
@@ -114,7 +121,7 @@
     if ($scroll) {
       $window.scroll(function () {
         var content_offset = $button.offset();
-        if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 100)) && page < 5) {
+        if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < 5) {
           $loading = true;
           page++;
           AjaxLoadMore.load_posts();

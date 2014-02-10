@@ -92,7 +92,7 @@ if (have_posts()) :
 	$i = 0;  
 	while (have_posts()): the_post();
 		// - Run the repeater
-		echo get_template_part( '/includes/repeater-list'); 	
+		echo get_template_part( '/ajax-load-more/includes/repeater-list'); 	
 	endwhile; endif;
 wp_reset_query(); 
 ?> 
