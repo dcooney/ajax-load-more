@@ -36,9 +36,9 @@ This script accepts a number of paramaters for the WordPress query. These parame
 - jQuery
 
 ##Notes
-* The current script loads posts when the users reaches the bottom of the page, this can be disabled removing the following script in the JS:
-```javascript
-$window.scroll(function(){ });
+* The current script loads posts when the users reaches the bottom of the page, this can be disabled by setting data-scroll to 'false':
+```html
+data-scroll="false"
 ```
 * /ajax-load-more should be placed inside your theme directory
 
