@@ -12,5 +12,5 @@ Template Name: Ajax Load More
 		<!-- Load Ajax Posts Here -->
 		</ul>
 	</section>
-<!-- /end AJAX LOAD MORE -->	
+	<!-- /end AJAX LOAD MORE -->	
 <?php get_footer(); ?>

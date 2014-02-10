@@ -1,4 +1,4 @@
-#WP Ajax Load More
+#WordPress Ajax Load More
 
 A simple solution for lazy loading WordPress posts
 
@@ -11,6 +11,11 @@ View a live example at http://cnkt.ca/ajax-load-more/
 	<!-- Load Ajax Posts Here -->
 	</ul>
 </section>
+```
+
+##Shortcode Example
+```
+[ajax_load_more display_posts="5" post_type="post" button_text="Older Posts"]
 ```
 
 ##Parameters
