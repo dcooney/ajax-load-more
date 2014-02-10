@@ -12,8 +12,8 @@
 (function ($) {
     "use strict";
     var AjaxLoadMore = {};
-	
-	//Set vars
+
+    //Set vars
     var page = 1,
         $init = true,
         $loading = true,
@@ -26,10 +26,10 @@
         $delay = 150,
         $scroll = true,
         $path = $content.attr('data-path');
-	
+
     AjaxLoadMore.init = function () {
         // Bug fix: Prevent loading of unnessasry posts by moving the user to top of page
-        $('html').scrollTop(0);       
+        $('html').scrollTop(0);
 
         //Path to theme folder
         if ($path === undefined) {
@@ -52,10 +52,10 @@
             $scroll = true;
         }
 
-		//Add load more button
+        //Add load more button
         $el.append('<div class="load-more-btn-wrap"><button id="load-more" class="more">' + $button_text + '</button></div>');
         var $button = $('#load-more');
-        
+
         $('#load-more').text("Loading...");
         //Load posts function
         AjaxLoadMore.loadPosts = function () {
@@ -95,9 +95,9 @@
                                 if (e === $data.length - 1) {
                                     $loading = false;
                                     $button.delay(200).removeClass('loading');
-                                    if($data.length < $content.attr('data-display-posts')){
-                                    	$finished = true;
-	                                    $button.addClass('done');
+                                    if ($data.length < $content.attr('data-display-posts')) {
+                                        $finished = true;
+                                        $button.addClass('done');
                                     }
                                 }
                             });
@@ -137,14 +137,21 @@
         AjaxLoadMore.loadPosts();
     }
 
-    //Initate posts
+    //Init Ajax Load More    
     if ($("#ajax-load-more").length) {
-        $.get($path + '/ajax-load-more.php')
-            .done(function () {
-                AjaxLoadMore.init();
-            }).fail(function () {
-                alert("Could not locate ajax-load-more, please check your file path.");
-        });
+        //Check if file exists and path is correct
+        $.ajax({
+            type: 'HEAD',
+            url: $path + '/ajax-load-more.php', //or your url
+            complete: function (e, d) {
+                if (e.status == 404) { // Not found
+                    //alert("Could not locate ajax-load-more, please check your file path.");
+                    console.log("Could not locate ajax-load-more, please check your file path.");
+                } else { // Found!
+                    AjaxLoadMore.init();
+                }
+            }
+        })
     }
 
 })(jQuery);
