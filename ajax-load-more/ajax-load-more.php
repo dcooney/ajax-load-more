@@ -1,4 +1,5 @@
-<!--
+<?php
+/*
  * Wordpress Ajax Load More
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
@@ -8,10 +9,8 @@
  *
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
--->
+*/
 
-
-<?php
 // ---------------------------------- //
 // - Load wp-load.php from the WordPress root directory
 // ---------------------------------- //
@@ -32,7 +31,6 @@ $tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
 $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
 $numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
-
 
 // ---------------------------------- //
 // - Set up initial args
@@ -94,7 +92,7 @@ if (have_posts()) :
 	$i = 0;  
 	while (have_posts()): the_post();
 		// - Run the repeater
-		get_template_part( '/ajax-load-more/includes/repeater-list'); 	
+		echo get_template_part( '/includes/repeater-list'); 	
 	endwhile; endif;
 wp_reset_query(); 
 ?> 
