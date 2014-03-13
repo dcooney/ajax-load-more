@@ -25,6 +25,7 @@
         $content = $('#ajax-load-more ul'),
         $delay = 150,
         $scroll = true,
+    	$prefix = '_ajax_load_',
         $path = $content.attr('data-path');
 
     AjaxLoadMore.init = function () {
@@ -82,29 +83,27 @@
                 },
                 success: function (data) {
                     $data = $(data); // Convert data to an object
-                    console.log($data);
+                    //console.log($data);
                     if ($init) {
                         $button.text($button_text);
                         $init = false;
                     }
                     if ($data.length > 0) {
-                        $data.hide();
-                        $content.append($data);
-                        $.each($data, function (e) {
-                            $(this).delay(e * $delay).fadeIn(500, function () {
-                                if (e === $data.length - 1) {
-                                    $loading = false;
-                                    $button.delay(200).removeClass('loading');
-                                    if ($data.length < $content.attr('data-display-posts')) {
-                                        $finished = true;
-                                        $button.addClass('done');
-                                    }
-                                }
-                            });
-                        });
+                    	var $el = $('<div class="'+$prefix+'reveal"/>');
+                    	$el.append($data);
+                    	$el.hide();
+                    	$content.append($el);
+                    	$el.slideDown(350, 'alm_easeInOutQuad', function(){			
+	                    	$loading = false;
+                            $button.delay(300).removeClass('loading');
+                            if ($data.length < $content.attr('data-display-posts')) {
+                                $finished = true;
+                                $button.addClass('done');
+                            }
+                    	});
 
                     } else {
-                        $button.delay(200).removeClass('loading').addClass('done');
+                        $button.delay(300).removeClass('loading').addClass('done');
                         $loading = false;
                         $finished = true;
                     }
@@ -137,7 +136,7 @@
         AjaxLoadMore.loadPosts();
     }
 
-    //Init Ajax Load More    
+    //Init Ajax load More    
     if ($("#ajax-load-more").length) {
         //Check if file exists and path is correct
         $.ajax({
@@ -153,5 +152,11 @@
             }
         })
     }
+    
+    //Custom easing function
+    $.easing.alm_easeInOutQuad = function (x, t, b, c, d) {
+		if ((t/=d/2) < 1) return c/2*t*t + b;
+		return -c/2 * ((--t)*(t-2) - 1) + b;
+	}
 
 })(jQuery);
