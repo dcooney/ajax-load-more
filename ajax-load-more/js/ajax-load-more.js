@@ -12,6 +12,10 @@
 (function ($) {
     "use strict";
     var AjaxLoadMore = {};
+    
+    //Define console for ie.
+	 if (!window.console) window.console = {};
+    if (!window.console.log) window.console.log = function () { };
 
     //Set vars
     var page = 1,
