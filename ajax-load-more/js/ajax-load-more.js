@@ -12,13 +12,10 @@
 (function ($) {
     "use strict";
     var AjaxLoadMore = {};
-    
-    //Define console for ie.
-	 if (!window.console) window.console = {};
-    if (!window.console.log) window.console.log = function () { };
 
     //Set vars
     var page = 1,
+    	  speed = 300,
         $init = true,
         $loading = true,
         $finished = false,
@@ -29,26 +26,43 @@
         $content = $('#ajax-load-more ul'),
         $delay = 150,
         $scroll = true,
-    	$prefix = '_ajax_load_',
-        $path = $content.attr('data-path');
+		  $prefix = '_ajax_load_',
+        $path = $content.attr('data-path'),
+        $max_pages = $content.attr('data-max-pages'),
+        $transition = $content.attr('data-transition');
 
     AjaxLoadMore.init = function () {
         // Bug fix: Prevent loading of unnessasry posts by moving the user to top of page
         $('html').scrollTop(0);
 
-        //Path to theme folder
+        // ** EDIT THIS PATH **
+        // Path to theme folder 
         if ($path === undefined) {
             $path = './wp-content/themes/your-theme-name';
         }
+        
+        // Max numbe rof pages to load while scrolling 
+        if ($max_pages === undefined) {
+            $max_pages = 5;
+        }
+        
+        // Max numbe rof pages to load while scrolling 
+        if ($transition === undefined) {
+            $transition = 'slide';
+        } else if ($transition === "fade") {
+            $transition = 'fade';
+        } else {
+            $transition = 'slide';
+        }
 
-        //Define button text
+        // Define button text
         if ($content.attr('data-button-text') === undefined) {
             $button_text = 'Older Posts';
         } else {
             $button_text = $content.attr('data-button-text');
         }
 
-        //Define on Scroll event
+        // Define on Scroll event
         if ($content.attr('data-scroll') === undefined) {
             $scroll = true;
         } else if ($content.attr('data-scroll') === "false") {
@@ -57,12 +71,12 @@
             $scroll = true;
         }
 
-        //Add load more button
+        // Add load more button
         $el.append('<div class="load-more-btn-wrap"><button id="load-more" class="more">' + $button_text + '</button></div>');
         var $button = $('#load-more');
 
         $('#load-more').text("Loading...");
-        //Load posts function
+        // Load posts function
         AjaxLoadMore.loadPosts = function () {
             $button.addClass('loading');
             $.ajax({
@@ -73,12 +87,12 @@
                     author: $content.attr('data-author'),
                     taxonomy: $content.attr('data-taxonomy'),
                     tag: $content.attr('data-tag'),
+                    search: $content.attr('data-search'),
                     postNotIn: $content.attr('data-post-not-in'),
                     numPosts: $content.attr('data-display-posts'),
-                    onScroll: $content.attr('data-scroll'),
                     pageNumber: page
                 },
-                dataType: "html",
+                dataType: "html", // parse the data as html
                 url: $path + "/ajax-load-more.php",
                 beforeSend: function () {
                     if (page != 1) {
@@ -97,17 +111,29 @@
                     	$el.append($data);
                     	$el.hide();
                     	$content.append($el);
-                    	$el.slideDown(350, 'alm_easeInOutQuad', function(){			
-	                    	$loading = false;
-                            $button.delay(300).removeClass('loading');
-                            if ($data.length < $content.attr('data-display-posts')) {
-                                $finished = true;
-                                $button.addClass('done');
-                            }
-                    	});
+                    	
+                    	if($transition === 'fade'){// Fade transition
+	                    	$el.fadeIn(speed, 'alm_easeInOutQuad', function(){			
+		                    	$loading = false;
+	                            $button.delay(speed).removeClass('loading');
+	                            if ($data.length < $content.attr('data-display-posts')) {
+	                                $finished = true;
+	                                $button.addClass('done');
+	                            }
+	                    	});
+                    	}else{// Slide transition
+	                    	$el.slideDown(speed, 'alm_easeInOutQuad', function(){			
+		                    	$loading = false;
+	                            $button.delay(speed).removeClass('loading');
+	                            if ($data.length < $content.attr('data-display-posts')) {
+	                                $finished = true;
+	                                $button.addClass('done');
+	                            }
+	                    	});
+                    	}
 
                     } else {
-                        $button.delay(300).removeClass('loading').addClass('done');
+                        $button.delay(speed).removeClass('loading').addClass('done');
                         $loading = false;
                         $finished = true;
                     }
@@ -130,7 +156,7 @@
         if ($scroll) {
             $window.scroll(function () {
                 var content_offset = $button.offset();
-                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < 5) {
+                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < $max_pages) {
                     $loading = true;
                     page++;
                     AjaxLoadMore.loadPosts();

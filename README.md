@@ -15,7 +15,7 @@ View a live example at http://cnkt.ca/ajax-load-more/
 
 ##Shortcode Example
 ```
-[ajax_load_more display_posts="5" post_type="post" button_text="Older Posts"]
+[ajax_load_more display_posts="5" post_type="post" max_pages="5" transition="fade" button_text="Older Posts"]
 ```
 
 ##Parameters
@@ -28,8 +28,10 @@ This script accepts a number of paramaters for the WordPress query. These parame
 - 'data-tag' = Query by tag name.
 - 'data-post-not-in' = An array of posts to exclude from the query ($excludePosts = array('7238', '6649', '6951')).
 - 'data-display-posts' = Number of posts to display in the loop (posts_per_page). Default is 6.
-- 'data-scroll' = Load more posts on window scroll. Default is true (true/false).
-- 'data-button-text' = The text to be displayed on the load button
+- 'data-scroll' = Load more posts on window scroll. Default is true (true / false).
+- 'data-max-pages' = The max number to pages to load via ajax while scrolling (default = 5).
+- 'data-button-text' = The text to be displayed on the load button.
+- 'data-transtion' = The loading animation ('slide' / 'fade').
 
 ##Dependencies
 - WordPress :)
@@ -38,3 +40,10 @@ This script accepts a number of paramaters for the WordPress query. These parame
 ##Notes
 * /ajax-load-more should be placed inside your theme directory
 * infinite scroll will trigger five times and then becomes a manual process to load more posts. I plan to make this an adjustable param in the near future
+
+##Changelog
+
+April 22, 2014
+* Added max page param
+* Added search param
+* Added transition type (Slide / Fade)

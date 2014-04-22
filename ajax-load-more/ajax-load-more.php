@@ -28,6 +28,7 @@ $category = (isset($_GET['category'])) ? $_GET['category'] : '';
 $author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
 $taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
 $tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
+$s = (isset($_GET['search'])) ? $_GET['search'] : '';
 $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
 $numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
@@ -39,9 +40,10 @@ $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
 $args = array(
 	'post_type' 			=> $postType,
 	'category_name' 		=> $category,	
-	'author'				=> $author_id,
+	'author'					=> $author_id,
 	'posts_per_page' 		=> $numPosts,
-	'paged'          		=> $page,	
+	'paged'          		=> $page,
+	's'          			=> $s,	
 	'orderby'   			=> 'date',
 	'order'     			=> 'DESC',
 	'post_status' 			=> 'publish',
@@ -53,7 +55,8 @@ $args = array(
 // - Excluded Posts Example Function
 // ---------------------------------- //
 
-/* Create new array of excluded posts, for example, you may have a feature banner on the page and you may not want to incude these posts in your query.
+/* Create new array of excluded posts.
+for example, you may have a feature post rotator on the page and you may want to exclude these posts in your query.
 
 Example post array:
 $features = array('7238', '6649', '6951'); // Array of posts
@@ -79,7 +82,6 @@ if(empty($taxonomy)){
     $args[$taxonomy] = $tag;
 }
 
-
 // - query_posts as wp_query chokes on the paging.
 
 query_posts($args); 
@@ -95,4 +97,5 @@ if (have_posts()) :
 		echo get_template_part( '/ajax-load-more/includes/repeater-list'); 	
 	endwhile; endif;
 wp_reset_query(); 
+
 ?> 
