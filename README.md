@@ -46,4 +46,4 @@ This script accepts a number of paramaters for the WordPress query. These parame
 April 22, 2014
 * Added max page param
 * Added search param
-* Added transition type (Slide / Fade)
+* Added transition type ('slide' / 'fade')
