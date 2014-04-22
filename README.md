@@ -7,7 +7,7 @@ View a live example at http://cnkt.ca/ajax-load-more/
 ##Markup Example
 ```
 <section id="ajax-load-more">
-	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>/ajax-load-more" data-post-type="post" data-category="design" data-taxonomy="" data-tag="" data-display-posts="4" data-scroll="true" data-button-text="Older Posts">
+	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>/ajax-load-more" data-post-type="post" data-category="design" data-taxonomy="" data-tag="" data-search="" data-max-pages="5" data-display-posts="4" data-scroll="true" data-button-text="Older Posts" data-transition="fade">
 	<!-- Load Ajax Posts Here -->
 	</ul>
 </section>
