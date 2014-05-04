@@ -14,8 +14,8 @@
     var AjaxLoadMore = {};
 
     //Set vars
-    var page = 1,
-    	  speed = 300,
+    var page = 0,
+          speed = 300,
         $init = true,
         $loading = true,
         $finished = false,
@@ -26,7 +26,7 @@
         $content = $('#ajax-load-more ul'),
         $delay = 150,
         $scroll = true,
-		  $prefix = '_ajax_load_',
+          $prefix = '_ajax_load_',
         $path = $content.attr('data-path'),
         $max_pages = $content.attr('data-max-pages'),
         $transition = $content.attr('data-transition');
@@ -38,7 +38,7 @@
         // ** EDIT THIS PATH **
         // Path to theme folder 
         if ($path === undefined) {
-            $path = './wp-content/themes/your-theme-name';
+            $path = './wp-content/themes/press_1';
         }
         
         // Max numbe rof pages to load while scrolling 
@@ -90,7 +90,8 @@
                     search: $content.attr('data-search'),
                     postNotIn: $content.attr('data-post-not-in'),
                     numPosts: $content.attr('data-display-posts'),
-                    pageNumber: page
+                    pageNumber: page,
+                    offset: $content.attr('data-offset')
                 },
                 dataType: "html", // parse the data as html
                 url: $path + "/ajax-load-more.php",
@@ -107,30 +108,30 @@
                         $init = false;
                     }
                     if ($data.length > 0) {
-                    	var $el = $('<div class="'+$prefix+'reveal"/>');
-                    	$el.append($data);
-                    	$el.hide();
-                    	$content.append($el);
-                    	
-                    	if($transition === 'fade'){// Fade transition
-	                    	$el.fadeIn(speed, 'alm_easeInOutQuad', function(){			
-		                    	$loading = false;
-	                            $button.delay(speed).removeClass('loading');
-	                            if ($data.length < $content.attr('data-display-posts')) {
-	                                $finished = true;
-	                                $button.addClass('done');
-	                            }
-	                    	});
-                    	}else{// Slide transition
-	                    	$el.slideDown(speed, 'alm_easeInOutQuad', function(){			
-		                    	$loading = false;
-	                            $button.delay(speed).removeClass('loading');
-	                            if ($data.length < $content.attr('data-display-posts')) {
-	                                $finished = true;
-	                                $button.addClass('done');
-	                            }
-	                    	});
-                    	}
+                        var $el = $('<div class="'+$prefix+'reveal"/>');
+                        $el.append($data);
+                        $el.hide();
+                        $content.append($el);
+                        
+                        if($transition === 'fade'){// Fade transition
+                            $el.fadeIn(speed, 'alm_easeInOutQuad', function(){          
+                                $loading = false;
+                                $button.delay(speed).removeClass('loading');
+                                if ($data.length < $content.attr('data-display-posts')) {
+                                    $finished = true;
+                                    $button.addClass('done');
+                                }
+                            });
+                        }else{// Slide transition
+                            $el.slideDown(speed, 'alm_easeInOutQuad', function(){           
+                                $loading = false;
+                                $button.delay(speed).removeClass('loading');
+                                if ($data.length < $content.attr('data-display-posts')) {
+                                    $finished = true;
+                                    $button.addClass('done');
+                                }
+                            });
+                        }
 
                     } else {
                         $button.delay(speed).removeClass('loading').addClass('done');
@@ -185,8 +186,8 @@
     
     //Custom easing function
     $.easing.alm_easeInOutQuad = function (x, t, b, c, d) {
-		if ((t/=d/2) < 1) return c/2*t*t + b;
-		return -c/2 * ((--t)*(t-2) - 1) + b;
-	}
+        if ((t/=d/2) < 1) return c/2*t*t + b;
+        return -c/2 * ((--t)*(t-2) - 1) + b;
+    }
 
 })(jQuery);
