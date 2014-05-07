@@ -16,6 +16,7 @@
     //Set vars
     var page = 0,
     	  speed = 300,
+    	  proceed = false,
         $init = true,
         $loading = true,
         $finished = false,
@@ -168,7 +169,7 @@
         if ($scroll) {
             $window.scroll(function () {
                 var content_offset = $button.offset();
-                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < ($max_pages -1)) {
+                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < ($max_pages -1) && proceed) {
                     $loading = true;
                     page++;
                     AjaxLoadMore.loadPosts();
@@ -176,7 +177,11 @@
             });
         }
         AjaxLoadMore.loadPosts();
-    }
+        
+        setTimeout(function() { proceed = true }, 1000); //flag to prevent unnecessary loading of post on init.  
+    }    
+    
+
 
     //Init Ajax load More    
     if ($("#ajax-load-more").length) {
