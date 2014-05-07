@@ -47,13 +47,14 @@ function ajax_load_more( $atts, $content = null ) {
 		'author' 			=> '',
 		'search' 			=> '',
 		'post_not_in' 		=> '',
+		'offset' 		   => '0',
 		'display_posts' 	=> '4',
 		'scroll' 			=> 'true',
 		'max_pages' 		=> '5',
 		'transition' 		=> 'slide',
 		'button_text' 		=> 'Older Posts' 
    ), $atts));	
-   return '<section id="ajax-load-more"><ul class="listing" data-path="'.$path.'" data-post-type="'.$post_type.'" data-category="'.$category.'" data-taxonomy="'.$taxonomy.'" data-tag="'.$tag.'" data-author="'.$author.'" data-post-not-in="'.$post_not_in.'" data-display-posts="'.$display_posts.'" data-search="'.$search.'" data-scroll="'.$scroll.'" data-max-pages="'.$max_pages.'" data-button-text="'.$button_text.'" data-transition="'.$transition.'"></ul></section>';  
+   return '<section id="ajax-load-more"><ul class="listing" data-path="'.$path.'" data-post-type="'.$post_type.'" data-category="'.$category.'" data-taxonomy="'.$taxonomy.'" data-tag="'.$tag.'" data-author="'.$author.'" data-post-not-in="'.$post_not_in.'" data-offset="'.$offset.'" data-display-posts="'.$display_posts.'" data-search="'.$search.'" data-scroll="'.$scroll.'" data-max-pages="'.$max_pages.'" data-button-text="'.$button_text.'" data-transition="'.$transition.'"></ul></section>';  
 }
 add_shortcode('ajax_load_more', 'ajax_load_more');
 

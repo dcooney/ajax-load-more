@@ -32,6 +32,7 @@ $s = (isset($_GET['search'])) ? $_GET['search'] : '';
 $exclude = (isset($_GET['postNotIn'])) ? $_GET['postNotIn'] : '';
 $numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 $page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
+$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
 
 // ---------------------------------- //
 // - Set up initial args
@@ -42,7 +43,8 @@ $args = array(
 	'category_name' 		=> $category,	
 	'author'					=> $author_id,
 	'posts_per_page' 		=> $numPosts,
-	'paged'          		=> $page,
+	//'paged'          		=> $page, Removed in favour of 'offset', seems to work nicely.
+	'offset'             => $offset + ($numPosts*$page),
 	's'          			=> $s,	
 	'orderby'   			=> 'date',
 	'order'     			=> 'DESC',

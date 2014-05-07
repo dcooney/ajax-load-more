@@ -14,7 +14,7 @@
     var AjaxLoadMore = {};
 
     //Set vars
-    var page = 1,
+    var page = 0,
     	  speed = 300,
         $init = true,
         $loading = true,
@@ -23,17 +23,18 @@
         $button_text = '',
         $data,
         $el = $('#ajax-load-more'),
-        $content = $('#ajax-load-more ul'),
+        $content = $('ul', $el),
         $delay = 150,
         $scroll = true,
 		  $prefix = '_ajax_load_',
         $path = $content.attr('data-path'),
         $max_pages = $content.attr('data-max-pages'),
+        $offset = $content.attr('data-offset'),
         $transition = $content.attr('data-transition');
-
+        
     AjaxLoadMore.init = function () {
         // Bug fix: Prevent loading of unnessasry posts by moving the user to top of page
-        $('html').scrollTop(0);
+        $(window).scrollTop(0);
 
         // ** EDIT THIS PATH **
         // Path to theme folder 
@@ -41,7 +42,7 @@
             $path = './wp-content/themes/your-theme-name';
         }
         
-        // Max numbe rof pages to load while scrolling 
+        // Max number of pages to load while scrolling 
         if ($max_pages === undefined) {
             $max_pages = 5;
         }
@@ -53,6 +54,13 @@
             $transition = 'fade';
         } else {
             $transition = 'slide';
+        }
+        
+        // Define offset
+        if ($content.attr('data-offset') === undefined) {
+            $offset = 0;
+        } else {
+            $offset = $content.attr('data-offset');
         }
 
         // Define button text
@@ -74,7 +82,11 @@
         // Add load more button
         $el.append('<div class="load-more-btn-wrap"><button id="load-more" class="more">' + $button_text + '</button></div>');
         var $button = $('#load-more');
-
+        
+        //Parse Post Type for multiples
+        var $post_type = $content.attr('data-post-type');
+        $post_type = $post_type.split(","); 
+        
         $('#load-more').text("Loading...");
         // Load posts function
         AjaxLoadMore.loadPosts = function () {
@@ -82,7 +94,7 @@
             $.ajax({
                 type: "GET",
                 data: {
-                    postType: $content.attr('data-post-type'),
+                    postType: $post_type,
                     category: $content.attr('data-category'),
                     author: $content.attr('data-author'),
                     taxonomy: $content.attr('data-taxonomy'),
@@ -90,7 +102,8 @@
                     search: $content.attr('data-search'),
                     postNotIn: $content.attr('data-post-not-in'),
                     numPosts: $content.attr('data-display-posts'),
-                    pageNumber: page
+                    pageNumber: page,
+                    offset: $offset
                 },
                 dataType: "html", // parse the data as html
                 url: $path + "/ajax-load-more.php",
@@ -101,7 +114,6 @@
                 },
                 success: function (data) {
                     $data = $(data); // Convert data to an object
-                    //console.log($data);
                     if ($init) {
                         $button.text($button_text);
                         $init = false;
@@ -156,7 +168,7 @@
         if ($scroll) {
             $window.scroll(function () {
                 var content_offset = $button.offset();
-                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < $max_pages) {
+                if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < ($max_pages -1)) {
                     $loading = true;
                     page++;
                     AjaxLoadMore.loadPosts();
