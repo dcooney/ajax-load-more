@@ -16,8 +16,9 @@ View a live example at http://cnkt.ca/ajax-load-more/
 ##Shortcode Example
 ```
 [ajax_load_more display_posts="5" post_type="post" max_pages="5" transition="fade" button_text="Older Posts"]
-See all shortcode parameters in functions.php
+
 ```
+See all shortcode parameters in functions.php
 
 ##Parameters
 This script accepts a number of paramaters for the WordPress query. These parameters are passed in via HTML5 data attributes.
