@@ -84,17 +84,17 @@ if(empty($taxonomy)){
     $args[$taxonomy] = $tag;
 }
 
-// - query_posts as wp_query chokes on the paging.
 
-query_posts($args); 
+// The Query
+$the_query = new WP_Query( $args );
 
 // ---------------------------------- //
 // - Run our loop
 // ---------------------------------- //
 
-if (have_posts()) :
+if ($the_query->have_posts()) :
 	$i = 0;  
-	while (have_posts()): the_post();
+	while ($the_query->have_posts()): $the_query->the_post();
 		// - Run the repeater
 		echo get_template_part( '/ajax-load-more/includes/repeater-list'); 	
 	endwhile; endif;
