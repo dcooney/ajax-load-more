@@ -51,7 +51,7 @@ May 8, 2014
 
 May 7, 2014
 * Updated shortcode to add offset value (functions.php).
-* Removed 'paged' in favour of 'offset' in WordPress query.
+* Removed 'paged' in post query(ajax-load-more.php), replaced with 'offset'.
 * Added support for multiple post types e.g. data-post-type="post, news, portfolio".
 
 April 22, 2014
