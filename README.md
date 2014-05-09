@@ -50,7 +50,7 @@ May 8, 2014
 * Replaced get_posts with wp_query.
 
 May 7, 2014
-* Updated shortcode to added offset value (functions.php).
+* Updated shortcode to add offset value (functions.php).
 * Removed 'paged' in favour of 'offset' in WordPress query.
 * Added support for multiple post types e.g. data-post-type="post, news, portfolio".
 
