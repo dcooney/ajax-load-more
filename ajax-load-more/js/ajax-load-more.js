@@ -15,8 +15,8 @@
 
     //Set vars
     var page = 0,
-    	  speed = 300,
-    	  proceed = false,
+    	speed = 300,
+    	proceed = false,
         $init = true,
         $loading = true,
         $finished = false,
@@ -27,7 +27,7 @@
         $content = $('ul', $el),
         $delay = 150,
         $scroll = true,
-		  $prefix = '_ajax_load_',
+		$prefix = '_ajax_load_',
         $path = $content.attr('data-path'),
         $max_pages = $content.attr('data-max-pages'),
         $offset = $content.attr('data-offset'),
