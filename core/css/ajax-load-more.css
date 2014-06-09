@@ -1,0 +1,187 @@
+/*
+ * WordPress Ajax Load More
+ * https://github.com/dcooney/wordpress-ajax-load-more
+ *
+ * Copyright 2014 Connekt Media - http://cnkt.ca/ajax-load-more/
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Author: Darren Cooney
+ * Twitter: @KaptonKaos
+*/
+
+button#load-more{	
+   font-family: Helvetica, Arial, sans-serif;
+   font-size:16px;
+   font-weight: 600;
+   width:auto;   
+   height: 42px;
+   line-height: 42px;
+   background: #FF5A58;
+   color:#fff;
+   border: none;
+   -webkit-border-radius:3px;
+   -moz-border-radius:3px;
+   border-radius:3px;
+   margin: 0 0 4px;
+   padding:0 20px;
+   display: inline-block;		
+   position: relative;
+   -webkit-transition: padding 0.25s ease-in-out;
+   -moz-transition: padding 0.25s ease-in-out;
+   transition: padding 0.25s ease-in-out;
+   text-align: center;	
+   text-decoration: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   cursor: pointer;
+}
+	button#load-more:hover{
+		background-color: #ec4745;
+		color: #fff;
+		text-decoration: none;
+	}
+	button#load-more:active{
+		-webkit-box-shadow: inset 0 4px 3px rgba(0, 0, 0, 0.15);
+		-moz-box-shadow: inset 0 4px 3px rgba(0, 0, 0, 0.15);
+		box-shadow: inset 0 4px 3px rgba(0, 0, 0, 0.15);
+		text-decoration: none;
+	}
+	
+	
+	/* Loading */
+   button#load-more.loading{
+    	padding-left: 42px;
+   }
+    
+   /* Loaded / Done */
+	button#load-more.done{
+		cursor: default;
+		opacity: 0.2;
+		filter: alpha(opacity=20); 
+		background-color: #FF5A58; 
+		-webkit-box-shadow: none !important;
+		-moz-box-shadow: none !important;
+		box-shadow: none !important;
+   }  
+      
+   /* Loading Icon */
+	button #load-more:before,
+	button#load-more.done:before{                
+		background: none;
+		width: 0;
+	}
+	
+	/* Loading :before */
+	button#load-more.loading:before {
+      background: #fff url(../../core/img/ajax-loader.gif) no-repeat center center;
+      width: 30px;
+      height: 30px;
+      margin: 5px;		
+      -webkit-border-radius:3px;
+      -moz-border-radius:3px;
+      border-radius:3px;
+      display: inline-block;
+      z-index: 100;
+      content: '';
+      position: absolute;
+      left: 0;
+      overflow: hidden;
+      -webkit-transition: width 0.5s ease-in-out;
+      -moz-transition: width 0.5s ease-in-out;
+      transition: width 0.5s ease-in-out;
+	}
+	
+.alm-btn-wrap{
+	text-align:center;
+	padding:10px 10px 30px;
+	overflow: hidden;
+	display: block;
+}
+
+/* Blue */
+#ajax-load-more.blue button#load-more{
+	background-color: #529ecf;
+}
+	#ajax-load-more.blue button#load-more:hover,
+	#ajax-load-more.blue button#load-more.done{
+		background-color: #468ebb;
+	}
+	
+/* green */
+#ajax-load-more.green button#load-more{
+	background-color: #80bb46;
+}
+	#ajax-load-more.green button#load-more:hover,
+	#ajax-load-more.green button#load-more.done{
+		background-color: #6fa43c;
+	}
+
+	
+/* red */
+#ajax-load-more.red button#load-more{
+	background-color: #ca4b4b;
+}
+	#ajax-load-more.red button#load-more:hover,
+	#ajax-load-more.red button#load-more.done{
+		background-color: #b13b3b;
+	}
+
+
+/* purple */
+#ajax-load-more.purple button#load-more{
+	background-color: #b14fae;
+}
+	#ajax-load-more.purple button#load-more:hover,
+	#ajax-load-more.purple button#load-more.done{
+		background-color: #9c4399;
+	}
+	
+
+/* grey */
+#ajax-load-more.grey button#load-more{
+	background-color: #999;
+}
+	#ajax-load-more.grey button#load-more:hover,
+	#ajax-load-more.grey button#load-more.done{
+		background-color: #666;
+	}
+
+
+
+/*
+*  Generic alm-listing Styles
+*
+*  @since 1.0.0
+*/
+
+.alm-listing{
+	margin: 0 0 10px 0;
+	padding: 0;
+}
+	.alm-listing li{
+		margin: 0 50px 10px;
+		overflow: hidden;
+		padding: 20px 20px 20px 190px;
+		position: relative;
+	}
+						
+	.alm-listing li a{
+		color: #34383D;
+	}
+	.alm-listing li p{
+		margin: 0;
+	}
+	.alm-listing li h3{
+		margin: 0 0 10px;
+	}
+	.alm-listing li img{
+		position: absolute;
+		left: 20px;
+		top: 20px;			
+		-webkit-border-radius:3px;
+		-moz-border-radius:3px;
+		border-radius:3px;
+	}	
+			
+		
