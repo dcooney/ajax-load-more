@@ -77,6 +77,19 @@ http://connekthq.com/ajax-load-more
 Your votes make a big difference! If you like Ajax Load More, please vote for my plugin.
 
 
+== Frequently Asked Questions ==
+
+= Is the ajax functionality secure? =
+
+Yes, Ajax Load more uses admin-ajax and nonces in order to protect URLs and forms from being misused.
+
+= Can I make modifications to the plugin code? =
+
+Sure, but please be aware that if any modifications are made may affect future updates.
+
+= Can I modify the repeater? =
+
+Yes, visit the Repeaters area in the WordPress admin.
 
 == Installation ==
 
