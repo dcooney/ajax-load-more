@@ -67,14 +67,14 @@ The following Add-ons are available to increase the functionality of Ajax Load M
 
 **Custom Repeaters**
 The Custom Repeaters add-on will add five additional customizeable repeaters and allow you to select unique repeaters for different content types throughout your theme.
-[More Information](http://connekthq.com/ajax-load-more/repeater)
+[More Information](http://connekthq.com/ajax-load-more/custom-repeaters)
 
 = Website =
 http://connekthq.com/ajax-load-more
 
 
 = Please Vote =
-Your votes make a difference! If you like this plugin, please vote for my plugin.
+Your votes make a big difference! If you like Ajax Load More, please vote for my plugin.
 
 
 
@@ -93,7 +93,7 @@ How to install Ajax Load More.
 
 1. Navigate to the 'Add New' in the plugins dashboard
 2. Navigate to the 'Upload' area
-3. Select `plugin-name.zip` from your computer
+3. Select `ajax-load-more.zip` from your computer
 4. Click 'Install Now'
 5. Activate the plugin in the Plugin dashboard
 
@@ -104,16 +104,6 @@ How to install Ajax Load More.
 3. Upload the `ajax-load-more` directory to the `/wp-content/plugins/` directory
 4. Activate the plugin in the Plugin dashboard
 
-
-== Frequently Asked Questions ==
-
-= A question that someone might have =
-
-An answer to that question.
-
-= What about foo bar? =
-
-Answer to foo bar dilemma.
 
 == Screenshots ==
 
@@ -128,9 +118,6 @@ Answer to foo bar dilemma.
 
 = 2.0.0 =
 * Ajax Load More
-
-= 0.5 =
-* List versions from most recent at top to oldest at bottom.
 
 == Upgrade Notice ==
 

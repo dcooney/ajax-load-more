@@ -1,6 +1,6 @@
 #WordPress Ajax Load More
 
-A simple solution for lazy loading WordPress posts and pages
+A simple yet powerful solution for loading WordPress posts and pages via AJAX requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
 
 View a live example at http://connekthq.com/ajax-load-more/
 
@@ -9,43 +9,33 @@ Ajax Load More has been updated to v2.0.0 and is now an installed plugin. Downlo
 
 You can still access the previous v1.0 version at https://github.com/dcooney/wordpress-ajax-load-more/tree/v1
 
-##Markup Example
-
-@TODO - This section requires updating
-
-```
-<section id="ajax-load-more">
-	<ul class="listing" data-path="<?php echo get_template_directory_uri(); ?>/ajax-load-more" data-post-type="post" data-category="design" data-taxonomy="" data-tag="" data-offset="" data-search="" data-max-pages="5" data-display-posts="4" data-scroll="true" data-button-text="Older Posts" data-transition="fade">
-	<!-- Load Ajax Posts Here -->
-	</ul>
-</section>
-```
 
 ##Shortcode Example
 ```
-[ajax_load_more posts_per_page="5" post_type="post" max_pages="5" transition="fade" button_label="Older Posts"]
+[ajax_load_more post_type="post" posts_per_page="5" transition="fade" button_label="Load More Posts"]
 
 ```
 
 
-##Parameters
+##Shortcode Parameters
 
-@TODO - This section requires updating
-
-This script accepts a number of paramaters for the WordPress query. These parameters are passed in via HTML5 data attributes.
-- 'data-path' = Path to the theme directory where ajax-load-more.php is located.
-- 'data-author' = Query by post author id (author).
-- 'data-post-type' = Query by Post Type (post_type).
-- 'data-category' = Query by category name (category_name).
-- 'data-taxonomy' = Query by custon taxonomy (taxonomy).
-- 'data-tag' = Query by tag name.
-- 'data-post-not-in' = An array of posts to exclude from the query. e.g. data-post-not-in="1562, 1542, 1612".
-- 'data-offset' = The number of post to displace or pass over.
-- 'data-display-posts' = Number of posts to display in the loop (posts_per_page). Default is 6.
-- 'data-scroll' = Load more posts on window scroll. Default is true (true / false).
-- 'data-max-pages' = Maximum number to pages to load via ajax when scrolling (default = 5).
-- 'data-button-text' = Button label.
-- 'data-transtion' = The loading animation ('slide' / 'fade').
+Ajax Load More accepts a number of paramaters to pass to the WordPress query. 
+These parameters are passed via shortcode.
+ 
+*   repeater - select from a list of customizable repeaters (Add-on available)
+*   post_types - comma seperated list of post types to query
+*   category - query by category slug
+*   tag - query by tag slug
+*   author - query by author id
+*   search - query search term ('s') 
+*   exclude - comma separated list of post ID's to exclude from query. 
+*   offset - offset the initial query (number).
+*   posts_per_page - number of posts to load with each request
+*   scroll - load more posts as the user scrolls the page (true/false)
+*   max_pages - maximum number of pages to load while scrolling (only if scroll == true)  
+*   pause - do not load posts until user clicks load button (true/false) 
+*   transition - select a loading transition from the drop menu (slide/fade) 
+*   button_label - customize the Load More button label.
 
 
 
