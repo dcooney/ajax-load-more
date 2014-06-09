@@ -5,7 +5,7 @@ A simple yet powerful solution for loading WordPress posts and pages via AJAX re
 View a live example at http://connekthq.com/ajax-load-more/
 
 ##Major Changes
-Ajax Load More has been updated to v2.0.0 and is now an installed plugin. Download the zip and installed in wp-content/plugins/
+Ajax Load More has been updated to v2.0.0 and is now an installed plugin. Download the zip and install it in wp-content/plugins/
 
 You can still access the previous v1.0 version at https://github.com/dcooney/wordpress-ajax-load-more/tree/v1
 
