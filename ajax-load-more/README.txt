@@ -82,7 +82,7 @@ Your votes make a big difference! If you like Ajax Load More, please vote for my
 
 = What are my server requirements? =
 
-Your server must be able to read/write/create files. Ajax Load More creates the default repeater on plugin activation and in order to modify the output you will required to write to the file as well.
+Your server must be able to read/write/create files. Ajax Load More creates the default repeater on plugin activation and in order to modify the output you are required to write to the file as well. 
 
 = Is the ajax functionality secure? =
 
