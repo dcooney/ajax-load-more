@@ -23,7 +23,15 @@ register_activation_hook( __FILE__, 'alm_install' );
 */
 
 function alm_install() {   
-	$filename = plugin_dir_path(__FILE__).'/core/repeater/default.php';
+	
+	$alm_path = plugin_dir_path(__FILE__);
+	//Create direcotry if it doesn't exist
+	if (!file_exists($alm_path.'core/repeater')) {
+	    mkdir($alm_path.'core/repeater', 0777, true);
+	}
+	
+	//Check for default.php
+	$filename = plugin_dir_path(__FILE__).'core/repeater/default.php';
 	if (!file_exists($filename)) {
 		$content = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';		
 		$handle = fopen($filename, 'w') or die('Cannot open file:  '.$my_file); //implicitly creates file
