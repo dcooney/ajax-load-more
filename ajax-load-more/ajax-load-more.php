@@ -12,6 +12,25 @@ Copyright: Darren Cooney & Connekt Media
 */
 
 
+//Activation hook
+register_activation_hook( __FILE__, 'alm_install' );
+
+/*
+*  alm_install
+*  Create Default repeater dynamically for upgrade purposes
+*
+*  @since 2.0.0
+*/
+
+function alm_install() {   
+	$filename = plugin_dir_path(__FILE__).'/core/repeater/default.php';
+	if (!file_exists($filename)) {
+		$content = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';		
+		$handle = fopen($filename, 'w') or die('Cannot open file:  '.$my_file); //implicitly creates file
+		fwrite($handle, $content);
+		fclose($handle);
+	} 
+}
 
 
 
@@ -37,6 +56,7 @@ if( !class_exists('AjaxLoadMore') ):
 		add_action('wp_enqueue_scripts', array(&$this, 'alm_enqueue_scripts'));		
 		add_action('alm_get_repeater', array(&$this, 'get_current_repeater'));
 		add_shortcode('ajax_load_more', array(&$this, 'alm_shortcode'));
+		add_shortcode('ajax_load_more_repeater', array(&$this, 'alm_repeater_shortcode'));
 		
 		// Allow shortcodes in widget areas
 		add_filter('widget_text', array(&$this, 'shortcode_unautop'));
@@ -47,8 +67,8 @@ if( !class_exists('AjaxLoadMore') ):
 		
 		// includes Admin  core
 		$this->alm_before_theme();		
-	}
-	
+	}	
+		
 	
 	/*
 	*  alm_before_theme
@@ -227,7 +247,7 @@ if( !class_exists('AjaxLoadMore') ):
 				}else{
 					$include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';
 				}				
-			}else{
+			}else{				
 				$include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';
 			}
 						

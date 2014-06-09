@@ -79,6 +79,11 @@ Your votes make a big difference! If you like Ajax Load More, please vote for my
 
 == Frequently Asked Questions ==
 
+
+= What are my server requirements? =
+
+Your server must be able to read/write/create files. Ajax Load More creates the default repeater on plugin activation and in order to modify the output you will required to write to the file as well.
+
 = Is the ajax functionality secure? =
 
 Yes, Ajax Load more uses admin-ajax and nonces in order to protect URLs and forms from being misused.
