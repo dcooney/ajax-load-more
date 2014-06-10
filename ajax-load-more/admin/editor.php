@@ -8,8 +8,8 @@ function alm_editor_init() {
 }
 
 
-add_action('wp_ajax_fscb', 'fscb_ajax_tinymce' );
-function fscb_ajax_tinymce(){
+add_action('wp_ajax_fscb', 'alm_ajax_tinymce' );
+function alm_ajax_tinymce(){
 	// check for rights
 	if ( ! current_user_can('edit_pages') && ! current_user_can('edit_posts') )
 		die( __("You are not allowed to be here", ALM_NAME) );

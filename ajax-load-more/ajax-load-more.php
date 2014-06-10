@@ -1,27 +1,26 @@
 <?php
 /*
 Plugin Name: Ajax Load More
-Plugin URI: http://www.cnkt.ca/ajax-load-more
+Plugin URI: http://connekthq.com/ajax-load-more
 Description: A simple solution for Ajax loading of WordPress Posts and Pages.
 Author: Darren Cooney
 Twitter: @KaptonKaos
-Author URI: http://www.cnkt.ca
-Version: 2.0.0
+Author URI: http://connekthq.com
+Version: 2.0.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-//Activation hook
-register_activation_hook( __FILE__, 'alm_install' );
-
 /*
 *  alm_install
-*  Create Default repeater dynamically for upgrade purposes
+*  Activation hook - Create Default repeater and directory dynamically.
+*  This is so we can provide updates without overriding the current repeaters.
 *
 *  @since 2.0.0
 */
 
+register_activation_hook( __FILE__, 'alm_install' );
 function alm_install() {   
 	
 	$alm_path = plugin_dir_path(__FILE__);
@@ -30,7 +29,7 @@ function alm_install() {
 	    mkdir($alm_path.'core/repeater', 0777, true);
 	}
 	
-	//Check for default.php
+	//Check for default.php, if null create it
 	$filename = plugin_dir_path(__FILE__).'core/repeater/default.php';
 	if (!file_exists($filename)) {
 		$content = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';		
@@ -48,23 +47,21 @@ if( !class_exists('AjaxLoadMore') ):
 	
 	function __construct(){
 	   
-      define('ALM_PATH', plugin_dir_path(__FILE__));
-      define('ALM_URL', plugins_url('', __FILE__));
-      define('ALM_ADMIN_URL', plugins_url('admin/', __FILE__));
-      define('ALM_NAME', '_ajax_load_more');
-      define('ALM_TITLE', 'Ajax Load More');
-      define('ALM_PREFIX', '_alm_');
-      
-      define('ALM_VERSION', '2.0.0');
-      define('ALM_RELEASE', 'June 6, 2014');
-      
-	   
+		define('ALM_PATH', plugin_dir_path(__FILE__));
+		define('ALM_URL', plugins_url('', __FILE__));
+		define('ALM_ADMIN_URL', plugins_url('admin/', __FILE__));
+		define('ALM_NAME', '_ajax_load_more');
+		define('ALM_TITLE', 'Ajax Load More');
+		
+		define('ALM_VERSION', '2.0.1');
+		define('ALM_RELEASE', 'June 9, 2014');
+		
+		
 		add_action('wp_ajax_ajax_load_more_init', array(&$this, 'alm_query_posts'));
 		add_action('wp_ajax_nopriv_ajax_load_more_init', array(&$this, 'alm_query_posts'));
 		add_action('wp_enqueue_scripts', array(&$this, 'alm_enqueue_scripts'));		
-		add_action('alm_get_repeater', array(&$this, 'get_current_repeater'));
+		add_action('alm_get_repeater', array(&$this, 'alm_get_current_repeater'));
 		add_shortcode('ajax_load_more', array(&$this, 'alm_shortcode'));
-		add_shortcode('ajax_load_more_repeater', array(&$this, 'alm_repeater_shortcode'));
 		
 		// Allow shortcodes in widget areas
 		add_filter('widget_text', array(&$this, 'shortcode_unautop'));
@@ -74,7 +71,8 @@ if( !class_exists('AjaxLoadMore') ):
 		load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 		
 		// includes Admin  core
-		$this->alm_before_theme();		
+		$this->alm_before_theme();	
+			
 	}	
 		
 	
@@ -127,23 +125,23 @@ if( !class_exists('AjaxLoadMore') ):
 	function alm_shortcode( $atts, $content = null ) {
 		$options = get_option( 'alm_settings' ); //Get plugin options
 		extract(shortcode_atts(array(
-					'repeater' => 'default',
-					'post_type' => 'post',
-					'category' => '',
-					'taxonomy' => '',
-					'tag' => '',
-					'author' => '',
-					'search' => '',
-					'exclude' => '',
-					'offset' => '0',
-					'posts_per_page' => '5',
-					'scroll' => 'true',
-					'max_pages' => '5',
-					'pause' => 'false',
-					'transition' => 'slide',
-					'button_label' => 'Older Posts'
-				),
-				$atts));
+				'repeater' => 'default',
+				'post_type' => 'post',
+				'category' => '',
+				'taxonomy' => '',
+				'tag' => '',
+				'author' => '',
+				'search' => '',
+				'exclude' => '',
+				'offset' => '0',
+				'posts_per_page' => '5',
+				'scroll' => 'true',
+				'max_pages' => '5',
+				'pause' => 'false',
+				'transition' => 'slide',
+				'button_label' => 'Older Posts'
+			),
+			$atts));
 
 		// Use HTML5 elements?
 		$wrap_element = 'div';

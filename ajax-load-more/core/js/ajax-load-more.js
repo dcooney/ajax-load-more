@@ -25,7 +25,7 @@
 		$el = $('#ajax-load-more'),
 		$content = $('.alm-listing', $el),
 		$scroll = true,
-		$prefix = '_alm_',
+		$prefix = 'alm-',
 		$repeater = $content.data('repeater'),
 		$max_pages = $content.data('max-pages'),
 		$pause = $content.data('pause'),

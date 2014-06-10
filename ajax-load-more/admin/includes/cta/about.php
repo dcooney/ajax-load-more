@@ -10,5 +10,5 @@
 	</ul>	
 	<br/>
 	<p>Developed by Darren Cooney</p>
-	<?php _e('<a href="http://twitter.com/kaptonkaos" target="blank" class="visit"><i class="fa fa-twitter"></i> Follow on Twitter</a>', ALM_NAME); ?>
+	<a href="http://twitter.com/kaptonkaos" target="blank" class="visit"><i class="fa fa-twitter"></i> Follow on Twitter</a>
 </div>

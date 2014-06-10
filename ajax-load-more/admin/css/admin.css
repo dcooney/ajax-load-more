@@ -473,7 +473,8 @@
 		font-size: 26px;
 	}
 	.ajax-load-more .header-wrap h2 + p{
-		margin-top: -4px;
+		margin-top: -2px;
+		opacity: 0.8;
 	}
 	
 .ajax-load-more h2 span{

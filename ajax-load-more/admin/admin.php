@@ -3,23 +3,25 @@
 /* Admin function */
 
 
+
+
+add_action( 'admin_head', 'alm_admin_vars' );
+add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
+add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
+
 /*
-*  _alm_admin_vars
+*  alm_admin_vars
 *  Create admin variables and ajax nonce
 *
 *  @since 2.0.0
 */
-
-add_action( 'admin_head', '_alm_admin_vars' );
-add_action('wp_ajax_alm_save_repeater', '_alm_save_repeater'); // Ajax Save Repeater
-add_action('wp_ajax_nopriv_alm_save_repeater', '_alm_save_repeater'); // Ajax Save Repeater
-function _alm_admin_vars() { ?>
+function alm_admin_vars() { ?>
     <script type='text/javascript'>
 	 /* <![CDATA[ */
     var alm_admin_localize = <?php echo json_encode( array( 
         'ajaxurl' => admin_url( 'admin-ajax.php' ),
-        'alm_admin_nonce' => wp_create_nonce('alm_repeater_nonce')
-    ) ) ?>
+        'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' )
+    )); ?>
     /* ]]> */
     </script>
 <?php }
@@ -27,34 +29,34 @@ function _alm_admin_vars() { ?>
 
 
 /**
-* _alm_admin_menu
+* alm_admin_menu
 * Create Admin Menu
 *
 * @since 2.0.0
 */
 
-add_action( 'admin_menu', '_alm_admin_menu' );
-function _alm_admin_menu() {  
+add_action( 'admin_menu', 'alm_admin_menu' );
+function alm_admin_menu() {  
    $icon = 'dashicons-plus-alt';
    $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
-   add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', '_alm_settings_page', $icon, 81 );
-   add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', '_alm_settings_page'); 
-   add_submenu_page( 'ajax-load-more', 'Repeaters', 'Repeaters', 'edit_theme_options', 'ajax-load-more-repeaters', '_alm_repeater_page'); 
-   add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', '_alm_shortcode_builder_page'); 
-   add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', '_alm_example_page'); 	
-   add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', '_alm_add_ons_page'); 	
+   add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon, 81 );
+   add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
+   add_submenu_page( 'ajax-load-more', 'Repeaters', 'Repeaters', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page'); 
+   add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page'); 
+   add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page'); 	
+   add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 	
 }
 
 
 
 /*
-*  _alm_settings_page
+*  alm_settings_page
 *  Settings page
 *
 *  @since 2.0.0
 */
 
-function _alm_settings_page(){ ?>
+function alm_settings_page(){ ?>
 	<div class="admin ajax-load-more settings" id="alm-settings">
 		<div class="wrap">
 		<div class="header-wrap">
@@ -89,13 +91,13 @@ function _alm_settings_page(){ ?>
 
 
 /*
-*  _alm_repeater_page
+*  alm_repeater_page
 *  Custom Repeaters
 *
 *  @since 2.0.0
 */
 
-function _alm_repeater_page(){ ?>		
+function alm_repeater_page(){ ?>		
 <div class="admin ajax-load-more" id="alm-repeaters">	
 	<div class="wrap">
 		<div class="header-wrap">
@@ -231,13 +233,13 @@ function _alm_repeater_page(){ ?>
 
 
 /*
-*  _alm_save_repeater
+*  alm_save_repeater
 *  Repeater Save function
 *
 *  @since 2.0.0
 */
 
-function _alm_save_repeater(){
+function alm_save_repeater(){
 	$nonce = $_POST["nonce"];
 	// Check our nonce, if they don't match then bounce!
 	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
@@ -264,13 +266,13 @@ function _alm_save_repeater(){
 
 
 /*
-*  _alm_shortcode_builder_page
+*  alm_shortcode_builder_page
 *  Shortcode Builder
 *
 *  @since 2.0.0
 */
 
-function _alm_shortcode_builder_page(){ ?>		
+function alm_shortcode_builder_page(){ ?>		
 <div class="admin ajax-load-more" id="alm-builder">	
 	<div class="wrap">
 		<div class="header-wrap">
@@ -307,13 +309,13 @@ function _alm_shortcode_builder_page(){ ?>
 
 
 /*
-*  _alm_example_page
+*  alm_example_page
 *  Examples Page
 *
 *  @since 2.0.0
 */
 
-function _alm_example_page(){ ?>		
+function alm_example_page(){ ?>		
 <div class="admin ajax-load-more" id="alm-examples">	
 	<div class="wrap">
 		<div class="header-wrap">
@@ -379,13 +381,13 @@ function _alm_example_page(){ ?>
 
 
 /*
-*  _alm_example_page
-*  Examples Page
+*  alm_add_ons_page
+*  Ajax Load More Add-ons
 *
 *  @since 2.0.0
 */
 
-function _alm_add_ons_page(){ ?>		
+function alm_add_ons_page(){ ?>		
 <div class="admin ajax-load-more" id="alm-add-ons">	
 	<div class="wrap">
 		<div class="header-wrap">
@@ -439,19 +441,19 @@ function _alm_add_ons_page(){ ?>
 *  @since 2.0.0
 */
 
-
-function adminHeader() {
+add_action('admin_head', 'alm_adminHeader');
+add_action('admin_footer', 'alm_adminFooter');
+function alm_adminHeader() {
    $url = plugins_url( 'css/admin.css', __FILE__ );
    echo '<link rel="stylesheet" type="text/css" href="' . $url . '" />';
    echo '<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0.0/css/font-awesome.min.css" rel="stylesheet">';
    echo '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>';
 }   
-function adminFooter() {
+function alm_adminFooter() {
    echo '<script type="text/javascript" src="'.plugins_url( 'js/libs/select2.min.js', __FILE__ ).'"></script>';
    echo '<script type="text/javascript" src="'.plugins_url( 'js/shortcode-builder.js', __FILE__ ).'"></script>';
 }
-add_action('admin_head', 'adminHeader');
-add_action('admin_footer', 'adminFooter');
+
 
 
 /*
@@ -461,90 +463,90 @@ add_action('admin_footer', 'adminFooter');
 *  @since 2.0.0
 */
 
-add_action( 'admin_init', 'admin_init');
-function admin_init(){
+add_action( 'admin_init', 'alm_admin_init');
+function alm_admin_init(){
 	register_setting( 
 		'alm-setting-group', 
 		'alm_settings', 
-		'sanitize_settings' 
+		'alm_sanitize_settings' 
 	);
 	add_settings_section( 
-		'general_settings',  
+		'alm_general_settings',  
 		'General Settings', 
-		'geneal_settings_callback', 
+		'alm_general_settings_callback', 
 		'ajax-load-more' 
 	);
 	add_settings_field( 
 		'_alm_disable_css', 
 		__('Disable CSS', ALM_NAME ), 
-		'disable_css_callback', 
+		'alm_disable_css_callback', 
 		'ajax-load-more', 
-		'general_settings' 
+		'alm_general_settings' 
 	);
 	add_settings_field( 
 		'_alm_html5', 
 		__('HTML5 Elements', ALM_NAME ), 
-		'html5_callback', 
+		'alm_html5_callback', 
 		'ajax-load-more', 
-		'general_settings' 
+		'alm_general_settings' 
 	);	
 	add_settings_field(
 	    '_alm_container_type',
 	    __('Container Type', ALM_NAME ),
-	    'container_type_callback',
+	    'alm_container_type_callback',
 	    'ajax-load-more',
-	    'general_settings'
+	    'alm_general_settings'
 	);
 	add_settings_field( 
 		'_alm_classname', 
 		__('Container Class', ALM_NAME ), 
-		'class_callback', 
+		'alm_class_callback', 
 		'ajax-load-more', 
-		'general_settings' 
+		'alm_general_settings' 
 	);
 	add_settings_field( 
 		'_alm_btn_color', 
 		__('Button Color', ALM_NAME ), 
-		'btn_color_callback', 
+		'alm_btn_color_callback', 
 		'ajax-load-more', 
-		'general_settings' 
+		'alm_general_settings' 
 	);
 }
 
 
 
 /*
-*  geneal_settings_callback
+*  alm_general_settings_callback
 *  Some general settings text
 *
 *  @since 2.0.0
 */
 
-function geneal_settings_callback() {
+function alm_general_settings_callback() {
     echo '<p>' . __('Customize your version of Ajax Load More by updating the fields below.</p><p class="small">All changes will be applied globally accross your theme.', ALM_NAME) . '</p>';
 }
 
 
 /*
-*  sanitize_settings
+*  alm_sanitize_settings
 *  Sanitize our form fields
 *
 *  @since 2.0.0
 */
 
-function sanitize_settings( $input ) {
+function alm_sanitize_settings( $input ) {
     return $input;
 }
 
 
 /*
-*  disable_css_callback
+*  alm_disable_css_callback
 *  Diabale Ajax Load More CSS.
 *
 *  @since 2.0.0
 */
 
-function disable_css_callback(){
+function alm_disable_css_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_disable_css'])) 
 	   $options['_alm_disable_css'] = '0';
@@ -556,13 +558,13 @@ function disable_css_callback(){
 
 
 /*
-*  html5_callback
+*  alm_html5_callback
 *  Enable HTML5 elements within AjaxLoadMore.
 *
 *  @since 2.0.0
 */
 
-function html5_callback(){
+function alm_html5_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_html5'])) 
 	   $options['_alm_html5'] = '1';
@@ -573,13 +575,13 @@ function html5_callback(){
 
 
 /*
-*  class_callback
+*  alm_class_callback
 *  Enable HTML5 elements within AjaxLoadMore.
 *
 *  @since 2.0.0
 */
 
-function class_callback(){
+function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 		
 	echo '<label for="alm_settings[_alm_classname]">Add classes to Ajax Load More container.</label><br/><input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" /> ';	
@@ -587,13 +589,13 @@ function class_callback(){
 
 
 /*
-*  _alm_container_type_callback
+*  alm_container_type_callback
 *  The type of container ul or div
 *
 *  @since 2.0.0
 */
 	
-function container_type_callback() {
+function alm_container_type_callback() {
  
     $options = get_option( 'alm_settings' );
     
@@ -613,13 +615,13 @@ function container_type_callback() {
 
 
 /*
-*  btn_color_callback
+*  alm_btn_color_callback
 *  Get button color
 *
 *  @since 2.0.0
 */
 	
-function btn_color_callback() {
+function alm_btn_color_callback() {
  
     $options = get_option( 'alm_settings' );
     $color = $options['_alm_btn_color'];
@@ -666,12 +668,3 @@ function btn_color_callback() {
 }
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
