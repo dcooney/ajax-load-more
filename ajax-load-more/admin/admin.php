@@ -446,7 +446,7 @@ add_action('admin_footer', 'alm_adminFooter');
 function alm_adminHeader() {
    $url = plugins_url( 'css/admin.css', __FILE__ );
    echo '<link rel="stylesheet" type="text/css" href="' . $url . '" />';
-   echo '<link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0.0/css/font-awesome.min.css" rel="stylesheet">';
+   echo '<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">';
    echo '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>';
 }   
 function alm_adminFooter() {
