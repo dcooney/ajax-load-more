@@ -32,8 +32,9 @@ button#load-more{
    transition: padding 0.25s ease-in-out;
    text-align: center;	
    text-decoration: none;
-   -webkit-appearance: none;
+   -webkit-appearance: none; 
    -moz-appearance: none;   
+   appearance: none;   
    /* Prevents text selection */
    -webkit-touch-callout: none;
    -webkit-user-select: none;
