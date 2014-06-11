@@ -1,14 +1,15 @@
 #WordPress Ajax Load More
 
-A simple yet powerful solution for loading WordPress posts and pages via AJAX requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
+A simple yet powerful solution for lazy loading WordPress posts and pages via AJAX requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
 
-View a live example at http://connekthq.com/ajax-load-more/
+View a live examples at http://connekthq.com/ajax-load-more/
 
-##Major Changes
-Ajax Load More has been updated to v2.0.0 and is now an installed plugin. Download the zip and install it in wp-content/plugins/
+##Moved to WordPress.org
+Ajax Load More has been updated to v2.0.1 and is now available as an installed plugin on (wordpress.org)[https://wordpress.org/plugins/ajax-load-more/]. 
+Please download the latest stable version from your WordPress plugins dashboard by searching for Ajax Load More or visiting https://wordpress.org/plugins/ajax-load-more/.
 
-You can still access the previous v1.0 version at https://github.com/dcooney/wordpress-ajax-load-more/tree/v1
-
+*   This repository is now used a development branch.
+*   Access v1.0 at https://github.com/dcooney/wordpress-ajax-load-more/tree/v1
 
 ##Shortcode Example
 ```
@@ -40,6 +41,9 @@ These parameters are passed via shortcode.
 
 
 ##Changelog
+
+June 11, 2014
+* Stable version now available on wordpress.org - https://wordpress.org/plugins/ajax-load-more/
 
 June 9, 2014
 * Replaced v1.0 with v2.0.0
