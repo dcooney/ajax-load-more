@@ -5,10 +5,10 @@ A simple yet powerful solution for lazy loading WordPress posts and pages via AJ
 View a live examples at http://connekthq.com/ajax-load-more/
 
 ##Moved to WordPress.org
-Ajax Load More has been updated to v2.0.1 and is now available as an installed plugin on (wordpress.org)[https://wordpress.org/plugins/ajax-load-more/]. 
+Ajax Load More has been updated to v2.0.1 and is now available as an installed plugin on [wordpress.org](https://wordpress.org/plugins/ajax-load-more/). 
 Please download the latest stable version from your WordPress plugins dashboard by searching for Ajax Load More or visiting https://wordpress.org/plugins/ajax-load-more/.
 
-*   This repository is now used a development branch.
+*   This repository is now used a development branch. 
 *   Access v1.0 at https://github.com/dcooney/wordpress-ajax-load-more/tree/v1
 
 ##Shortcode Example
