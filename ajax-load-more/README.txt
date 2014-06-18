@@ -4,7 +4,7 @@ Donate link: http://connekthq.com/donate/
 Tags: ajax, query, loop, paging, filter, jquery, shortcode builder, shortcode, search, tags, category
 Requires at least: 3.6
 Tested up to: 3.9.1
-Stable tag: 2.0.10
+Stable tag: 2.0.12
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,10 +15,14 @@ Ajax Load More is simple solution for lazy loading your WordPress posts and page
 A simple yet powerful solution for loading WordPress posts and pages via Ajax requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
 
 
-View live examples on the [demo site](http://connekthq.com/ajax-load-more/).
+View live examples on the **[demo site](http://connekthq.com/plugins/ajax-load-more/)**.
 
 
-= Features include =
+= Please Rate Ajax Load More! =
+
+Your ratings make a big difference! If you like and use Ajax Load More, please consider taking the the time to [rate my plugin](http://wordpress.org/support/view/plugin-reviews/ajax-load-more). Your ratings and reviews will help this plugin grow and provide the motivation needed to keep pushing it forward. 
+
+= Features =
 
 * **Shortcode/Query Builder** - create your own Ajax Load More shortcode by adjusting the various WordPress query parameters (see Shortcode Parameters)
 * **Customizable Repeater** - edit and extend the functionality of Ajax Load More by editing the repeater (see screenshots)
@@ -53,8 +57,8 @@ Ajax Load More accepts a number of paramaters to pass to the WordPress query. Th
 = Tested Browsers =
 
 * Firefox (mac + pc)
-* Safari (mac + pc)
 * Chrome	(mac + pc)
+* Safari (mac)
 * IE8+
 * iPhone (Safari, Chrome)
 * Android (Native + Chrome)
@@ -67,14 +71,10 @@ The following Add-ons are available to increase the functionality of Ajax Load M
 
 **Custom Repeaters**
 The Custom Repeaters add-on will add five additional customizeable repeaters and allow you to select unique repeaters for different content types throughout your theme.
-[More Information](http://connekthq.com/ajax-load-more/custom-repeaters)
+[More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters)
 
 = Website =
-http://connekthq.com/ajax-load-more
-
-
-= Please Vote =
-Your votes make a big difference! If you like Ajax Load More, please vote for my plugin.
+http://connekthq.com/ajax-load-more/
 
 
 == Frequently Asked Questions ==
@@ -133,6 +133,12 @@ How to install Ajax Load More.
 6. Shortcode and implementation examples
 
 == Changelog ==
+
+= 2.0.12 =
+* Adding add_filter('widget_text', 'do_shortcode'); 
+
+= 2.0.11 =
+* Removed 2 filters for widget_text which were casuing issues in sidebars
 
 = 2.0.10 =
 * Updating default repeater template to include the_permalink()

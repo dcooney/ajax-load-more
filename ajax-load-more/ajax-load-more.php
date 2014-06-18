@@ -1,19 +1,19 @@
 <?php
 /*
 Plugin Name: Ajax Load More
-Plugin URI: http://connekthq.com/ajax-load-more
+Plugin URI: http://connekthq.com/plugins/ajax-load-more
 Description: A simple solution for Ajax lazy loading of WordPress Posts and Pages.
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.0.10
+Version: 2.0.12
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 		
-define('ALM_VERSION', '2.0.10');
-define('ALM_RELEASE', 'June 17, 2014');
+define('ALM_VERSION', '2.0.12');
+define('ALM_RELEASE', 'June 18, 2014');
 
 /*
 *  alm_install
@@ -76,8 +76,11 @@ if( !class_exists('AjaxLoadMore') ):
 		add_shortcode('ajax_load_more', array(&$this, 'alm_shortcode'));
 		
 		// Allow shortcodes in widget areas
-		add_filter('widget_text', array(&$this, 'shortcode_unautop'));
-		add_filter('widget_text', array(&$this, 'do_shortcode'));
+		// Removed in 2.0.11
+		/*
+		   add_filter('widget_text', array(&$this, 'shortcode_unautop'));
+		*/
+		add_filter('widget_text', 'do_shortcode');
 		
 		// load text domain
 		load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );

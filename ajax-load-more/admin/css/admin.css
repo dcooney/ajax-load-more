@@ -835,6 +835,17 @@ a.btn{
    }
 }
 
+@media screen and (max-width: 480px){
+   .ajax-load-more .section-title,
+   .ajax-load-more .row .wrap{
+      clear: both;
+      width: 100%;
+      display: block;
+      float: none;
+      padding: 0 0 10px;
+   }
+
+}
 
 
 

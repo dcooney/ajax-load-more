@@ -1,6 +1,6 @@
 <div class="cta padding-bottom">
 	<h3>About the plugin</h3>
-	<p>Ajax Load More is a simple yet very powerful solution for loading WordPress posts and page via AJAX requests.</p>
+	<p>Ajax Load More is a simple yet very powerful solution for lazy loading WordPress posts and pages via AJAX requests.</p>
 	<br/>
 	<p><strong>View my other projects:</strong></p>
 	<ul>

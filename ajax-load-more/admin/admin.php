@@ -492,9 +492,9 @@ function alm_add_ons_page(){ ?>
                      <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/repeater-add-ons.jpg">                         
                   </div>
                   <div class="wrap">
-                     <p class="addon-intro"><?php _e('Unlock additional repeaters and keep your site looking fresh!', ALM_NAME); ?></p>
+                     <p class="addon-intro"><?php _e('Unlock additional repeater templates and keep your site looking and feeling fresh!', ALM_NAME); ?></p>
                      <p><?php _e('The Custom Repeaters add-on will add <strong>five</strong> additional <a href="?page=ajax-load-more-repeaters">repeaters</a> and allow you to select unique repeaters for different content types throughout your theme.</p>                   
-                     <p>It\'s easy! Just build each <a href="?page=ajax-load-more-repeaters">repeater</a> and then choose from the list of repeaters while building your <a href="?page=ajax-load-more-shortcode-builder">shortcode</a>.</p><p><strong>Read/Write Access is required!</strong></p>', ALM_NAME); ?>                     
+                     <p>It\'s easy, seriously! Simply build each <a href="?page=ajax-load-more-repeaters">repeater</a> just the way you want them, then select a template from the list of available templates while building your <a href="?page=ajax-load-more-shortcode-builder">shortcode</a>.</p><p><strong>Read/Write Access is required!</strong></p>', ALM_NAME); ?>                     
                   </div>           
                </div>
 			   </div>			   
@@ -502,7 +502,7 @@ function alm_add_ons_page(){ ?>
                if (has_action('alm_repeater_installed')){
                   echo '<a class="btn installed" href="#"><i class="fa fa-check-square"></i> Installed</a> ';
                }else{
-                  echo '<a class="btn" href="http://connekthq.com/ajax-load-more/custom-repeaters" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+                  echo '<a class="btn" href="http://connekthq.com/plugins/ajax-load-more/custom-repeaters/" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
                }
             ?> 		   
 		   </section>
