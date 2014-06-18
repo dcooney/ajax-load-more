@@ -41,7 +41,7 @@
 			$pause = false;
 		}
 		
-		// Max number of pages to load while scrolling 
+		// Select the repeater
 		if ($repeater === undefined) {
 			$repeater = 'default';
 		}
@@ -53,7 +53,7 @@
 		if ($max_pages === 'none') {
 			$max_pages = 100000;
 		}
-		// Max number of pages to load while scrolling 
+		// select the transition 
 		if ($transition === undefined) {
 			$transition = 'slide';
 		} else if ($transition === "fade") {
@@ -76,11 +76,12 @@
 		// Define on Scroll event
 		if ($content.data('scroll') === undefined) {
 			$scroll = true;
-		} else if ($content.data('scroll') === "false") {
+		} else if ($content.data('scroll') === false) {
 			$scroll = false;
 		} else {
 			$scroll = true;
 		}
+		
 		// Add load more button
 		$el.append('<div class="alm-btn-wrap"><button id="load-more" class="more">' + $button_label + '</button></div>');
 		var $button = $('#load-more');

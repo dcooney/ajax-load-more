@@ -4,15 +4,15 @@ Donate link: http://connekthq.com/donate/
 Tags: ajax, query, loop, paging, filter, jquery, shortcode builder, shortcode, search, tags, category
 Requires at least: 3.6
 Tested up to: 3.9.1
-Stable tag: 2.0.0
+Stable tag: 2.0.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Ajax Load More is simple solution for lazy loading your WordPress posts and pages with AJAX.
+Ajax Load More is simple solution for lazy loading your WordPress posts and pages with Ajax.
 
 == Description ==
 
-A simple yet powerful solution for loading WordPress posts and pages via AJAX requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
+A simple yet powerful solution for loading WordPress posts and pages via Ajax requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
 
 
 View live examples on the [demo site](http://connekthq.com/ajax-load-more/).
@@ -30,7 +30,7 @@ View live examples on the [demo site](http://connekthq.com/ajax-load-more/).
 Ajax Load More accepts a number of paramaters to pass to the WordPress query. These parameters are passed via shortcode. Don't worry, it's super simple with our custom Shortcode Builder.
  
 *   repeater - select from a list of customizable repeaters (Add-on available)
-*   post_types - comma seperated list of post types to query
+*   post_type - comma seperated list of post types to query
 *   category - query by category slug
 *   tag - query by tag slug
 *   author - query by author id
@@ -134,7 +134,36 @@ How to install Ajax Load More.
 
 == Changelog ==
 
-= 2.0.0 =
+= 2.0.10 =
+* Updating default repeater template to include the_permalink()
+
+= 2.0.9 =
+* Fixing issue with duplicate column names in database.
+
+= 2.0.8 =
+* removed upgrader_process_complete as it was unreliable. Replaced with admin_init to check whether plugin has been updated.
+
+= 2.0.7 =
+* Fixed jQuery conflict javascript error
+
+= 2.0.6 =
+* Fixing issue with scrolling of posts
+
+= 2.0.5 =
+* Updating db table structure
+* Adding upgrader_process_complete checker
+
+= 2.0.4 =
+* Adding plugin version to wpdb table.
+* Removed legacy repeater code.
+
+= 2.0.3 =
+* Fixed issue with WP auto updates overriding the default repeater. Please deactivate and then activate your plugin.
+
+= 2.0.2 =
+* Fixed issue with tinymce conflict
+
+= 2.0.1 =
 * Ajax Load More
 
 == Upgrade Notice ==

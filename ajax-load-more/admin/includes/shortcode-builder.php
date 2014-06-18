@@ -150,7 +150,7 @@
                      for(var i = 0; i < length; i++){
                         value += '<option value="'+i+'">'+i+'</option>';
                      }
-                     $('#offset-select').append(value);
+                     jQuery('#offset-select').append(value);
                   </script>
                </select>
             </div>
@@ -178,7 +178,7 @@
                            value += '<option value="'+i+'">'+i+'</option>';   
                         }                        
                      }
-                     $('#display_posts-select').append(value);
+                     jQuery('#display_posts-select').append(value);
                   </script>
                </select>
             </div>
@@ -233,7 +233,7 @@
                         }                        
                      }
                      value += '<option value="none"><?php _e('Unlimited', ALM_NAME); ?></option>';
-                     $('#max-select').append(value);
+                     jQuery('#max-select').append(value);
                   </script>
                </select>
             </div>

@@ -1,4 +1,4 @@
-$(document).ready(function() { 
+jQuery(document).ready(function($) {
    "use strict"; 
    
    $(".row select").select2({

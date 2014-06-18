@@ -2,41 +2,56 @@
 /*
 Plugin Name: Ajax Load More
 Plugin URI: http://connekthq.com/ajax-load-more
-Description: A simple solution for Ajax loading of WordPress Posts and Pages.
+Description: A simple solution for Ajax lazy loading of WordPress Posts and Pages.
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.0.1
+Version: 2.0.10
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
+		
+define('ALM_VERSION', '2.0.10');
+define('ALM_RELEASE', 'June 17, 2014');
 
 /*
 *  alm_install
-*  Activation hook - Create Default repeater and directory dynamically.
-*  This is so we can provide updates without overriding the current repeaters.
+*  Create table for storing repeater
 *
 *  @since 2.0.0
 */
 
 register_activation_hook( __FILE__, 'alm_install' );
-function alm_install() {   
-	
-	$alm_path = plugin_dir_path(__FILE__);
-	//Create direcotry if it doesn't exist
-	if (!file_exists($alm_path.'core/repeater')) {
-	    mkdir($alm_path.'core/repeater', 0777, true);
+function alm_install() {   	
+	global $wpdb;	
+	$table_name = $wpdb->prefix . "alm";
+	$defaultRepeater = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';	
+		
+	//Create table, if it doesn't already exist.	
+	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {	
+		$sql = "CREATE TABLE $table_name (
+			id mediumint(9) NOT NULL AUTO_INCREMENT,
+			name text NOT NULL,
+			repeaterDefault longtext NOT NULL,
+			pluginVersion text NOT NULL,
+			UNIQUE KEY id (id)
+		);";		
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		dbDelta( $sql );
+		
+		//Insert default data in newly created table
+		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $defaultRepeater, 'pluginVersion' => ALM_VERSION));
 	}
 	
-	//Check for default.php, if null create it
-	$filename = plugin_dir_path(__FILE__).'core/repeater/default.php';
-	if (!file_exists($filename)) {
-		$content = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';		
-		$handle = fopen($filename, 'w') or die('Cannot open file:  '.$my_file); //implicitly creates file
-		fwrite($handle, $content);
-		fclose($handle);
-	} 
+	// Updated 2.0.5
+	// Check column 'name' exists in $wpdb - this is an upgrade checker.	
+	$row = $wpdb->get_results("SELECT COLUMN_NAME FROM $table_name.COLUMNS WHERE column_name = 'name'");
+	if(empty($row)){
+      $wpdb->query("ALTER TABLE $table_name ADD name text NOT NULL");
+      $wpdb->update($table_name , array('name' => 'default'), array('id' => 1));
+   }
+			
 }
 
 
@@ -52,9 +67,6 @@ if( !class_exists('AjaxLoadMore') ):
 		define('ALM_ADMIN_URL', plugins_url('admin/', __FILE__));
 		define('ALM_NAME', '_ajax_load_more');
 		define('ALM_TITLE', 'Ajax Load More');
-		
-		define('ALM_VERSION', '2.0.1');
-		define('ALM_RELEASE', 'June 9, 2014');
 		
 		
 		add_action('wp_ajax_ajax_load_more_init', array(&$this, 'alm_query_posts'));

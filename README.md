@@ -42,6 +42,9 @@ These parameters are passed via shortcode.
 
 ##Changelog
 
+June 17, 2014
+* Updated to stable version 2.0.10
+
 June 11, 2014
 * Stable version now available on wordpress.org - https://wordpress.org/plugins/ajax-load-more/
 
