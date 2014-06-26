@@ -641,7 +641,7 @@ function alm_disable_css_callback(){
 	
 	echo '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />
 	<label><input type="checkbox" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' /> I want to use my own CSS styles</label>';	
-	echo '<p class="desc"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/css/ajax-load-more.css" target="blank">View Ajax Load More CSS</a></p>';
+	echo '<p class="desc"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">View Ajax Load More CSS</a></p>';
 }
 
 

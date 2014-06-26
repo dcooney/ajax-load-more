@@ -96,7 +96,7 @@
 		echo '<div class="wrap"><div class="inner"><select name="author-select" id="author-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Author', ALM_NAME) . ' --</option>';
 	    foreach( $authors as $author ){
-         echo '<option name="chk-'.$author->user_login.'" id="chk-'.$author->user_login.'" value="'.$author->user_login.'">'.$author->display_name.'</option>';
+         echo '<option name="chk-'.$author->user_login.'" id="chk-'.$author->user_login.'" value="'.$author->ID.'">'.$author->display_name.'</option>';
 	    }
 	    echo '</select></div></div>';
 	    echo '</div>';

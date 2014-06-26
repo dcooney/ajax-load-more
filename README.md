@@ -42,6 +42,9 @@ These parameters are passed via shortcode.
 
 ##Changelog
 
+June 26, 2014
+* Updated to stable version 2.0.14
+
 June 18, 2014
 * Updated to stable version 2.0.12
 

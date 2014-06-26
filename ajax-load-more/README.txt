@@ -4,7 +4,7 @@ Donate link: http://connekthq.com/donate/
 Tags: ajax, query, loop, paging, filter, jquery, shortcode builder, shortcode, search, tags, category
 Requires at least: 3.6
 Tested up to: 3.9.1
-Stable tag: 2.0.12
+Stable tag: 2.0.14
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -20,7 +20,7 @@ View live examples on the **[demo site](http://connekthq.com/plugins/ajax-load-m
 
 = Please Rate Ajax Load More! =
 
-Your ratings make a big difference! If you like and use Ajax Load More, please consider taking the the time to [rate my plugin](http://wordpress.org/support/view/plugin-reviews/ajax-load-more). Your ratings and reviews will help this plugin grow and provide the motivation needed to keep pushing it forward. 
+Your ratings make a big difference! If you like and use Ajax Load More, please consider taking the time to [rate my plugin](http://wordpress.org/support/view/plugin-reviews/ajax-load-more). Your ratings and reviews will help this plugin grow and provide the motivation needed to keep pushing it forward. 
 
 = Features =
 
@@ -133,6 +133,12 @@ How to install Ajax Load More.
 6. Shortcode and implementation examples
 
 == Changelog ==
+
+= 2.0.14 =
+* Fixed issue with author query
+
+= 2.0.13 =
+* Fixed issue where loading button was not turning off when posts remaining were zero 
 
 = 2.0.12 =
 * Adding add_filter('widget_text', 'do_shortcode'); 
