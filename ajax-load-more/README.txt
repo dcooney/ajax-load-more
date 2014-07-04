@@ -4,7 +4,7 @@ Donate link: http://connekthq.com/donate/
 Tags: ajax, query, loop, paging, filter, jquery, shortcode builder, shortcode, search, tags, category
 Requires at least: 3.6
 Tested up to: 3.9.1
-Stable tag: 2.0.14
+Stable tag: 2.0.15
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,21 +12,16 @@ Ajax Load More is simple solution for lazy loading your WordPress posts and page
 
 == Description ==
 
-A simple yet powerful solution for loading WordPress posts and pages via Ajax requests. Build complex WP queries using our shortcode builder and let Ajax Load More handle the rest.
-
-
-View live examples on the **[demo site](http://connekthq.com/plugins/ajax-load-more/)**.
-
-
-= Please Rate Ajax Load More! =
-
-Your ratings make a big difference! If you like and use Ajax Load More, please consider taking the time to [rate my plugin](http://wordpress.org/support/view/plugin-reviews/ajax-load-more). Your ratings and reviews will help this plugin grow and provide the motivation needed to keep pushing it forward. 
+A simple yet powerful solution for loading WordPress posts and pages via Ajax requests. Build complex WP queries using our shortcode builder and let **[Ajax Load More](http://connekthq.com/plugins/ajax-load-more/)** handle the rest.
+ 
 
 = Features =
 
 * **Shortcode/Query Builder** - create your own Ajax Load More shortcode by adjusting the various WordPress query parameters (see Shortcode Parameters)
 * **Customizable Repeater** - edit and extend the functionality of Ajax Load More by editing the repeater (see screenshots)
 * **Setting Panel** - Customize your version of Ajax Load More by updating various plugin settings (see screenshots)
+
+Check out the live **[demo site](http://connekthq.com/plugins/ajax-load-more/)** for more information!
  
 
 = Shortcode Parameters =
@@ -52,6 +47,11 @@ Ajax Load More accepts a number of paramaters to pass to the WordPress query. Th
 = Example Shortcode =
 
     [ajax_load_more post_type="post, portfolio" repeater="default" posts_per_page="5" transition="fade" button_label="Older Posts"]
+    
+
+= Please Rate Ajax Load More! =
+
+Your ratings make a big difference! If you like and use Ajax Load More, please consider taking the time to [rate my plugin](http://wordpress.org/support/view/plugin-reviews/ajax-load-more). Your ratings and reviews will help this plugin grow and provide the motivation needed to keep pushing it forward.
 
 
 = Tested Browsers =
@@ -133,6 +133,9 @@ How to install Ajax Load More.
 6. Shortcode and implementation examples
 
 == Changelog ==
+
+= 2.0.15 =
+* Fixed issue with loading of admin javascript and css on pages other than Ajax Load More.
 
 = 2.0.14 =
 * Fixed issue with author query

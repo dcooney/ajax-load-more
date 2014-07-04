@@ -7,7 +7,6 @@ add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Rep
 add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 
 
-
 /*
 *  alm_admin_vars
 *  Create admin variables and ajax nonce
@@ -108,15 +107,47 @@ add_action( 'admin_menu', 'alm_admin_menu' );
 function alm_admin_menu() {  
    $icon = 'dashicons-plus-alt';
    $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
-   add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon, 81 );
-   add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
-   add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page'); 
-   add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page'); 
-   add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page'); 	
-   add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 	
+   $alm_page = add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon, 81 );
+   $alm_settings_page = add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
+   $alm_template_page = add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page'); 
+   $alm_shortcode_page = add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page'); 
+   $alm_examples_page = add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page'); 	
+   $alm_addons_page = add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 	
+   
+   //Add our admin scripts
+   add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
+   
 }
 
+/**
+* alm_load_admin_js
+* Load Admin JS
+*
+* @since 2.0.15
+*/
+function alm_load_admin_js(){
+	add_action( 'admin_enqueue_scripts', 'alm_enqueue_admin_scripts' );
+}
 
+/**
+* alm_enqueue_admin_scripts
+* Enqueue Admin JS
+*
+* @since 2.0.15
+*/
+function alm_enqueue_admin_scripts(){
+	//Load CSS
+	wp_enqueue_style( 'admin-css', ALM_ADMIN_URL. 'css/admin.css');
+	wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
+	
+	//Load JS
+    wp_enqueue_script( 'select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
+    wp_enqueue_script( 'shortcode-builder', ALM_ADMIN_URL. 'js/shortcode-builder.js', array( 'jquery' ));
+}
 
 /*
 *  alm_settings_page
@@ -521,27 +552,6 @@ function alm_add_ons_page(){ ?>
 </div>
 <?php
 }
-
-/*
-*  adminHeader
-*  Admin CSS and JS
-*
-*  @since 2.0.0
-*/
-
-add_action('admin_head', 'alm_adminHeader');
-add_action('admin_footer', 'alm_adminFooter');
-function alm_adminHeader() {
-   $url = plugins_url( 'css/admin.css', __FILE__ );
-   echo '<link rel="stylesheet" type="text/css" href="' . $url . '" />';
-   echo '<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">';
-   //echo '<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>';
-}   
-function alm_adminFooter() {
-   echo '<script type="text/javascript" src="'.plugins_url( 'js/libs/select2.min.js', __FILE__ ).'"></script>';
-   echo '<script type="text/javascript" src="'.plugins_url( 'js/shortcode-builder.js', __FILE__ ).'"></script>';
-}
-
 
 
 /*
