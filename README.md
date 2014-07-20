@@ -23,24 +23,30 @@ Please download the latest stable version from your WordPress plugins dashboard 
 Ajax Load More accepts a number of paramaters to pass to the WordPress query. 
 These parameters are passed via shortcode.
  
-*   repeater - select from a list of customizable repeaters (Add-on available)
-*   post_types - comma seperated list of post types to query
-*   category - query by category slug
-*   tag - query by tag slug
-*   author - query by author id
-*   search - query search term ('s') 
-*   exclude - comma separated list of post ID's to exclude from query. 
-*   offset - offset the initial query (number).
-*   posts_per_page - number of posts to load with each request
-*   scroll - load more posts as the user scrolls the page (true/false)
-*   max_pages - maximum number of pages to load while scrolling (only if scroll == true)  
-*   pause - do not load posts until user clicks load button (true/false) 
-*   transition - select a loading transition from the drop menu (slide/fade) 
-*   button_label - customize the Load More button label.
-
+*   **repeater** - select from a list of customizable repeaters (Add-on available)
+*   **post_type** - comma seperated list of post types to query
+*   **category** - query by category slug
+*   **taxonomy** - query by custom taxonomy
+*   **taxonomy_terms** - comma seperated list of custom taxonomy terms(slug) to query
+*   **taxonomy_operator** - Operator to test (IN/NOT IN)
+*   **author** - query by author id
+*   **search** - query search term ('s') 
+*   **order** - order posts ASC(ascending) or DESC(descending) order
+*   **orderby** - order posts by date, title, name, menu order, random, author, post ID or comment count
+*   **exclude** - comma separated list of post ID's to exclude from query. 
+*   **offset** - offset the initial query (number).
+*   **posts_per_page** - number of posts to load with each request
+*   **scroll** - load more posts as the user scrolls the page (true/false)
+*   **max_pages** - maximum number of pages to load while scrolling (only if scroll == true)  
+*   **pause** - do not load posts until user clicks load button (true/false) 
+*   **transition** - select a loading transition from the drop menu (slide/fade) 
+*   **button_label** - customize the Load More button label
 
 
 ##Changelog
+
+July 20, 2014
+* Updated to stable version 2.1.1
 
 June 26, 2014
 * Updated to stable version 2.0.14
