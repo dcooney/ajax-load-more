@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Ajax Load More Shortcode Builder</title>
+<title>Ajax Load More: Shortcode Builder</title>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" src="<?php echo includes_url($path); ?>js/tinymce/themes/advanced/skins/wp_theme/dialog.css"></link>
 <link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/admin.css" />
@@ -29,6 +29,7 @@ var AjaxLoadMoreModal = {
 };
 tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal); 
 </script>
+<?php $is_modal = true; ?>
 </head>
 <body>
 <div id="alm-container" class="ajax-load-more">	

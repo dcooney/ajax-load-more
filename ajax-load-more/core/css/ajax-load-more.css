@@ -165,13 +165,13 @@ button#load-more{
 */
 
 .alm-listing{
-	margin: 0 0 10px 0;
+	margin: 0 0 10px;
 	padding: 0;
 }
 	.alm-listing li{
-		margin: 0 50px 10px;
+		margin: 0 0 10px;
 		overflow: hidden;
-		padding: 20px 20px 20px 190px;
+		padding: 0 0 0 190px;
 		position: relative;
 	}
 						
@@ -186,8 +186,8 @@ button#load-more{
 	}
 	.alm-listing li img{
 		position: absolute;
-		left: 20px;
-		top: 20px;			
+		left: 0;
+		top: 0;			
 		-webkit-border-radius:3px;
 		-moz-border-radius:3px;
 		border-radius:3px;

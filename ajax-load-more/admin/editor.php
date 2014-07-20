@@ -7,7 +7,6 @@ function alm_editor_init() {
 	wp_enqueue_script( 'jquery' );
 }
 
-
 add_action('wp_ajax_fscb', 'alm_ajax_tinymce' );
 function alm_ajax_tinymce(){
 	// check for rights

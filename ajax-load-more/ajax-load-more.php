@@ -2,18 +2,18 @@
 /*
 Plugin Name: Ajax Load More
 Plugin URI: http://connekthq.com/plugins/ajax-load-more
-Description: A simple solution for Ajax lazy loading of WordPress Posts and Pages.
+Description: A simple yet powerful solution for lazy loading WordPress posts and pages with Ajax.
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.0.15
+Version: 2.1.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 		
-define('ALM_VERSION', '2.0.15');
-define('ALM_RELEASE', 'July 3, 2014');
+define('ALM_VERSION', '2.1.1');
+define('ALM_RELEASE', 'July 20, 2014');
 
 /*
 *  alm_install
@@ -76,10 +76,6 @@ if( !class_exists('AjaxLoadMore') ):
 		add_shortcode('ajax_load_more', array(&$this, 'alm_shortcode'));
 		
 		// Allow shortcodes in widget areas
-		// Removed in 2.0.11
-		/*
-		   add_filter('widget_text', array(&$this, 'shortcode_unautop'));
-		*/
 		add_filter('widget_text', 'do_shortcode');
 		
 		// load text domain
@@ -144,9 +140,13 @@ if( !class_exists('AjaxLoadMore') ):
 				'post_type' => 'post',
 				'category' => '',
 				'taxonomy' => '',
+				'taxonomy_terms' => '',
+				'taxonomy_operator' => '',
 				'tag' => '',
 				'author' => '',
 				'search' => '',
+				'order' => '',
+				'orderby' => '',
 				'exclude' => '',
 				'offset' => '0',
 				'posts_per_page' => '5',
@@ -177,7 +177,7 @@ if( !class_exists('AjaxLoadMore') ):
 			$btn_color = ' '.$options['_alm_btn_color'];
 		}
 		
-		return '<'.$wrap_element.' id="ajax-load-more" class="'. $btn_color .'"><'.$container_element.' class="alm-listing'. $classname . '" data-repeater="'.$repeater.'" data-post-type="'.$post_type.'" data-category="'.$category.'" data-taxonomy="'.$taxonomy.'" data-tag="'.$tag.'" data-author="'.$author.'" data-exclude="'.$exclude.'" data-offset="'.$offset.'" data-posts-per-page="'.$posts_per_page.'" data-search="'.$search.'" data-scroll="'.$scroll.'" data-max-pages="'.$max_pages.'"  data-pause="'. $pause .'" data-button-label="'.$button_label.'" data-transition="'.$transition.'"></'.$container_element.'></'.$wrap_element.'>';
+		return '<'.$wrap_element.' id="ajax-load-more" class="'. $btn_color .'"><'.$container_element.' class="alm-listing'. $classname . '" data-repeater="'.$repeater.'" data-post-type="'.$post_type.'" data-category="'.$category.'" data-taxonomy="'.$taxonomy.'" data-taxonomy-terms="'.$taxonomy_terms.'" data-taxonomy-operator="'.$taxonomy_operator.'" data-tag="'.$tag.'" data-author="'.$author.'" data-search="'.$search.'" data-order="'.$order.'" data-orderby="'.$orderby.'" data-exclude="'.$exclude.'" data-offset="'.$offset.'" data-posts-per-page="'.$posts_per_page.'" data-scroll="'.$scroll.'" data-max-pages="'.$max_pages.'"  data-pause="'. $pause .'" data-button-label="'.$button_label.'" data-transition="'.$transition.'"></'.$container_element.'></'.$wrap_element.'>';
 	}
 
 
@@ -200,9 +200,19 @@ if( !class_exists('AjaxLoadMore') ):
 		$postType = (isset($_GET['postType'])) ? $_GET['postType'] : 'post';
 		$category = (isset($_GET['category'])) ? $_GET['category'] : '';
 		$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
+		
 		$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
+		$taxonomy_terms = (isset($_GET['taxonomy_terms'])) ? $_GET['taxonomy_terms'] : '';
+		$taxonomy_operator = $_GET['taxonomy_operator'];
+		if($taxonomy_operator == ''){
+			$taxonomy_operator = 'IN';
+		}
+		
+		$post_format = (isset($_GET['postFormat'])) ? $_GET['postFormat'] : '';
 		$tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
 		$s = (isset($_GET['search'])) ? $_GET['search'] : '';
+		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
+		$orderby = (isset($_GET['orderby'])) ? $_GET['orderby'] : 'date';
 		$exclude = (isset($_GET['exclude'])) ? $_GET['exclude'] : '';
 		$numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
 		$page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
@@ -214,12 +224,13 @@ if( !class_exists('AjaxLoadMore') ):
 		$args = array(
 			'post_type' => $postType,
 			'category_name' => $category,
+			'tag' => $tag,
 			'author' => $author_id,
 			'posts_per_page' => $numPosts,
 			'offset' => $offset + ($numPosts*$page),
 			's' => $s,
-			'orderby' => 'date',
-			'order' => 'DESC',
+			'order' => $order,
+			'orderby' => $orderby,
 			'post_status' => 'publish',
 			'ignore_sticky_posts' => true,
 		);
@@ -233,14 +244,20 @@ if( !class_exists('AjaxLoadMore') ):
 		}
 
 
-		// Query by Taxonomy/Tag - Taxonomy is deprecated for now
-
-		if(empty($taxonomy)){
-			$args['tag'] = $tag;
-		}else{
-			$args[$taxonomy] = $tag;
-		}
-
+		// Taxonomy query
+		if(!empty($taxonomy)){	
+			$the_terms = explode(", ", $taxonomy_terms);	
+			$args['tax_query'] = array(
+				'relation' => 'OR',
+				array(
+			        'taxonomy' => $taxonomy,
+			        'field' => 'slug',
+			        'terms' => $the_terms,
+			        'operator' => $taxonomy_operator
+				),
+			);
+	    }
+		
 
 		// Query by $args
 
@@ -250,31 +267,37 @@ if( !class_exists('AjaxLoadMore') ):
 		// the WP loop
 
 		if ($alm_query->have_posts()) :
-			while ($alm_query->have_posts()): $alm_query->the_post();	
-		
+			while ($alm_query->have_posts()): $alm_query->the_post();			
 			$file = $repeater;
 			$include = '';
-			if (has_action('alm_repeater_installed')){ // If Custom Repeaters is installed
-				if($file == 'repeater1'){
-					$include = ALM_REPEATER_PATH . 'repeaters/repeater1.php';
-				}elseif($file == 'repeater2'){
-					$include = ALM_REPEATER_PATH . 'repeaters/repeater2.php';
-				}elseif($file == 'repeater3'){
-					$include = ALM_REPEATER_PATH . 'repeaters/repeater3.php';
-				}elseif($file == 'repeater4'){
-					$include = ALM_REPEATER_PATH . 'repeaters/repeater4.php';
-				}elseif($file == 'repeater5'){
-					$include = ALM_REPEATER_PATH . 'repeaters/repeater5.php';
-				}else{
-					$include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';
-				}				
+			$found = false;
+			if (has_action('alm_repeater_installed')){// If Custom Repeaters is installed
+			   $repeaterLength = ALM_REPEATER_LENGTH;
+			   if(!defined('ALM_REPEATER_LENGTH')){
+   			   $repeaterLength = 6;
+			   }
+			   for ($i = 2; $i <= $repeaterLength + 2; $i++) {
+			      $repeaterVal = 'repeater' . $i;
+   				if($file == $repeaterVal){
+   					$include = ALM_REPEATER_PATH . 'repeaters/'. $file .'.php';      					
+         			//confirm file exists
+         			if(!file_exists($include)){		
+         			   $include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';   
+         			}					   
+   					$found = true;
+   				}
+				}
+				if(!$found){
+   				$include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';
+				}	
 			}else{				
 				$include = plugin_dir_path( __FILE__ ) . 'core/repeater/default.php';
-			}
+			}		
 						
+			//Include file	
 			include( $include );
 			
-		endwhile;
+         endwhile;
 		endif;
 		wp_reset_query();
 		exit;

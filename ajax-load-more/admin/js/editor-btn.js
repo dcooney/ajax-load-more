@@ -8,7 +8,7 @@
       if(h > 600) h = 600;
       editor.addCommand('mcebutton', function () {
         editor.windowManager.open({
-        	 title: "Ajax load More: Shortcode Builder",
+          title: "Ajax load More: Shortcode Builder",
           file: ajaxurl + '?action=fscb', // file that contains HTML for our modal window
           width: w, // size of our window
           height: h , // size of our window

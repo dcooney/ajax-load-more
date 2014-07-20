@@ -107,6 +107,67 @@
    .ajax-load-more h3.heading.open:after{
       content:'\f055';
    }
+   
+/* Expand/Collapse all rows */
+.ajax-load-more .toggle-all{
+    position: absolute;
+    top:-12px;
+    right: 20px;
+    width: auto;
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    border-radius: 3px;
+    padding: 0 12px 0 10px;
+    height: 25px;
+    line-height: 24px;
+    background: #fff;
+    border:1px solid #ccc;
+    color: #777;
+    cursor: pointer;
+    z-index: 2;
+}
+#alm-container.ajax-load-more .toggle-all{
+    display: none;
+}
+    .ajax-load-more .toggle-all:hover{
+        color: #ca5252;
+    }
+    .ajax-load-more .toggle-all .inner-wrap{
+        position: relative;
+        padding-left: 16px;
+        line-height: 24px;
+    }      
+    
+    .ajax-load-more .toggle-all .expand{
+        display: none;
+    } 
+    .ajax-load-more .toggle-all .collapse{
+        display: inline-block;
+    }
+    .ajax-load-more .toggle-all em{
+        font-style: normal;
+    }
+    
+    .ajax-load-more .toggle-all.closed .expand{
+        display: inline-block;
+    }     
+    .ajax-load-more .toggle-all.closed .collapse{
+        display: none;
+    }
+        
+    .ajax-load-more .toggle-all .inner-wrap:before{
+        font-family: 'FontAwesome';
+        content: '\f068';
+        font-size: 10px;
+        position: absolute;
+        left: 0;
+        top: -4px;
+    }
+    .ajax-load-more .toggle-all.closed .inner-wrap:before{
+        content:'\f067';
+    }
+
 
 
 .ajax-load-more ul{
@@ -118,11 +179,43 @@
    .forceColors li{
       padding: 0 5% 0 0;
       margin: 0 0 5px;
-      width: 50%;
+      width: 49.75%;
       clear: both;
       display: inline-block;
       overflow: visible;
    }
+   
+.ajax-load-more label.full{
+   display: block;
+   clear: both;
+   width: 100%;
+   color: #444;
+   font-weight: 600;
+   padding: 0 0 10px;
+   cursor: default;
+   font-size: 12px;
+   text-transform: uppercase;
+}
+.ajax-load-more .border-top{
+   display: block;
+   border-top: 1px solid #efefef;
+   width: 100%;
+   clear: both;
+   margin: 0 0 20px;
+   padding: 20px 0 0 !important;
+   overflow:hidden;
+}
+.ajax-load-more #taxonomy-extended{
+   display: none;
+   overflow: hidden;
+}
+.ajax-load-more p.warning{
+	color: #d24646;
+	font-size: 13px;
+	border-left: 3px solid #d24646;
+	margin: 0;
+	padding: 0 0 0 10px;
+}
    
 
 .ajax-load-more label,
@@ -142,14 +235,19 @@
 }
 
 
-.row.checkboxes{}
-.row.checkboxes input,
-.row.checkboxes label{
+.checkboxes{}
+.checkboxes input,
+.checkboxes label,
+.radio input,
+.radio label{
    float: left;
    width: auto;
    margin-right: 10px;
    padding: 0;
    clear: none;
+}
+.radio input{
+	margin-left: 3px;
 }
 .ajax-load-more input[type=text]{
    padding: 10px;
@@ -161,7 +259,7 @@
 		box-shadow: 0 0 3px #ccc;
 	}
 	
-.row.checkboxes label{
+.checkboxes label{
    margin-right: 5px;
 }
 
@@ -184,7 +282,7 @@
 	.admin.ajax-load-more .row{ 
 		border-color: #efefef;
 	}
-	.admin.ajax-load-more .row:first-child{
+	.admin.ajax-load-more .row:first-of-type{
 		margin: 0;
 		padding-top: 0;
 		border-top: none;
@@ -277,6 +375,11 @@
       .ajax-load-more .row .wrap .inner{
          padding:0 0 20px;
       }
+      .ajax-load-more .row .wrap .inner.half{
+         padding:0 0 20px;
+         width: 49.5%;
+         display: inline-block;
+      }
       
    .output-wrap .copy{
       background: #fff;
@@ -331,7 +434,7 @@
    
    .admin.ajax-load-more #shortcode_output{
 	   border: none;
-	   padding: 24px;
+	   padding: 12px 12px 24px;
    }
    
    
@@ -521,7 +624,8 @@
 		text-decoration: none;
 	}
    
-.saved-response{
+.saved-response,
+p.loading{
    font-size: 12px;
    padding: 8px 0;
    color:#999;
@@ -532,7 +636,11 @@
    top: 12px;
    left: 15px;
 }
-	.saved-response.loading{
+p.loading{
+	position: static;
+}
+	.saved-response.loading,
+	p.loading{
 		background: url(../img/loader.gif) no-repeat left center;
 		padding-left: 24px;
 	}
@@ -863,6 +971,10 @@ a.btn{
     *display: inline;
     vertical-align: middle;
     min-width: 50%;
+}
+.inner.half .select2-container{
+    min-width: 90%;
+    width: 90%;
 }
 .select2-container a.select2-choice {
     display: block;

@@ -5,6 +5,8 @@
 add_action( 'admin_head', 'alm_admin_vars' );
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
+add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
+add_action( 'wp_ajax_nopriv_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
 
 
 /*
@@ -66,7 +68,7 @@ function alm_core_update() {
 	    if($version != ALM_VERSION){ // First, make sure versions do not match.
 		   //Write to repeater file
 		   $data = $wpdb->get_var("SELECT repeaterDefault FROM $table_name WHERE name = 'default'");
-			$f = ALM_PATH. '/core/repeater/default.php'; // File
+			$f = ALM_PATH. 'core/repeater/default.php'; // File
 			$o = fopen($f, 'w+'); //Open file
 			$w = fwrite($o, $data); //Save the file
 			$r = fread($o, 100000); //Read it
@@ -123,15 +125,20 @@ function alm_admin_menu() {
    
 }
 
+
+
 /**
 * alm_load_admin_js
 * Load Admin JS
 *
 * @since 2.0.15
 */
+
 function alm_load_admin_js(){
 	add_action( 'admin_enqueue_scripts', 'alm_enqueue_admin_scripts' );
 }
+
+
 
 /**
 * alm_enqueue_admin_scripts
@@ -139,7 +146,9 @@ function alm_load_admin_js(){
 *
 * @since 2.0.15
 */
+
 function alm_enqueue_admin_scripts(){
+
 	//Load CSS
 	wp_enqueue_style( 'admin-css', ALM_ADMIN_URL. 'css/admin.css');
 	wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
@@ -148,6 +157,8 @@ function alm_enqueue_admin_scripts(){
     wp_enqueue_script( 'select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
     wp_enqueue_script( 'shortcode-builder', ALM_ADMIN_URL. 'js/shortcode-builder.js', array( 'jquery' ));
 }
+
+
 
 /*
 *  alm_settings_page
@@ -428,6 +439,43 @@ function alm_shortcode_builder_page(){ ?>
 
 
 /*
+*  alm_get_tax_terms
+*  Get taxonomy terms for shortcode builder
+*
+*  @since 2.1.0
+*/
+
+function alm_get_tax_terms(){	
+	$nonce = $_GET["nonce"];
+	// Check our nonce, if they don't match then bounce!
+	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+		die('Get Bounced!');
+		
+	$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';	
+	$tax_args = array(
+		'orderby'       => 'name', 
+		'order'         => 'ASC',
+		'hide_empty'    => false
+	);	
+	$terms = get_terms($taxonomy, $tax_args);
+	$returnVal = '';
+	if ( !empty( $terms ) && !is_wp_error( $terms ) ){		
+		$returnVal .= '<ul>';
+		foreach ( $terms as $term ) {
+			//print_r($term);
+			$returnVal .='<li><input type="checkbox" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'">'.$term->name.'</label></li>';		
+		}
+		$returnVal .= '</ul>';		
+		echo $returnVal;
+		die();
+	}else{
+		echo "<p class='warning'>No terms exist within this taxonomy</p>";
+		die();
+	}
+}
+
+
+/*
 *  alm_example_page
 *  Examples Page
 *
@@ -446,7 +494,7 @@ function alm_example_page(){ ?>
 			   <div class="row gist">
 			      <h3 class="heading"><?php _e('Author.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
-			         <p><?php _e('Example shortcode for use on author archive pages.', ALM_NAME); ?></p>
+			         <p><?php _e('Shortcode for use on author archive pages.', ALM_NAME); ?></p>
 			         <div class="inner">
 	                  <script src="https://gist.github.com/dcooney/4d07ff95f7274f38fd3a.js"></script>
 	   		      </div>
@@ -455,7 +503,7 @@ function alm_example_page(){ ?>
 			   <div class="row gist">
 			      <h3 class="heading"><?php _e('Category.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
-			         <p><?php _e('Example shortcode for use on category archive pages.', ALM_NAME); ?></p>
+			         <p><?php _e('Shortcode for use on category archive pages.', ALM_NAME); ?></p>
 			         <div class="inner">
 	                  <script src="https://gist.github.com/dcooney/ae4caec3f9061dd47627.js"></script>
 	   		      </div>
@@ -464,7 +512,7 @@ function alm_example_page(){ ?>
 			   <div class="row gist">
 			      <h3 class="heading"><?php _e('Excluding Posts', ALM_NAME); ?></h3>
 	   		      <div class="expand-wrap">
-	   		      <p><?php _e('Example shortcode for excluding an array of posts.', ALM_NAME); ?></p>
+	   		      <p><?php _e('Shortcode for excluding an array of posts.', ALM_NAME); ?></p>
 	               <script src="https://gist.github.com/dcooney/9b037efbd166b4dba5ae.js"></script>
 			      </div>
 			   </div>
@@ -472,7 +520,7 @@ function alm_example_page(){ ?>
 			   <div class="row gist">
 			      <h3 class="heading"><?php _e('Tag.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
-			         <p><?php _e('Example shortcode for use on tag archive pages.', ALM_NAME); ?></p>
+			         <p><?php _e('Shortcode for use on tag archive pages.', ALM_NAME); ?></p>
 			         <div class="inner">
 	                  <script src="https://gist.github.com/dcooney/fc4276bebbdd05af64d1.js"></script>
 	   		      </div>

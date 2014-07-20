@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
    "use strict"; 
    
-   $(".row select").select2({
+   $(".row select, .alm-main select").select2({
           minimumResultsForSearch: '100'
     });    
    
@@ -42,19 +42,60 @@ jQuery(document).ready(function($) {
             if(post_type_count>1){
                output += ', ' + $(this).data('type');
             }else{
-               if($('.post_types input').hasClass('changed'))
-                  output += ' post_type="'+$(this).data('type')+'';               
+               if($(this).hasClass('changed')){
+                  output += ' post_type="'+$(this).data('type')+''; 
+               }              
             }
          }
       }); 
       if(post_type_count>0) 
          output += '"';
+         
+        
+      // ---------------------------
+      // - Taxonomy Query     
+      // ---------------------------
+      
+      var tax = $('select#taxonomy-select').val(),
+      	  tax_operator = $('#tax-operator-select input[name=tax-operator]:checked').val();      	  
+      	          
+      if(tax !== '' && tax !== undefined){
+         output += ' taxonomy="'+tax+'"';
+         if($('select#taxonomy-select').hasClass('changed')){         	
+         	$('#taxonomy-extended').slideDown(200, 'alm_easeInOutQuad');
+         	get_tax_terms(tax);
+         	$('select#taxonomy-select').removeClass('changed');
+         }
+         
+		var tax_term_count = 0;
+		$('#tax-terms-container input[type=checkbox]').each(function(e){         
+			if($(this).is(":checked")) {
+				tax_term_count++;
+				if(tax_term_count>1){
+					output += ', ' + $(this).data('type');
+				}else{
+				if($('#tax-terms-container input').hasClass('changed'))
+					output += ' taxonomy_terms="'+$(this).data('type')+'';               
+				}
+			}
+		}); 
+		if(tax_term_count>0) 
+		 output += '"';
+         
+         //Get Tax Operator
+         if(tax_operator !== '' && tax_operator !== 'IN' && tax_operator !== undefined && tax_term_count !== 0){
+	        output += ' taxonomy_operator="'+tax_operator+'"';
+         }         
+      }else{
+	      $('#taxonomy-extended').slideUp(200, 'alm_easeInOutQuad');
+      }
+         
       // ---------------------------
       // - Categories      
       // ---------------------------
       
       var cat = $('.categories select').val();              
-      if(cat != '' && cat != undefined) 
+      if(cat !== '' && cat !== undefined) 
          output += ' category="'+cat+'"';
       
       // ---------------------------
@@ -62,7 +103,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var tag = $('.tags select').val();              
-      if(tag != '' && tag != undefined) 
+      if(tag !== '' && tag !== undefined) 
          output += ' tag="'+tag+'"';   
       
       // ---------------------------
@@ -70,7 +111,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var author = $('.authors select').val();              
-      if(author != '' && author != undefined) 
+      if(author !== '' && author !== undefined) 
          output += ' author="'+author+'"';   
       
       
@@ -80,18 +121,34 @@ jQuery(document).ready(function($) {
       
       var search = $('.search-term input').val();    
       search = $.trim(search);       
-      if(search != '') 
+      if(search !== '') 
          output += ' search="'+search+'"';  
          
           
+      // ---------------------------
+      // - Ordering      
+      // ---------------------------
+      var order = $('select#post-order').val(),
+          orderby = $('select#post-orderby').val();    
+      if(order !== 'DESC') 
+         output += ' order="'+order+'"'; 
+      if(orderby !== 'date') 
+         output += ' orderby="'+orderby+'"'; 
+         
+         
       // ---------------------------
       // - Exclude posts      
       // ---------------------------
       
       var exclude = $('.exclude input').val();    
       exclude = $.trim(exclude);       
-      if(exclude != '') 
-         output += ' exclude="'+exclude+'"';   
+      if(exclude !== ''){
+         //Remove trailing comma, if present
+         if(exclude.charAt( exclude.length-1 ) == ",") {
+            exclude = exclude.slice(0, -1)
+         }
+         output += ' exclude="'+exclude+'"';  
+      } 
       
       
       // ---------------------------
@@ -108,7 +165,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var posts_per_page = $('.posts_per_page select').val();  
-      if(posts_per_page > 0 && posts_per_page != 5 && $('.posts_per_page select').hasClass('changed'))
+      if(posts_per_page > 0 && posts_per_page !== 5 && $('.posts_per_page select').hasClass('changed'))
          output += ' posts_per_page="'+posts_per_page+'"';            
       
       
@@ -117,7 +174,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var scroll_load = $('.scroll_load input[name=scroll]:checked').val();     
-      if(scroll_load == 'f'){
+      if(scroll_load === 'f'){
          $('.row.max_pages').slideUp(100, 'alm_easeInOutQuad');
          if($('.scroll_load input').hasClass('changed'))          
             output += ' scroll="false"';         
@@ -134,7 +191,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var pause_load = $('.pause_load input[name=pause]:checked').val();     
-      if(pause_load == 't')          
+      if(pause_load === 't')          
             output += ' pause="true"';         
 
       
@@ -142,8 +199,8 @@ jQuery(document).ready(function($) {
       // - transition       
       // ---------------------------
       
-      var transition = $('.transition select').val(); 
-      if($('.transition select').hasClass('changed'))
+      var transition = $('.transition input[name=transition]:checked').val(); 
+      if(transition !== 'slide')
          output += ' transition="'+transition+'"';
       
       
@@ -153,7 +210,7 @@ jQuery(document).ready(function($) {
       
       var btn_lbl = $('.btn-label input').val();    
       btn_lbl = $.trim(btn_lbl);       
-      if(btn_lbl != '' && $('.btn-label input').hasClass('changed')) 
+      if(btn_lbl !== '' && $('.btn-label input').hasClass('changed')) 
          output += ' button_label="'+btn_lbl+'"';         
       
       
@@ -165,21 +222,31 @@ jQuery(document).ready(function($) {
    /*
    *  On change events
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */ 
    
    $('.post_types input[type=checkbox]#chk-post').prop('checked', true).addClass('changed'); //Select post by default
    
-   $('.repeater select, .post_types input[type=checkbox], .categories select, .tags select, .authors select, .offset select, .posts_per_page select, .scroll_load input[type=radio], .pause_load input[type=radio], .max_pages select, .transition select').change(function() {
+   $('.repeater select, .post_types input[type=checkbox], .categories select, .tags select, .authors select, .offset select, .posts_per_page select, .scroll_load input[type=radio], .pause_load input[type=radio], .max_pages select, .transition input[type=radio], #taxonomy-select, #tax-operator-select input[type=radio], #post-order, #post-orderby').change(function() {
       $(this).addClass('changed');      
 
-      // If post type is not selected, select post.
+      // If post type is not selected, select 'post'.
       if(!$('.post_types input[type=checkbox]:checked').length > 0){
          $('.post_types input[type=checkbox]#chk-post').prop('checked', true);
+      } 
+      // If Tax Term Operator is not selected, select 'IN'.
+      if(!$('#tax-operator-select input[type=radio]:checked').length > 0){
+         $('#tax-operator-select input[type=radio]#tax-in-radio').prop('checked', true);
       }      
-
-       _alm.buildShortcode();
+      
+      _alm.buildShortcode();
    });
+   
+   $(document).on('change', '#tax-terms-container input[type=checkbox]', function() {
+      $(this).addClass('changed');
+      _alm.buildShortcode();
+   });
+   
    $('.search-term input, .exclude input, .btn-label input').keyup(function() {  
       $(this).addClass('changed'); 
       _alm.buildShortcode();
@@ -190,7 +257,7 @@ jQuery(document).ready(function($) {
    /*
    *  Jump to section
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */ 
    
    var jumpOptions = '';
@@ -204,7 +271,7 @@ jQuery(document).ready(function($) {
 	
 	$('select.jump-menu').change(function() {
 		var pos = $(this).val();
-		if(pos!= 'null'){
+		if(pos !== 'null'){
 			$('html,body').animate({
 			   scrollTop: $('#'+pos).offset().top - ($('.intro').height() - 20)
 			}, 200, 'alm_easeInOutQuad');
@@ -215,7 +282,7 @@ jQuery(document).ready(function($) {
    /*
    *  Expand/Collapse shortcode headings
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */ 
    
 	$('h3.heading').click(function(){
@@ -231,13 +298,55 @@ jQuery(document).ready(function($) {
 		}
 	});
 	
+    $('.toggle-all').click(function(e){ 
+        var el = $(this);
+		if($(el).hasClass('closed')){
+		    $(el).removeClass('closed');
+            $('h3.heading').removeClass('open');
+			$('.expand-wrap').slideDown(100, 'alm_easeInOutQuad');
+		}else{
+		    $(el).addClass('closed');
+            $('h3.heading').addClass('open');
+			$('.expand-wrap').slideUp(100, 'alm_easeInOutQuad');
+		}
+    });
+	
+	
+   /*
+   *  get_tax_terms
+   *  Get taxonomy terms via ajax
+   *
+   *  @since 2.1.0
+   */
+   function get_tax_terms(tax){
+   		var placement = $('#tax-terms-container');
+   		placement.html("<p class='loading'>Fetching Terms...</p>");
+		$.ajax({
+			type: 'GET',
+			url: window.parent.alm_admin_localize.ajax_admin_url,
+			data: {
+				action: 'alm_get_tax_terms',
+				taxonomy: tax,
+				nonce: window.parent.alm_admin_localize.alm_admin_nonce,
+			},
+			dataType: "html",
+			success: function(data) {			
+				//console.log(data);
+				placement.html(data);
+			},
+			error: function(xhr, status, error) {
+				responseText.html('<p>Error - Something went wrong and the terms could not be retrieved.');
+			}
+		});
+	}
+	
 	
 	
 	/*
    *  _alm.alm_easeInOutQuad
    *  Ajax Load More easing
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */  
    
 	$.easing.alm_easeInOutQuad = function (x, t, b, c, d) {
@@ -251,7 +360,7 @@ jQuery(document).ready(function($) {
    *  _alm.SelectText
    *  Click to select text
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */  
    
    _alm.SelectText = function(element) {
@@ -281,7 +390,7 @@ jQuery(document).ready(function($) {
    *  _alm.copyToClipboard
    *  Copy shortcode to clipboard
    *
-   *  @since 1.0
+   *  @since 2.0.0
    */     
 	
 	_alm.copyToClipboard = function(text) {

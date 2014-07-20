@@ -1,4 +1,4 @@
-
+<span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', ALM_NAME); ?></em><em class="expand"><?php _e('Expand All', ALM_NAME); ?></em></span></span>
 
  <?php 	
  	// List available repeaters
@@ -6,7 +6,7 @@
 	echo '<h3 class="heading">'.__('Repeater', ALM_NAME). '</h3>';
 	echo '<div class="expand-wrap">';
 	echo '<div class="section-title">';
-	echo '<p>'.__('Select a <a href="?page=ajax-load-more-repeaters">repeater</a> from drop menu.', ALM_NAME). '</p>';
+	echo '<p>'.__('Choose your <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater</a>.', ALM_NAME). '</p>';
 	echo '</div>';
 	echo '<div class="wrap"><div class="inner">';
 	echo '<select name="repeater-select" id="repeater-select">';
@@ -45,7 +45,7 @@
 	    echo '</div>';
 	    echo '</div>';
    }
-    
+   
    // List Categories	    
 	$cats = get_categories();
 	if($cats){
@@ -53,7 +53,7 @@
 		echo '<h3 class="heading">' . __('Category', ALM_NAME) . '</h3>';
 		echo '<div class="expand-wrap">';
 		echo '<div class="section-title">';
-		echo '<p>' . __('Select a Category to query(by slug) from the drop menu.', ALM_NAME) . '</p>';
+		echo '<p>' . __('Select a Category to query(by slug).', ALM_NAME) . '</p>';
 		echo '</div>';
 		echo '<div class="wrap"><div class="inner"><select name="category-select" id="category-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Category', ALM_NAME) . ' --</option>';
@@ -72,7 +72,7 @@
 		echo '<h3 class="heading">' . __('Tag', ALM_NAME) . '</h3>';
 		echo '<div class="expand-wrap">';
 		echo '<div class="section-title">';
-		echo '<p>' . __('Select a Tag to query(by slug) from the drop menu.', ALM_NAME) . '</p>';
+		echo '<p>' . __('Select a Tag to query(by slug).', ALM_NAME) . '</p>';
 		echo '</div>';
 		echo '<div class="wrap"><div class="inner"><select name="tag-select" id="tag-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Tag', ALM_NAME) . ' --</option>';
@@ -84,6 +84,54 @@
 	    echo '</div>';
     }
     
+    
+	// List Taxonomies
+	$tax_args = array(
+		'public'   => true,
+		'_builtin' => false	
+	); 
+	$tax_output = 'objects'; // or objects
+	$taxonomies = get_taxonomies( $tax_args, $tax_output ); 
+	if ( $taxonomies ) {
+		echo '<div class="row taxonomy" id="alm-taxonomy">';   		
+		echo '<h3 class="heading">'.__('Taxonomy', ALM_NAME). '</h3>';
+		echo '<div class="expand-wrap">';
+		echo '<div class="section-title">';
+		echo '<p>'.__('Select your custom taxonomy then select the terms and operator.', ALM_NAME). '</p>';
+		echo '</div>';
+		
+		echo '<div class="wrap">';
+		
+		echo '<div class="inner">';
+		echo '<select name="taxonomy-select" id="taxonomy-select">';
+		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', ALM_NAME) . ' --</option>';
+	    foreach( $taxonomies as $taxonomy ){
+         echo '<option name="chk-'.$taxonomy->query_var.'" id="chk-'.$taxonomy->query_var.'" value="'.$taxonomy->query_var.'">'.$taxonomy->label.'</option>';
+	    }
+	    echo '</select>';
+	    echo '</div>';
+	    
+	    echo '<div id="taxonomy-extended">';
+	    echo '<div class="inner border-top" id="tax-terms">';
+	    echo '<label class="full">'. __('Taxonomy Terms:', ALM_NAME) .'</label>';
+	    echo '<div id="tax-terms-container" class="checkboxes"></div>';
+	    echo '</div>';
+	    
+	    echo '<div class="inner border-top" id="tax-operator-select">';
+	    echo '<label class="full">'. __('Taxonomy Operator:', ALM_NAME) .'</label>';
+	    echo '<ul class="radio">';
+	    echo '<li><input name="tax-operator" id="tax-in-radio" value="IN" type="radio" checked="checked"><label for="tax-in-radio">IN (default)</li>';
+	    echo '<li><input name="tax-operator" id="tax-not-in-radio" value="NOT IN" type="radio"><label for="tax-not-in-radio">NOT IN</li>';
+	    echo '</ul>';
+	    echo '</div>';	    
+	    echo '</div>';
+	    
+	    echo '</div>';
+	    echo '</div>';
+	    echo '</div>';
+	}
+    
+    
     // List Authors	   
 	$authors = get_users();
 	if($authors){
@@ -91,7 +139,7 @@
 		echo '<h3 class="heading">' . __('Author', ALM_NAME) . '</h3>';
 		echo '<div class="expand-wrap">';
 		echo '<div class="section-title">';
-		echo '<p>' . __('Select an Author to query(by ID) from the drop menu.', ALM_NAME) . '</p>';
+		echo '<p>' . __('Select an Author to query(by ID).', ALM_NAME) . '</p>';
 		echo '</div>';
 		echo '<div class="wrap"><div class="inner"><select name="author-select" id="author-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Author', ALM_NAME) . ' --</option>';
@@ -118,10 +166,42 @@
          </div>
       </div>
    </div>
+    
+   <!-- Ordering -->
+   <div class="row ordering" id="alm-order">
+      <h3 class="heading"><?php _e('Ordering', ALM_NAME); ?></h3>
+      <div class="expand-wrap">
+         <div class="section-title">
+   		 	<p><?php _e('Sort retrieved posts by Order and Orderby parameters.', ALM_NAME); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner half">
+               <label class="full">Order:</label>
+               <select name="post-order" id="post-order">
+                   <option value="DESC" selected="selected">DESC (default)</option>
+                   <option value="ASC">ASC</option>
+               </select>
+            </div>
+            <div class="inner half">
+               <label class="full">Order By:</label>
+               <select name="post-orderby" id="post-orderby">
+                   <option value="date" selected="selected">Date (default)</option>
+                   <option value="title">Title</option>
+                   <option value="name">Name (slug)</option>
+                   <option value="menu_order">Menu Order</option>
+                   <option value="rand">Random</option>
+                   <option value="author">Author</option>
+                   <option value="ID">ID</option>
+                   <option value="comment_count">Comment Count</option>
+               </select>
+            </div>
+         </div>
+      </div>
+   </div>
    
    <!-- Exclude posts -->
    <div class="row input exclude" id="alm-exclude-posts">
-      <h3 class="heading"><?php _e('Exclude Posts', ALM_NAME); ?></h3>
+      <h3 class="heading"><?php _e('Exclude', ALM_NAME); ?></h3>
       <div class="expand-wrap">
          <div class="section-title">
    		 	<p><?php _e('A comma separated list of post ID\'s to exclude from query.', ALM_NAME); ?></p>
@@ -136,16 +216,16 @@
    
    <!-- Offset -->
    <div class="row input offset" id="alm-offset">
-      <h3 class="heading"><?php _e('Post Offset', ALM_NAME); ?></h3>
+      <h3 class="heading"><?php _e('Offset', ALM_NAME); ?></h3>
       <div class="expand-wrap">
          <div class="section-title">
-   		 	<p><?php _e('Offset the initial query by selecting a value from the drop menu.', ALM_NAME); ?></p>
+   		 	<p><?php _e('Offset the initial WordPress query by <em>\'n\'</em> number of posts', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
             <div class="inner">               
                <select name="offset-select" id="offset-select">
                   <script>
-                     var length = 10,
+                     var length = 21,
                          value = '';
                      for(var i = 0; i < length; i++){
                         value += '<option value="'+i+'">'+i+'</option>';
@@ -169,7 +249,7 @@
             <div class="inner">
                <select name="display_posts-select" id="display_posts-select">
                   <script>
-                     var length = 22,
+                     var length = 31,
                          value = '';
                      for(var i = 1; i < length; i++){
                         if(i == 5){
@@ -205,7 +285,7 @@
                <input type="radio" name="scroll" value="f" id="scroll_f">
                <label for="scroll_f"><?php _e('False', ALM_NAME); ?></label>
                </li>
-               </select>
+               </ul>
             </div>
          </div>
       </div>
@@ -252,15 +332,15 @@
          <div class="wrap">
             <div class="inner">	               
                <ul>
-               <li>
-               <input type="radio" name="pause" value="t" id="pause_t">
-               <label for="pause_t"><?php _e('True', ALM_NAME); ?></label>
-               </li>
-               <li>
-               <input type="radio" name="pause" value="f" id="pause_f" checked>
-               <label for="pause_f"><?php _e('False', ALM_NAME); ?></label>
-               </li>
-               </select>
+                   <li>
+                    <input type="radio" name="pause" value="t" id="pause_t">
+                    <label for="pause_t"><?php _e('True', ALM_NAME); ?></label>
+                   </li>
+                   <li>
+                    <input type="radio" name="pause" value="f" id="pause_f" checked>
+                    <label for="pause_f"><?php _e('False', ALM_NAME); ?></label>
+                   </li>
+               </ul>
             </div>
          </div>
       </div>
@@ -275,11 +355,17 @@
    		 	<p><?php _e('Select a loading transition from the drop menu.', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">
-               <select name="transition-select" id="transition-select">
-                  <option value="slide" selected="selected"><?php _e('Slide', ALM_NAME); ?></option>
-                  <option value="fade"><?php _e('Fade', ALM_NAME); ?></option>
-               </select>
+            <div class="inner">	               
+               <ul>
+                   <li>
+                    <input type="radio" name="transition" value="slide" id="transition-slide" checked>
+                    <label for="transition-slide"><?php _e('Slide', ALM_NAME); ?></label>
+                   </li>
+                   <li>
+                    <input type="radio" name="transition" value="fade" id="transition-fade">
+                    <label for="transition-fade"><?php _e('Fade', ALM_NAME); ?></label>
+                   </li>
+               </ul>
             </div>
          </div>
       </div>
