@@ -17,7 +17,7 @@
 		speed = 300,
 		proceed = false,
 		$init = true,
-		$loading = true,
+		$loading = false,
 		$finished = false,
 		$window = $(window),
 		$button_label = '',
@@ -93,6 +93,7 @@
 		// Load posts function
 		AjaxLoadMore.loadPosts = function() {
 			$button.addClass('loading');
+			$loading = true;
 			$.ajax({
 				type: "GET",
 				url: alm_localize.ajaxurl,
@@ -161,6 +162,7 @@
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 					$button.removeClass('loading');
+					$loading = false;
 					//alert(jqXHR + " :: " + textStatus + " :: " + errorThrown);
 				}
 			});
