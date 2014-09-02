@@ -1,6 +1,8 @@
 <span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', ALM_NAME); ?></em><em class="expand"><?php _e('Expand All', ALM_NAME); ?></em></span></span>
 
- <?php 	
+
+<?php
+	
  	// List available repeaters
 	echo '<div class="row repeater" id="alm-repeaters">';   		
 	echo '<h3 class="heading">'.__('Repeater', ALM_NAME). '</h3>';
@@ -18,14 +20,17 @@
 	
 	echo '</div></div>';
 	if (!has_action('alm_get_custom_repeaters')) {
-	  include( 'cta/extend.php');
+	  include( ALM_PATH.'admin/includes/cta/extend.php');
 	}
 	echo '</div>';
 	echo '</div>';
  	
  
    // List registered post_types
-	$types = get_post_types();
+   $pt_args = array(
+      'public'   => true
+   );
+	$types = get_post_types($pt_args);
 	if($types){
 		echo '<div class="row checkboxes post_types" id="alm-post-types">';   		
 		echo '<h3 class="heading">'.__('Post Types', ALM_NAME). '</h3>';
@@ -44,6 +49,29 @@
 	    echo '</ul></div></div>';
 	    echo '</div>';
 	    echo '</div>';
+   }
+   
+   // List Post Formats
+   if ( current_theme_supports( 'post-formats' ) ) {
+       $post_formats = get_theme_support( 'post-formats' );
+       if($post_formats){
+   		echo '<div class="row checkboxes post_format" id="alm-post-format">';   		
+   		echo '<h3 class="heading">'.__('Post Format', ALM_NAME). '</h3>';
+   		echo '<div class="expand-wrap">';
+   		echo '<div class="section-title">';
+   		echo '<p>'.__('Select a <a href="http://codex.wordpress.org/Post_Formats" target="_blank">Post Format</a> to query.', ALM_NAME). '</p>';
+   		echo '</div>';
+   		echo '<div class="wrap"><div class="inner"><select name="post-format-select" id="post-format-select">';
+   		echo '<option value="" selected="selected">-- ' . __('Select Post Format', ALM_NAME) . ' --</option>';
+   		echo '<option name="chk-standard" id="chk-standard" value="chk-standard">' . __('Standard', ALM_NAME) . '</option>';		
+   	   foreach( $post_formats[0] as $post_format ){
+            echo '<option name="chk-'.$post_format.'" id="chk-'.$post_format.'" value="'.$post_format.'">'.ucwords($post_format).'</option>';
+   	   }	   
+   		echo '</select></div></div>';
+   		echo '</div>';
+   		echo '</div>';
+      }
+       
    }
    
    // List Categories	    
@@ -352,7 +380,7 @@
       <h3 class="heading"><?php _e('Transition', ALM_NAME); ?></h3>
       <div class="expand-wrap">
          <div class="section-title">
-   		 	<p><?php _e('Select a loading transition from the drop menu.', ALM_NAME); ?></p>
+   		 	<p><?php _e('Select a loading transition.', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
             <div class="inner">	               

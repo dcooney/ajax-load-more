@@ -6,6 +6,9 @@
 *  @since 1.0
 */
 
+.forceColors{
+	background: #fff !important;
+}
 .ajax-load-more{
    font-size: 14px;
    color:#666;
@@ -26,7 +29,7 @@
 
 #alm-container{
 	overflow: hidden;
-    padding: 15px 10px 140px !important;
+   padding: 15px 10px 140px !important;
 }
 
 .ajax-load-more code{
@@ -79,25 +82,28 @@
 
 /* Expand Collapse Headings */
 .ajax-load-more h3.heading{
-   font-weight: 600;
+   font-weight: 700;
    padding: 0 0 0 25px !important;
    line-height: normal !important;
-   margin: 0 0 5px !important;
-   color: #444;
+   margin: 0 !important;
+   color: #555;
    cursor: pointer;
    width: 100%;
    position: relative;
-   font-size: 16px;
+   font-size: 17px;
 }
    .ajax-load-more h3.heading:hover:after{
       color: #f05452; 
    }
+   .ajax-load-more h3.heading:hover{
+      color: #222;
+   }  
       
    .ajax-load-more h3.heading:after{
       font-family: 'FontAwesome';
       content: '\f056';
       color:#e1e1e1;
-      font-size: 16px;
+      font-size: 18px;
       position: absolute;
       left: 0;
       top: 3px;
@@ -228,8 +234,22 @@
 	display: inline-block; 
 	clear: both;
 	border-radius: 3px;
-	color: #666;
+	color: #444;	
+   -webkit-box-shadow: none;
+   -moz-box-shadow: none;
+   box-shadow: none;
 }
+	
+.ajax-load-more textarea._alm_repeater{
+   font-family: Consolas, monaco, monospace;   
+   font-size: 13px;
+   line-height: 19px;
+   padding: 10px;
+}
+   .ajax-load-more textarea._alm_repeater:focus{
+      color: #222;
+   }
+	
 .ajax-load-more label{
 	padding: 5px 0;
 }
@@ -251,33 +271,64 @@
 }
 .ajax-load-more input[type=text]{
    padding: 10px;
+   line-height: 1.3;
    border: 1px solid #ccc;
-   width: 50%;  
+   width: 60%;  
 }
-	.ajax-load-more input[type=text]:focus{
+.ajax-load-more input[type=text],
+.ajax-load-more textarea{
+   background: #f7f7f7;	
+}
+.ajax-load-more .repeaters input[type=text]{
+	padding: 7px 10px;
+}
+ 
+.ajax-load-more input.disabled-input{
+   opacity: 0.5;
+   filter: alpha(opacity=50);
+}
+	.ajax-load-more input[type=text]:focus,
+	.ajax-load-more textarea:focus{
 		border-color: #999;
 		box-shadow: 0 0 3px #ccc;
+		background: #efefef;
 	}
+
 	
 .checkboxes label{
    margin-right: 5px;
 }
 
+.ajax-load-more .one_half{
+   display: inline-block;
+   width: 47.333%;
+   margin: 0 0 1% 2%;
+}   
+   .ajax-load-more .one_half:first-child{
+      margin: 0 2% 1% 0;  
+   }
 
 /* --------------------------------------------------------------------------- */
 /* Row */
 /* --------------------------------------------------------------------------- */
 
 .ajax-load-more .row{ 
-	padding: 15px 0 0; 
-	margin: 15px 0 0;
-	height: auto; 
-	width: 100%;
-	display: block;
-	overflow: visible;
-	clear: both;
-    border-top: 1px solid #efefef;
+   padding: 10px !important; 
+   margin: 15px 0 0;
+   height: auto; 
+   width: 100%;
+   display: block;
+   overflow: hidden;
+   clear: both;
+   border: 1px solid #efefef;
+   -webkit-border-radius: 2px;
+   -moz-border-radius: 2px;
+   border-radius: 2px;
 }
+   .ajax-load-more .row.no-brd{
+      border: none;
+      padding: 0 !important; 
+   } 
 
 	.admin.ajax-load-more .row{ 
 		border-color: #efefef;
@@ -285,7 +336,6 @@
 	.admin.ajax-load-more .row:first-of-type{
 		margin: 0;
 		padding-top: 0;
-		border-top: none;
 	}
 	
    .ajax-load-more .intro{
@@ -311,6 +361,7 @@
 
 .ajax-load-more .section-title{
 	width: 35%;
+	padding-top: 5px;
 	float: left;
 }
 	.ajax-load-more .section-title p{		
@@ -328,15 +379,25 @@
 		.ajax-load-more .repeaters .section-title p{
 			padding-left: 0 !important;
 		}
+		.ajax-load-more label.template-title{
+   		padding: 10px 0 5px;
+   		margin: 0;
+   		font-size: 0.9em;
+   		color: #888;
+		}
+		
+	.ajax-load-more label input._alm_repeater_alias{
+		height: auto;
+		line-height: normal !important;
+	}
 	
 	
 
 .ajax-load-more .row .wrap{
-  padding: 0;
+  padding: 5px 0 0 5%;
   margin: 0;
   border: none;
   width: 65%;
-  padding-left: 5%;
   float: left;
   position: relative;
 }
@@ -377,7 +438,7 @@
       }
       .ajax-load-more .row .wrap .inner.half{
          padding:0 0 20px;
-         width: 49.5%;
+         width: 49.333%;
          display: inline-block;
       }
       
@@ -549,10 +610,29 @@
 	margin-right: 10px;
 }
 
-.admin.ajax-load-more.settings input[type=text]{
-   width: 100%;
+.admin.ajax-load-more.settings input[type=text],
+.admin.ajax-load-more.settings .select2-container{
    margin-top:10px;
 }
+.admin.ajax-load-more.settings .ajax-load-more-wrap {
+	position: relative;
+	top:10px;
+	padding: 10px 0;
+	border-top: 1px dashed #ccc;
+}
+	.admin.ajax-load-more.settings .ajax-load-more-wrap button{
+		margin: 0 !important;
+	}
+	.admin.ajax-load-more.settings .ajax-load-more-wrap span{
+		display: block;
+		font-size: 11px;
+		opacity: 0.7;
+		padding: 0 0 5px;
+	}
+	.admin.ajax-load-more.settings button.alm-load-more-btn.loading:before {		
+		margin: 5px 6px 6px;
+	}
+
 
 /* Table Overrides */
 .admin.ajax-load-more.settings .form-table td,
@@ -590,8 +670,8 @@
 	top: -2px;
 }
 .ajax-load-more p.addon-intro{
-   font-size: 20px !important;
-   line-height: 28px !important;
+   font-size: 24px !important;
+   line-height: 30px !important;
 }
 
 .ajax-load-more h3.add-on-title,
@@ -611,7 +691,7 @@
 }
 .ajax-load-more p.desc{
 	font-size: 12px;
-	padding: 5px 0 8px 24px;
+	padding: 0 0 8px 24px;
 }
 
 .ajax-load-more p.back2top{
@@ -659,7 +739,7 @@ input.save-repeater{
 	.restore-default a{
 		text-decoration: none;
 	}
-	
+
 	
 table.highlight{
    background: #fff !important;
@@ -671,6 +751,7 @@ table.highlight{
    width: 67%;
    float: left;
    margin-top: 10px;
+   background: none !important;
 }
 .ajax-load-more .alm-main .group{
    background: #fff;
@@ -697,21 +778,25 @@ table.highlight{
 	.form-table tr{
 		border-top: 1px solid #efefef;
 	}
+	.form-table {
+		border-bottom: 1px solid #efefef;		
+		margin: 0 0 20px;
+	}
 
 
 /* Repeaters */
 .repeaters {}
-
+   .repeaters .repeater-wrap{
+      padding: 0 10px 0 25px !important;
+   }
    .repeaters input.save-repeater{
       float: left;
       margin: 15px 0 0;
       clear: none;
    }
-   .default-repeater textarea{
-	   width: 100%;
-   }
-   .repeater-wrap textarea{
-   	background: #efefef;
+   .repeater-wrap textarea,   
+   .repeater-wrap input[type=text]{
+   	width: 100%;
    }
    
    
@@ -739,9 +824,8 @@ table.highlight{
 	background: #4DD5B0;
 	padding: 13px 100px 13px 12px;
 	border-radius: 3px;
-	margin: 0 0 20px 20px;
-	width: 95%;
-	width: calc(100% - 20px);
+	margin: 0 0 0 0;
+	width: 100%;
 	display: block;
 	color: #fff;
 	font-size: 13px;
@@ -843,7 +927,7 @@ a.btn{
 	   position: relative;	
 	}
 	.ajax-load-more .alm-sidebar .cta.padding-bottom{
-		padding-bottom: 70px;
+		padding-bottom: 60px;
 	}
 	.ajax-load-more .alm-sidebar h3,
 	.ajax-load-more .alm-sidebar h4{
@@ -925,6 +1009,72 @@ a.btn{
 			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
 		}
 		
+/*
+* CodeMirror Syntax Highlighting
+*
+* @since 2.2.0
+*/
+
+.ajax-load-more .CodeMirror {
+   height: auto;
+   -webkit-border-radius: 3px;
+   -moz-border-radius: 3px;
+   border-radius: 3px;
+   padding: 8px;
+   background: #f7f7f7;
+   border: 1px solid #ccc;
+   color: #999;
+   line-height: 1.3;
+}
+   
+   .ajax-load-more .cm-s-pastel-on-dark.CodeMirror{ /* Bkg color */
+      background: #333;
+   }
+   .ajax-load-more .CodeMirror-gutters{ /* Line Number color */
+      background: #fff;
+      border-right: 1px solid #ccc;
+     -webkit-border-radius: 2px 0 0 2px;
+     -moz-border-radius: 2px 0 0 2px;
+     border-radius: 2px 0 0 2px;
+   }
+   .ajax-load-more .CodeMirror pre{
+      font-size: 13px;
+   }
+   .ajax-load-more .CodeMirror-scroll {
+     overflow-y: hidden;
+     overflow-x: auto;
+   }
+   
+   
+   .ajax-load-more .cm-tag{ /* <li> <h2> html elements */ 
+      color: #0a4b83 !important;
+   }
+   .ajax-load-more .cm-string{  /* Elements in " " */ 
+      color: #d14 !important;
+   }
+   .ajax-load-more .cm-attribute{ /* class names */
+      color: #008080 !important;
+   }
+   .ajax-load-more .cm-keyword{ /* if, array, echo */
+      color: #ae5fb3 !important;
+   }
+   .ajax-load-more span.CodeMirror-matchingbracket{
+      color: #ff0000 !important;
+   }
+   .ajax-load-more .CodeMirror span.cm-meta{ /* <?php */
+      color: #999;
+   }
+   .ajax-load-more .CodeMirror span.cm-variable{ /* Function names */
+      color: #111;
+      font-weight: 500;
+      padding: 0 1px;
+   }
+  .ajax-load-more .CodeMirror span.cm-number{ /* Numbers */
+      color: #009999 !important;
+   }
+   
+   
+		
 		
 /*
 * Admin screen media queries
@@ -957,7 +1107,6 @@ a.btn{
 
 
 
-
 /*
 * Select2 - form replacement - http://ivaynberg.github.io/select2/
 *
@@ -970,7 +1119,7 @@ a.btn{
     zoom: 1;
     *display: inline;
     vertical-align: middle;
-    min-width: 50%;
+    min-width: 60%;
 }
 .inner.half .select2-container{
     min-width: 90%;
@@ -985,9 +1134,10 @@ a.btn{
     border: 1px solid #ccc;
     white-space: nowrap;
     line-height: 40px;
-    color: #444;
+    color: #333;
     text-decoration: none;
     background: #fff;
+    background: #f7f7f7;
     border-radius:2px;
     -webkit-background-clip: padding-box;
     -moz-background-clip: padding;

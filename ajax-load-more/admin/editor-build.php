@@ -37,7 +37,7 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
 		<option value="null" selected="selected">-- <?php _e('Jump to section', ALM_NAME); ?> --</option>	
 	</select>
 	<p class="intro"><?php _e('Create your own Ajax Load More shortcode by adjusting the values below:', ALM_NAME); ?></p>  
-	<?php include (ALM_PATH . '/admin/includes/shortcode-builder.php'); ?>
+	<?php include (ALM_PATH . '/admin/shortcode-builder/shortcode-builder.php'); ?>
 	<div class="output-wrap">
 	    <a href="javascript:AjaxLoadMoreModal.insert(AjaxLoadMoreModal.local_ed)" id="insert" class="insert_alm"><i class="fa fa-chevron-circle-right"></i> <?php _e('Insert Shortcode', ALM_NAME); ?></a>
 	   <div class="shortcode-display">
@@ -47,6 +47,6 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
 	</div
 </div>	
 <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/libs/select2.min.js"></script>
-<script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/shortcode-builder.js"></script>
+<script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>shortcode-builder/js/shortcode-builder.js"></script>
 </body>
 </html>

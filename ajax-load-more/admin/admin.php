@@ -53,14 +53,19 @@ function alm_core_update() {
          $wpdb->query("ALTER TABLE $table_name ADD name TEXT NOT NULL");
          $wpdb->update($table_name , array('name' => 'default'), array('id' => 1));
        }
-       
        // ********
        // @TO-DO - Upgrade test, will remove in future versions
+       // REMOVED - 2.1.3
        // ********
        $test = $wpdb->get_col("Show columns from $table_name like 'test'");
-       if(empty($test)){
-         $wpdb->query("ALTER TABLE $table_name ADD test TEXT NOT NULL");
-         $wpdb->update($table_name , array('test' => 'test value'), array('id' => 1));
+       if(!empty($test)){
+         $wpdb->query("ALTER TABLE $table_name DROP test");
+       }    
+       
+       //Add column for repeater template alias
+       $alias = $wpdb->get_col("Show columns from $table_name like 'alias'");
+       if(empty($alias)){
+         $wpdb->query("ALTER TABLE $table_name ADD alias TEXT NOT NULL");
        }       
 	 
        // Compare versions of repeaters, if template versions do not match, update the repeater with value from DB	       
@@ -109,7 +114,7 @@ add_action( 'admin_menu', 'alm_admin_menu' );
 function alm_admin_menu() {  
    $icon = 'dashicons-plus-alt';
    $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
-   $alm_page = add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon, 81 );
+   $alm_page = add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon );
    $alm_settings_page = add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
    $alm_template_page = add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page'); 
    $alm_shortcode_page = add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page'); 
@@ -149,13 +154,33 @@ function alm_load_admin_js(){
 
 function alm_enqueue_admin_scripts(){
 
-	//Load CSS
-	wp_enqueue_style( 'admin-css', ALM_ADMIN_URL. 'css/admin.css');
-	wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
-	
-	//Load JS
-    wp_enqueue_script( 'select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
-    wp_enqueue_script( 'shortcode-builder', ALM_ADMIN_URL. 'js/shortcode-builder.js', array( 'jquery' ));
+   //Load Admin CSS
+   wp_enqueue_style( 'admin-css', ALM_ADMIN_URL. 'css/admin.css');
+   wp_enqueue_style( 'core-css', ALM_URL. '/core/css/ajax-load-more.css');
+   wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css');
+   
+   //Load CodeMirror Syntax Highlighting if on Repater Template page 
+   $screen = get_current_screen();
+   if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters') ) ){  
+      
+      //CodeMirror CSS
+      wp_enqueue_style( 'codemirror-css', ALM_ADMIN_URL. 'codemirror/lib/codemirror.css' );
+            
+      //CodeMirror JS
+      wp_enqueue_script( 'codemirror', ALM_ADMIN_URL. 'codemirror/lib/codemirror.js');    
+      wp_enqueue_script( 'codemirror-matchbrackets', ALM_ADMIN_URL. 'codemirror/addon/edit/matchbrackets.js' );
+      wp_enqueue_script( 'codemirror-htmlmixed', ALM_ADMIN_URL. 'codemirror/mode/htmlmixed/htmlmixed.js' );
+      wp_enqueue_script( 'codemirror-xml', ALM_ADMIN_URL. 'codemirror/mode/xml/xml.js' );
+      wp_enqueue_script( 'codemirror-javascript', ALM_ADMIN_URL. 'codemirror/mode/javascript/javascript.js' );
+      wp_enqueue_script( 'codemirror-mode-css', ALM_ADMIN_URL. 'codemirror/mode/css/css.js' );
+      wp_enqueue_script( 'codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
+      wp_enqueue_script( 'codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
+      
+   }
+   
+   //Load JS
+   wp_enqueue_script( 'select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
+   wp_enqueue_script( 'shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
 }
 
 
@@ -172,27 +197,26 @@ function alm_settings_page(){ ?>
 		<div class="wrap">
 		<div class="header-wrap">
          <h2><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span></h2>
-         <p>A simple solution for lazy loading WordPress posts and pages</p>
+         <p>A simple solution for lazy loading WordPress posts and pages with Ajax</p>
          </div>
 		   <div class="alm-main">
-		   	<section class="group">
+		   	<div class="group">
 	   			<form action="options.php" method="post">
 	   				<?php 
 	   					settings_fields( 'alm-setting-group' );
 	   					do_settings_sections( 'ajax-load-more' );	
 	   					//get the older values, wont work the first time
 	   					$options = get_option( '_alm_settings' ); ?>	
-	   					<div class="row">	       
+	   					<div class="row no-brd">	       
 	   		            <?php submit_button('Save Settings'); ?>	
 	   					</div>	        
 	   			</form>	
-		   	</section>
+		   	</div>
 		   </div>
-		   <aside class="alm-sidebar">
+		   <div class="alm-sidebar">
 				<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/resources.php');	?>
-				<?php //include( plugin_dir_path( __FILE__ ) . 'includes/cta/writeable.php');	?>
 				<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/about.php');	?>
-		   </aside>	
+		   </div>	
 		   	
 		</div>
 	</div>
@@ -212,13 +236,19 @@ function alm_repeater_page(){ ?>
 <div class="admin ajax-load-more" id="alm-repeaters">	
 	<div class="wrap">
 		<div class="header-wrap">
-			<h2><?php _e('Ajax load More: Repeater Templates', ALM_NAME); ?></h2>
+			<h2><?php _e('Ajax Load More: Repeater Templates', ALM_NAME); ?></h2>
 			<p><?php _e('The library of available templates to use throughout your theme', ALM_NAME); ?></p>  
 		</div>
 		<div class="alm-main form-table repeaters">		
+		
 		   <!-- Repeaters -->
-		   <section class="group">
-		   	   <!-- Default -->
+		   <div class="group">
+		   <?php 
+		   	if (has_action('alm_custom_repeaters')){ ?>
+				<span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', ALM_NAME); ?></em><em class="expand"><?php _e('Expand All', ALM_NAME); ?></em></span></span> 
+			<?php } ?>
+			
+			   <!-- Default -->
 			   <div class="row default-repeater">
 	   		   <?php         
 	               $filename = ALM_PATH. 'core/repeater/default.php';
@@ -226,29 +256,35 @@ function alm_repeater_page(){ ?>
 	               $contents = fread ($handle, filesize ($filename));
 	               fclose ($handle);
 	            ?> 
-	            <h3 class="heading"><?php _e('Default Repeater Template', ALM_NAME); ?></h3>
-	            <div class="expand-wrap">	            
-		            <div class="section-title">
-		               <p><?php _e('Enter the HTML and PHP for the default template.', ALM_NAME); ?></p>                  
-		            </div>
+	            <h3 class="heading"><?php _e('Default Template', ALM_NAME); ?></h3>
+	            <div class="expand-wrap">  
 		            <div class="wrap repeater-wrap" data-name="default">
-		            	<div class="textarea-wrap">
-			            	<textarea rows="10" class="_alm_repeater"><?php echo $contents; ?></textarea>
-		            	</div>
-							<input type="submit" value="Save Template" class="button button-primary save-repeater">
+		               <label class="template-title" for="template-default"><?php _e('Enter the HTML and PHP code for the default template', ALM_NAME); ?></label>		            
+			            <textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; ?></textarea>
+			            <script>
+                        var editorDefault = CodeMirror.fromTextArea(document.getElementById("template-default"), {
+                          mode:  "application/x-httpd-php",
+                          lineNumbers: true,
+                          lineWrapping: true,
+                          indentUnit: 0,
+                          matchBrackets: true,
+                          //theme: 'pastel-on-dark',
+                          viewportMargin: Infinity,
+                          extraKeys: {"Ctrl-Space": "autocomplete"},
+                        });
+                      </script>
+							<input type="submit" value="<?php _e('Save Template', ALM_NAME); ?>" class="button button-primary save-repeater" data-editor-id="template-default">
 		            	<div class="saved-response">&nbsp;</div>
-		            	<!-- <div class="restore-default"><a href="javascript:void(0);"><?php _e('Restore Default', ALM_NAME); ?></a></div> -->
 		            </div>
 	            </div>
-	            <?php
-	            	if (!has_action('alm_get_custom_repeaters')) {
-	            	echo '<div class="row">';
-						include( ALM_PATH. 'admin/includes/cta/extend.php');
-	            	echo '</div>';
-					  }
-	            ?>
-	            <div class="clear"></div>
-			   </div>
+			   </div>			   
+            <?php
+            	if (!has_action('alm_get_custom_repeaters')) {
+            	echo '<div class="row no-brd">';
+					include( ALM_PATH. 'admin/includes/cta/extend.php');
+            	echo '</div>';
+				  }
+            ?>
 			   <!-- End Default -->			   
 			   <?php 
 			   	if (has_action('alm_custom_repeaters'))
@@ -266,14 +302,42 @@ function alm_repeater_page(){ ?>
 					    *  @since 2.0.0
 					    */  
 						
-						_alm_admin.saveRepeater = function(btn) {										
+						_alm_admin.saveRepeater = function(btn, editorId) {							   
 							var container = btn.parent('.repeater-wrap'),
 								el = $('textarea._alm_repeater', container),
-								value = el.val(),
 								btn = btn,
+								value = '',
 								repeater = container.data('name'),
+								alias = ($('input._alm_repeater_alias', container).length) ? $('input._alm_repeater_alias', container).val() : '',
 								responseText = $(".saved-response", container);
 								
+							//Get value from CodeMirroweditor
+							
+							// Default Template	
+							if(editorId === 'template-default') 					   
+								value = editorDefault.getValue();
+						   	
+                     //Custom Repeater template add-on
+						   if(editorId === 'template-repeater2')   						   
+								value = editor_repeater2.getValue();
+						   	
+						   if(editorId === 'template-repeater3')   						   
+								value = editor_repeater3.getValue();
+						  	
+						   if(editorId === 'template-repeater4')   						   
+								value = editor_repeater4.getValue();
+						   	
+						   if(editorId === 'template-repeater5')   						   
+								value = editor_repeater5.getValue();
+						   	
+						   if(editorId === 'template-repeater6')   						   
+								value = editor_repeater6.getValue();
+						   	
+						   if(value === '' || value === 'undefined'){
+						      alert("Sorry, an error has occured");
+						      return false;
+						   }
+                     
 							//If submit button has changed class.
 							if (btn.hasClass('changed')) { // If repeater value has changed.
 								responseText.addClass('loading').html('<?php _e('Saving data...', ALM_NAME) ?>');
@@ -284,11 +348,12 @@ function alm_repeater_page(){ ?>
 										action: 'alm_save_repeater',
 										value: value, 
 										repeater: repeater,
+										alias: alias,
 										nonce: alm_admin_localize.alm_admin_nonce,
 									},
 									success: function(e) {								
 										setTimeout(function(){
-										  responseText.html('<?php _e('Custom repeater value saved.', ALM_NAME) ?>').removeClass('loading').addClass('saved');								  
+										  responseText.html('<?php _e('Template saved successfully', ALM_NAME) ?>').removeClass('loading').addClass('saved');								  
 											setTimeout(function() {
 												responseText.html('&nbsp;').removeClass('saved');
 											}, 3000);
@@ -296,7 +361,7 @@ function alm_repeater_page(){ ?>
 										btn.removeClass('changed');
 									},
 									error: function(xhr, status, error) {
-										responseText.html('<?php _e('Something went wrong and the data could not be saved.', ALM_NAME) ?>').removeClass('loading').removeClass('saved');
+										responseText.html('<?php _e('Something went wrong and the data could not be saved', ALM_NAME) ?>').removeClass('loading').removeClass('saved');
 										btn.removeClass('changed');
 									}
 								});
@@ -304,26 +369,20 @@ function alm_repeater_page(){ ?>
 						}
 						$('input.save-repeater').each(function(){
 							$(this).click(function() {
-								var btn = $(this);
+								var btn = $(this),
+								    editorId = btn.data('editor-id');
 								btn.addClass('changed');
-								_alm_admin.saveRepeater(btn);
+								_alm_admin.saveRepeater(btn, editorId);
 							});
 						});		
 					});		
 				</script>
-		   </section>
+		   </div>
 		   <!-- End Repeaters -->		   
 	   </div>
-	   <aside class="alm-sidebar">
+	   <div class="alm-sidebar">
 	   		<div class="cta">
 				<h3><?php _e('Templating Help', ALM_NAME); ?></h3>
-				<?php
-					global $wpdb;
-					
-					//$table_name = $wpdb->prefix . "alm";	
-					//$value = $wpdb->get_var("SELECT repeaterDefault FROM $table_name WHERE id = 1");
-				
-				?>
 				<div class="item">
 					<p><strong><?php _e('What is a repeater template?', ALM_NAME); ?></strong></p>
 					<p><?php _e('A repeater template is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>.</p>', ALM_NAME); ?></p>
@@ -340,7 +399,7 @@ function alm_repeater_page(){ ?>
 				</div>			
 		   	</div>
 		   	<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/writeable.php'); ?>
-	   </aside>	
+	   </div>	
 	</div>
 </div>
 
@@ -364,6 +423,7 @@ function alm_save_repeater(){
 	//Write to repeater file
 	$c = Trim(stripslashes($_POST["value"])); // Repeater Value
 	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
+	$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
 	if($n === 'default')
 		$f = ALM_PATH. '/core/repeater/'.$n .'.php'; // File
 	else
@@ -371,8 +431,7 @@ function alm_save_repeater(){
 	$o = fopen($f, 'w+'); //Open file
 	$w = fwrite($o, $c); //Save the file
 	$r = fread($o, 100000); //Read it
-	fclose($o); //now close it
-	
+	fclose($o); //now close it	
 	
 	//Save to database
 	global $wpdb;
@@ -381,7 +440,7 @@ function alm_save_repeater(){
 	   $data_update = array('repeaterDefault' => "$c", 'pluginVersion' => ALM_VERSION);
 	   $data_where = array('name' => "default");
    }else{      
-	   $data_update = array('repeaterDefault' => "$c", 'pluginVersion' => ALM_REPEATER_VERSION);
+	   $data_update = array('repeaterDefault' => "$c", 'alias' => "$a", 'pluginVersion' => ALM_REPEATER_VERSION);
       $data_where = array('name' => $n);
    }
 	$wpdb->update($table_name , $data_update, $data_where);
@@ -406,18 +465,18 @@ function alm_shortcode_builder_page(){ ?>
 <div class="admin ajax-load-more" id="alm-builder">	
 	<div class="wrap">
 		<div class="header-wrap">
-			<h2><?php _e('Ajax load More: Shortcode Builder', ALM_NAME); ?></h2>
+			<h2><?php _e('Ajax Load More: Shortcode Builder', ALM_NAME); ?></h2>
 			<p><?php _e('Create your own Ajax Load More <a href="http://en.support.wordpress.com/shortcodes/" target="_blank">shortcode</a> by adjusting the values below', ALM_NAME); ?></p>  
 		</div>
 		<div class="alm-main">
-		   <section class="group">
-			   <?php include( plugin_dir_path( __FILE__ ) . 'includes/shortcode-builder.php');	?>
-			   <div class="row">
+		   <div class="group">
+			   <?php include( plugin_dir_path( __FILE__ ) . 'shortcode-builder/shortcode-builder.php');	?>
+			   <div class="row no-brd">
 					<p class="back2top"><a href="#wpcontent"><i class="fa fa-chevron-up"></i> <?php _e('Back to Top', ALM_NAME); ?></a></p>					
 			   </div>
-		   </section>
+		   </div>
 	   </div>
-	   <aside class="alm-sidebar">
+	   <div class="alm-sidebar">
 		   	<div class="cta">
 					<h3><?php _e('Shortcode Output', ALM_NAME); ?></h3>
 					<p><?php _e('Copy and paste the following shortcode into the content editor or widget area of your theme.', ALM_NAME); ?></p>
@@ -429,9 +488,9 @@ function alm_shortcode_builder_page(){ ?>
 		   	<div class="cta">
 					<h3><?php _e('Did you know?', ALM_NAME); ?></h3>
 					<img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/shortcode-editor.jpg"><br/>
-					<?php _e('<p class="addon-intro">You can generate shortcodes while editing pages!</p><p>Look for the Ajax Load More [+] icon in the content editor toolbar and the <a href="?page=ajax-load-more-shortcode-builder">shortcode builder</a> will pop open.', ALM_NAME); ?></p>
+					<?php _e('<p class="addon-intro">You can generate shortcodes while editing pages!</p><p>Click the Ajax Load More icon in the content editor toolbar and the <a href="?page=ajax-load-more-shortcode-builder">shortcode builder</a> will open in an overlay window.', ALM_NAME); ?></p>
 		   	</div>
-	   </aside>
+	   </div>
 	</div>
 </div>
 <?php
@@ -486,11 +545,11 @@ function alm_example_page(){ ?>
 <div class="admin ajax-load-more" id="alm-examples">	
 	<div class="wrap">
 		<div class="header-wrap">
-   			<h2><?php _e('Ajax load More: Examples', ALM_NAME); ?></h2>
+   			<h2><?php _e('Ajax Load More: Examples', ALM_NAME); ?></h2>
    			<p><?php _e('A collection of everyday shortcode usages and implementation examples', ALM_NAME); ?></p>  
 		</div>
 		<div class="alm-main forceColors">
-		   <section class="group">
+		   <div class="group">
 			   <div class="row gist">
 			      <h3 class="heading"><?php _e('Author.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
@@ -529,15 +588,15 @@ function alm_example_page(){ ?>
 			   <div class="row">
 					<p class="back2top"><a href="#wpcontent"><i class="fa fa-chevron-up"></i> <?php _e('Back to Top', ALM_NAME); ?></a></p>					
 			   </div>
-		   </section>
+		   </div>
 	   </div>	   
-	   <aside class="alm-sidebar">
+	   <div class="alm-sidebar">
 	   		<div class="cta">
 					<h3><?php _e('Request Examples', ALM_NAME); ?></h3>
 					<p><?php _e('If you\'re having issue\'s with functionality, please submit example requests through the <a href="https://github.com/dcooney/wordpress-ajax-load-more" target="_blank">GitHub repository</a>. ', ALM_NAME); ?></p>
 		   	</div>
 			<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/about.php');	?>
-	   </aside>
+	   </div>
 	   	   
 	   	
 	</div>
@@ -558,22 +617,21 @@ function alm_add_ons_page(){ ?>
 <div class="admin ajax-load-more" id="alm-add-ons">	
 	<div class="wrap">
 		<div class="header-wrap">
-	   		<h2><?php _e('Ajax load More: Add-ons', ALM_NAME); ?></h2>
+	   		<h2><?php _e('Ajax Load More: Add-ons', ALM_NAME); ?></h2>
 	   		<p><?php _e('The following Add-ons are available to increase the functionality of Ajax Load More.', ALM_NAME); ?></p>  
 		</div>
-		<div class="alm-main forceColors">
+		<div class="alm-main">
 		   <!-- Custom Repeater -->
-		   <section class="group">
-			   <div class="row">
+		   <div class="group">
+			   <div class="row no-brd">
 			      <h3 class="add-on-title"><?php _e('Custom Repeaters', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
                   <div class="section-title">
                      <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/repeater-add-ons.jpg">                         
                   </div>
                   <div class="wrap">
-                     <p class="addon-intro"><?php _e('Unlock additional repeater templates and keep your site looking and feeling fresh!', ALM_NAME); ?></p>
-                     <p><?php _e('The Custom Repeaters add-on will add <strong>five</strong> additional <a href="?page=ajax-load-more-repeaters">repeaters</a> and allow you to select unique repeaters for different content types throughout your theme.</p>                   
-                     <p>It\'s easy, seriously! Simply build each <a href="?page=ajax-load-more-repeaters">repeater</a> just the way you want them, then select a template from the list of available templates while building your <a href="?page=ajax-load-more-shortcode-builder">shortcode</a>.</p><p><strong>Read/Write Access is required!</strong></p>', ALM_NAME); ?>                     
+                     <p class="addon-intro"><?php _e('Unlock additional repeater templates and keep your WordPress theme looking and feeling fresh.', ALM_NAME); ?></p>
+                     <p><?php _e('The Custom Repeaters add-on will add <strong>five</strong> additional <a href="?page=ajax-load-more-repeaters">repeaters</a> and allow you to select unique repeaters for different content types throughout your theme.</p>', ALM_NAME); ?>                     
                   </div>           
                </div>
 			   </div>			   
@@ -584,17 +642,21 @@ function alm_add_ons_page(){ ?>
                   echo '<a class="btn" href="http://connekthq.com/plugins/ajax-load-more/custom-repeaters/" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
                }
             ?> 		   
-		   </section>
+		   </div>
 		   <!-- End Custom Repeater -->
 	   </div>	   
 	   
-	   <aside class="alm-sidebar">
+	   <div class="alm-sidebar">
+	   	<div class="cta">
+			<h3><?php _e('About Add-ons', ALM_NAME); ?></h3>
+			<p><?php _e('Add-ons are installed as a separate plugin and will receive plug-in update notifications. ', ALM_NAME); ?></p>
+	   	</div>
 	   	<div class="cta">
 			<h3><?php _e('About Add-ons', ALM_NAME); ?></h3>
 			<p><?php _e('Add-ons are installed as a separate plugin and will receive plug-in update notifications. ', ALM_NAME); ?></p>
 	   	</div>
 			<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/writeable.php'); ?>
-	   </aside>	   
+	   </div>	   
 	   	
 	</div>
 </div>
@@ -622,20 +684,15 @@ function alm_admin_init(){
 		'alm_general_settings_callback', 
 		'ajax-load-more' 
 	);
-	add_settings_field( 
-		'_alm_disable_css', 
-		__('Disable CSS', ALM_NAME ), 
-		'alm_disable_css_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);
-	add_settings_field( 
+	/*
+		add_settings_field( 
 		'_alm_html5', 
 		__('HTML5 Elements', ALM_NAME ), 
 		'alm_html5_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
-	);	
+	);
+	*/	
 	add_settings_field(
 	    '_alm_container_type',
 	    __('Container Type', ALM_NAME ),
@@ -645,8 +702,15 @@ function alm_admin_init(){
 	);
 	add_settings_field( 
 		'_alm_classname', 
-		__('Container Class', ALM_NAME ), 
+		__('Container Classes', ALM_NAME ), 
 		'alm_class_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);
+	add_settings_field( 
+		'_alm_disable_css', 
+		__('Disable CSS', ALM_NAME ), 
+		'alm_disable_css_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
 	);
@@ -656,7 +720,7 @@ function alm_admin_init(){
 		'alm_btn_color_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
-	);
+	);	
 }
 
 
@@ -669,7 +733,7 @@ function alm_admin_init(){
 */
 
 function alm_general_settings_callback() {
-    echo '<p>' . __('Customize your version of Ajax Load More by updating the fields below.</p><p class="small">All changes will be applied globally accross your theme.', ALM_NAME) . '</p>';
+    echo '<p>' . __('Customize your version of Ajax Load More by updating the fields below.</p><p class="small">All changes will be applied globally throughout your theme.', ALM_NAME) . '</p>';
 }
 
 
@@ -698,8 +762,10 @@ function alm_disable_css_callback(){
 	   $options['_alm_disable_css'] = '0';
 	
 	echo '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />
-	<label><input type="checkbox" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' /> I want to use my own CSS styles</label>';	
-	echo '<p class="desc"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">View Ajax Load More CSS</a></p>';
+	<label><input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' /> '.__('I want to use my own CSS styles', ALM_NAME).'</label>';	
+	echo '<p class="desc"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', ALM_NAME).'</a></p>';
+	?>
+	<?php
 }
 
 
@@ -716,7 +782,7 @@ function alm_html5_callback(){
 	   $options['_alm_html5'] = '1';
 	
 	echo '<input type="hidden" name="alm_settings[_alm_html5]" value="0" />
-	<label><input type="checkbox" name="alm_settings[_alm_html5]" value="1"'. (($options['_alm_html5']) ? ' checked="checked"' : '') .' /> Enable HTML5 elements within Ajax Load More\'s output.</label>';	
+	<label><input type="checkbox" name="alm_settings[_alm_html5]" value="1"'. (($options['_alm_html5']) ? ' checked="checked"' : '') .' /> '.__('Enable HTML5 elements within Ajax Load More\'s output', ALM_NAME).'</label>';	
 }
 
 
@@ -730,7 +796,7 @@ function alm_html5_callback(){
 function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 		
-	echo '<label for="alm_settings[_alm_classname]">Add classes to Ajax Load More container.</label><br/><input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" /> ';	
+	echo '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container', ALM_NAME).'</label><br/><input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';	
 }
 
 
@@ -749,10 +815,10 @@ function alm_container_type_callback() {
 	   $options['_alm_container_type'] = '1';
      
     $html = '<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1"' . checked( 1, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span>&lt;!-- Ajax Posts Here --&gt;</span> &lt;/ul&gt;</label><br/>';
+    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span>&lt;!-- '.__('Ajax Posts Here', ALM_NAME).' --&gt;</span> &lt;/ul&gt;</label><br/>';
      
     $html .= '<input type="radio" id="_alm_container_type_two" name="alm_settings[_alm_container_type]" value="2"' . checked( 2, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span>&lt;!-- Ajax Posts Here --&gt;</span> &lt;/div&gt;</label>';
+    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span>&lt;!-- '.__('Ajax Posts Here', ALM_NAME).' --&gt;</span> &lt;/div&gt;</label>';
      
     echo $html;
  
@@ -799,18 +865,52 @@ function alm_btn_color_callback() {
 	if($color == 'grey')
 		$selected5 = 'selected="selected"';
 		
-     
-    $html = '<select id="name="alm_settings[_alm_btn_color]" name="alm_settings[_alm_btn_color]">';
+	$selected6 = '';   
+	if($color == 'white')
+		$selected5 = 'selected="selected"';
+		
+    $html =  '<label for="alm_settings_btn_color">'.__('Choose your load more button color', ALM_NAME).'</label><br/>';
+    $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
     $html .= '<option value="default" ' . $selected0 .'>Default (Orange)</option>';
     $html .= '<option value="blue" ' . $selected1 .'>Blue</option>';
     $html .= '<option value="green" ' . $selected2 .'>Green</option>';
     $html .= '<option value="red" ' . $selected3 .'>Red</option>';
     $html .= '<option value="purple" ' . $selected4 .'>Purple</option>';
     $html .= '<option value="grey" ' . $selected5 .'>Grey</option>';
+    $html .= '<option value="white" ' . $selected6 .'>White</option>';
     $html .= '</select>';
      
+    $html .= '<div class="ajax-load-more-wrap '.$color.'"><span>'.__('Preview', ALM_NAME) .'</span><button class="alm-load-more-btn loading" disabled="disabled">Show More</button></div>';
     echo $html;
- 
+    ?>
+    <script>
+    	//Button preview
+    	var colorArray = "default grey purple green red blue white";
+    	jQuery("select#alm_settings_btn_color").change(function() {
+    		var color = jQuery(this).val();
+			jQuery('.ajax-load-more-wrap').removeClass(colorArray);
+			jQuery('.ajax-load-more-wrap').addClass(color);
+		});
+		jQuery("select#alm_settings_btn_color").click(function(e){
+			e.preventDefault();
+		});
+		
+		// Check if Disable CSS  === true
+		if(jQuery('input#alm_disable_css_input').is(":checked")){	
+    		//alert("true"); 
+	      jQuery('input#alm_disable_css_input').parent().parent().parent('tr').next('tr').hide();
+    	}
+    	jQuery('input#alm_disable_css_input').change(function() {
+    		var el = jQuery(this);
+	      if(el.is(":checked")) {
+	      	el.parent().parent().parent('tr').next('tr').hide();
+	      }else{		      
+	      	el.parent().parent().parent('tr').next('tr').show();
+	      }
+	   });
+	   
+    </script>
+    <?php 
 }
 
 
