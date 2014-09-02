@@ -54,34 +54,78 @@ Ajax Load More accepts a number of paramaters to pass to the WordPress query. Th
 
 ##Changelog
 
-July 20, 2014
-* Updated to stable version 2.1.1
+= 2.2.0 =
+* Adding Post Format query.
+* Adding syntax highlighting for Repeater Templates with CodeMirror (http://codemirror.net/).
+* Adding custom alias integration for Repeater Templates (Only for the custom repeater add-on).
+* Adding button preview on settings page.
+* Adding 'White' button style
+* Updated .pot language file
 
-June 26, 2014
-* Updated to stable version 2.0.14
+= 2.1.3 =
+* Fixed issue causing the Ajax Load More menu to not show on some admin screen do to location conflict with another plugin.
+* Adding column 'alias' to wp_alm table to allow for repeater alias (Only for the custom repeater add-on). 
+* Remove legacy column 'test' from wp_alm table.  
+* Updating styles in admin.css. 
 
-June 18, 2014
-* Updated to stable version 2.0.12
+= 2.1.2 =
+* Adding ability to have multiple instances of script on a single page
+* Adding global class name('.ajax-load-more-wrap') to Ajax Load More container. I plan to remove the #ajax-load-more naming convention in upcoming releases, but need time for users to update their code.
+* Small styling enhancements to admin panel.
+* Updated .pot language file.
 
-June 17, 2014
-* Updated to stable version 2.0.10
+= 2.1.1 =
+* Adding Order and Orderby query parameters, you can now set these values within the Shortcode Builder
+* Updating core javascript code
+* Fixed bug with taxonomy query selectors
 
-June 11, 2014
-* Stable version now available on wordpress.org - https://wordpress.org/plugins/ajax-load-more/
+= 2.1.0 =
+* Adding custom taxonomy query - select from a list of custom taxonomies then select terms and operator
+* Fixed path to repeater file in admin functions
 
-June 9, 2014
-* Replaced v1.0 with v2.0.0
+= 2.0.15 =
+* Fixed issue with loading of admin javascript and css on pages other than Ajax Load More
 
-May 8, 2014
-* Replaced get_posts with wp_query.
+= 2.0.14 =
+* Fixed issue with author query
 
-May 7, 2014
-* Updated shortcode to add offset value (functions.php). 
-* Removed 'paged' in post query(ajax-load-more.php), replaced with 'offset'.
-* Updated various functions in ajax-load-more.js to handle the offset parameter.
-* Added support for multiple post types e.g. data-post-type="post, news, portfolio".
+= 2.0.13 =
+* Fixed issue where loading button was not turning off when posts remaining were zero 
 
-April 22, 2014
-* Added max page param
-* Added search param
-* Added transition type ('slide' / 'fade')
+= 2.0.12 =
+* Adding add_filter('widget_text', 'do_shortcode'); 
+
+= 2.0.11 =
+* Removed 2 filters for widget_text which were casuing issues in sidebars
+
+= 2.0.10 =
+* Updating default repeater template to include the_permalink()
+
+= 2.0.9 =
+* Fixing issue with duplicate column names in database.
+
+= 2.0.8 =
+* removed upgrader_process_complete as it was unreliable. Replaced with admin_init to check whether plugin has been updated.
+
+= 2.0.7 =
+* Fixed jQuery conflict javascript error
+
+= 2.0.6 =
+* Fixing issue with scrolling of posts
+
+= 2.0.5 =
+* Updating db table structure
+* Adding upgrader_process_complete checker
+
+= 2.0.4 =
+* Adding plugin version to wpdb table.
+* Removed legacy repeater code.
+
+= 2.0.3 =
+* Fixed issue with WP auto updates overriding the default repeater. Please deactivate and then activate your plugin.
+
+= 2.0.2 =
+* Fixed issue with tinymce conflict
+
+= 2.0.1 =
+* Ajax Load More
