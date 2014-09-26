@@ -10,12 +10,12 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
 */
- 
+
 (function($) {
-	"use strict";		
+	"use strict";
 	$.ajaxloadmore = function(el) {
 		//Set variables
-		var AjaxLoadMore = {}, 
+		var AjaxLoadMore = {},
 			page = 0,
 			speed = 300,
 			proceed = false,
@@ -24,7 +24,7 @@
 			$finished = false,
 			$window = $(window),
 			$button_label = '',
-			$data, 
+			$data,
 			$el = el,
 			$content = $('.alm-listing', $el),
 			$scroll = true,
@@ -35,28 +35,28 @@
 			$offset = $content.data('offset'),
 			$transition = $content.data('transition'),
 			$posts_per_page = $content.data('posts-per-page');
-		
+
 		$(window).scrollTop(0); //Prevent loading of unnessasry posts - move user to top of page
-		
+
 		// Check for pause on init
 		// Pause could be used to hold the loading of posts for a button click.
 		if ($pause === undefined) {
 			$pause = false;
 		}
-		
+
 		// Select the repeater
 		if ($repeater === undefined) {
 			$repeater = 'default';
 		}
-		
-		// Max number of pages to load while scrolling 
+
+		// Max number of pages to load while scrolling
 		if ($max_pages === undefined) {
 			$max_pages = 5;
 		}
 		if ($max_pages === 'none') {
 			$max_pages = 100000;
 		}
-		// select the transition 
+		// select the transition
 		if ($transition === undefined) {
 			$transition = 'slide';
 		} else if ($transition === "fade") {
@@ -84,18 +84,18 @@
 		} else {
 			$scroll = true;
 		}
-		
+
 		// Append load more button tp .ajax-load-more
 		$el.append('<div class="'+$prefix+'btn-wrap"><button id="load-more" class="'+$prefix+'load-more-btn more">' + $button_label + '</button></div>');
 		var $button = $('.alm-load-more-btn', $el);
-		
+
 		//Parse Post Type for multiple entries
 		var $post_type = $content.data('post-type');
 		$post_type = $post_type.split(",");
-		
-		
+
+
 		/* AjaxLoadMore.loadPosts()
-		* 
+		*
 		*  The function to get posts via Ajax
 		*  @since 2.0.0
 		*/
@@ -119,6 +119,8 @@
 					tag: $content.data('tag'),
 					order: $content.data('order'),
 					orderby: $content.data('orderby'),
+					meta_key: alm.content.data('meta-key'),
+					meta_compare: alm.content.data('meta-compare'),
 					search: $content.data('search'),
 					exclude: $content.data('exclude'),
 					numPosts: $content.data('posts-per-page'),
@@ -175,13 +177,13 @@
 				}
 			});
 		};
-		
-		
+
+
 		// Button click event
 		$button.click(function() {
 			if($pause === true){
 				$pause = false;
-				AjaxLoadMore.loadPosts();		
+				AjaxLoadMore.loadPosts();
 			}
 			if (!$loading && !$finished && !$(this).hasClass('done')) {
 				$loading = true;
@@ -189,10 +191,10 @@
 				AjaxLoadMore.loadPosts();
 			}
 		});
-		
-		
+
+
 		/* AjaxLoadMore.isVisible()
-		* 
+		*
 		*  Check to see if element is visible before loading posts
 		*  @since 2.1.2
 		*/
@@ -203,16 +205,16 @@
    		}
    		return visible;
 		}
-		
-		
+
+
 		/* AjaxLoadMore.isVisible()
-		* 
+		*
 		*  Check to see if element is visible before loading posts
 		*  @since 2.1.2
 		*/
 		if ($scroll) {
 			$window.scroll(function() {
-			   if(AjaxLoadMore.isVisible()){	
+			   if(AjaxLoadMore.isVisible()){
    				var content_offset = $button.offset();
    				if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < ($max_pages - 1) && proceed) {
    					$loading = true;
@@ -222,32 +224,32 @@
 				}
 			});
 		}
-		
-		
+
+
 		//Check for pause variable
 		if($pause === true){
-			$button.text($button_label);	
-		   $loading = false;		
+			$button.text($button_label);
+		   $loading = false;
 		}else{
 			AjaxLoadMore.loadPosts();
-		}		
-		
-		
+		}
+
+
 		//flag to prevent unnecessary loading of post on init. Hold for 2 seconds.
 		setTimeout(function() {
 			proceed = true;
-		}, 1000);   
-		
-		
+		}, 1000);
+
+
 		//Custom easing function
 		$.easing.alm_easeInOutQuad = function(x, t, b, c, d) {
 			if ((t /= d / 2) < 1) return c / 2 * t * t + b;
 			return -c / 2 * ((--t) * (t - 2) - 1) + b;
-		};	
+		};
 	};
-	
+
 	/* ajaxloadmore()
-	* 
+	*
 	*  Initiate all instances of Ajax load More
 	*  @since 2.1.2
    */
@@ -256,12 +258,12 @@
 			new $.ajaxloadmore($(this));
 		});
 	}
-	
-   /* 
+
+   /*
 	*  Init Ajax load More if div is present on screen
 	*  @since 2.1.2
-   */ 
-	if($(".ajax-load-more-wrap").length)   
+   */
+	if($(".ajax-load-more-wrap").length)
 	   $(".ajax-load-more-wrap").ajaxloadmore();
-	
+
 })(jQuery);

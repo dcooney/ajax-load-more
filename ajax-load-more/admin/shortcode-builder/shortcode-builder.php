@@ -2,9 +2,9 @@
 
 
 <?php
-	
+
  	// List available repeaters
-	echo '<div class="row repeater" id="alm-repeaters">';   		
+	echo '<div class="row repeater" id="alm-repeaters">';
 	echo '<h3 class="heading">'.__('Repeater', ALM_NAME). '</h3>';
 	echo '<div class="expand-wrap">';
 	echo '<div class="section-title">';
@@ -12,27 +12,27 @@
 	echo '</div>';
 	echo '<div class="wrap"><div class="inner">';
 	echo '<select name="repeater-select" id="repeater-select">';
-	echo '<option name="default" id="chk-default" value="default" selected="selected">Default</option>';		
+	echo '<option name="default" id="chk-default" value="default" selected="selected">Default</option>';
 	if (has_action('alm_get_custom_repeaters')) {
 	  do_action('alm_get_custom_repeaters');
 	}
 	echo '</select>';
-	
+
 	echo '</div></div>';
 	if (!has_action('alm_get_custom_repeaters')) {
 	  include( ALM_PATH.'admin/includes/cta/extend.php');
 	}
 	echo '</div>';
 	echo '</div>';
- 	
- 
+
+
    // List registered post_types
    $pt_args = array(
       'public'   => true
    );
 	$types = get_post_types($pt_args);
 	if($types){
-		echo '<div class="row checkboxes post_types" id="alm-post-types">';   		
+		echo '<div class="row checkboxes post_types" id="alm-post-types">';
 		echo '<h3 class="heading">'.__('Post Types', ALM_NAME). '</h3>';
 		echo '<div class="expand-wrap">';
 		echo '<div class="section-title">';
@@ -50,12 +50,12 @@
 	    echo '</div>';
 	    echo '</div>';
    }
-   
+
    // List Post Formats
    if ( current_theme_supports( 'post-formats' ) ) {
        $post_formats = get_theme_support( 'post-formats' );
        if($post_formats){
-   		echo '<div class="row checkboxes post_format" id="alm-post-format">';   		
+   		echo '<div class="row checkboxes post_format" id="alm-post-format">';
    		echo '<h3 class="heading">'.__('Post Format', ALM_NAME). '</h3>';
    		echo '<div class="expand-wrap">';
    		echo '<div class="section-title">';
@@ -63,18 +63,18 @@
    		echo '</div>';
    		echo '<div class="wrap"><div class="inner"><select name="post-format-select" id="post-format-select">';
    		echo '<option value="" selected="selected">-- ' . __('Select Post Format', ALM_NAME) . ' --</option>';
-   		echo '<option name="chk-standard" id="chk-standard" value="chk-standard">' . __('Standard', ALM_NAME) . '</option>';		
+   		echo '<option name="chk-standard" id="chk-standard" value="chk-standard">' . __('Standard', ALM_NAME) . '</option>';
    	   foreach( $post_formats[0] as $post_format ){
             echo '<option name="chk-'.$post_format.'" id="chk-'.$post_format.'" value="'.$post_format.'">'.ucwords($post_format).'</option>';
-   	   }	   
+   	   }
    		echo '</select></div></div>';
    		echo '</div>';
    		echo '</div>';
       }
-       
+
    }
-   
-   // List Categories	    
+
+   // List Categories
 	$cats = get_categories();
 	if($cats){
 		echo '<div class="row checkboxes categories" id="alm-categories">';
@@ -92,8 +92,8 @@
 	    echo '</div>';
 	    echo '</div>';
     }
-    
-    // List Categories	    
+
+    // List Categories
 	$tags = get_tags();
 	if($tags){
 		echo '<div class="row checkboxes tags" id="alm-tags">';
@@ -111,25 +111,25 @@
 	    echo '</div>';
 	    echo '</div>';
     }
-    
-    
+
+
 	// List Taxonomies
 	$tax_args = array(
 		'public'   => true,
-		'_builtin' => false	
-	); 
+		'_builtin' => false
+	);
 	$tax_output = 'objects'; // or objects
-	$taxonomies = get_taxonomies( $tax_args, $tax_output ); 
+	$taxonomies = get_taxonomies( $tax_args, $tax_output );
 	if ( $taxonomies ) {
-		echo '<div class="row taxonomy" id="alm-taxonomy">';   		
+		echo '<div class="row taxonomy" id="alm-taxonomy">';
 		echo '<h3 class="heading">'.__('Taxonomy', ALM_NAME). '</h3>';
 		echo '<div class="expand-wrap">';
 		echo '<div class="section-title">';
 		echo '<p>'.__('Select your custom taxonomy then select the terms and operator.', ALM_NAME). '</p>';
 		echo '</div>';
-		
+
 		echo '<div class="wrap">';
-		
+
 		echo '<div class="inner">';
 		echo '<select name="taxonomy-select" id="taxonomy-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', ALM_NAME) . ' --</option>';
@@ -138,29 +138,29 @@
 	    }
 	    echo '</select>';
 	    echo '</div>';
-	    
+
 	    echo '<div id="taxonomy-extended">';
 	    echo '<div class="inner border-top" id="tax-terms">';
 	    echo '<label class="full">'. __('Taxonomy Terms:', ALM_NAME) .'</label>';
 	    echo '<div id="tax-terms-container" class="checkboxes"></div>';
 	    echo '</div>';
-	    
+
 	    echo '<div class="inner border-top" id="tax-operator-select">';
 	    echo '<label class="full">'. __('Taxonomy Operator:', ALM_NAME) .'</label>';
 	    echo '<ul class="radio">';
 	    echo '<li><input name="tax-operator" id="tax-in-radio" value="IN" type="radio" checked="checked"><label for="tax-in-radio">IN (default)</li>';
 	    echo '<li><input name="tax-operator" id="tax-not-in-radio" value="NOT IN" type="radio"><label for="tax-not-in-radio">NOT IN</li>';
 	    echo '</ul>';
-	    echo '</div>';	    
 	    echo '</div>';
-	    
+	    echo '</div>';
+
 	    echo '</div>';
 	    echo '</div>';
 	    echo '</div>';
 	}
-    
-    
-    // List Authors	   
+
+
+    // List Authors
 	$authors = get_users();
 	if($authors){
 		echo '<div class="row checkboxes authors" id="alm-tags">';
@@ -179,7 +179,7 @@
 	    echo '</div>';
     }
     ?>
-    
+
    <!-- Search term -->
    <div class="row input search-term" id="alm-search">
       <h3 class="heading"><?php _e('Search Term', ALM_NAME); ?></h3>
@@ -194,7 +194,7 @@
          </div>
       </div>
    </div>
-    
+
    <!-- Ordering -->
    <div class="row ordering" id="alm-order">
       <h3 class="heading"><?php _e('Ordering', ALM_NAME); ?></h3>
@@ -226,7 +226,22 @@
          </div>
       </div>
    </div>
-   
+
+   <!-- Meta Key -->
+    <div class="row input exclude" id="alm-meta-key">
+       <h3 class="heading"><?php _e('Meta Key', ALM_NAME); ?></h3>
+       <div class="expand-wrap">
+          <div class="section-title">
+    		 	<p><?php _e('An optional meta_key argument for querying posts.', ALM_NAME); ?></p>
+    		 </div>
+          <div class="wrap">
+             <div class="inner">
+                <input name="meta-key" type="text" id="meta-key" value="" placeholder="">
+             </div>
+          </div>
+       </div>
+    </div>
+
    <!-- Exclude posts -->
    <div class="row input exclude" id="alm-exclude-posts">
       <h3 class="heading"><?php _e('Exclude', ALM_NAME); ?></h3>
@@ -241,7 +256,7 @@
          </div>
       </div>
    </div>
-   
+
    <!-- Offset -->
    <div class="row input offset" id="alm-offset">
       <h3 class="heading"><?php _e('Offset', ALM_NAME); ?></h3>
@@ -250,7 +265,7 @@
    		 	<p><?php _e('Offset the initial WordPress query by <em>\'n\'</em> number of posts', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">               
+            <div class="inner">
                <select name="offset-select" id="offset-select">
                   <script>
                      var length = 21,
@@ -265,7 +280,7 @@
          </div>
       </div>
    </div>
-   
+
    <!-- Display posts -->
    <div class="row input posts_per_page" id="alm-post-page">
       <h3 class="heading"><?php _e('Posts Per Page', ALM_NAME); ?></h3>
@@ -283,8 +298,8 @@
                         if(i == 5){
                            value += '<option value="'+i+'" selected="selected">'+i+'</option>';
                         }else{
-                           value += '<option value="'+i+'">'+i+'</option>';   
-                        }                        
+                           value += '<option value="'+i+'">'+i+'</option>';
+                        }
                      }
                      jQuery('#display_posts-select').append(value);
                   </script>
@@ -292,9 +307,9 @@
             </div>
          </div>
       </div>
-   </div>      
-   
-   
+   </div>
+
+
    <!-- Allow Scrolling Load -->
    <div class="row checkbox scroll_load" id="alm-scroll">
       <h3 class="heading"><?php _e('Load Posts on Scroll', ALM_NAME); ?></h3>
@@ -303,7 +318,7 @@
    		 	<p><?php _e('Load more posts as the user scrolls the page.', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">	               
+            <div class="inner">
                <ul>
                <li>
                <input type="radio" name="scroll" value="t" id="scroll_t" checked>
@@ -318,8 +333,8 @@
          </div>
       </div>
    </div>
-   
-   
+
+
    <!-- Max Pages -->
    <div class="row input max_pages" id="alm-max-pages">
       <h3 class="heading"><?php _e('Max Pages', ALM_NAME); ?></h3>
@@ -337,8 +352,8 @@
                         if(i == 5){
                            value += '<option value="'+i+'" selected="selected">'+i+'</option>';
                         }else{
-                           value += '<option value="'+i+'">'+i+'</option>';   
-                        }                        
+                           value += '<option value="'+i+'">'+i+'</option>';
+                        }
                      }
                      value += '<option value="none"><?php _e('Unlimited', ALM_NAME); ?></option>';
                      jQuery('#max-select').append(value);
@@ -348,8 +363,8 @@
          </div>
       </div>
    </div>
-   
-   
+
+
    <!-- Pause Post Loading -->
    <div class="row checkbox pause_load" id="alm-pause">
       <h3 class="heading"><?php _e('Pause Loading of Posts', ALM_NAME); ?></h3>
@@ -358,7 +373,7 @@
    		 	<p><?php _e('Do not load posts until user clicks <em>load</em> button.', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">	               
+            <div class="inner">
                <ul>
                    <li>
                     <input type="radio" name="pause" value="t" id="pause_t">
@@ -373,8 +388,8 @@
          </div>
       </div>
    </div>
-   
-   
+
+
    <!-- Transition -->
    <div class="row input transition" id="alm-transition">
       <h3 class="heading"><?php _e('Transition', ALM_NAME); ?></h3>
@@ -383,7 +398,7 @@
    		 	<p><?php _e('Select a loading transition.', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">	               
+            <div class="inner">
                <ul>
                    <li>
                     <input type="radio" name="transition" value="slide" id="transition-slide" checked>
@@ -397,9 +412,9 @@
             </div>
          </div>
       </div>
-   </div>  
-   
-   
+   </div>
+
+
    <!-- Button Text -->
    <div class="row input btn-label" id="alm-btn-label">
       <h3 class="heading"><?php _e('Button Label', ALM_NAME); ?></h3>
@@ -414,7 +429,6 @@
          </div>
       </div>
    </div>
-   <div class="clear"></div>  
-   
-   
-   
+   <div class="clear"></div>
+
+

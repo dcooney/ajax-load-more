@@ -142,8 +142,16 @@ jQuery(document).ready(function($) {
       if(order !== 'DESC') 
          output += ' order="'+order+'"'; 
       if(orderby !== 'date') 
-         output += ' orderby="'+orderby+'"'; 
+         output += ' orderby="'+orderby+'"';
          
+         
+      // ---------------------------
+      // - Meta Key      
+      // ---------------------------
+      var meta_key = $('select#meta-key').val();    
+      if(meta_key !== '') 
+         meta_key += ' meta_key="'+meta_key+'"'; 
+      
          
       // ---------------------------
       // - Exclude posts      
@@ -236,7 +244,7 @@ jQuery(document).ready(function($) {
    
    $('.post_types input[type=checkbox]#chk-post').prop('checked', true).addClass('changed'); //Select post by default
    
-   $('.repeater select, .post_types input[type=checkbox], .post_format select, .categories select, .tags select, .authors select, .offset select, .posts_per_page select, .scroll_load input[type=radio], .pause_load input[type=radio], .max_pages select, .transition input[type=radio], #taxonomy-select, #tax-operator-select input[type=radio], #post-order, #post-orderby').change(function() {
+   $('.repeater select, .post_types input[type=checkbox], .post_format select, .categories select, .tags select, .authors select, .offset select, .posts_per_page select, .scroll_load input[type=radio], .pause_load input[type=radio], .max_pages select, .transition input[type=radio], #taxonomy-select, #tax-operator-select input[type=radio], #post-order, #post-orderby, #post-meta-key').change(function() {
       $(this).addClass('changed');      
 
       // If post type is not selected, select 'post'.
