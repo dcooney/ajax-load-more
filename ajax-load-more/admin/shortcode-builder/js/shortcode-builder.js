@@ -1,9 +1,7 @@
 jQuery(document).ready(function($) {
    "use strict"; 
    
-   $(".row select, .alm-main select").select2({
-          minimumResultsForSearch: '100'
-    });    
+   $(".row select, .alm-main select").select2();    
    
    var _alm = {},
        output_div = $('#shortcode_output'),
@@ -131,14 +129,41 @@ jQuery(document).ready(function($) {
       var search = $('.search-term input').val();    
       search = $.trim(search);       
       if(search !== '') 
-         output += ' search="'+search+'"';  
+         output += ' search="'+search+'"'; 
+      
+      
+      // ---------------------------
+      // - Meta Key
+      // ---------------------------
+      var meta_key = $.trim($('input#meta-key').val()),
+          meta_value = $.trim($('input#meta-value').val()),
+          meta_compare = $('select#meta-compare').val();
+     
+      // Set meta_compare default value
+      if(meta_compare === '' || meta_compare == undefined)       
+          meta_compare = '=';
+          
+      if(meta_key !== '' && meta_key !== undefined){
+         if($('input#meta-key').hasClass('changed')){         	
+         	$('#meta-query-extended').slideDown(200, 'alm_easeInOutQuad');
+         	         	
+            output += ' meta_key="'+meta_key+'"';
+            output += ' meta_value="'+meta_value+'"';
+            
+            if(meta_compare !== '=')
+               output += ' meta_compare="'+meta_compare+'"';
+         }
+      }else{
+	      $('#meta-query-extended').slideUp(200, 'alm_easeInOutQuad');
+	      $('input#meta-key').removeClass('changed');
+      } 
          
           
       // ---------------------------
       // - Ordering      
       // ---------------------------
       var order = $('select#post-order').val(),
-          orderby = $('select#post-orderby').val();    
+         orderby = $('select#post-orderby').val();    
       if(order !== 'DESC') 
          output += ' order="'+order+'"'; 
       if(orderby !== 'date') 
@@ -234,9 +259,11 @@ jQuery(document).ready(function($) {
    *  @since 2.0.0
    */ 
    
-   $('.post_types input[type=checkbox]#chk-post').prop('checked', true).addClass('changed'); //Select post by default
+   //Select 'post' by default
+   $('.post_types input[type=checkbox]#chk-post').prop('checked', true).addClass('changed'); 
    
-   $('.repeater select, .post_types input[type=checkbox], .post_format select, .categories select, .tags select, .authors select, .offset select, .posts_per_page select, .scroll_load input[type=radio], .pause_load input[type=radio], .max_pages select, .transition input[type=radio], #taxonomy-select, #tax-operator-select input[type=radio], #post-order, #post-orderby').change(function() {
+   
+   $('.alm_element').on('change keyup', function() {
       $(this).addClass('changed');      
 
       // If post type is not selected, select 'post'.
@@ -251,10 +278,6 @@ jQuery(document).ready(function($) {
       _alm.buildShortcode();
    });
    
-   $(document).on('change', '#tax-terms-container input[type=checkbox]', function() {
-      $(this).addClass('changed');
-      _alm.buildShortcode();
-   });
    
    $('.search-term input, .exclude input, .btn-label input').keyup(function() {  
       $(this).addClass('changed'); 

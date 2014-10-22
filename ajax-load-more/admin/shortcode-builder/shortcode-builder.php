@@ -5,13 +5,13 @@
 	
  	// List available repeaters
 	echo '<div class="row repeater" id="alm-repeaters">';   		
-	echo '<h3 class="heading">'.__('Repeater', ALM_NAME). '</h3>';
+	echo '<h3 class="heading">'.__('Template', ALM_NAME). '</h3>';
 	echo '<div class="expand-wrap">';
 	echo '<div class="section-title">';
-	echo '<p>'.__('Choose your <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater</a>.', ALM_NAME). '</p>';
+	echo '<p>'.__('Select your <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater template</a>.', ALM_NAME). '</p>';
 	echo '</div>';
 	echo '<div class="wrap"><div class="inner">';
-	echo '<select name="repeater-select" id="repeater-select">';
+	echo '<select name="repeater-select" id="repeater-select" class="alm_element">';
 	echo '<option name="default" id="chk-default" value="default" selected="selected">Default</option>';		
 	if (has_action('alm_get_custom_repeaters')) {
 	  do_action('alm_get_custom_repeaters');
@@ -20,7 +20,7 @@
 	
 	echo '</div></div>';
 	if (!has_action('alm_get_custom_repeaters')) {
-	  include( ALM_PATH.'admin/includes/cta/extend.php');
+	  include( ALM_PATH . 'admin/includes/cta/extend.php');
 	}
 	echo '</div>';
 	echo '</div>';
@@ -43,7 +43,7 @@
 	     $typeobj = get_post_type_object( $type );
 	     $name = $typeobj->name;
 	     if( $name != 'revision' && $name != 'attachment' && $name != 'nav_menu_item' && $name != 'acf'){
-            echo '<li><input type="checkbox" name="chk-'.$typeobj->name.'" id="chk-'.$typeobj->name.'" data-type="'.$typeobj->name.'"><label for="chk-'.$typeobj->name.'">'.$typeobj->labels->singular_name.'</label></li>';
+            echo '<li><input class="alm_element" type="checkbox" name="chk-'.$typeobj->name.'" id="chk-'.$typeobj->name.'" data-type="'.$typeobj->name.'"><label for="chk-'.$typeobj->name.'">'.$typeobj->labels->singular_name.'</label></li>';
 			}
 	    }
 	    echo '</ul></div></div>';
@@ -61,7 +61,7 @@
    		echo '<div class="section-title">';
    		echo '<p>'.__('Select a <a href="http://codex.wordpress.org/Post_Formats" target="_blank">Post Format</a> to query.', ALM_NAME). '</p>';
    		echo '</div>';
-   		echo '<div class="wrap"><div class="inner"><select name="post-format-select" id="post-format-select">';
+   		echo '<div class="wrap"><div class="inner"><select class="alm_element" name="post-format-select" id="post-format-select">';
    		echo '<option value="" selected="selected">-- ' . __('Select Post Format', ALM_NAME) . ' --</option>';
    		echo '<option name="chk-standard" id="chk-standard" value="chk-standard">' . __('Standard', ALM_NAME) . '</option>';		
    	   foreach( $post_formats[0] as $post_format ){
@@ -83,7 +83,7 @@
 		echo '<div class="section-title">';
 		echo '<p>' . __('Select a Category to query(by slug).', ALM_NAME) . '</p>';
 		echo '</div>';
-		echo '<div class="wrap"><div class="inner"><select name="category-select" id="category-select">';
+		echo '<div class="wrap"><div class="inner"><select class="alm_element" name="category-select" id="category-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Category', ALM_NAME) . ' --</option>';
 	    foreach( $cats as $cat ){
          echo '<option name="chk-'.$cat->slug.'" id="chk-'.$cat->slug.'" value="'.$cat->slug.'">'.$cat->name.'</option>';
@@ -102,7 +102,7 @@
 		echo '<div class="section-title">';
 		echo '<p>' . __('Select a Tag to query(by slug).', ALM_NAME) . '</p>';
 		echo '</div>';
-		echo '<div class="wrap"><div class="inner"><select name="tag-select" id="tag-select">';
+		echo '<div class="wrap"><div class="inner"><select class="alm_element" name="tag-select" id="tag-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Tag', ALM_NAME) . ' --</option>';
 	    foreach( $tags as $tag ){
          echo '<option name="chk-'.$tag->slug.'" id="chk-'.$tag->slug.'" value="'.$tag->slug.'">'.$tag->name.'</option>';
@@ -131,7 +131,7 @@
 		echo '<div class="wrap">';
 		
 		echo '<div class="inner">';
-		echo '<select name="taxonomy-select" id="taxonomy-select">';
+		echo '<select class="alm_element" name="taxonomy-select" id="taxonomy-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', ALM_NAME) . ' --</option>';
 	    foreach( $taxonomies as $taxonomy ){
          echo '<option name="chk-'.$taxonomy->query_var.'" id="chk-'.$taxonomy->query_var.'" value="'.$taxonomy->query_var.'">'.$taxonomy->label.'</option>';
@@ -148,8 +148,8 @@
 	    echo '<div class="inner border-top" id="tax-operator-select">';
 	    echo '<label class="full">'. __('Taxonomy Operator:', ALM_NAME) .'</label>';
 	    echo '<ul class="radio">';
-	    echo '<li><input name="tax-operator" id="tax-in-radio" value="IN" type="radio" checked="checked"><label for="tax-in-radio">IN (default)</li>';
-	    echo '<li><input name="tax-operator" id="tax-not-in-radio" value="NOT IN" type="radio"><label for="tax-not-in-radio">NOT IN</li>';
+	    echo '<li><input class="alm_element" name="tax-operator" id="tax-in-radio" value="IN" type="radio" checked="checked"><label for="tax-in-radio">IN (default)</li>';
+	    echo '<li><input class="alm_element" name="tax-operator" id="tax-not-in-radio" value="NOT IN" type="radio"><label for="tax-not-in-radio">NOT IN</li>';
 	    echo '</ul>';
 	    echo '</div>';	    
 	    echo '</div>';
@@ -157,10 +157,55 @@
 	    echo '</div>';
 	    echo '</div>';
 	    echo '</div>';
-	}
+	}?>
+   
+   <?php // Custom Fields ?>
+   <div class="row input meta-key" id="alm-meta-key">
+      <h3 class="heading"><?php _e('Custom Fields (Meta)', ALM_NAME); ?></h3>
+      <div class="expand-wrap">
+         <div class="section-title">
+            <p><?php _e('Query by <a href="http://codex.wordpress.org/Class_Reference/WP_Meta_Query" target="_blank">custom fields</a>.  Enter your key(name) and value, then select your operator.', ALM_NAME); ?></p>
+         </div>
+         <div class="wrap">
+            <div class="inner">
+               <div class="inner">
+                  <label for="meta-key" class="full"><?php _e('Field Key (Name):', ALM_NAME); ?></label>
+                  <input class="alm_element" name="meta-key" type="text" id="meta-key" value="" placeholder="<?php _e('Enter custom field key(name)', ALM_NAME); ?>">   
+               </div>            
+            </div>
+            <div id="meta-query-extended">
+               <?php // Meta Value ?>
+               <div class="inner border-top">
+                  <label for="meta-value" class="full"><?php _e('Field Value:', ALM_NAME); ?></label>
+                  <input class="alm_element" name="meta-value" type="text" id="meta-value" value="" placeholder="<?php _e('Enter custom field value', ALM_NAME); ?>">
+               </div>    
+               <?php // Meta Compare ?>           
+               <div class="inner border-top">
+                  <label for="meta-compare" class="full"><?php _e('Field Operator:', ALM_NAME); ?></label>
+                  <select class="alm_element" id="meta-compare" name="meta-compare">
+                     <option value="=" selected="selected">= &nbsp;&nbsp; (equals)</option>
+                     <option value="!=">!= &nbsp; (does NOT equal)</option>
+                     <option value=">">> &nbsp;&nbsp; (greater than)</option>
+                     <option value=">=">>= &nbsp;(greater than or equal to)</option>
+                     <option value="<">&lt; &nbsp;&nbsp; (less than)</option>
+                     <option value="<=">&lt;= &nbsp;(less than or equal to)</option>
+                     <option value="LIKE">LIKE</option>
+                     <option value="NOT LIKE">NOT LIKE</option>
+                     <option value="IN">IN</option>
+                     <option value="NOT IN">NOT IN</option>
+                     <option value="BETWEEN">BETWEEN</option>
+                     <option value="NOT BETWEEN">NOT BETWEEN</option>
+                     <option value="EXISTS">EXISTS</option>
+                     <option value="NOT EXISTS">NOT EXISTS</option>
+                  </select>
+               </div>            
+            </div>
+         </div>         
+      </div>
+   </div>
     
     
-    // List Authors	   
+   <?php // List Authors	   
 	$authors = get_users();
 	if($authors){
 		echo '<div class="row checkboxes authors" id="alm-tags">';
@@ -169,7 +214,7 @@
 		echo '<div class="section-title">';
 		echo '<p>' . __('Select an Author to query(by ID).', ALM_NAME) . '</p>';
 		echo '</div>';
-		echo '<div class="wrap"><div class="inner"><select name="author-select" id="author-select">';
+		echo '<div class="wrap"><div class="inner"><select class="alm_element" name="author-select" id="author-select">';
 		echo '<option value="" selected="selected">-- ' . __('Select Author', ALM_NAME) . ' --</option>';
 	    foreach( $authors as $author ){
          echo '<option name="chk-'.$author->user_login.'" id="chk-'.$author->user_login.'" value="'.$author->ID.'">'.$author->display_name.'</option>';
@@ -189,7 +234,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <input name="search-term" type="text" id="search-term" value="" placeholder="<?php _e('Enter search term', ALM_NAME); ?>">
+               <input name="search-term" class="alm_element" type="text" id="search-term" value="" placeholder="<?php _e('Enter search term', ALM_NAME); ?>">
             </div>
          </div>
       </div>
@@ -205,14 +250,14 @@
          <div class="wrap">
             <div class="inner half">
                <label class="full">Order:</label>
-               <select name="post-order" id="post-order">
+               <select class="alm_element" name="post-order" id="post-order">
                    <option value="DESC" selected="selected">DESC (default)</option>
                    <option value="ASC">ASC</option>
                </select>
             </div>
             <div class="inner half">
                <label class="full">Order By:</label>
-               <select name="post-orderby" id="post-orderby">
+               <select class="alm_element" name="post-orderby" id="post-orderby">
                    <option value="date" selected="selected">Date (default)</option>
                    <option value="title">Title</option>
                    <option value="name">Name (slug)</option>
@@ -225,7 +270,7 @@
             </div>
          </div>
       </div>
-   </div>
+   </div>   
    
    <!-- Exclude posts -->
    <div class="row input exclude" id="alm-exclude-posts">
@@ -236,7 +281,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <input name="exclude-posts" type="text" id="exclude-posts" value="" placeholder="199, 216, 345, 565">
+               <input class="alm_element" name="exclude-posts" type="text" id="exclude-posts" value="" placeholder="199, 216, 345, 565">
             </div>
          </div>
       </div>
@@ -251,7 +296,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">               
-               <select name="offset-select" id="offset-select">
+               <select class="alm_element" name="offset-select" id="offset-select">
                   <script>
                      var length = 21,
                          value = '';
@@ -275,7 +320,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <select name="display_posts-select" id="display_posts-select">
+               <select class="alm_element" name="display_posts-select" id="display_posts-select">
                   <script>
                      var length = 31,
                          value = '';
@@ -306,11 +351,11 @@
             <div class="inner">	               
                <ul>
                <li>
-               <input type="radio" name="scroll" value="t" id="scroll_t" checked>
+               <input class="alm_element" type="radio" name="scroll" value="t" id="scroll_t" checked>
                <label for="scroll_t"><?php _e('True', ALM_NAME); ?></label>
                </li>
                <li>
-               <input type="radio" name="scroll" value="f" id="scroll_f">
+               <input class="alm_element" type="radio" name="scroll" value="f" id="scroll_f">
                <label for="scroll_f"><?php _e('False', ALM_NAME); ?></label>
                </li>
                </ul>
@@ -329,7 +374,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <select name="max-select" id="max-select">
+               <select class="alm_element" name="max-select" id="max-select">
                   <script>
                      var length = 11,
                          value = '';
@@ -361,11 +406,11 @@
             <div class="inner">	               
                <ul>
                    <li>
-                    <input type="radio" name="pause" value="t" id="pause_t">
+                    <input class="alm_element" type="radio" name="pause" value="t" id="pause_t">
                     <label for="pause_t"><?php _e('True', ALM_NAME); ?></label>
                    </li>
                    <li>
-                    <input type="radio" name="pause" value="f" id="pause_f" checked>
+                    <input class="alm_element" type="radio" name="pause" value="f" id="pause_f" checked>
                     <label for="pause_f"><?php _e('False', ALM_NAME); ?></label>
                    </li>
                </ul>
@@ -386,11 +431,11 @@
             <div class="inner">	               
                <ul>
                    <li>
-                    <input type="radio" name="transition" value="slide" id="transition-slide" checked>
+                    <input class="alm_element" type="radio" name="transition" value="slide" id="transition-slide" checked>
                     <label for="transition-slide"><?php _e('Slide', ALM_NAME); ?></label>
                    </li>
                    <li>
-                    <input type="radio" name="transition" value="fade" id="transition-fade">
+                    <input class="alm_element" type="radio" name="transition" value="fade" id="transition-fade">
                     <label for="transition-fade"><?php _e('Fade', ALM_NAME); ?></label>
                    </li>
                </ul>
@@ -409,7 +454,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <input name="button-label" type="text" id="button-label" value="<?php _e('Older Posts', ALM_NAME); ?>">
+               <input class="alm_element" name="button-label" type="text" id="button-label" value="<?php _e('Older Posts', ALM_NAME); ?>">
             </div>
          </div>
       </div>

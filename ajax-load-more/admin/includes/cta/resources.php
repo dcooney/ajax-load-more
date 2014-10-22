@@ -1,10 +1,26 @@
 <div class="cta padding-bottom">
 	<h3><?php _e('Help/Resources', ALM_NAME); ?></h3>
-	<ul>
-		<li><a target="_blank" href="http://connekthq.com/plugins/ajax-load-more/">Ajax Load More Demo Site</a></li>
-		<li><a target="_blank" href="http://wordpress.org/plugins/ajax-load-more">Documentation</a></li>
-		<li><a target="_blank" href="http://wordpress.org/support/plugin/ajax-load-more">Plugin Support</a></li>
-		<li><a target="_blank" href="http://connekthq.com/plugins/ajax-load-more/custom-repeaters/">Custom Repeaters Add-on</a></li>
-	</ul>
+	<?php
+			
+		// Parse help/resources JSON feed on dashboard     
+     	function get_resource_data($url) {
+			$ch = curl_init();
+			$timeout = 5;
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+			$data = curl_exec($ch);
+			curl_close($ch);
+			return $data;
+		}		     
+		$resource_url = 'http://download.connekthq.com/ajax-load-more/resources.json';
+		$resource_json = json_decode(get_resource_data($resource_url));
+		
+		print "<ul>";
+		foreach($resource_json->data->resource as $resource) {
+			print '<li><a target="blank" href="'. $resource->url .'">'. $resource->title .'</a></li>';
+		}
+		print "</ul>";	
+	?>
 	<?php _e('<a href="https://github.com/dcooney/wordpress-ajax-load-more" target="blank" class="visit"><i class="fa fa-github"></i> Latest build on Github</a>', ALM_NAME); ?>
 </div>

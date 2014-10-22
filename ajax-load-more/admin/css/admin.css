@@ -211,7 +211,8 @@
    padding: 20px 0 0 !important;
    overflow:hidden;
 }
-.ajax-load-more #taxonomy-extended{
+.ajax-load-more #taxonomy-extended,
+.ajax-load-more #meta-query-extended{
    display: none;
    overflow: hidden;
 }
@@ -711,11 +712,27 @@ p.loading{
    color:#999;
    background: none;
    transition: padding 0.2s ease;
-   float: left;
+   display: inline-block;   
+   width: auto;
    position: relative;
    top: 12px;
    left: 15px;
 }
+
+.saved-error{
+   color: #e03e3e;
+}
+   .saved-response em{
+      color: #333;
+      display: block;
+      padding: 5px 0;
+   }
+
+.saved{
+	color: #90be59;
+	font-weight: 700;
+}
+
 p.loading{
 	position: static;
 }
@@ -723,10 +740,7 @@ p.loading{
 	p.loading{
 		background: url(../img/loader.gif) no-repeat left center;
 		padding-left: 24px;
-	}
-	.saved-response.saved{
-		color: #90be59;
-	}
+	}	
 	
 input.save-repeater{
 	margin-bottom: 10px !important;
@@ -757,14 +771,19 @@ table.highlight{
    background: #fff;
    padding: 20px;
    margin: 0 0 20px;
-   border-radius: 3px;
-   border: 1px solid #ccc;
-   -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-   -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
    position: relative;
    display: block;
    clear: both;	
+}
+.ajax-load-more .alm-main .group,
+.ajax-load-more .alm-sidebar .cta{
+   border: 1px solid #ccc;
+   -webkit-border-radius: 3px; 
+   -moz-border-radius: 3px; 
+   border-radius: 3px; 
+   -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+   -moz-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+   box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
 .ajax-load-more .alm-main.full{
    width: 100%;
@@ -790,13 +809,21 @@ table.highlight{
       padding: 0 10px 0 25px !important;
    }
    .repeaters input.save-repeater{
-      float: left;
+      display: inline-block;
       margin: 15px 0 0;
       clear: none;
+      max-width: 25%;
    }
    .repeater-wrap textarea,   
    .repeater-wrap input[type=text]{
    	width: 100%;
+   }
+   .repeaters input.save-repeater.saving{
+      cursor: default !important;
+   }
+   .repeaters  .saved-response{
+      max-width: 72%;
+      opacity: 0;
    }
    
    
@@ -917,11 +944,6 @@ a.btn{
 	.ajax-load-more .alm-sidebar .cta{
 	   background: #fff;
 	   padding: 20px;
-	   border: 1px solid #ccc;
-	   border-radius: 3px; 
-	   -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-	   -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-	   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 	   margin: 0 0 20px;
 	   overflow: hidden;
 	   position: relative;	

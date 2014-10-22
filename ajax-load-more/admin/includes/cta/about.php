@@ -1,13 +1,31 @@
 <div class="cta padding-bottom">
 	<h3>About the plugin</h3>
-	<p>Ajax Load More is a simple yet very powerful solution for lazy loading WordPress posts and pages via Ajax.</p>
-	<p class="small">Developed by <a href="http://connekthq.com/" target="_blank">Darren Cooney</a></p>
-	<br/>
-	<h4>My other projects:</strong></h4>
-	<ul>
-		<li><strong><a href="https://github.com/dcooney/flexpanel" target="blank">FlexPanel</a></strong><br/>A responsive scrolling panel navigation for mobile and desktop</li>
-		<li><strong><a href="https://github.com/dcooney/wordpress-ajax-login" target="blank">WordPress Ajax Login</a></strong><br/>A simple solution for WordPress logins</li>
-		<li><strong><a href="http://connekthq.com" target="blank">Connekt Media</a></strong><br/>A digital creation company</li>
-	</ul>	
+	<?php
+	// Parse JSON feed on dashboard
+	function get_about_data($url) {
+		$ch = curl_init();
+		$timeout = 5;
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $timeout);
+		$data = curl_exec($ch);
+		curl_close($ch);
+		return $data;
+	}		     
+	$about_url = 'http://download.connekthq.com/ajax-load-more/about.json';
+	$about_json = json_decode(get_about_data($about_url));	
+	echo $about_json->data->description;	
+	print "<ul>";
+	foreach($about_json->data->links as $item) {
+		print '<li><strong><a target="blank" href="'. $item->url .'">'. $item->title .'</a></strong><br>'. $item->description .'</li>';
+	}
+	print "</ul>";
+	
+	if($about_json->data->extras){
+		print $about_json->data->extras;
+		print "<br/>";
+	}	
+	?>	
 	<a href="http://twitter.com/kaptonkaos" target="blank" class="visit"><i class="fa fa-twitter"></i> Follow on Twitter</a>
 </div>
+

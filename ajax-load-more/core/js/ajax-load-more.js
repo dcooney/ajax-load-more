@@ -3,265 +3,285 @@
  * http://wordpress.org/plugins/ajax-load-more/
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
- * Copyright 2014 Connekt Media - http://cnkt.ca/ajax-load-more/
+ * Copyright 2014 Connekt Media - http://connekthq.com
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
-*/
+ */
  
-(function($) {
-	"use strict";		
-	$.ajaxloadmore = function(el) {
-		//Set variables
-		var AjaxLoadMore = {}, 
-			page = 0,
-			speed = 300,
-			proceed = false,
-			$init = true,
-			$loading = true,
-			$finished = false,
-			$window = $(window),
-			$button_label = '',
-			$data, 
-			$el = el,
-			$content = $('.alm-listing', $el),
-			$scroll = true,
-			$prefix = 'alm-',
-			$repeater = $content.data('repeater'),
-			$max_pages = $content.data('max-pages'),
-			$pause = $content.data('pause'),
-			$offset = $content.data('offset'),
-			$transition = $content.data('transition'),
-			$posts_per_page = $content.data('posts-per-page');
-		
-		$(window).scrollTop(0); //Prevent loading of unnessasry posts - move user to top of page
-		
-		// Check for pause on init
-		// Pause could be used to hold the loading of posts for a button click.
-		if ($pause === undefined) {
-			$pause = false;
-		}
-		
-		// Select the repeater
-		if ($repeater === undefined) {
-			$repeater = 'default';
-		}
-		
-		// Max number of pages to load while scrolling 
-		if ($max_pages === undefined) {
-			$max_pages = 5;
-		}
-		if ($max_pages === 'none') {
-			$max_pages = 100000;
-		}
-		// select the transition 
-		if ($transition === undefined) {
-			$transition = 'slide';
-		} else if ($transition === "fade") {
-			$transition = 'fade';
-		} else {
-			$transition = 'slide';
-		}
-		// Define offset
-		if ($content.data('offset') === undefined) {
-			$offset = 0;
-		} else {
-			$offset = $content.data('offset');
-		}
-		// Define button text
-		if ($content.data('button-label') === undefined) {
-			$button_label = 'Older Posts';
-		} else {
-			$button_label = $content.data('button-label');
-		}
-		// Define on Scroll event
-		if ($content.data('scroll') === undefined) {
-			$scroll = true;
-		} else if ($content.data('scroll') === false) {
-			$scroll = false;
-		} else {
-			$scroll = true;
-		}
-		
-		// Append load more button tp .ajax-load-more
-		$el.append('<div class="'+$prefix+'btn-wrap"><button id="load-more" class="'+$prefix+'load-more-btn more">' + $button_label + '</button></div>');
-		var $button = $('.alm-load-more-btn', $el);
-		
-		//Parse Post Type for multiple entries
-		var $post_type = $content.data('post-type');
-		$post_type = $post_type.split(",");
-		
-		
-		/* AjaxLoadMore.loadPosts()
-		* 
-		*  The function to get posts via Ajax
-		*  @since 2.0.0
-		*/
-		AjaxLoadMore.loadPosts = function() {
-			$button.addClass('loading');
-			$loading = true;
-			$.ajax({
-				type: "GET",
-				url: alm_localize.ajaxurl,
-				data: {
-					action: 'ajax_load_more_init',
-					nonce: alm_localize.alm_nonce,
-					repeater: $repeater,
-					postType: $post_type,
-					postFormat: $content.data('post-format'),
-					category: $content.data('category'),
-					author: $content.data('author'),
-					taxonomy: $content.data('taxonomy'),
-					taxonomy_terms: $content.data('taxonomy-terms'),
-					taxonomy_operator: $content.data('taxonomy-operator'),
-					tag: $content.data('tag'),
-					order: $content.data('order'),
-					orderby: $content.data('orderby'),
-					search: $content.data('search'),
-					exclude: $content.data('exclude'),
-					numPosts: $content.data('posts-per-page'),
-					pageNumber: page,
-					offset: $offset
-				},
-				dataType: "html",
-				// parse the data as html
-				beforeSend: function() {
-					if (page != 1) {
-						$button.addClass('loading');
-					}
-				},
-				success: function(data) {
-					$data = $(data); // Convert data to an object
-					//console.log($data.length);
-					if ($init) {
-						$button.text($button_label);
-						$init = false;
-					}
-					if ($data.length > 0) {
-						var $el = $('<div class="' + $prefix + 'reveal"/>');
-						$el.append($data);
-						$el.hide();
-						$content.append($el);
-						if ($transition === 'fade') { // Fade transition
-							$el.fadeIn(speed, 'alm_easeInOutQuad', function() {
-								$loading = false;
-								$button.delay(speed).removeClass('loading');
-								if ($data.length < $posts_per_page) {
-									$finished = true;
-									$button.addClass('done');
-								}
-							});
-						} else { // Slide transition
-							$el.slideDown(speed, 'alm_easeInOutQuad', function() {
-								$loading = false;
-								$button.delay(speed).removeClass('loading');
-								if ($data.length < $posts_per_page) {
-									$finished = true;
-									$button.addClass('done');
-								}
-							});
-						}
-					} else {
-						$button.delay(speed).removeClass('loading').addClass('done');
-						$loading = false;
-						$finished = true;
-					}
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-				   $loading = false;
-					$button.removeClass('loading');
-				}
-			});
-		};
-		
-		
-		// Button click event
-		$button.click(function() {
-			if($pause === true){
-				$pause = false;
-				AjaxLoadMore.loadPosts();		
-			}
-			if (!$loading && !$finished && !$(this).hasClass('done')) {
-				$loading = true;
-				page++;
-				AjaxLoadMore.loadPosts();
-			}
-		});
-		
-		
-		/* AjaxLoadMore.isVisible()
-		* 
-		*  Check to see if element is visible before loading posts
-		*  @since 2.1.2
-		*/
-		AjaxLoadMore.isVisible = function(){
-		   var visible = false;
-   		if($el.is(":visible")){
-   		   visible = true;
-   		}
-   		return visible;
-		}
-		
-		
-		/* AjaxLoadMore.isVisible()
-		* 
-		*  Check to see if element is visible before loading posts
-		*  @since 2.1.2
-		*/
-		if ($scroll) {
-			$window.scroll(function() {
-			   if(AjaxLoadMore.isVisible()){	
-   				var content_offset = $button.offset();
-   				if (!$loading && !$finished && $window.scrollTop() >= Math.round(content_offset.top - ($window.height() - 150)) && page < ($max_pages - 1) && proceed) {
-   					$loading = true;
-   					page++;
-   					AjaxLoadMore.loadPosts();
-   				}
-				}
-			});
-		}
-		
-		
-		//Check for pause variable
-		if($pause === true){
-			$button.text($button_label);	
-		   $loading = false;		
-		}else{
-			AjaxLoadMore.loadPosts();
-		}		
-		
-		
-		//flag to prevent unnecessary loading of post on init. Hold for 2 seconds.
-		setTimeout(function() {
-			proceed = true;
-		}, 1000);   
-		
-		
-		//Custom easing function
-		$.easing.alm_easeInOutQuad = function(x, t, b, c, d) {
-			if ((t /= d / 2) < 1) return c / 2 * t * t + b;
-			return -c / 2 * ((--t) * (t - 2) - 1) + b;
-		};	
-	};
-	
-	/* ajaxloadmore()
-	* 
-	*  Initiate all instances of Ajax load More
-	*  @since 2.1.2
-   */
-	$.fn.ajaxloadmore = function() {
-		return this.each(function() {
-			new $.ajaxloadmore($(this));
-		});
-	}
-	
+(function ($) {
+   "use strict";
+   $.ajaxloadmore = function (el) {
+   
+      //Set variables
+      var alm = this;
+      alm.AjaxLoadMore = {};
+      alm.page = 0;
+      alm.speed = 300;
+      alm.proceed = false;
+      alm.init = true;
+      alm.loading = true;
+      alm.finished = false;
+      alm.window = $(window);
+      alm.button_label = '';
+      alm.data;
+      alm.el = el;
+      alm.content = $('.alm-listing', alm.el);
+      alm.scroll = true;
+      alm.prefix = 'alm-';
+      alm.repeater = alm.content.data('repeater');
+      alm.max_pages = alm.content.data('max-pages');
+      alm.pause = alm.content.data('pause');
+      alm.offset = alm.content.data('offset');
+      alm.transition = alm.content.data('transition');
+      alm.lang = alm.content.data('lang'), 
+      alm.posts_per_page = alm.content.data('posts-per-page');
+
+      $(window).scrollTop(0); //Prevent loading of unnessasry posts - move user to top of page
+      // Check for pause on init
+      // Pause could be used to hold the loading of posts for a button click.
+      if (alm.pause === undefined) {
+         alm.pause = false;
+      }
+
+      // Select the repeater template
+      if (alm.repeater === undefined) {
+         alm.repeater = 'default';
+      }
+
+      // Max number of pages to load while scrolling 
+      if (alm.max_pages === undefined) {
+         alm.max_pages = 5;
+      }
+      if (alm.max_pages === 'none') {
+         alm.max_pages = 1000000;
+      }
+
+      // select the transition 
+      if (alm.transition === undefined) {
+         alm.transition = 'slide';
+      } else if (alm.transition === "fade") {
+         alm.transition = 'fade';
+      } else {
+         alm.transition = 'slide';
+      }
+
+      // Define offset
+      if (alm.content.data('offset') === undefined) {
+         alm.offset = 0;
+      } else {
+         alm.offset = alm.content.data('offset');
+      }
+
+      // Define button text
+      if (alm.content.data('button-label') === undefined) {
+         alm.button_label = 'Older Posts';
+      } else {
+         alm.button_label = alm.content.data('button-label');
+      }
+
+      // Define on Scroll event
+      if (alm.content.data('scroll') === undefined) {
+         alm.scroll = true;
+      } else if (alm.content.data('scroll') === false) {
+         alm.scroll = false;
+      } else {
+         alm.scroll = true;
+      }
+
+      // Parse multiple Post Types  
+      alm.post_type = alm.content.data('post-type');
+      alm.post_type = alm.post_type.split(",");
+
+      // Append 'load More' button to .ajax-load-more-wrap
+      alm.el.append('<div class="' + alm.prefix + 'btn-wrap"><button id="load-more" class="' + alm.prefix + 'load-more-btn more">' + alm.button_label + '</button></div>');
+      alm.button = $('.alm-load-more-btn', alm.el);
+
+
+      /* loadPosts()
+       * 
+       *  The function to get posts via Ajax
+       *  @since 2.0.0
+       */
+      alm.AjaxLoadMore.loadPosts = function () {
+         alm.button.addClass('loading');
+         alm.loading = true;
+         $.ajax({
+            type: "GET",
+            url: alm_localize.ajaxurl,
+            data: {
+               action: 'ajax_load_more_init',
+               nonce: alm_localize.alm_nonce,
+               repeater: alm.repeater,
+               postType: alm.post_type,
+               postFormat: alm.content.data('post-format'),
+               category: alm.content.data('category'),
+               author: alm.content.data('author'),
+               taxonomy: alm.content.data('taxonomy'),
+               taxonomy_terms: alm.content.data('taxonomy-terms'),
+               taxonomy_operator: alm.content.data('taxonomy-operator'),
+               meta_key: alm.content.data('meta-key'),
+               meta_value: alm.content.data('meta-value'),
+               meta_compare: alm.content.data('meta-compare'),
+               tag: alm.content.data('tag'),
+               order: alm.content.data('order'),
+               orderby: alm.content.data('orderby'),
+               search: alm.content.data('search'),
+               exclude: alm.content.data('exclude'),
+               numPosts: alm.content.data('posts-per-page'),
+               pageNumber: alm.page,
+               offset: alm.offset,
+               lang: alm.lang
+            },
+            dataType: "html",
+            // parse the data as html
+            beforeSend: function () {
+               if (alm.page != 1) {
+                  alm.button.addClass('loading');
+               }
+            },
+            success: function (data) {
+               alm.data = $(data); // Convert data to an object
+               //console.log(alm.data.length);
+               if (alm.init) {
+                  alm.button.text(alm.button_label);
+                  alm.init = false;
+               }
+               if (alm.data.length > 0) {
+                  alm.el = $('<div class="' + alm.prefix + 'reveal"/>');
+                  alm.el.append(alm.data);
+                  alm.el.hide();
+                  alm.content.append(alm.el);
+                  if (alm.transition === 'fade') { // Fade transition
+                     alm.el.fadeIn(alm.speed, 'alm_easeInOutQuad', function () {
+                        alm.loading = false;
+                        alm.button.delay(alm.speed).removeClass('loading');
+                        if (alm.data.length < alm.posts_per_page) {
+                           alm.finished = true;
+                           alm.button.addClass('done');
+                        }
+                     });
+                  } else { // Slide transition
+                     alm.el.slideDown(alm.speed, 'alm_easeInOutQuad', function () {
+                        alm.loading = false;
+                        alm.button.delay(alm.speed).removeClass('loading');
+                        if (alm.data.length < alm.posts_per_page) {
+                           alm.finished = true;
+                           alm.button.addClass('done');
+                        }
+                     });
+                  }
+
+                  if ($.isFunction($.fn.almComplete)) {
+                     $.fn.almComplete(alm);
+                  }
+
+               } else {
+                  alm.button.delay(alm.speed).removeClass('loading').addClass('done');
+                  alm.loading = false;
+                  alm.finished = true;
+               }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+               alm.loading = false;
+               alm.button.removeClass('loading');
+            }
+         });
+      };
+
+
+      /* Button onClick()
+       * 
+       *  Load more button click event
+       *  @since 1.0.0
+       */
+      alm.button.on('click', function () {
+         if (alm.pause === true) {
+            alm.pause = false;
+            alm.AjaxLoadMore.loadPosts();
+         }
+         if (!alm.loading && !alm.finished && !$(this).hasClass('done')) {
+            alm.loading = true;
+            alm.page++;
+            alm.AjaxLoadMore.loadPosts();
+         }
+      });
+
+
+      /* AjaxLoadMore.isVisible()
+       * 
+       *  Check to see if element is visible before loading posts
+       *  @since 2.1.2
+       */
+      alm.AjaxLoadMore.isVisible = function () {
+         alm.visible = false;
+         if (alm.el.is(":visible")) {
+            alm.visible = true;
+         }
+         return alm.visible;
+      };
+
+
+      /* Window scroll and touchmove events
+       * 
+       *  Load posts as user scrolls the page
+       *  @since 1.0
+       */
+      if (alm.scroll) {
+         alm.window.bind("scroll touchstart", function () {
+            if (alm.AjaxLoadMore.isVisible()) {
+               var content_offset = alm.button.offset();
+               if (!alm.loading && !alm.finished && alm.window.scrollTop() >= Math.round(content_offset.top - (alm.window.height() - 150)) && alm.page < (alm.max_pages - 1) && alm.proceed && !alm.pause) {
+                  alm.loading = true;
+                  alm.page++;
+                  alm.AjaxLoadMore.loadPosts();
+               }
+            }
+         });
+      }
+
+
+      //Check for pause variable
+      if (alm.pause === true) {
+         alm.button.text(alm.button_label);
+         alm.loading = false;
+      } else {
+         alm.AjaxLoadMore.loadPosts();
+      }
+
+
+      //flag to prevent unnecessary loading of post on init. Hold for 1 second
+      setTimeout(function () {
+         alm.proceed = true;
+      }, 1000);
+
+
+      //Custom easing function
+      $.easing.alm_easeInOutQuad = function (x, t, b, c, d) {
+         if ((t /= d / 2) < 1) return c / 2 * t * t + b;
+         return -c / 2 * ((--t) * (t - 2) - 1) + b;
+      };
+   };
+
+   // End $.ajaxloadmore
+
+   /* $.fn.ajaxloadmore()
+    * 
+    *  Initiate all instances of Ajax load More
+    *  @since 2.1.2
+    */
+   $.fn.ajaxloadmore = function () {
+      return this.each(function () {
+         $(this).data('alm', new $.ajaxloadmore($(this)));
+      });
+   }
+
    /* 
-	*  Init Ajax load More if div is present on screen
-	*  @since 2.1.2
-   */ 
-	if($(".ajax-load-more-wrap").length)   
-	   $(".ajax-load-more-wrap").ajaxloadmore();
-	
+    *  Initiate Ajax load More if div is present on screen
+    *  @since 2.1.2
+    */
+   if ($(".ajax-load-more-wrap").length) $(".ajax-load-more-wrap").ajaxloadmore();
+
 })(jQuery);

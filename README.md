@@ -9,11 +9,12 @@ Get more information and view live examples at http://connekthq.com/plugins/ajax
 
 
 ### Demos ###
-* **[Default](http://connekthq.com/plugins/ajax-load-more/examples/default)** - Out of the box functionality and styling
+* **[Default](http://connekthq.com/plugins/ajax-load-more/)** - Out of the box functionality and styling
 * **[Fade Transition](http://connekthq.com/plugins/ajax-load-more/examples/fade-transition/)** - Elements fade in as posts are loaded
-* **[Pause Loading](http://connekthq.com/plugins/ajax-load-more/examples/pause-loading/)** - Posts will not load until initiated by the user
+* **[Mansory](http://connekthq.com/plugins/ajax-load-more/examples/masonry/)** - Creating a flexible grid layout with Masonry JS
 * **[Multiple Instances](http://connekthq.com/plugins/ajax-load-more/examples/multiple-instances/)** - Include multiple Ajax Load More' on a single page
-
+* **[Pause Loading](http://connekthq.com/plugins/ajax-load-more/examples/pause-loading/)** - Posts will not load until initiated by the user
+* **[Search Results](http://connekthq.com/plugins/ajax-load-more/examples/search-results/)** - Returning results based on search terms
 
 
 ##Moved to WordPress.org
@@ -27,7 +28,7 @@ Please download the latest stable version from your WordPress plugins dashboard 
 
 ##Shortcode Parameters
 
-Ajax Load More accepts a number of paramaters to pass to the WordPress query. These parameters are passed via shortcode - don't worry, creating your shortcode is simple with our Shortcode Builder.
+Ajax Load More accepts a number of parameters that are passed to the WordPress query. These parameters are transferred via shortcode - don't worry, creating your shortcode is simple with our intuitive Shortcode Builder.
  
 *   **repeater** - Choose a repeater template (Add-on available). Default = ‘default‘
 *   **post_type** - Comma separated list of post types. Default = ‘post’
@@ -37,6 +38,9 @@ Ajax Load More accepts a number of paramaters to pass to the WordPress query. Th
 *   **taxonomy** - Query by custom taxonomy name. Default = null
 *   **taxonomy_terms** - Comma separated list of custom taxonomy terms(slug). Default = null
 *   **taxonomy_operator** - Operator to compare Taxonomy Terms against (IN/NOT IN). Default = ‘IN’
+*   **meta_key** - Custom field key(name). Default = null
+*   **meta_value** - Custom field value. Default = null
+*   **meta_compare** - Operator to compare meta_key and meta_value against (=/!=/>/>=/</<= etc.). Default = ‘=’
 *   **author** - Query by author id. Default = null
 *   **search** - Query search term (‘s’). Default = null
 *   **order** - Display posts in ASC(ascending) or DESC(descending) order. Default = ‘DESC’
@@ -51,8 +55,25 @@ Ajax Load More accepts a number of paramaters to pass to the WordPress query. Th
 *   **button_label** - The label text for Load More button. Default = 'Older Posts'
 
 
-
 ##Changelog
+
+= 2.2.3 =
+* Adding query by Custom Field value(Meta Query). 
+* Improved error handling for easier debugging.
+* Fixed issue with pause = "true" and scroll = "true". Pause should always take precendence over scroll. 
+* Code clean up, improving overall quality for easier merges and updates.
+
+= 2.2.2 =
+* Adding callback function that is dispatched once a successful ajax call is made. $.fn.almComplete(alm). 
+* Adding WPML support for ICL_LANGUAGE_CODE - A 'lang' atributed is added dynamically if WPML is installed.
+* Making JS variables and functions publically accessible.
+
+= 2.2.1 =
+* Fixed php notice/warning that would trigger if WP_DEBUG was enabled. 
+* Adding minified core JS.
+* Adding global option to disable shortcode button in the content editor.
+* Adding touchmove js event for faster scroll detection on mobile devices.
+* Code clean up, removing unused functions.
 
 = 2.2.0 =
 * Adding Post Format query.

@@ -197,7 +197,7 @@ function alm_settings_page(){ ?>
 		<div class="wrap">
 		<div class="header-wrap">
          <h2><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span></h2>
-         <p>A simple solution for lazy loading WordPress posts and pages with Ajax</p>
+         <p>A WordPress plugin for lazy loading posts with Ajax</p>
          </div>
 		   <div class="alm-main">
 		   	<div class="group">
@@ -253,8 +253,11 @@ function alm_repeater_page(){ ?>
 	   		   <?php         
 	               $filename = ALM_PATH. 'core/repeater/default.php';
 	               $handle = fopen ($filename, "r");
-	               $contents = fread ($handle, filesize ($filename));
-	               fclose ($handle);
+      				$contents = '';
+      				if(filesize ($filename) != 0){
+      				   $contents = fread ($handle, filesize ($filename));		               
+      				}
+      				fclose ($handle);
 	            ?> 
 	            <h3 class="heading"><?php _e('Default Template', ALM_NAME); ?></h3>
 	            <div class="expand-wrap">  
@@ -281,7 +284,7 @@ function alm_repeater_page(){ ?>
             <?php
             	if (!has_action('alm_get_custom_repeaters')) {
             	echo '<div class="row no-brd">';
-					include( ALM_PATH. 'admin/includes/cta/extend.php');
+					include( ALM_PATH . 'admin/includes/cta/extend.php');
             	echo '</div>';
 				  }
             ?>
@@ -311,36 +314,27 @@ function alm_repeater_page(){ ?>
 								alias = ($('input._alm_repeater_alias', container).length) ? $('input._alm_repeater_alias', container).val() : '',
 								responseText = $(".saved-response", container);
 								
-							//Get value from CodeMirroweditor
+							//Get value from CodeMirror textarea						
+							var id = editorId.replace('template-', ''); // Editor ID								
 							
-							// Default Template	
-							if(editorId === 'template-default') 					   
+							if(id === 'default'){ // Default Template						   
 								value = editorDefault.getValue();
-						   	
-                     //Custom Repeater template add-on
-						   if(editorId === 'template-repeater2')   						   
-								value = editor_repeater2.getValue();
-						   	
-						   if(editorId === 'template-repeater3')   						   
-								value = editor_repeater3.getValue();
-						  	
-						   if(editorId === 'template-repeater4')   						   
-								value = editor_repeater4.getValue();
-						   	
-						   if(editorId === 'template-repeater5')   						   
-								value = editor_repeater5.getValue();
-						   	
-						   if(editorId === 'template-repeater6')   						   
-								value = editor_repeater6.getValue();
-						   	
-						   if(value === '' || value === 'undefined'){
-						      alert("Sorry, an error has occured");
-						      return false;
+						   }else{ // Repeater Templates	
+						      var eid = window['editor_'+id]; // Set editor ID
+						      value = eid.getValue();   						   
 						   }
-                     
-							//If submit button has changed class.
-							if (btn.hasClass('changed')) { // If repeater value has changed.
-								responseText.addClass('loading').html('<?php _e('Saving data...', ALM_NAME) ?>');
+						   	
+						   // if value is null, then set repeater to non breaking space
+						   if(value === '' || value === 'undefined'){
+						      value = '&nbsp;';
+						   }   
+						                     
+						   //If template is not already saving, then proceed
+							if (!btn.hasClass('saving')) {
+							   btn.addClass('saving');
+								responseText.addClass('loading').html('<?php _e('Saving template...', ALM_NAME) ?>');
+								responseText.animate({'opacity' : 1});
+								
 								$.ajax({
 									type: 'POST',
 									url: alm_admin_localize.ajax_admin_url,
@@ -351,30 +345,37 @@ function alm_repeater_page(){ ?>
 										alias: alias,
 										nonce: alm_admin_localize.alm_admin_nonce,
 									},
-									success: function(e) {								
-										setTimeout(function(){
-										  responseText.html('<?php _e('Template saved successfully', ALM_NAME) ?>').removeClass('loading').addClass('saved');								  
-											setTimeout(function() {
-												responseText.html('&nbsp;').removeClass('saved');
-											}, 3000);
-										},1000);								
-										btn.removeClass('changed');
+									success: function(response) {											  		
+									  
+									  setTimeout(function() { 
+										   responseText.delay(500).html(response).removeClass('loading');							
+										}, 250);
+									  						  
+									  setTimeout(function() { 
+										   responseText.animate({'opacity': 0}, function(){
+   										   responseText.html('&nbsp;');
+                                    btn.removeClass('saving');
+										   });
+											
+										}, 6000);						
 									},
 									error: function(xhr, status, error) {
-										responseText.html('<?php _e('Something went wrong and the data could not be saved', ALM_NAME) ?>').removeClass('loading').removeClass('saved');
-										btn.removeClass('changed');
+										responseText.html('<?php _e('Something went wrong and the data could not be saved.', ALM_NAME) ?>').removeClass('loading');
+										btn.removeClass('saving');
 									}
-								});
+                        });
+                        
 							}
 						}
+						
 						$('input.save-repeater').each(function(){
 							$(this).click(function() {
 								var btn = $(this),
-								    editorId = btn.data('editor-id');
-								btn.addClass('changed');
+								    editorId = btn.data('editor-id');								
 								_alm_admin.saveRepeater(btn, editorId);
 							});
-						});		
+						});
+								
 					});		
 				</script>
 		   </div>
@@ -425,12 +426,25 @@ function alm_save_repeater(){
 	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
 	$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
 	if($n === 'default')
-		$f = ALM_PATH. '/core/repeater/'.$n .'.php'; // File
+		$f = ALM_PATH. 'core/repeater/'.$n .'.php'; // File
 	else
-		$f = ALM_REPEATER_PATH. '/repeaters/'.$n .'.php'; // File
-	$o = fopen($f, 'w+'); //Open file
-	$w = fwrite($o, $c); //Save the file
-	$r = fread($o, 100000); //Read it
+		$f = ALM_REPEATER_PATH. 'repeaters/'.$n .'.php'; // File
+	
+		
+   $o_error = '<span class="saved-error"><b>'. __('Error Opening File', ALM_NAME) .'</b></span>';
+   $o_error .= '<em>'. $f .'</em>';
+   $o_error .=  __('Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/ plugin directory', ALM_NAME);
+   
+   $w_error = '<span class="saved-error"><b>'. __('Error Saving File', ALM_NAME) .'</b></span>';
+   $w_error .= '<em>'. $f .'</em>';
+   $w_error .=  __('Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/ plugin directory', ALM_NAME);
+   
+   //Open file
+	$o = fopen($f, 'w+') or die($o_error); 
+	
+	//Save/Write the file
+	$w = fwrite($o, $c) or die($w_error); 
+	//$r = fread($o, 100000); //Read it
 	fclose($o); //now close it	
 	
 	//Save to database
@@ -447,10 +461,11 @@ function alm_save_repeater(){
 	
 	//Our results
 	if($w){
-	    echo 'File saved';
+	    echo '<span class="saved">Template Saved Successfully</span>';
 	} else {
-	    echo 'Error saving file';
+	    echo '<span class="saved-error"><b>'. __('Error Writing File', ALM_NAME) .'</b></span><br/>Something went wrong and the data could not be saved.';
 	}
+	die();
 }
 
 
@@ -678,21 +693,14 @@ function alm_admin_init(){
 		'alm_settings', 
 		'alm_sanitize_settings' 
 	);
+	
 	add_settings_section( 
 		'alm_general_settings',  
 		'General Settings', 
 		'alm_general_settings_callback', 
 		'ajax-load-more' 
 	);
-	/*
-		add_settings_field( 
-		'_alm_html5', 
-		__('HTML5 Elements', ALM_NAME ), 
-		'alm_html5_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);
-	*/	
+	
 	add_settings_field(
 	    '_alm_container_type',
 	    __('Container Type', ALM_NAME ),
@@ -700,6 +708,7 @@ function alm_admin_init(){
 	    'ajax-load-more',
 	    'alm_general_settings'
 	);
+	
 	add_settings_field( 
 		'_alm_classname', 
 		__('Container Classes', ALM_NAME ), 
@@ -707,6 +716,15 @@ function alm_admin_init(){
 		'ajax-load-more', 
 		'alm_general_settings' 
 	);
+	
+	add_settings_field( 
+		'_alm_hide_btn', 
+		__('Editor Shortcode Button', ALM_NAME ), 
+		'alm_hide_btn_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);
+	
 	add_settings_field( 
 		'_alm_disable_css', 
 		__('Disable CSS', ALM_NAME ), 
@@ -714,6 +732,7 @@ function alm_admin_init(){
 		'ajax-load-more', 
 		'alm_general_settings' 
 	);
+	
 	add_settings_field( 
 		'_alm_btn_color', 
 		__('Button Color', ALM_NAME ), 
@@ -770,25 +789,25 @@ function alm_disable_css_callback(){
 
 
 /*
-*  alm_html5_callback
-*  Enable HTML5 elements within AjaxLoadMore.
+*  alm_hide_btn_callback
+*  Disbale the ALM shortcode button in the WordPress content editor
 *
-*  @since 2.0.0
+*  @since 2.2.1
 */
 
-function alm_html5_callback(){
+function alm_hide_btn_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_html5'])) 
-	   $options['_alm_html5'] = '1';
+	if(!isset($options['_alm_hide_btn'])) 
+	   $options['_alm_hide_btn'] = '0';
 	
-	echo '<input type="hidden" name="alm_settings[_alm_html5]" value="0" />
-	<label><input type="checkbox" name="alm_settings[_alm_html5]" value="1"'. (($options['_alm_html5']) ? ' checked="checked"' : '') .' /> '.__('Enable HTML5 elements within Ajax Load More\'s output', ALM_NAME).'</label>';	
+	echo '<input type="hidden" name="alm_settings[_alm_hide_btn]" value="0" />
+	<label><input type="checkbox" name="alm_settings[_alm_hide_btn]" value="1"'. (($options['_alm_hide_btn']) ? ' checked="checked"' : '') .' /> '.__('Hide shortcode button in WYSIWYG editor', ALM_NAME).'</label>';	
 }
 
 
 /*
 *  alm_class_callback
-*  Enable HTML5 elements within AjaxLoadMore.
+*  Add classes to the Ajax Load More wrapper
 *
 *  @since 2.0.0
 */
