@@ -68,7 +68,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 The following functions are avaialble to be dispatched by Ajax Load More. 
 
 
-Ajax Complete
+####Ajax Complete
 
 The almComplete() function is triggered after every *successful* ajax call made by Ajax Load More.
 To utilize the almComplete() function simply place the following code inside your sites javascript file.
@@ -84,12 +84,12 @@ To utilize the almComplete() function simply place the following code inside you
 The following Add-ons are available to increase the functionality of Ajax Load More.
 
 
-#Custom Repeaters
+####Custom Repeaters
 
 The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.
 [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters)
 
-#Search Engine Optimization
+####Search Engine Optimization
 
 The **[SEO](http://connekthq.com/plugins/ajax-load-more/seo/)** add-on will optimize your ajax loaded content for search engines and site visitors by generating standard WordPress paging URLs with each Ajax Load More query.
 [Get More Information](http://connekthq.com/plugins/ajax-load-more/seo/)
