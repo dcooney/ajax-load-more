@@ -68,7 +68,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 The following functions are avaialble to be dispatched by Ajax Load More. 
 
 
-#Ajax Complete
+Ajax Complete
 
 The almComplete() function is triggered after every *successful* ajax call made by Ajax Load More.
 To utilize the almComplete() function simply place the following code inside your sites javascript file.
