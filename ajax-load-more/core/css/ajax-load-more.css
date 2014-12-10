@@ -161,7 +161,7 @@ button.alm-load-more-btn{
 }
 	.ajax-load-more-wrap.white button.alm-load-more-btn:hover,
 	.ajax-load-more-wrap.white button.alm-load-more-btn.done{
-		background-color: #fff;
+		background-color: #efefef;
 		color: #333;
 	}	
 	.ajax-load-more-wrap.white button.alm-load-more-btn.done{

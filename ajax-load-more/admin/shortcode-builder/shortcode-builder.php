@@ -1,6 +1,33 @@
 <span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', ALM_NAME); ?></em><em class="expand"><?php _e('Expand All', ALM_NAME); ?></em></span></span>
 
 
+
+<?php if(has_action('alm_seo_installed')){ ?>
+<!-- SEO -->
+<div class="row input seo" id="alm-seo">
+   <h3 class="heading"><?php _e('SEO (Search Engine Optimization)', ALM_NAME); ?></h3>
+   <div class="expand-wrap">
+      <div class="section-title">
+		 	<p><?php _e('Enable address bar URL rewrites as users page through ajax loaded content.', ALM_NAME); ?></p>
+		 </div>
+      <div class="wrap">
+         <div class="inner">	               
+            <ul>
+                <li>
+                 <input class="alm_element" type="radio" name="seo" value="true" id="seo-true" >
+                 <label for="seo-true"><?php _e('True', ALM_NAME); ?></label>
+                </li>
+                <li>
+                 <input class="alm_element" type="radio" name="seo" value="false" id="seo-false" checked>
+                 <label for="seo-false"><?php _e('False', ALM_NAME); ?></label>
+                </li>
+            </ul>
+         </div>
+      </div>
+   </div>
+</div> 
+<?php } ?>   
+
 <?php
 	
  	// List available repeaters
@@ -16,12 +43,26 @@
 	if (has_action('alm_get_custom_repeaters')) {
 	  do_action('alm_get_custom_repeaters');
 	}
+	if (has_action('alm_get_unlimited_repeaters')) {
+	  do_action('alm_get_unlimited_repeaters');
+	}
 	echo '</select>';
 	
 	echo '</div></div>';
+	
+	// Custom Repeaters - /cta/extend.php
+	// Removed in 2.2.8	
 	if (!has_action('alm_get_custom_repeaters')) {
-	  include( ALM_PATH . 'admin/includes/cta/extend.php');
+	  //include( ALM_PATH . 'admin/includes/cta/extend.php');
 	}
+	
+	// Custom Repeaters v2 - /cta/extend.php
+	if (!has_action('alm_get_unlimited_repeaters')) {
+	   if (!has_action('alm_get_custom_repeaters')) {
+         include( ALM_PATH . 'admin/includes/cta/extend.php');
+	  }
+	}
+	
 	echo '</div>';
 	echo '</div>';
  	
@@ -168,11 +209,9 @@
          </div>
          <div class="wrap">
             <div class="inner">
-               <div class="inner">
-                  <label for="meta-key" class="full"><?php _e('Field Key (Name):', ALM_NAME); ?></label>
-                  <input class="alm_element" name="meta-key" type="text" id="meta-key" value="" placeholder="<?php _e('Enter custom field key(name)', ALM_NAME); ?>">   
-               </div>            
-            </div>
+               <label for="meta-key" class="full"><?php _e('Field Key (Name):', ALM_NAME); ?></label>
+               <input class="alm_element" name="meta-key" type="text" id="meta-key" value="" placeholder="<?php _e('Enter custom field key(name)', ALM_NAME); ?>">   
+            </div> 
             <div id="meta-query-extended">
                <?php // Meta Value ?>
                <div class="inner border-top">
@@ -459,7 +498,6 @@
          </div>
       </div>
    </div>
+   
    <div class="clear"></div>  
-   
-   
    

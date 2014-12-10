@@ -36,10 +36,42 @@
       alm.pause = alm.content.data('pause');
       alm.offset = alm.content.data('offset');
       alm.transition = alm.content.data('transition');
-      alm.lang = alm.content.data('lang'), 
-      alm.posts_per_page = alm.content.data('posts-per-page');
-
-      $(window).scrollTop(0); //Prevent loading of unnessasry posts - move user to top of page
+      alm.lang = alm.content.data('lang');
+      alm.posts_per_page = alm.content.data('posts-per-page');      
+      
+     
+      /* SEO ADD-ON  */
+      // - get SEO values from shortcode     
+      // - Added v2.3
+     	   
+      alm.seo = alm.content.data('seo'); // true | false
+      if (alm.seo === undefined)
+         alm.seo = false;
+      
+      alm.permalink = alm.content.data('seo-permalink');
+      alm.start_page = alm.content.data('seo-start-page');
+      
+      if(alm.start_page){      
+	      
+         alm.seo_scroll = alm.content.data('seo-scroll');
+         alm.seo_scroll_speed = alm.content.data('seo-scroll-speed');
+         
+	      alm.isPaged = false;	      
+	      
+	      if(alm.start_page > 1) {
+	         alm.isPaged = true; // Is this a $paged page > 1 ?	      
+            alm.posts_per_page = alm.start_page * alm.posts_per_page;   
+	      }  
+	      
+      }        
+      /* END SEO Add-on */
+      
+      
+      //Prevent loading of unnessasry posts - move user to top of page
+      // Removed v2.3.0
+      $(window).scrollTop(0); 
+      
+      
       // Check for pause on init
       // Pause could be used to hold the loading of posts for a button click.
       if (alm.pause === undefined) {
@@ -130,7 +162,7 @@
                orderby: alm.content.data('orderby'),
                search: alm.content.data('search'),
                exclude: alm.content.data('exclude'),
-               numPosts: alm.content.data('posts-per-page'),
+               numPosts: alm.posts_per_page,
                pageNumber: alm.page,
                offset: alm.offset,
                lang: alm.lang
@@ -148,6 +180,12 @@
                if (alm.init) {
                   alm.button.text(alm.button_label);
                   alm.init = false;
+                  
+                  if(alm.isPaged){ 
+                     alm.posts_per_page = alm.content.data('posts-per-page'); // Reset our posts per page variable
+                     alm.page = alm.start_page - 1; // Set our new page #
+                  }
+                  
                }
                if (alm.data.length > 0) {
                   alm.el = $('<div class="' + alm.prefix + 'reveal"/>');
@@ -173,9 +211,18 @@
                         }
                      });
                   }
-
+						
+						// ALM Complete 
                   if ($.isFunction($.fn.almComplete)) {
                      $.fn.almComplete(alm);
+                  }
+                  
+                  // ALM SEO
+                  // - Only run if a single instance is on the page.
+                  if($(".ajax-load-more-wrap").length === 1){
+                     if ($.isFunction($.fn.almSEO) && alm.seo) {
+                        $.fn.almSEO(alm);
+                     }
                   }
 
                } else {

@@ -1,5 +1,6 @@
 @import url(http://fonts.googleapis.com/css?family=Open+Sans:400,700,600);
 
+
 /*
 *  Admin - Popup Generator
 *
@@ -13,8 +14,8 @@
    font-size: 14px;
    color:#666;
    position: relative;
-   overflow-x: hidden;
    font-family: 'Open Sans', sans-serif;
+   max-width: 1100px;
 }
 
 .ajax-load-more *{
@@ -83,7 +84,7 @@
 /* Expand Collapse Headings */
 .ajax-load-more h3.heading{
    font-weight: 700;
-   padding: 0 0 0 25px !important;
+   padding: 10px 10px 10px 35px !important;
    line-height: normal !important;
    margin: 0 !important;
    color: #555;
@@ -105,8 +106,8 @@
       color:#e1e1e1;
       font-size: 18px;
       position: absolute;
-      left: 0;
-      top: 3px;
+      left: 10px;
+      top: 13px;
       height: 20px;
       width: 20px;
    }
@@ -175,7 +176,6 @@
     }
 
 
-
 .ajax-load-more ul{
    padding: 0;
    margin: 0;
@@ -212,7 +212,8 @@
    overflow:hidden;
 }
 .ajax-load-more #taxonomy-extended,
-.ajax-load-more #meta-query-extended{
+.ajax-load-more #meta-query-extended,
+.ajax-load-more #seo-extended{
    display: none;
    overflow: hidden;
 }
@@ -232,6 +233,7 @@
 	font-size: 14px;
 	padding: 5px 8px;
 	width: auto;
+	margin-top: 0;
 	display: inline-block; 
 	clear: both;
 	border-radius: 3px;
@@ -258,6 +260,10 @@
 
 .checkboxes{}
 .checkboxes input,
+.radio input{
+   margin-top: 2px;
+}
+.checkboxes input,
 .checkboxes label,
 .radio input,
 .radio label{
@@ -270,13 +276,40 @@
 .radio input{
 	margin-left: 3px;
 }
-.ajax-load-more input[type=text]{
+.ajax-load-more input[type=text],
+.ajax-load-more input[type=number]{
    padding: 10px;
    line-height: 1.3;
    border: 1px solid #ccc;
    width: 60%;  
 }
+
+.ajax-load-more input[type=number].sm{
+   width: 100px;
+}
+
+.ajax-load-more ::-webkit-input-placeholder {
+   color: #999;
+   font-style: italic;
+}
+
+.ajax-load-more :-moz-placeholder { /* Firefox 18- */
+   color: #999;  
+   font-style: italic;
+}
+
+.ajax-load-more ::-moz-placeholder {  /* Firefox 19+ */
+   color: #999; 
+   font-style: italic; 
+}
+
+.ajax-load-more :-ms-input-placeholder {  
+   color: #999;  
+   font-style: italic;
+}
+
 .ajax-load-more input[type=text],
+.ajax-load-more input[type=number],
 .ajax-load-more textarea{
    background: #f7f7f7;	
 }
@@ -314,7 +347,7 @@
 /* --------------------------------------------------------------------------- */
 
 .ajax-load-more .row{ 
-   padding: 10px !important; 
+   padding: 0 !important; 
    margin: 15px 0 0;
    height: auto; 
    width: 100%;
@@ -327,7 +360,7 @@
    border-radius: 2px;
 }
    .ajax-load-more .row.no-brd{
-      border: none;
+      border: none !important;
       padding: 0 !important; 
    } 
 
@@ -346,28 +379,32 @@
 		overflow: hidden;		
    }
 
+
 .jump-menu{
 	position: absolute;
 	top: 5px;
 	right: 10px;
 	z-index: 2;
 }
-.admin.ajax-load-more .jump-menu{
-	display: none;
-}
+   .admin.ajax-load-more .jump-menu{
+   	display: none;
+   }
    
 .ajax-load-more .expand-wrap{
 	display: block;
 }
+#alm-examples.ajax-load-more .expand-wrap{
+	padding: 10px 10px 0;
+}
 
 .ajax-load-more .section-title{
-	width: 35%;
+	width: 40%;
 	padding-top: 5px;
 	float: left;
 }
 	.ajax-load-more .section-title p{		
 		font-size: 13px !important;
-		padding-left: 25px !important;
+		padding-left: 35px !important;
 		color: #999;
 	}
 	
@@ -381,7 +418,7 @@
 			padding-left: 0 !important;
 		}
 		.ajax-load-more label.template-title{
-   		padding: 10px 0 5px;
+   		padding: 10px 0;
    		margin: 0;
    		font-size: 0.9em;
    		color: #888;
@@ -395,16 +432,18 @@
 	
 
 .ajax-load-more .row .wrap{
-  padding: 5px 0 0 5%;
+  padding: 5px 0 0 3%;
   margin: 0;
   border: none;
-  width: 65%;
+  width: 60%;
   float: left;
   position: relative;
 }
    
   
-/* Shortcode Output */
+/* ***********************************  
+-- Shortcode Output 
+**************************************/
 .ajax-load-more .output-wrap{
    padding: 0 50px 0 15px;
    margin: 0;
@@ -561,26 +600,33 @@
 }
 
 
+
 /*
 *  Admin Screens - Setting pages
 *
 *  @since 1.0
 */
 
-
-
 .form-table label{
    display: inline-block;
    clear: both;
    float: none;   
+   vertical-align: top;
+   padding: 0 0 10px;
+   max-width: 90%;
+}
+.form-table input[type=radio],
+.form-table input[type=checkbox]{
+   vertical-align: top;   
+   margin-top: 0 !important;
+   max-width: 8%;
 }
    .form-table label + textarea{
       margin-top: 10px;
    }
    .form-table label span{
-	   opacity: 0.5;
 	   font-size: 13px;
-	   font-style: italic;
+	   color: #999;
    }
 
 .admin.ajax-load-more .form-table textarea{
@@ -601,25 +647,24 @@
       resize: none;      
    }
 
-.admin.ajax-load-more input[type=radio],
-.admin.ajax-load-more input[type=checkbox]{
-   margin-top: 0 !important;
-}
 .admin.ajax-load-more .form-table input[type=radio],
 .admin.ajax-load-more .form-table input[type=checkbox]{
-	margin-top: -4px !important;
 	margin-right: 10px;
+   margin-top: 0 !important;
 }
 
 .admin.ajax-load-more.settings input[type=text],
+.admin.ajax-load-more.settings input[type=number],
 .admin.ajax-load-more.settings .select2-container{
    margin-top:10px;
 }
 .admin.ajax-load-more.settings .ajax-load-more-wrap {
 	position: relative;
-	top:10px;
-	padding: 10px 0;
-	border-top: 1px dashed #ccc;
+	top: 10px;
+	padding: 10px;
+	border: 1px dashed #ccc;
+	display: inline-block;
+	margin-top:10px;
 }
 	.admin.ajax-load-more.settings .ajax-load-more-wrap button{
 		margin: 0 !important;
@@ -638,26 +683,26 @@
 /* Table Overrides */
 .admin.ajax-load-more.settings .form-table td,
 .admin.ajax-load-more.settings .form-table th{
-   padding: 20px 0;
+   padding: 30px 0;
 }
 
-.admin.ajax-load-more.settings .form-table th{
-   padding-top: 25px;
+.admin.ajax-load-more.settings .form-table p{
+   margin-top: 0;
 }
 
 .header-wrap{
 	background: url(../img/alm-logo-48x48.png) no-repeat left 12px;
-	padding-left: 56px;
+	padding-left: 62px;
 	min-height: 48px;
 	overflow: hidden;
-	padding-top: 10px;
+	padding-top: 11px;
 }
 	.ajax-load-more .header-wrap h2{
 		padding-top: 0;
 		font-size: 26px;
 	}
 	.ajax-load-more .header-wrap h2 + p{
-		margin-top: -2px;
+		margin-top: -3px;
 		opacity: 0.8;
 	}
 	
@@ -670,13 +715,23 @@
 	position: relative;
 	top: -2px;
 }
+.ajax-load-more h2.addon-title{   
+   font-size: 22px !important;
+   font-weight: 600 !important;
+   color: #555 !important;
+   padding: 0;
+   margin: 0 0 16px;
+   padding: 0 0 14px;
+   border-bottom: 1px solid #efefef;
+}
 .ajax-load-more p.addon-intro{
-   font-size: 24px !important;
-   line-height: 30px !important;
+   font-size: 18px !important;
+   line-height: 23px !important;
+   color: #999 !important;
 }
 
 .ajax-load-more h3.add-on-title,
-.ajax-load-more .alm-sidebar h3{
+.ajax-load-more .cnkt-sidebar h3{
    padding: 0 0 10px;
    margin: 0 0 20px;
    border-bottom: 1px solid #efefef;
@@ -685,14 +740,14 @@
    margin-bottom: 10px;
 }
 .ajax-load-more h3.add-on-title,
-.ajax-load-more .alm-sidebar h3{
+.ajax-load-more .cnkt-sidebar h3{
    padding: 0 0 10px;
    margin: 0 0 20px;
    border-bottom: 1px solid #efefef;
 }
 .ajax-load-more p.desc{
-	font-size: 12px;
-	padding: 0 0 8px 24px;
+	font-size: 12px !important;
+	padding: 0 0 8px 30px;
 }
 
 .ajax-load-more p.back2top{
@@ -753,6 +808,22 @@ input.save-repeater{
 	.restore-default a{
 		text-decoration: none;
 	}
+	
+
+	
+.alm-save-settings{}
+   .alm-save-settings p.submit{
+      float: left;
+      margin: 0 10px 0 0;
+      width: auto;
+   }
+   .alm-save-settings .loading{
+      width: 50px;
+      height: 26px;
+      display: none;
+      float: left;
+      background: #fff url(../img/loader.gif) no-repeat center center;
+   }
 
 	
 table.highlight{
@@ -761,13 +832,13 @@ table.highlight{
 
 
 /* Columns */
-.ajax-load-more .alm-main{
+.ajax-load-more .cnkt-main{
    width: 67%;
    float: left;
    margin-top: 10px;
    background: none !important;
 }
-.ajax-load-more .alm-main .group{
+.ajax-load-more .cnkt-main .group{
    background: #fff;
    padding: 20px;
    margin: 0 0 20px;
@@ -775,8 +846,8 @@ table.highlight{
    display: block;
    clear: both;	
 }
-.ajax-load-more .alm-main .group,
-.ajax-load-more .alm-sidebar .cta{
+.ajax-load-more .cnkt-main .group,
+.ajax-load-more .cnkt-sidebar .cta{
    border: 1px solid #ccc;
    -webkit-border-radius: 3px; 
    -moz-border-radius: 3px; 
@@ -785,13 +856,13 @@ table.highlight{
    -moz-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
 }
-.ajax-load-more .alm-main.full{
+.ajax-load-more .cnkt-main.full{
    width: 100%;
    float: none;
 }
-	.ajax-load-more .alm-main h2,
-	.ajax-load-more .alm-main h3,
-	.ajax-load-more .alm-main h4{
+	.ajax-load-more .cnkt-main h2,
+	.ajax-load-more .cnkt-main h3,
+	.ajax-load-more .cnkt-main h4{
 		margin-top: 0;
 	}
 	.form-table tr{
@@ -806,7 +877,10 @@ table.highlight{
 /* Repeaters */
 .repeaters {}
    .repeaters .repeater-wrap{
-      padding: 0 10px 0 25px !important;
+      padding: 0 20px 10px 35px !important;
+   }
+   .repeater-wrap label{
+      cursor: default;
    }
    .repeaters input.save-repeater{
       display: inline-block;
@@ -820,6 +894,7 @@ table.highlight{
    }
    .repeaters input.save-repeater.saving{
       cursor: default !important;
+      opacity: 0.3 !important;
    }
    .repeaters  .saved-response{
       max-width: 72%;
@@ -833,8 +908,12 @@ table.highlight{
 #alm-add-ons .group{
    overflow: hidden;
 }
-#alm-add-ons .wrap{
+#alm-add-ons .row .wrap{
    padding-bottom: 60px;
+   width: 55%;
+}
+#alm-add-ons .section-title{
+   width: 45%;
 }
 #alm-add-ons .group .section-title p{
    padding-left: 0 !important;
@@ -843,146 +922,150 @@ table.highlight{
    position: absolute;
    bottom: 20px;
    right: 20px;
+   font-size: 14px;
+   padding: 8px 14px;
 }
-
 
 /* Add-on Callout! */
 .call-out{
-	background: #4DD5B0;
-	padding: 13px 100px 13px 12px;
-	border-radius: 3px;
-	margin: 0 0 0 0;
-	width: 100%;
-	display: block;
-	color: #fff;
-	font-size: 13px;
-	position: relative;
+   background: #4DD5B0;
+   padding: 13px 100px 13px 12px;
+   border-radius: 3px;
+   margin: 0;
+   width: 100%;
+   display: block;
+   color: #fff;
+   font-size: 13px;
+   font-weight: 600;
+   position: relative;
 }
-.default-repeater .call-out{
-	width: 100%;
-	margin: 0 0 0;
-}
-	.call-out .btn{
-		padding: 5px 8px;
-		display: inline-block;
-		background: #fff;
-		border: 1px solid #5da592;
-		border-radius: 3px;
-		position: absolute;
-		right: 7px;
-		top:7px;
-		color: #387061 !important;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-	}
-	.call-out a{
-		color: #387061 !important;
-		text-decoration: none;
-		font-weight: 600;
-	}
-		.call-out a:hover{
-			color: #222 !important;
-		}
-		
-
-a.btn{
-	padding: 6px 10px;
-	display: inline-block;
-	background: #4DD5B0;
-	border: 1px solid #5da592;
-	border-radius: 3px;
-	position: static;
-	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-	text-decoration: none !important;
-	color: #fff !important;
-	font-size: 13px;
-	font-weight: 600;
-}
-   a.btn:hover,
-   a.btn:hover i{
-   	background-color: #935eaf;
-   	border-color: #935eaf;
-   	color:#fff !important;
-   	box-shadow: none;
-	}
-	a.btn:active{
-   	background-color: #83519d;
-   	border-color: #935eaf;
-   	color:#fff !important;
-		box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
-		outline: none;
-	}  
-	   a.btn i{
-	      color: #397666;
-	      margin-right: 3px;
-	      position: relative;
-	      top:1px;
-	      background: none !important;
-	   }
-	
-	a.btn.installed{
-	   background: #efefef !important;
-	   border-color: #ccc !important;
-	   color:#666 !important;
-	   cursor: default;
-		box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1) !important;
-	}
-	   a.btn.installed i,
-	   a.btn.installed:hover i{
-	      background: none !important;
-	      color: #5da592 !important;
-	      top: 0;
-	   }
-
+   #alm-builder .call-out,
+   .forceColors .call-out{ /* Shortcode builder */
+      width: 90%;
+      width: calc(100% - 20px);
+      margin: 10px;
+   }
+   .call-out .btn{
+      padding: 5px 8px;
+      display: inline-block;
+      background: #fff;
+      border: 1px solid #5da592;
+      border-radius: 3px;
+      position: absolute;
+      right: 7px;
+      top:7px;
+      color: #387061 !important;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+   }
+   .call-out a{
+      color: #387061 !important;
+      text-decoration: none;
+      font-weight: 600;
+   }
+   .call-out a:hover{
+      color: #222 !important;
+   }
+   a.btn{
+      padding: 6px 10px;
+      display: inline-block;
+      background: #4DD5B0;
+      border: 1px solid #5da592;
+      border-radius: 3px;
+      position: static;
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      text-decoration: none !important;
+      color: #fff !important;
+      font-size: 13px;
+      font-weight: 600;
+   }
+      a.btn:hover,
+      a.btn:hover i{
+         background-color: #935eaf;
+         border-color: #935eaf;
+         color:#fff !important;
+         box-shadow: none;
+      }
+      a.btn:active{
+         background-color: #83519d;
+         border-color: #935eaf;
+         color:#fff !important;
+         box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+         outline: none;
+      }
+      a.btn i{
+         color: #397666;
+         margin-right: 3px;
+         position: relative;
+         top:1px;
+         background: none !important;
+      }
+      a.btn.installed{
+         background: #efefef !important;
+         border-color: #ccc !important;
+         color:#666 !important;
+         cursor: default;
+         box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1) !important;
+      }
+      a.btn.installed i,
+      a.btn.installed:hover i{
+         background: none !important;
+         color: #5da592 !important;
+         top: 0;
+      }
 
 
-/* Plugin Sidebar */
-.ajax-load-more .alm-sidebar{
+/*
+* Plugin Sidebar
+*
+*  @since 1.0
+*/
+.ajax-load-more .cnkt-sidebar{
    width: 30%;
    float: right;
    margin-top: 10px;
 }
-	.ajax-load-more .alm-sidebar .cta{
+	.ajax-load-more .cnkt-sidebar .cta{
 	   background: #fff;
 	   padding: 20px;
 	   margin: 0 0 20px;
 	   overflow: hidden;
 	   position: relative;	
 	}
-	.ajax-load-more .alm-sidebar .cta.padding-bottom{
+	.ajax-load-more .cnkt-sidebar .cta.padding-bottom{
 		padding-bottom: 60px;
 	}
-	.ajax-load-more .alm-sidebar h3,
-	.ajax-load-more .alm-sidebar h4{
+	.ajax-load-more .cnkt-sidebar h3,
+	.ajax-load-more .cnkt-sidebar h4{
 		margin-top: 0;
 	}
 	
-	.ajax-load-more .alm-sidebar .item{
+	.ajax-load-more .cnkt-sidebar .item{
 		overflow: hidden;
 		padding: 0 0 10px;
 	}
-		.ajax-load-more .alm-sidebar .item h4{
+		.ajax-load-more .cnkt-sidebar .item h4{
 			margin: 0 0 5px;
 			font-size: 0.9em;
 			text-transform: uppercase;
 			opacity: 0.5;
 		}
-		.ajax-load-more .alm-sidebar h4{
+		.ajax-load-more .cnkt-sidebar h4{
 			margin-bottom: 5px;
 		}
-		.ajax-load-more .alm-sidebar p{
+		.ajax-load-more .cnkt-sidebar p{
 			line-height: 20px;
 			margin: 0 0 5px;
 			font-size: 13px;
 		}
-		.ajax-load-more .alm-sidebar ul{
+		.ajax-load-more .cnkt-sidebar ul{
 		   margin: 0 0 10px;
 		   overflow: hidden;
 		}
-		.ajax-load-more .alm-sidebar li{
+		.ajax-load-more .cnkt-sidebar li{
 			font-size: 13px;
 			margin: 0 0 10px;
 		}
-		.ajax-load-more .alm-sidebar .item i{
+		.ajax-load-more .cnkt-sidebar .item i{
 			font-size: 12px;
 			float: left;
 			width: 18px;
@@ -992,19 +1075,21 @@ a.btn{
 			line-height: 18px;
 			text-align: center;
 			margin:0 7px 0 0;
+			position: relative;
+			top: 1px;
 		}
 		
-			.ajax-load-more .alm-sidebar .item i.fa-check{
+			.ajax-load-more .cnkt-sidebar .item i.fa-check{
 				background: #90be59;
 				color: #fff;
 			}
-			.ajax-load-more .alm-sidebar .item i.fa-exclamation{
+			.ajax-load-more .cnkt-sidebar .item i.fa-exclamation{
 				background: #c43a3a;
 				color: #fff;
 			}
 			
 	
-	.ajax-load-more .alm-sidebar a.visit{
+	.ajax-load-more .cnkt-sidebar a.visit{
 		background: #FF5A58;
 		padding: 12px 20px 16px;
 		position: absolute;
@@ -1016,20 +1101,22 @@ a.btn{
 		z-index: 2;
 		text-decoration: none;
 	}
-		.ajax-load-more .alm-sidebar a.visit i{
+		.ajax-load-more .cnkt-sidebar a.visit i{
 			font-size: 24px;
 			opacity: 0.7;
 			margin: 0 5px 0 0;
 			position: relative;
 			top:3px;
 		}
-		.ajax-load-more .alm-sidebar a.visit:hover{
+		.ajax-load-more .cnkt-sidebar a.visit:hover{
 			background: #ec4745;
 		}
-		.ajax-load-more .alm-sidebar a.visit:active{
+		.ajax-load-more .cnkt-sidebar a.visit:active{
 			background: #db403e;
 			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
 		}
+		
+		
 		
 /*
 * CodeMirror Syntax Highlighting
@@ -1096,18 +1183,206 @@ a.btn{
    }
    
    
+   
+/*
+* Delete Template (Unlimited Repeaters
+*
+* @since 2.2.7
+*/
+
+#unlmited-container{
+   margin: 0;
+   display: block;
+   overflow: hidden;
+}
+   .admin.ajax-load-more .row.unlimited:first-of-type{
+      margin-top: 15px;
+   }
+   .repeaters .row.unlimited{
+      -webkit-transition: background-color 0.5s ease;   
+      -moz-transition: background-color 0.5s ease;   
+      transition: background-color 0.5s ease;   
+   }
+   .repeaters .row:hover,
+   #alm-builder .row:hover{
+      border-color: #ccc;
+   }
+   .unlimited-wrap{
+      display: none;
+   }
+   
+   .admin.ajax-load-more .row.unlimited.deleting{ /* Deleting Row */
+      background: #fff url(../img/loader-unlimited.gif) no-repeat center center; 
+      border-color: #fff;
+      opacity: 0.4;
+   }
+   .admin.ajax-load-more .row.unlimited.deleting.deleted{ /* Deleting Row */
+      background-image: none !important;
+   }
+   .admin.ajax-load-more .row.unlimited.new{ /* New Row */
+      background: url(../img/loader-unlimited.gif) no-repeat center center;
+      border-color: #efefef !important;
+      min-height: 60px;
+      display: none;
+   }
+   .admin.ajax-load-more .row.unlimited.new.done{
+      background-image: none !important;
+   } 
+   .admin.ajax-load-more .row.unlimited.loaded{ /* Loading complete */
+      background-color: #64e49d;
+      border-color: #64e49d;
+   }
+   
+      .admin.ajax-load-more .row.unlimited.deleting .expand-wrap,
+      .row.unlimited.deleting h3.heading{
+         opacity: 0.6;
+      }
+      .row.unlimited.deleting .alm-delete{
+         display: none;
+      }
+      .row.unlimited.deleting .save-repeater{
+         opacity: 0;
+         cursor: default;
+      }
+      
+   .ajax-load-more .row.unlimited input[type=text]{
+      width: 100.75%;
+   }
+   
+   .repeaters .alm-delete{
+      clear: none;
+      display: inline-block;
+      margin: 15px 0 0;
+      width: auto;
+      float: right;
+      opacity: 0;
+      transition: all 0.2s ease;
+   }  
+      .repeaters .alm-delete a{
+         border-radius: 2px;
+         background: none;
+         color: #c94141;    
+         font-size: 13px;
+         text-decoration: none;  
+         display: block;
+         padding: 5px 10px;
+      }
+         .repeaters .alm-delete a:hover{
+            background-color: #c94141;
+            color: #fff;
+         }
+         .repeaters .alm-delete a:focus{
+            -webkit-box-shadow: none;
+            -moz-box-shadow: none;
+            box-shadow: none;
+         }
+         .repeaters .alm-delete a:active{
+            -webkit-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+            -moz-box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+            background-color: #b93636;
+         }
+         
+      .repeaters .row:hover .alm-delete{
+         opacity: 1;
+      }
+  
+.alm-add-template{
+   text-align: center;
+   margin: 15px 0 0 !important;
+   display: block;
+   font-size: 14px !important;
+   font-weight: 700;
+   text-transform: none !important;
+   text-align: center;
+   /* text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1); */
+}
+   .alm-add-template a{
+      background: #efefef;
+      border: 1px solid #e1e1e1;
+      color: #333;
+      display: inline-block;
+      padding: 9px 14px 8px;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      text-decoration: none;
+      -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+      -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+      text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+   }
+      .alm-add-template a.active{
+         opacity: 0.5;
+         cursor: default;
+         color: #333 !important;
+         background: #efefef !important;
+         border-color: #efefef !important;
+      }
+      .alm-add-template a:hover{
+         background: #ff5a58;
+         border-color: #ff5a58;
+         color: #fff;         
+      -webkit-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+      -moz-box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 1px 0 rgba(0, 0, 0, 0.07);
+         text-shadow: none;
+      } 
+      .alm-add-template a:focus{
+         -webkit-box-shadow: none; 
+         -moz-box-shadow: none;
+         box-shadow: none;
+         text-shadow: none;
+      }
+      .alm-add-template a:active{
+         color: #fff;
+         background: #ec4745;
+         border-color: #ec4745;
+         -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+         -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+         box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+         text-shadow: none;
+      }
+      
+   .alm-add-template a i {
+      font-size: 20px;
+      color: #ec4745;
+      margin: 0 3px 0 0;
+      position: relative;
+      top: 2px;
+      left: -1px;
+   }     
+      .alm-add-template a:hover i,
+      .alm-add-template a:active i{
+         color: #fff;
+      }
 		
-		
+
+.spacer{ 
+   height:10px;
+   clear:both; 
+   display:block;
+}
+    
+    
+    		
 /*
 * Admin screen media queries
 *
 * @since 1.0
 */
 
+@media screen and (max-width: 1200px){   
+   .ajax-load-more input[type=text],
+   .select2-container{
+      width: 95%;
+   }
+}
+
 @media screen and (max-width: 900px){
-  .ajax-load-more .alm-main,
-  .ajax-load-more .alm-sidebar,
-  .ajax-load-more .alm-main.full {
+  .ajax-load-more .cnkt-main,
+  .ajax-load-more .cnkt-sidebar,
+  .ajax-load-more .cnkt-main.full {
      float: none;
      clear: both;
      margin: 10px 0 20px;
@@ -1122,7 +1397,27 @@ a.btn{
       width: 100%;
       display: block;
       float: none;
-      padding: 0 0 10px;
+      padding: 10px;
+   }
+   .ajax-load-more input[type=text],
+   .select2-container{
+      width: 100%;
+   }
+   .ajax-load-more .row .wrap .inner.half {
+      display: block;
+      padding: 0 0 20px;
+      width: 100%;
+   }
+   .ajax-load-more .section-title p {
+      color: #999;
+      padding: 0 !important;
+   }
+   #alm-add-ons .row .wrap{
+      padding-bottom: 60px;
+      width: 100%;
+   }
+   #alm-add-ons .section-title{
+      width: 100%;
    }
 
 }
