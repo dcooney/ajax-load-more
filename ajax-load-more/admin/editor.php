@@ -34,6 +34,10 @@ function alm_shortcode_buttons() {
 		
 	// Check options for hiding shortcode builder	
    $options = get_option( 'alm_settings' );
+   
+   if(!isset($options['_alm_hide_btn'])) // Check if '_alm_hide_btn isset
+	   $options['_alm_hide_btn'] = '0';
+   
 	if($options['_alm_hide_btn'] != '1'){
    	// Add only in Rich Editor mode
    	if ( get_user_option('rich_editing') == 'true') {

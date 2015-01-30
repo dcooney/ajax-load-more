@@ -3,7 +3,7 @@
  * http://wordpress.org/plugins/ajax-load-more/
  * https://github.com/dcooney/wordpress-ajax-load-more
  *
- * Copyright 2014 Connekt Media - http://connekthq.com
+ * Copyright 2015 Connekt Media - http://connekthq.com
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -13,6 +13,7 @@
  
 (function ($) {
    "use strict";
+   
    $.ajaxloadmore = function (el) {
    
       //Set variables
@@ -67,23 +68,18 @@
       /* END SEO Add-on */
       
       
-      //Prevent loading of unnessasry posts - move user to top of page
-      // Removed v2.3.0
-      $(window).scrollTop(0); 
-      
-      
-      // Check for pause on init
-      // Pause could be used to hold the loading of posts for a button click.
-      if (alm.pause === undefined) {
+      // Pause
+      // - Cound be used to hold the loading of posts for a button click.
+      if (alm.pause === undefined || (alm.seo && alm.start_page > 1)) {
          alm.pause = false;
       }
 
-      // Select the repeater template
+      // Repeater Template
       if (alm.repeater === undefined) {
          alm.repeater = 'default';
       }
 
-      // Max number of pages to load while scrolling 
+      // Max Pages to load while scrolling 
       if (alm.max_pages === undefined) {
          alm.max_pages = 5;
       }
@@ -91,7 +87,7 @@
          alm.max_pages = 1000000;
       }
 
-      // select the transition 
+      // Transition 
       if (alm.transition === undefined) {
          alm.transition = 'slide';
       } else if (alm.transition === "fade") {
@@ -100,21 +96,26 @@
          alm.transition = 'slide';
       }
 
-      // Define offset
-      if (alm.content.data('offset') === undefined) {
+      // Offset
+      if (alm.offset === undefined) {
          alm.offset = 0;
       } else {
          alm.offset = alm.content.data('offset');
       }
 
-      // Define button text
+      // Button Label & classes
       if (alm.content.data('button-label') === undefined) {
          alm.button_label = 'Older Posts';
       } else {
          alm.button_label = alm.content.data('button-label');
-      }
+      }      
+      if (alm.content.data('button-class') === undefined) {
+         alm.button_class = '';
+      } else {
+         alm.button_class = ' ' + alm.content.data('button-class');
+      }     
 
-      // Define on Scroll event
+      // Scroll (true/false)
       if (alm.content.data('scroll') === undefined) {
          alm.scroll = true;
       } else if (alm.content.data('scroll') === false) {
@@ -123,12 +124,12 @@
          alm.scroll = true;
       }
 
-      // Parse multiple Post Types  
+      // Post Types (split mulitples into array)
       alm.post_type = alm.content.data('post-type');
       alm.post_type = alm.post_type.split(",");
 
       // Append 'load More' button to .ajax-load-more-wrap
-      alm.el.append('<div class="' + alm.prefix + 'btn-wrap"><button id="load-more" class="' + alm.prefix + 'load-more-btn more">' + alm.button_label + '</button></div>');
+      alm.el.append('<div class="' + alm.prefix + 'btn-wrap"><button id="load-more" class="' + alm.prefix + 'load-more-btn more'+ alm.button_class +'">' + alm.button_label + '</button></div>');
       alm.button = $('.alm-load-more-btn', alm.el);
 
 
@@ -157,7 +158,11 @@
                meta_key: alm.content.data('meta-key'),
                meta_value: alm.content.data('meta-value'),
                meta_compare: alm.content.data('meta-compare'),
+               year: alm.content.data('year'),
+               month: alm.content.data('month'),
+               day: alm.content.data('day'),
                tag: alm.content.data('tag'),
+               post_status: alm.content.data('post-status'),
                order: alm.content.data('order'),
                orderby: alm.content.data('orderby'),
                search: alm.content.data('search'),
@@ -324,11 +329,17 @@
          $(this).data('alm', new $.ajaxloadmore($(this)));
       });
    }
-
+      
+   
+   $(window).scrollTop(0); //Prevent loading of unnessasry posts - move user to top of page
+   
+   
    /* 
     *  Initiate Ajax load More if div is present on screen
     *  @since 2.1.2
     */
-   if ($(".ajax-load-more-wrap").length) $(".ajax-load-more-wrap").ajaxloadmore();
+    
+   if ($(".ajax-load-more-wrap").length) 
+      $(".ajax-load-more-wrap").ajaxloadmore();
 
 })(jQuery);

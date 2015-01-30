@@ -6,12 +6,12 @@ Description: A simple solution for lazy loading WordPress posts and pages with A
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.3.1
+Version: 2.4.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */		
-define('ALM_VERSION', '2.3.1');
-define('ALM_RELEASE', 'December 9, 2014');
+define('ALM_VERSION', '2.4.1');
+define('ALM_RELEASE', 'January 13, 2015');
 /*
 *  alm_install
 *  Create table for storing repeater
@@ -68,7 +68,10 @@ if( !class_exists('AjaxLoadMore') ):
 		load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 		
 		// includes Admin  core
-		$this->alm_before_theme();					
+		$this->alm_before_theme();		
+		
+		// set up variables
+		$total = 0;					
 	}	
 		
 	
@@ -110,6 +113,7 @@ if( !class_exists('AjaxLoadMore') ):
 
 	function alm_enqueue_scripts(){
 		$options = get_option( 'alm_settings' );
+		//wp_enqueue_script( 'ajax-load-more', plugins_url( '/core/js/ajax-load-more.js', __FILE__ ), array('jquery'),  '1.1', true );
 		wp_enqueue_script( 'ajax-load-more', plugins_url( '/core/js/ajax-load-more.min.js', __FILE__ ), array('jquery'),  '1.1', true );
 		wp_localize_script(
 			'ajax-load-more',
@@ -136,7 +140,7 @@ if( !class_exists('AjaxLoadMore') ):
 	function alm_shortcode( $atts, $content = null ) {
 		$options = get_option( 'alm_settings' ); //Get plugin options
 		extract(shortcode_atts(array(
-				'seo' => false,
+				'seo' => 'false',
 				'repeater' => 'default',
 				'post_type' => 'post',
 				'post_format' => '',
@@ -148,8 +152,12 @@ if( !class_exists('AjaxLoadMore') ):
 				'meta_value' => '',
 				'meta_compare' => '',	
 				'tag' => '',
+				'year' => '',
+				'month' => '',
+				'day' => '',
 				'author' => '',
 				'search' => '',						
+				'post_status' => 'publish',					
 				'order' => '',
 				'orderby' => '',
 				'exclude' => '',
@@ -178,11 +186,28 @@ if( !class_exists('AjaxLoadMore') ):
 		if(isset($options['_alm_btn_color'])){
 			$btn_color = ' '.$options['_alm_btn_color'];
 		}
+		// Get btn classnames
+		$button_classname = '';
+		if(isset($options['_alm_btn_classname'])){
+			$button_classname = $options['_alm_btn_classname'];
+		}
 		
-		$lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : '';
+		// Language support 
+		
+		// WPML - http://wpml.org
+		$lang = defined('ICL_LANGUAGE_CODE') ? ICL_LANGUAGE_CODE : ''; // WPML
+		
+		// Polylang - https://wordpress.org/plugins/polylang/
+		if (function_exists('pll_current_language'))
+		   $lang = pll_current_language();
+		   
+      // qTranslate - https://wordpress.org/plugins/qtranslate/
+		if (function_exists('qtrans_getLanguage'))
+		   $lang = qtrans_getLanguage();      
+		
 		
 		$ajaxloadmore = '<div id="ajax-load-more" class="ajax-load-more-wrap '. $btn_color .'">';
-		$ajaxloadmore .= '<'.$container_element.' class="alm-listing'. $classname . '"';
+		$ajaxloadmore .= '<'.$container_element.' class="alm-listing alm-ajax'. $classname . '"';
 		$ajaxloadmore .= ' data-repeater="'.$repeater.'"';
 		$ajaxloadmore .= ' data-post-type="'.$post_type.'"';
 		$ajaxloadmore .= ' data-post-format="'.$post_format.'"';
@@ -194,8 +219,12 @@ if( !class_exists('AjaxLoadMore') ):
 		$ajaxloadmore .= ' data-meta-key="'.$meta_key.'"';
 		$ajaxloadmore .= ' data-meta-value="'.$meta_value.'"';
 		$ajaxloadmore .= ' data-meta-compare="'.$meta_compare.'"';
+		$ajaxloadmore .= ' data-year="'.$year.'"';
+		$ajaxloadmore .= ' data-month="'.$month.'"';
+		$ajaxloadmore .= ' data-day="'.$day.'"';
 		$ajaxloadmore .= ' data-author="'.$author.'"';
 		$ajaxloadmore .= ' data-search="'.$search.'"';
+		$ajaxloadmore .= ' data-post-status="'.$post_status.'"';
 		$ajaxloadmore .= ' data-order="'.$order.'"';
 		$ajaxloadmore .= ' data-orderby="'.$orderby.'"';
 		$ajaxloadmore .= ' data-exclude="'.$exclude.'"';
@@ -208,7 +237,7 @@ if( !class_exists('AjaxLoadMore') ):
 		   & the SEO add-on is installed. 
          Set $posts_per_page to be new value
 		*/
-		if($wp_posts_per_page > $posts_per_page && has_action('alm_seo_installed') && $seo)
+		if($wp_posts_per_page > $posts_per_page && has_action('alm_seo_installed') && $seo === 'true')
    		$posts_per_page = $wp_posts_per_page;
 		
       $ajaxloadmore .= ' data-posts-per-page="'.$posts_per_page.'"';
@@ -218,9 +247,10 @@ if( !class_exists('AjaxLoadMore') ):
 		$ajaxloadmore .= ' data-max-pages="'.$max_pages.'"';
 		$ajaxloadmore .= ' data-pause="'.$pause.'"';
 		$ajaxloadmore .= ' data-button-label="'.$button_label.'"';
+		$ajaxloadmore .= ' data-button-class="'.$button_classname.'"';
 		$ajaxloadmore .= ' data-transition="'.$transition.'"';
 		
-		if(has_action('alm_seo_installed') && $seo){
+		if(has_action('alm_seo_installed') && $seo === 'true'){
 		   
 		   // Get scroll speed
 		   $seo_scroll_speed = '1000';
@@ -260,10 +290,7 @@ if( !class_exists('AjaxLoadMore') ):
 			$ajaxloadmore .= ' data-seo-scroll="'.$seo_enable_scroll.'"';
 			$ajaxloadmore .= ' data-seo-scroll-speed="'.$seo_scroll_speed.'"';
 			$ajaxloadmore .= ' data-seo-permalink="'.$seo_permalink.'"';	
-			
-			//Get posts per page option from /wp-admin/options-reading.php			
-         //$ajaxloadmore .= ' data-posts-per-page="'.$posts_per_page.'"';
-			
+					
       }      
 		
 		$ajaxloadmore .= '></'.$container_element.'>';
@@ -275,19 +302,17 @@ if( !class_exists('AjaxLoadMore') ):
 
 	/*
 	*  alm_query_posts
-	*  Ajax Load More Public Query
+	*  Ajax Load More Query
 	*
 	*  @since 2.0.0
 	*/
 
-	function alm_query_posts($bypass = false) {
+	function alm_query_posts() {
 		
-		if(!$bypass){
 		$nonce = $_GET['nonce'];
 		// Check our nonce, if they don't match then bounce!
 		if (! wp_verify_nonce( $nonce, 'ajax_load_more_nonce' ))
-			die('Get Bounced!');
-		}
+			die('Error, could not verify WP nonce.');
 
 		$repeater = (isset($_GET['repeater'])) ? $_GET['repeater'] : 'default';		
 		$type = preg_split('/(?=\d)/', $repeater, 2); // split $repeater vale at number to determine type
@@ -313,10 +338,15 @@ if( !class_exists('AjaxLoadMore') ):
 		$meta_value = (isset($_GET['meta_value'])) ? $_GET['meta_value'] : '';
 		$meta_compare = (isset($_GET['meta_compare'])) ? $_GET['meta_compare'] : '=';
 		
+		$year = (isset($_GET['year'])) ? $_GET['year'] : '';
+		$month = (isset($_GET['month'])) ? $_GET['month'] : '';
+		$day = (isset($_GET['day'])) ? $_GET['day'] : '';
+		
+		$post_status = (isset($_GET['post_status'])) ? $_GET['post_status'] : 'publish';
 		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
 		$orderby = (isset($_GET['orderby'])) ? $_GET['orderby'] : 'date';
 		$exclude = (isset($_GET['exclude'])) ? $_GET['exclude'] : '';
-		$numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 6;
+		$numPosts = (isset($_GET['numPosts'])) ? $_GET['numPosts'] : 5;
 		$page = (isset($_GET['pageNumber'])) ? $_GET['pageNumber'] : 0;
 		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;		
 		$lang = (isset($_GET['lang'])) ? $_GET['lang'] : '';
@@ -329,7 +359,7 @@ if( !class_exists('AjaxLoadMore') ):
 			'offset' => $offset + ($numPosts*$page),
 			'order' => $order,
 			'orderby' => $orderby,	
-			'post_status' => 'publish',
+			'post_status' => $post_status,
 			'ignore_sticky_posts' => false,
 			'paged' => $paged,
 		);
@@ -361,6 +391,7 @@ if( !class_exists('AjaxLoadMore') ):
 
 		// Exclude posts
 		// - Please see plugin examples for more info on excluding posts
+		
 		if(!empty($exclude)){
 			$exclude = explode(",",$exclude);
 			$args['post__not_in'] = $exclude;
@@ -369,7 +400,7 @@ if( !class_exists('AjaxLoadMore') ):
       // Post Format
 		if(!empty($postFormat)){	
 		   $format = "post-format-$postFormat";
-		   //If query is for standrd we need to filter by NOT IN
+		   //If query is for standard then we need to filter by NOT IN
 		   if($format == 'post-format-standard'){		   
 	      	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
                $terms = array();
@@ -394,13 +425,12 @@ if( !class_exists('AjaxLoadMore') ):
    				)
    			);
 			}
-	    }
+	   }
       
 		// Taxonomy
 		if(!empty($taxonomy)){	
 			$the_terms = explode(", ", $taxonomy_terms);	
 			$args['tax_query'] = array(
-				'relation' => 'OR',
 				array(
 			        'taxonomy' => $taxonomy,
 			        'field' => 'slug',
@@ -408,7 +438,7 @@ if( !class_exists('AjaxLoadMore') ):
 			        'operator' => $taxonomy_operator
 				),
 			);
-	    }
+	   }
 	    
 	   // Meta Query
 		if(!empty($meta_key) && !empty($meta_value)){
@@ -424,7 +454,19 @@ if( !class_exists('AjaxLoadMore') ):
       // Meta_key, used for ordering by meta value
       if(!empty($meta_key)){
          $args['meta_key'] = $meta_key;
-      }
+      }     
+	    
+	   // Date Archives
+	   // Not using date_query for now. Issue with year/month archives
+		if(!empty($year)){
+   		$args['year'] = $year;
+	   } 
+	   if(!empty($month)){
+   		$args['monthnum'] = $month;
+	   }  
+	   if(!empty($day)){
+   		$args['day'] = $day;
+	   }       
       
 		
 		// Set current page number for determining item number		
@@ -437,7 +479,7 @@ if( !class_exists('AjaxLoadMore') ):
 
 		// WP_Query()
 		$alm_query = new WP_Query( $args );
-		
+		$total = $alm_query->found_posts - $offset;
 		// Run the loop
 		if ($alm_query->have_posts()) :
 		
@@ -478,8 +520,8 @@ if( !class_exists('AjaxLoadMore') ):
 			// Get page number and current item in overall loop				
 			$alm_loop_count++;         
          $alm_page = $alm_page_count;         
-         $alm_total = ($alm_page_count * $numPosts) - $numPosts + $alm_loop_count;
-         $alm_item = $alm_total;	
+         $alm_item = ($alm_page_count * $numPosts) - $numPosts + $alm_loop_count;	         
+         $alm_found_posts = $total;
 							
 			//Include repeater template	
 			include( $include );	

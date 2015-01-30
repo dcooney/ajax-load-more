@@ -5,6 +5,8 @@
 add_action( 'admin_head', 'alm_admin_vars' );
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
+add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
+add_action( 'wp_ajax_nopriv_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
 add_action( 'wp_ajax_nopriv_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
 
@@ -154,33 +156,33 @@ function alm_load_admin_js(){
 function alm_enqueue_admin_scripts(){
 
    //Load Admin CSS
-   wp_enqueue_style( 'admin-css', ALM_ADMIN_URL. 'css/admin.css');
-   wp_enqueue_style( 'core-css', ALM_URL. '/core/css/ajax-load-more.css');
-   wp_enqueue_style( 'font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+   wp_enqueue_style( 'alm-admin-css', ALM_ADMIN_URL. 'css/admin.css');
+   wp_enqueue_style( 'alm-core-css', ALM_URL. '/core/css/ajax-load-more.css');
+   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
    
    //Load CodeMirror Syntax Highlighting if on Repater Template page 
    $screen = get_current_screen();
    if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters') ) ){  
       
       //CodeMirror CSS
-      wp_enqueue_style( 'codemirror-css', ALM_ADMIN_URL. 'codemirror/lib/codemirror.css' );
+      wp_enqueue_style( 'alm-codemirror-css', ALM_ADMIN_URL. 'codemirror/lib/codemirror.css' );
             
       //CodeMirror JS
-      wp_enqueue_script( 'codemirror', ALM_ADMIN_URL. 'codemirror/lib/codemirror.js');    
-      wp_enqueue_script( 'codemirror-matchbrackets', ALM_ADMIN_URL. 'codemirror/addon/edit/matchbrackets.js' );
-      wp_enqueue_script( 'codemirror-htmlmixed', ALM_ADMIN_URL. 'codemirror/mode/htmlmixed/htmlmixed.js' );
-      wp_enqueue_script( 'codemirror-xml', ALM_ADMIN_URL. 'codemirror/mode/xml/xml.js' );
-      wp_enqueue_script( 'codemirror-javascript', ALM_ADMIN_URL. 'codemirror/mode/javascript/javascript.js' );
-      wp_enqueue_script( 'codemirror-mode-css', ALM_ADMIN_URL. 'codemirror/mode/css/css.js' );
-      wp_enqueue_script( 'codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
-      wp_enqueue_script( 'codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
+      wp_enqueue_script( 'alm-codemirror', ALM_ADMIN_URL. 'codemirror/lib/codemirror.js');    
+      wp_enqueue_script( 'alm-codemirror-matchbrackets', ALM_ADMIN_URL. 'codemirror/addon/edit/matchbrackets.js' );
+      wp_enqueue_script( 'alm-codemirror-htmlmixed', ALM_ADMIN_URL. 'codemirror/mode/htmlmixed/htmlmixed.js' );
+      wp_enqueue_script( 'alm-codemirror-xml', ALM_ADMIN_URL. 'codemirror/mode/xml/xml.js' );
+      wp_enqueue_script( 'alm-codemirror-javascript', ALM_ADMIN_URL. 'codemirror/mode/javascript/javascript.js' );
+      wp_enqueue_script( 'alm-codemirror-mode-css', ALM_ADMIN_URL. 'codemirror/mode/css/css.js' );
+      wp_enqueue_script( 'alm-codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
+      wp_enqueue_script( 'alm-codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
       
    }
    
    //Load JS   
    wp_enqueue_script( 'jquery-form' );
-   wp_enqueue_script( 'select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
-   wp_enqueue_script( 'shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
+   wp_enqueue_script( 'alm-select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
+   wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
 }
 
 
@@ -259,7 +261,7 @@ function alm_repeater_page(){ ?>
 	<div class="wrap">
 		<div class="header-wrap">
 			<h2><?php _e('Ajax Load More: Repeater Templates', ALM_NAME); ?></h2>
-			<p><?php _e('The library of available templates to use throughout your theme', ALM_NAME); ?></p>  
+			<p><?php _e('The library of available templates to use within your theme', ALM_NAME); ?></p>  
 		</div>
 		<div class="cnkt-main form-table repeaters">		
 		
@@ -284,7 +286,8 @@ function alm_repeater_page(){ ?>
 	            <h3 class="heading"><?php _e('Default Template', ALM_NAME); ?></h3>
 	            <div class="expand-wrap">  
 		            <div class="wrap repeater-wrap" data-name="default" data-type="default">
-		               <label class="template-title" for="template-default"><?php _e('Enter the HTML and PHP code for the default template', ALM_NAME); ?></label>		            
+		               <label class="template-title" for="template-default"><?php _e('Enter the HTML and PHP code for the default template', ALM_NAME); ?></label>	
+		               <!-- <span class="option-update" data-editor-id="template-default">Update from database</span> -->	            
 			            <textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; ?></textarea>
 			            <script>
                         var editorDefault = CodeMirror.fromTextArea(document.getElementById("template-default"), {
@@ -307,11 +310,7 @@ function alm_repeater_page(){ ?>
                
 			      // Custom Repeaters - /cta/extend.php
 			      // Removed in 2.2.8
-            	if (!has_action('alm_get_custom_repeaters')) {
-            	   // echo '<div class="row no-brd">';
-                  // include( ALM_PATH . 'admin/includes/cta/extend.php');
-                  // echo '</div>';
-				   }
+            	if (!has_action('alm_get_custom_repeaters')) {}
 				   
 				   // Custom Repeaters v2 - /cta/extend.php
             	if (!has_action('alm_get_unlimited_repeaters')) {
@@ -355,7 +354,10 @@ function alm_repeater_page(){ ?>
 								type = container.data('type'), // Get template type (default/repeater/unlimited)
 								alias = ($('input._alm_repeater_alias', container).length) ? $('input._alm_repeater_alias', container).val() : '',
 								responseText = $(".saved-response", container);
-								
+                     
+                     if(type === undefined) // Fix for custom repeaters v1
+                        type = 'undefined';
+                     	
 							//Get value from CodeMirror textarea						
 							var id = editorId.replace('template-', ''); // Editor ID								
 							
@@ -391,8 +393,8 @@ function alm_repeater_page(){ ?>
 									success: function(response) {											  		
 									  
 									  setTimeout(function() { 
-										   responseText.delay(500).html(response).removeClass('loading');							
-										}, 250);
+										   responseText.delay(500).html(response).removeClass('loading');				
+									  }, 250);
 									  						  
 									  setTimeout(function() { 
 										   responseText.animate({'opacity': 0}, function(){
@@ -400,7 +402,8 @@ function alm_repeater_page(){ ?>
                                     btn.removeClass('saving');
 										   });
 											
-										}, 6000);						
+										}, 6000);	
+															
 									},
 									error: function(xhr, status, error) {
 										responseText.html('<?php _e('Something went wrong and the data could not be saved.', ALM_NAME) ?>').removeClass('loading');
@@ -416,6 +419,75 @@ function alm_repeater_page(){ ?>
 							    editorId = btn.data('editor-id');								
 							_alm_admin.saveRepeater(btn, editorId);
 						});
+						
+						
+						
+						/*
+					    *  _alm_admin.updateRepeater
+					    *  Update Repeater Value
+					    *  
+					    *  COMING SOON
+					    *  @since 2.4
+					    */  
+						
+						_alm_admin.updateRepeater = function(btn, editorId) {							   
+							var container = btn.parent('.repeater-wrap'),
+								el = $('textarea._alm_repeater', container),
+								btn = btn,
+								repeater = container.data('name'), // Get templete name
+								type = container.data('type'), // Get template type (default/repeater/unlimited)
+								responseText = $(".saved-response", container);
+								
+							//Get value from CodeMirror textarea						
+							var id = editorId.replace('template-', ''); // Editor ID								
+						   	            
+						   //If template is not already saving, then proceed
+							if (!btn.hasClass('updating')) {
+							   btn.addClass('updating');
+								responseText.addClass('loading').html('<?php _e('Updating template...', ALM_NAME) ?>');
+								responseText.animate({'opacity' : 1});
+								
+								$.ajax({
+									type: 'POST',
+									url: alm_admin_localize.ajax_admin_url,
+									data: {
+										action: 'alm_update_repeater',
+										repeater: repeater,
+										type: type,
+										nonce: alm_admin_localize.alm_admin_nonce,
+									},
+									success: function(response) {	
+									   if(id === 'default'){ // Default Template						   
+         								editorDefault.setValue(response);
+                              }else{ // Repeater Templates	
+         						      var eid = window['editor_'+id]; // Set editor ID
+         						      eid.setValue(response);   						   
+         						   }
+									  						  
+									   setTimeout(function() { 
+										   responseText.animate({'opacity': 0}, function(){
+   										   responseText.html('&nbsp;').removeClass('loading');
+                                    btn.removeClass('updating');
+										   });
+											
+										}, 100);					
+									},
+									error: function(xhr, status, error) {
+										responseText.html('<?php _e('Something went wrong and the data could not be updated.', ALM_NAME) ?>').removeClass('loading');
+										btn.removeClass('updating');
+									}
+                        });
+                        
+							}
+						}
+						
+						
+						
+						$(document).on('click', '.option-update' ,function(){
+							var btn = $(this),
+							    editorId = btn.data('editor-id');								
+							_alm_admin.updateRepeater(btn, editorId);
+						});
 								
 					});		
 				</script>
@@ -423,7 +495,8 @@ function alm_repeater_page(){ ?>
 		   <!-- End Repeaters -->		   
 	   </div>
 	   <div class="cnkt-sidebar">
-	   		<div class="cta">
+	   	<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/writeable.php'); ?>
+   		<div class="cta">
 				<h3><?php _e('Templating Help', ALM_NAME); ?></h3>
 				<div class="item">
 					<p><strong><?php _e('What is a repeater template?', ALM_NAME); ?></strong></p>
@@ -438,9 +511,8 @@ function alm_repeater_page(){ ?>
 					<ul>
 						<li><?php _e('Always open and close your templates with an HTML element. In some rare cases data may not be displayed if not wrapped in HTML.<br/>e.g. <code>&lt;li> &lt;/li></code> or <code>&lt;div> &lt;/div></code>', ALM_NAME); ?><br/> </li>
 					</ul>
-				</div>			
-		   	</div>
-		   	<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/writeable.php'); ?>
+				</div>		
+	   	</div>
 	   </div>	
 	</div>
 </div>
@@ -462,7 +534,7 @@ function alm_save_repeater(){
 	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
 		die('Get Bounced!');
 		
-   // Get variables   
+   // Get _POST Vars 
 	$c = Trim(stripslashes($_POST["value"])); // Repeater Value
 	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
 	$t = Trim(stripslashes($_POST["type"])); // Repeater name
@@ -527,6 +599,46 @@ function alm_save_repeater(){
 }
 
 
+
+/*
+*  alm_update_repeater
+*  Update repeater from database function
+*
+*  - User story: User deletes plugin, the installs again and the version has not change - their default repeater will be in the default state and unable to be updated.
+*
+*  COMING SOON
+*  @since 2.4
+*/
+
+function alm_update_repeater(){
+	$nonce = $_POST["nonce"];
+	// Check our nonce, if they don't match then bounce!
+	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+		die('Get Bounced!');
+		
+   // Get _POST Vars  	
+	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
+	$t = Trim(stripslashes($_POST["type"])); // Repeater name
+	
+	// Get value from database
+	//Save to database
+	global $wpdb;
+	$table_name = $wpdb->prefix . "alm";	
+		
+	if($t === 'default')	$n = 'default';   
+   if($t === 'unlimited') $table_name = $wpdb->prefix . "alm_unlimited";    
+   
+   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
+   
+   
+   
+   echo $the_repeater;  
+   
+	die();
+}
+
+
+
 /*
 *  alm_shortcode_builder_page
 *  Shortcode Builder
@@ -535,7 +647,7 @@ function alm_save_repeater(){
 */
 
 function alm_shortcode_builder_page(){ ?>		
-<div class="admin ajax-load-more" id="alm-builder">	
+<div class="admin ajax-load-more shortcode-builder" id="alm-builder">	
 	<div class="wrap">
 		<div class="header-wrap">
 			<h2><?php _e('Ajax Load More: Shortcode Builder', ALM_NAME); ?></h2>
@@ -550,19 +662,19 @@ function alm_shortcode_builder_page(){ ?>
 		   </div>
 	   </div>
 	   <div class="cnkt-sidebar">
-		   	<div class="cta">
-					<h3><?php _e('Shortcode Output', ALM_NAME); ?></h3>
-					<p><?php _e('Copy and paste the following shortcode into the content editor or widget area of your theme.', ALM_NAME); ?></p>
-					<div class="output-wrap">
-						   <div id="shortcode_output"></div>
-						   <span class="copy"><?php _e('Copy', ALM_NAME); ?></span>
-					</div>
-		   	</div>
-		   	<div class="cta">
-					<h3><?php _e('Did you know?', ALM_NAME); ?></h3>
-					<img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/shortcode-editor.jpg"><br/>
-					<?php _e('<p class="addon-intro">You can generate shortcodes while editing pages!</p><p>Click the Ajax Load More icon in the content editor toolbar and the <a href="?page=ajax-load-more-shortcode-builder">shortcode builder</a> will open in an overlay window.', ALM_NAME); ?></p>
-		   	</div>
+	      <div class="table-of-contents">
+   	   	<div class="cta">
+   	   	   <select class="toc"></select>
+   	   	</div>
+   	   	<div class="cta">
+   				<h3><?php _e('Shortcode Output', ALM_NAME); ?></h3>
+   				<p><?php _e('Place the following shortcode into the content editor or widget area of your theme.', ALM_NAME); ?></p>
+   				<div class="output-wrap">
+   					<div id="shortcode_output"></div>
+   					<span class="copy"><?php _e('Copy', ALM_NAME); ?></span>
+   				</div>
+   	   	</div>
+	      </div>
 	   </div>
 	</div>
 </div>
@@ -623,8 +735,9 @@ function alm_example_page(){ ?>
 		</div>
 		<div class="cnkt-main forceColors">
 		   <div class="group">		   	
+			   <span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', ALM_NAME); ?></em><em class="expand"><?php _e('Expand All', ALM_NAME); ?></em></span></span>
 			   
-			   <div class="row gist">
+			   <div class="row gist" id="example-archive">
 			      <h3 class="heading"><?php _e('Archive.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
 			         <p><?php _e('Shortcode for use on generic archive page.', ALM_NAME); ?></p>
@@ -634,7 +747,7 @@ function alm_example_page(){ ?>
 			      </div>
 			   </div>
 			   
-			   <div class="row gist">
+			   <div class="row gist" id="example-author">
 			      <h3 class="heading"><?php _e('Author.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
 			         <p><?php _e('Shortcode for use on author archive pages.', ALM_NAME); ?></p>
@@ -643,7 +756,7 @@ function alm_example_page(){ ?>
 	   		      </div>
 			      </div>
 			   </div>
-			   <div class="row gist">
+			   <div class="row gist" id="example-category">
 			      <h3 class="heading"><?php _e('Category.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
 			         <p><?php _e('Shortcode for use on category archive pages.', ALM_NAME); ?></p>
@@ -652,7 +765,16 @@ function alm_example_page(){ ?>
 	   		      </div>
 			      </div>
 			   </div>
-			   <div class="row gist">
+			   <div class="row gist" id="example-date">
+			      <h3 class="heading"><?php _e('Date Archives', ALM_NAME); ?></h3>
+			      <div class="expand-wrap">
+			         <p><?php _e('Shortcode for use for archiving by date.', ALM_NAME); ?></p>
+			         <div class="inner">
+	                  <script src="https://gist.github.com/dcooney/6f74bebdd40cad9e3ee7.js"></script>
+	   		      </div>
+			      </div>
+			   </div>
+			   <div class="row gist" id="example-exclude">
 			      <h3 class="heading"><?php _e('Excluding Posts', ALM_NAME); ?></h3>
 	   		      <div class="expand-wrap">
 	   		      <p><?php _e('Shortcode for excluding an array of posts.', ALM_NAME); ?></p>
@@ -660,7 +782,7 @@ function alm_example_page(){ ?>
 			      </div>
 			   </div>
 			   
-			   <div class="row gist">
+			   <div class="row gist" id="example-tag">
 			      <h3 class="heading"><?php _e('Tag.php', ALM_NAME); ?></h3>
 			      <div class="expand-wrap">
 			         <p><?php _e('Shortcode for use on tag archive pages.', ALM_NAME); ?></p>
@@ -677,11 +799,15 @@ function alm_example_page(){ ?>
 		   
 	   </div>	   
 	   <div class="cnkt-sidebar">
-	   		<div class="cta">
-					<h3><?php _e('Request Examples', ALM_NAME); ?></h3>
-					<p><?php _e('If you\'re having issue\'s with functionality, please submit example requests through the <a href="https://github.com/dcooney/wordpress-ajax-load-more" target="_blank">GitHub repository</a>. ', ALM_NAME); ?></p>
-		   	</div>
-			<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/about.php');	?>
+		   	
+	   	<div class="cta">
+				<h3><?php _e('Did you know?', ALM_NAME); ?></h3>
+				<img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/shortcode-editor.jpg"><br/>
+				<?php _e('<p class="addon-intro">You can generate shortcodes while editing pages!</p><p>Click the Ajax Load More icon in the content editor toolbar and the <a href="?page=ajax-load-more-shortcode-builder">shortcode builder</a> will open in an overlay window.', ALM_NAME); ?></p>
+	   	</div>
+	   	
+	   	<?php include( plugin_dir_path( __FILE__ ) . 'includes/cta/resources.php');	?>
+	   	
 	   </div>
 	   	   
 	   	
@@ -835,7 +961,17 @@ function alm_admin_init(){
 		'alm_btn_color_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
+	);
+	
+	add_settings_field( 
+		'_alm_btn_classname', 
+		__('Button Classes', ALM_NAME ), 
+		'alm_btn_class_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
 	);	
+	
+	
 	
 	if(has_action('alm_seo_installed')){	
 	
@@ -1051,14 +1187,35 @@ function alm_btn_color_callback() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent().parent('tr').next('tr').hide();
+	      	el.parent().parent().parent('tr').next('tr').next('tr').hide();
 	      }else{		      
 	      	el.parent().parent().parent('tr').next('tr').show();
+	      	el.parent().parent().parent('tr').next('tr').next('tr').show();
 	      }
 	   });
 	   
     </script>
     <?php 
 }
+
+
+
+/*
+*  alm_btn_class_callback
+*  Add classes to the Ajax Load More button
+*
+*  @since 2.4.1
+*/
+
+function alm_btn_class_callback(){
+	$options = get_option( 'alm_settings' );
+    
+   if(!isset($options['_alm_btn_classname'])) 
+	   $options['_alm_btn_classname'] = '';
+		
+	echo '<label for="alm_settings[_alm_btn_classname]">'.__('Add classes to the <em>Load More</em> button', ALM_NAME).'</label><br/><input type="text" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button rounded etc..." /> ';	
+}
+
 
 
 /*
