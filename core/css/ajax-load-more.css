@@ -1,0 +1,210 @@
+/*
+ * WordPress Ajax Load More
+ * http://wordpress.org/plugins/ajax-load-more/
+ * https://github.com/dcooney/wordpress-ajax-load-more
+ *
+ * Copyright 2015 Connekt Media - http://connekthq.com
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Author: Darren Cooney
+ * Twitter: @KaptonKaos
+*/
+
+button.alm-load-more-btn{	
+   font-family: Helvetica, Arial, sans-serif;
+   font-size:16px;
+   font-weight: 600;
+   width:auto;   
+   height: 42px;
+   line-height: 44px;
+   background: #ed7070;
+   color:#fff;
+   border: none;
+   -webkit-border-radius:3px;
+   -moz-border-radius:3px;
+   border-radius:3px;
+   margin: 0 0 4px;
+   padding:0 20px;
+   display: inline-block;		
+   position: relative;
+   -webkit-transition: padding 0.25s ease-in-out;
+   -moz-transition: padding 0.25s ease-in-out;
+   transition: padding 0.25s ease-in-out;
+   text-align: center;	
+   text-decoration: none;
+   -webkit-appearance: none; 
+   -moz-appearance: none;   
+   appearance: none;      
+   /* Prevents text selection */
+   -webkit-touch-callout: none;
+   -webkit-user-select: none;
+   -khtml-user-select: none;
+   -moz-user-select: -moz-none;
+   -ms-user-select: none;
+   -o-user-select: none;
+   user-select: none;
+   cursor: pointer;
+}
+	button.alm-load-more-btn:hover{
+		background-color: #d34646;
+		color: #fff;
+		text-decoration: none;
+	}
+	button.alm-load-more-btn:active{
+		-webkit-box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
+		box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
+		text-decoration: none;
+	}	
+	
+	/* Loading */
+   button.alm-load-more-btn.loading{
+    	padding-left: 44px;
+   }
+    
+   /* Loaded / Done */
+	button.alm-load-more-btn.done{
+		cursor: default;
+		opacity: 0.2;
+		filter: alpha(opacity=20); 
+		background-color: #ed7070; 
+		-webkit-box-shadow: none !important;
+		-moz-box-shadow: none !important;
+		box-shadow: none !important;
+   }  
+      
+   /* Loading Icon */
+	button.alm-load-more-btn:before,
+	button.alm-load-more-btn.done:before{                
+		background: none;
+		width: 0;
+	}
+	
+	/* Loading :before */
+	button.alm-load-more-btn.loading:before {
+      background: #fff url(../../core/img/ajax-loader.gif) no-repeat center center;
+      width: 30px;
+      height: 30px;
+      margin: 6px;		
+      -webkit-border-radius:3px;
+      -moz-border-radius:3px;
+      border-radius:3px;
+      display: inline-block;
+      z-index: 0;
+      content: '';
+      position: absolute;
+      left: 0;
+      overflow: hidden;
+      -webkit-transition: width 0.5s ease-in-out;
+      -moz-transition: width 0.5s ease-in-out;
+      transition: width 0.5s ease-in-out;
+	}
+	
+.alm-btn-wrap{
+	text-align:center;
+	padding:10px 10px 30px;
+	overflow: hidden;
+	display: block;
+}
+
+/* Blue */
+.ajax-load-more-wrap.blue button.alm-load-more-btn{
+	background-color: #529ecf;
+}
+	.ajax-load-more-wrap.blue button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.blue button.alm-load-more-btn.done{
+		background-color: #468ebb;
+	}
+	
+/* green */
+.ajax-load-more-wrap.green button.alm-load-more-btn{
+	background-color: #80bb46;
+}
+	.ajax-load-more-wrap.green button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.green button.alm-load-more-btn.done{
+		background-color: #6fa43c;
+	}
+	
+/* red */
+.ajax-load-more-wrap.red button.alm-load-more-btn{
+	background-color: #ca4b4b;
+}
+	.ajax-load-more-wrap.red button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.red button.alm-load-more-btn.done{
+		background-color: #b13b3b;
+	}
+
+/* purple */
+.ajax-load-more-wrap.purple button.alm-load-more-btn{
+	background-color: #b14fae;
+}
+	.ajax-load-more-wrap.purple button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.purple button.alm-load-more-btn.done{
+		background-color: #9c4399;
+	}	
+
+/* grey */
+.ajax-load-more-wrap.grey button.alm-load-more-btn{
+	background-color: #999;
+}
+	.ajax-load-more-wrap.grey button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.grey button.alm-load-more-btn.done{
+		background-color: #666;
+	}	
+
+/* white */
+.ajax-load-more-wrap.white button.alm-load-more-btn{
+	background-color: #fff;
+	color: #666;
+	border: 1px solid #efefef;
+}
+	.ajax-load-more-wrap.white button.alm-load-more-btn:hover,
+	.ajax-load-more-wrap.white button.alm-load-more-btn.done{
+		background-color: #efefef;
+		color: #333;
+	}	
+	.ajax-load-more-wrap.white button.alm-load-more-btn.done{
+		border-color: #fff;
+	}
+	
+
+
+/*
+*  Generic alm-listing Styles
+*
+*  @since 1.0.0
+*/
+
+.alm-listing{
+	margin: 0;
+	padding: 0;
+}
+	.alm-listing li{
+		background: none;
+		margin: 0 0 30px;
+		padding: 0 0 0 170px;
+		overflow: hidden;
+		position: relative;
+		list-style: none;
+	}				
+   	.alm-listing li.no-img{
+   		padding: 0;   	
+   	}		
+	.alm-listing li a{
+		color: #34383D;
+	}
+	.alm-listing li p{
+		margin: 0;
+	}
+	.alm-listing li h3{
+		margin: 0 0 10px;
+	}
+	.alm-listing li img{
+		position: absolute;
+		left: 0;
+		top: 0;			
+		-webkit-border-radius:3px;
+		-moz-border-radius:3px;
+		border-radius:3px;
+	}		
