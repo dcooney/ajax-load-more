@@ -1,7 +1,7 @@
 <div class="admin ajax-load-more" id="alm-repeaters">	
 	<div class="wrap">
 		<div class="header-wrap">
-			<h2><?php _e('Ajax Load More: Repeater Templates', ALM_NAME); ?></h2>
+			<h2><?php echo ALM_TITLE; ?>: <strong><?php _e('Repeater Templates', ALM_NAME); ?></strong></h2>
 			<p><?php _e('The library of available templates to use within your theme', ALM_NAME); ?></p>  
 		</div>
 		<div class="cnkt-main form-table repeaters">		

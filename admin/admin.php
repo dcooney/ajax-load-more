@@ -4,11 +4,13 @@
 
 add_action( 'admin_head', 'alm_admin_vars' );
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
-add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
+add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' );
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
-add_action( 'wp_ajax_nopriv_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
+add_action( 'wp_ajax_nopriv_alm_update_repeater', 'alm_update_repeater' );
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
-add_action( 'wp_ajax_nopriv_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
+add_action( 'wp_ajax_nopriv_alm_get_tax_terms', 'alm_get_tax_terms' );
+add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache
+add_action( 'wp_ajax_nopriv_alm_delete_cache', 'alm_delete_cache' ); 
 
 
 /*
@@ -116,11 +118,22 @@ function alm_admin_menu() {
    $icon = 'dashicons-plus-alt';
    $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
    $alm_page = add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon );
+   
    $alm_settings_page = add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
-   $alm_template_page = add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page'); 
-   $alm_shortcode_page = add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page'); 
-   $alm_examples_page = add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page'); 	
-   $alm_addons_page = add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 	
+   
+   $alm_template_page = add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page');
+    
+   $alm_shortcode_page = add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page');
+   
+   $alm_examples_page = add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page');  	
+   	
+   $alm_addons_page = add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 
+   
+   if(has_action('alm_cache_installed')){
+      $alm_cache_page = add_submenu_page( 'ajax-load-more', 'Cache', '<span style="color: #f2f5bf">Cache<span>', 'edit_theme_options', 'ajax-load-more-cache', 'alm_cache_page');
+      add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
+      add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
+   }
    
    //Add our admin scripts
    add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
@@ -128,9 +141,8 @@ function alm_admin_menu() {
    add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
-   
-}
-
+}   
+      
 
 
 /**
@@ -142,6 +154,9 @@ function alm_admin_menu() {
 
 function alm_load_admin_js(){
 	add_action( 'admin_enqueue_scripts', 'alm_enqueue_admin_scripts' );
+}
+function alm_load_cache_admin_js(){
+	add_action( 'admin_enqueue_scripts', 'alm_enqueue_cache_admin_scripts' );
 }
 
 
@@ -158,7 +173,6 @@ function alm_enqueue_admin_scripts(){
    //Load Admin CSS
    wp_enqueue_style( 'alm-admin-css', ALM_ADMIN_URL. 'css/admin.css');
    wp_enqueue_style( 'alm-select2-css', ALM_ADMIN_URL. 'css/select2.css');
-   //wp_enqueue_style( 'alm-chosen-css', ALM_ADMIN_URL. 'css/chosen.css');
    wp_enqueue_style( 'alm-core-css', ALM_URL. '/core/css/ajax-load-more.css');
    wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
    
@@ -187,6 +201,10 @@ function alm_enqueue_admin_scripts(){
    wp_enqueue_script( 'alm-drops', ALM_ADMIN_URL. 'js/libs/jquery.drops.js', array( 'jquery' ));
    wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'js/admin.js', array( 'jquery' ));
    wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
+}
+
+function alm_enqueue_cache_admin_scripts(){
+   wp_enqueue_script( 'alm-cache-admin', ALM_CACHE_URL. '/js/alm-cache.js', array( 'jquery' ));
 }
 
 
@@ -252,6 +270,49 @@ function alm_example_page(){
 
 function alm_add_ons_page(){ 
    include_once( ALM_PATH . 'admin/views/add-ons.php');
+}
+
+
+/*
+*  alm_cache_page
+*  Cache Add-on page
+*
+*  @since 2.6.0
+*/
+
+function alm_cache_page(){ 
+   include_once( ALM_CACHE_PATH . 'admin/views/cache.php');
+}
+
+
+
+/*
+*  alm_delete_cache
+*  Delete induvidual cached items
+*
+*  @return   null
+*  @since 2.6.0
+*/
+
+function alm_delete_cache(){	
+	$nonce = $_POST["nonce"];
+	$cache = $_POST["cache"];
+	// Check our nonce, if they don't match then bounce!
+	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+		die('Get Bounced!');
+	
+	$dir = ALM_CACHE_PATH .'_cache/'.$cache;
+	
+	if (is_dir($dir)) {
+      foreach (glob($dir."/*.*") as $filename) {
+          if (is_file($filename)) {
+              unlink($filename);
+          }
+      }
+      rmdir($dir);
+   }
+	
+	die();
 }
 
 
@@ -491,7 +552,32 @@ function alm_admin_init(){
 		'alm_general_settings' 
 	);	
 	
-	//
+	// CACHE
+	if(has_action('alm_cache_installed')){
+	   add_settings_section( 
+   		'alm_cache_settings',  
+   		'Cache Settings', 
+   		'alm_cache_settings_callback', 
+   		'ajax-load-more' 
+   	);
+   	add_settings_field( 
+   		'_alm_cache_publish', 
+   		__('Published Posts', ALM_NAME ), 
+   		'_alm_cache_publish_callback', 
+   		'ajax-load-more', 
+   		'alm_cache_settings' 
+   	);	
+   	add_settings_field( 
+   		'_alm_cache_known_users', 
+   		__('Known Users', ALM_NAME ), 
+   		'_alm_cache_known_users_callback', 
+   		'ajax-load-more', 
+   		'alm_cache_settings' 
+   	);	
+   	
+   }
+   
+	// SEO
 	if(has_action('alm_seo_installed')){	
 	
 	   add_settings_section( 
@@ -518,6 +604,13 @@ function alm_admin_init(){
    		'_alm_seo_speed', 
    		__('Scroll Speed', ALM_NAME ), 
    		'_alm_seo_speed_callback', 
+   		'ajax-load-more', 
+   		'alm_seo_settings' 
+   	);	
+   	add_settings_field( 
+   		'_alm_seo_scrolltop', 
+   		__('Scroll Top', ALM_NAME ), 
+   		'_alm_seo_scrolltop_callback', 
    		'ajax-load-more', 
    		'alm_seo_settings' 
    	);	
@@ -551,6 +644,7 @@ function alm_sanitize_settings( $input ) {
 }
 
 
+
 /*
 *  alm_disable_css_callback
 *  Diabale Ajax Load More CSS.
@@ -565,10 +659,11 @@ function alm_disable_css_callback(){
 	
 	$html = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
 	$html .= '<input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles', ALM_NAME).'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', ALM_NAME).'</a></span></label>';
+	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles.', ALM_NAME).'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', ALM_NAME).'</a></span></label>';
 	
 	echo $html;
 }
+
 
 
 /*
@@ -584,7 +679,7 @@ function alm_hide_btn_callback(){
 	   $options['_alm_hide_btn'] = '0';
 	
 	$html = '<input type="hidden" name="alm_settings[_alm_hide_btn]" value="0" /><input type="checkbox" id="alm_hide_btn" name="alm_settings[_alm_hide_btn]" value="1"'. (($options['_alm_hide_btn']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_hide_btn">'.__('Hide shortcode button in WYSIWYG editor', ALM_NAME).'</label>';	
+	$html .= '<label for="alm_hide_btn">'.__('Hide shortcode button in WYSIWYG editor.', ALM_NAME).'</label>';	
 	
 	echo $html;
 }
@@ -621,7 +716,7 @@ function alm_disable_dynamic_callback(){
 function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 		
-	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container', ALM_NAME).'</label><br/>';
+	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container.', ALM_NAME).'</label><br/>';
 	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';	
 	
 	echo $html;
@@ -669,35 +764,28 @@ function alm_btn_color_callback() {
     if(!isset($color)) 
 	   $options['_alm_btn_color'] = '0';
 	
-	$selected0 = '';   
-	if($color == 'default')
-		$selected0 = 'selected="selected"';
+	 $selected0 = '';   
+	 if($color == 'default') $selected0 = 'selected="selected"';
 		
-	$selected1 = '';   
-	if($color == 'blue')
-		$selected1 = 'selected="selected"';
+	 $selected1 = '';   
+	 if($color == 'blue') $selected1 = 'selected="selected"';
 		
-	$selected2 = '';   
-	if($color == 'green')
-		$selected2 = 'selected="selected"';
+	 $selected2 = '';   
+	 if($color == 'green') $selected2 = 'selected="selected"';
 		
-	$selected3 = '';   
-	if($color == 'red')
-		$selected3 = 'selected="selected"';
+	 $selected3 = '';   
+	 if($color == 'red') $selected3 = 'selected="selected"';
 		
-	$selected4 = '';   
-	if($color == 'purple')
-		$selected4 = 'selected="selected"';
+	 $selected4 = '';   
+	 if($color == 'purple') $selected4 = 'selected="selected"';
 		
-	$selected5 = '';   
-	if($color == 'grey')
-		$selected5 = 'selected="selected"';
+	 $selected5 = '';   
+	 if($color == 'grey') $selected5 = 'selected="selected"';
 		
-	$selected6 = '';   
-	if($color == 'white')
-		$selected5 = 'selected="selected"';
+	 $selected6 = '';   
+	 if($color == 'white') $selected6 = 'selected="selected"';
 		
-    $html =  '<label for="alm_settings_btn_color">'.__('Choose your <strong>Load More</strong> button color', ALM_NAME).'</label><br/>';
+    $html =  '<label for="alm_settings_btn_color">'.__('Choose your <strong>Load More</strong> button color', ALM_NAME).'.</label><br/>';
     $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
     $html .= '<option value="default" ' . $selected0 .'>Default (Orange)</option>';
     $html .= '<option value="blue" ' . $selected1 .'>Blue</option>';
@@ -727,7 +815,7 @@ function alm_btn_class_callback(){
     if(!isset($options['_alm_btn_classname'])) 
 	   $options['_alm_btn_classname'] = '';
 		
-	$html = '<label for="alm_settings[_alm_btn_classname]">'.__('Add classes to your <strong>Load More</strong> button', ALM_NAME).'</label>';
+	$html = '<label for="alm_settings[_alm_btn_classname]">'.__('Add classes to your <strong>Load More</strong> button', ALM_NAME).'.</label>';
 	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button rounded listing etc..." /> ';	
 	
 	echo $html;
@@ -761,6 +849,71 @@ function alm_btn_class_callback(){
 	<?php
 }
 
+
+
+/*
+*  alm_cache_settings_callback
+*  Cache Setting Heading
+*
+*  @since 2.6.0
+*/
+
+function alm_cache_settings_callback() {
+   $html = '<p>' . __('Customize your installation of the <a href="http://connekthq.com/plugins/ajax-load-more/cache/">Cache</a> add-on.', ALM_NAME) . '</p>';
+   
+   echo $html;
+}
+
+
+
+/*
+*  _alm_cache_publish_callback
+*  Clear cache when a new post is published
+*
+*  @since 2.6.0
+*/
+	
+function _alm_cache_publish_callback() {
+ 
+   $options = get_option( 'alm_settings' );
+	   
+	if(!isset($options['_alm_cache_publish'])) 
+	   $options['_alm_cache_publish'] = '0';
+	
+	$html = '<input type="hidden" name="alm_settings[_alm_cache_publish]" value="0" /><input type="checkbox" id="alm_cache_publish" name="alm_settings[_alm_cache_publish]" value="1"'. (($options['_alm_cache_publish']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="alm_cache_publish">'.__('Delete cache when new posts are published.', ALM_NAME);
+	$html .= '<span style="display:block">'.__('Cache will be fully cleared whenever a post, page or Custom Post Type is published or updated.', ALM_NAME).'</span>';
+	$html .=' </label>';	
+	
+	
+	echo $html;
+ 
+}
+
+
+
+/*
+*  _alm_cache_known_users_callback
+*  Don't cache files for known users
+*
+*  @since 2.6.0
+*/
+	
+function _alm_cache_known_users_callback() {
+ 
+   $options = get_option( 'alm_settings' );
+	   
+	if(!isset($options['_alm_cache_known_users'])) 
+	   $options['_alm_cache_known_users'] = '0';
+	
+	$html = '<input type="hidden" name="alm_settings[_alm_cache_known_users]" value="0" /><input type="checkbox" id="alm_cache_known_users" name="alm_settings[_alm_cache_known_users]" value="1"'. (($options['_alm_cache_known_users']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="alm_cache_known_users">'.__('Don\'t cache files for logged in users.', ALM_NAME);
+	$html .= '<span style="display:block">'.__('Logged in users will retrieve content directly from the database and will not view any cached content.', ALM_NAME).'</span>';
+	$html .=' </label>';		
+	
+	echo $html;
+ 
+}
 
 
 
@@ -846,19 +999,43 @@ function _alm_seo_speed_callback() {
      
 		
 	echo '<label for="alm_settings[_alm_seo_speed]">'.__('Set the scrolling speed of the page in milliseconds. <br/><span>e.g. 1 second = 1000</span>', ALM_NAME).'</label><br/><input type="number" class="sm" id="alm_settings[_alm_seo_speed]" name="alm_settings[_alm_seo_speed]" step="50" min="0" value="'.$options['_alm_seo_speed'].'" placeholder="1000" /> ';	
+	  
+}
+
+
+
+/*
+*  _alm_seo_scrolltop_callback
+*  Set the scrlltop value of window scrolling
+*
+*  @since 2.6.0
+*/
+	
+function _alm_seo_scrolltop_callback() {
+ 
+    $options = get_option( 'alm_settings' );
+    
+    if(!isset($options['_alm_seo_scrolltop'])) 
+	   $options['_alm_seo_scrolltop'] = '30';
+     
+		
+	echo '<label for="alm_settings[_alm_seo_scrolltop]">'.__('Set the scrolltop position of the window when scrolling to post.', ALM_NAME).'</label><br/><input type="number" class="sm" id="alm_settings[_alm_seo_scrolltop]" name="alm_settings[_alm_seo_scrolltop]" step="1" min="0" value="'.$options['_alm_seo_scrolltop'].'" placeholder="30" /> ';	
 	
 	?>
 	<script>
 		// Check if Scroll to Page  != true
 		if(!jQuery('input#alm_scroll_page').is(":checked")){ 
 	      jQuery('input#alm_scroll_page').parent().parent('tr').next('tr').hide();
+	      jQuery('input#alm_scroll_page').parent().parent('tr').next('tr').next('tr').hide();
     	}
     	jQuery('input#alm_scroll_page').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent('tr').next('tr').show();
+	      	el.parent().parent('tr').next('tr').next('tr').show();
 	      }else{		      
 	      	el.parent().parent('tr').next('tr').hide();
+	      	el.parent().parent('tr').next('tr').next('tr').hide();
 	      }
 	   });
 	   

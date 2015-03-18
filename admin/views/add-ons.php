@@ -1,10 +1,35 @@
 <div class="admin ajax-load-more" id="alm-add-ons">	
 	<div class="wrap">
 		<div class="header-wrap">
-	   		<h2><?php _e('Ajax Load More: Add-ons', ALM_NAME); ?></h2>
+	   		<h2><?php echo ALM_TITLE; ?>: <strong><?php _e('Add-ons', ALM_NAME); ?></strong></h2>
 	   		<p><?php _e('Add-ons are available to extend and enhance the core functionality of Ajax Load More.', ALM_NAME); ?></p>  
 		</div>
 		<div class="cnkt-main">
+		
+		   <!-- Custom Repeaters -->
+		   <div class="group">
+			   <div class="row no-brd">
+			      <div class="expand-wrap">
+                  <div class="section-title">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/cache-add-ons.jpg">                         
+                  </div>
+                  <div class="wrap">
+                     <h2 class="addon-title"><?php _e('Cache', ALM_NAME); ?></h2>
+                     <p class="addon-intro"><?php _e('Improve your website performance with the Ajax Load More caching engine.', ALM_NAME); ?></p>
+                     <p><?php _e('The Cache add-on creates static HTML files of Ajax Load More requests then delivers those static files to your visitors.', ALM_NAME); ?></p>                   
+                  </div>           
+               </div>
+			   </div>			   
+            <?php
+            	$cache_url = 'http://connekthq.com/plugins/ajax-load-more/cache/';
+               if (has_action('alm_cache_installed')){
+                  echo '<a class="cnkt-button installed" href="'. $cache_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
+               }else{
+                  echo '<a class="cnkt-button" href="'. $cache_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+               }
+            ?> 		   
+		   </div>
+		   <!-- End Custom Repeaters -->
 		   
 		   <!-- Custom Repeaters -->
 		   <div class="group">
@@ -23,9 +48,9 @@
             <?php
             	$cr_url = 'http://connekthq.com/plugins/ajax-load-more/custom-repeaters/';
                if (has_action('alm_unlimited_installed')){
-                  echo '<a class="btn installed" href="'. $cr_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
+                  echo '<a class="cnkt-button installed" href="'. $cr_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
                }else{
-                  echo '<a class="btn" href="'. $cr_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+                  echo '<a class="cnkt-button" href="'. $cr_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
                }
             ?> 		   
 		   </div>
@@ -48,9 +73,9 @@
             <?php
             	$cr_url = 'http://connekthq.com/plugins/ajax-load-more/preloaded/';
                if (has_action('alm_preload_installed')){
-                  echo '<a class="btn installed" href="'. $cr_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
+                  echo '<a class="cnkt-button installed" href="'. $cr_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
                }else{
-                  echo '<a class="btn" href="'. $cr_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+                  echo '<a class="cnkt-button" href="'. $cr_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
                }
             ?> 		   
 		   </div>
@@ -73,9 +98,9 @@
             <?php
             	$seo_url = 'http://connekthq.com/plugins/ajax-load-more/seo/';
                if (has_action('alm_seo_installed')){
-                  echo '<a class="btn installed" href="'. $seo_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
+                  echo '<a class="cnkt-button installed" href="'. $seo_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
                }else{
-                  echo '<a class="btn" href="'. $seo_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+                  echo '<a class="cnkt-button" href="'. $seo_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
                }
             ?> 		   
 		   </div>

@@ -8,6 +8,51 @@
 	$disable_dynamic_content = $alm_options['_alm_disable_dynamic'];   
 ?>
 
+
+
+<?php if(has_action('alm_cache_installed')){ ?>
+<!-- CACHE -->
+<div class="row input cache add-on" id="alm-cache">
+   <h3 class="heading"><?php _e('Cache', ALM_NAME); ?></h3>
+   <div class="expand-wrap">
+      <div class="section-title">
+            <h4>Enable Caching</h4>
+		 	<p><?php _e('Turn on content caching for this Ajax Load More query.', ALM_NAME); ?></p>
+		 </div>
+      <div class="wrap">
+         <div class="inner">	               
+            <ul>
+                <li>
+                 <input class="alm_element" type="radio" name="cache" value="true" id="cache-true" >
+                 <label for="cache-true"><?php _e('True', ALM_NAME); ?></label>
+                </li>
+                <li>
+                 <input class="alm_element" type="radio" name="cache" value="false" id="cache-false"  checked="checked">
+                 <label for="cache-false"><?php _e('False', ALM_NAME); ?></label>
+                </li>
+            </ul>
+         </div>
+      </div>
+      <div class="clear"></div>
+      <div class="cache_id">        
+         <div class="clear"></div>
+         <hr>
+         <div class="section-title">
+            <h4>Cache ID</h4>
+   		 	<p><?php _e('You <u>must</u> generate a unique ID for this cached query - this unique ID will be used as a content identifier.', ALM_NAME); ?></p>   		 	
+   		 </div>
+         <div class="wrap">
+            <div class="inner">            
+               <input type="text" class="alm_element disabled" name="cache-id" id="cache-id" disabled="disabled">
+               <div class="clear"></div>
+               <p class="generate-cache-id"><a href="javascript:void(0);"><i class="fa fa-random"></i> <?php _e('Generate New ID', ALM_NAME); ?></a></p>  
+            </div>
+         </div>        
+      </div> 
+   </div>
+</div> 
+<?php } ?>
+
 <?php if(has_action('alm_preload_installed')){ ?>
 <!-- PRELOAD -->
 <div class="row input preload add-on" id="alm-preload">
@@ -24,7 +69,7 @@
                  <label for="preload-true"><?php _e('True', ALM_NAME); ?></label>
                 </li>
                 <li>
-                 <input class="alm_element" type="radio" name="preload" value="false" id="preload-false" checked>
+                 <input class="alm_element" type="radio" name="preload" value="false" id="preload-false" checked="checked">
                  <label for="preload-false"><?php _e('False', ALM_NAME); ?></label>
                 </li>
             </ul>
@@ -42,10 +87,7 @@
             <div class="inner">            
                <input type="number" class="alm_element numbers-only" name="preload-amount" id="preload-amount" step="1" min="1" value="5">  
             </div>
-         </div>          
-         <?php if(has_action('alm_seo_installed')){ ?>
-		 	  <!-- <p class="warning-callout">If using <strong>Preload</strong> and <strong>SEO</strong> together, the value of <strong>preload_amount</strong> will be determined by the value set within the <strong>posts_per_page</strong> parameter.</p> -->
-		 	<?php } ?>
+         </div>        
       </div> 
    </div>
 </div> 
@@ -68,15 +110,12 @@
                  <label for="seo-true"><?php _e('True', ALM_NAME); ?></label>
                 </li>
                 <li>
-                 <input class="alm_element" type="radio" name="seo" value="false" id="seo-false" checked>
+                 <input class="alm_element" type="radio" name="seo" value="false" id="seo-false"  checked="checked">
                  <label for="seo-false"><?php _e('False', ALM_NAME); ?></label>
                 </li>
             </ul>
          </div>
       </div>
-      <?php if(has_action('alm_preload_installed')){ ?>
-	 	  <p class="warning-callout"><?php _e('At this time it is not possible to use <strong>preloaded</strong> and <strong>SEO</strong> together - We are still working out the kinks but you can expect a fix to be released shortly.', ALM_NAME); ?></p>
-	 	<?php } ?>
    </div>
 </div> 
 <?php } ?>   
@@ -125,7 +164,7 @@
 		echo '<p>'.__('Select Post Types to query.', ALM_NAME). '</p>';
 		echo '</div>';
 		echo '<div class="wrap"><div class="inner"><ul>';
-	    foreach( $types as $type ){
+	   foreach( $types as $type ){
 	     $typeobj = get_post_type_object( $type );
 	     $name = $typeobj->name;
 	     if( $name != 'revision' && $name != 'attachment' && $name != 'nav_menu_item' && $name != 'acf'){
@@ -537,7 +576,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <input type="number" class="alm_element numbers-only" name="display_posts-select" id="display_posts-select" step="1" min="0" value="5">               
+               <input type="number" class="alm_element numbers-only" name="display_posts-select" id="display_posts-select" step="1" min="1" value="5">               
             </div>
          </div>
       </div>
@@ -590,6 +629,19 @@
             </div>
          </div> 
          <div class="clear"></div>
+         <div class="scroll_distance">        
+            <div class="clear"></div>
+            <hr>
+            <div class="section-title">
+               <h4>Scroll Distance</h4>
+      		 	<p><?php _e('The distance from the bottom of the screen to trigger the loading of posts while scrolling. (Default = 150)', ALM_NAME); ?></p>
+      		 </div>
+            <div class="wrap">
+               <div class="inner">            
+                  <input type="number" class="alm_element numbers-only" name="scroll-distance" id="scroll-distance" step="10" min="0" value="150">  
+               </div>
+            </div> 
+         </div>
          <div class="max_pages">        
             <div class="clear"></div>
             <hr>
@@ -602,7 +654,7 @@
                   <input type="number" class="alm_element numbers-only" name="max-select" id="max-select" step="1" min="0" value="5">  
                </div>
             </div> 
-         </div>        
+         </div>       
       </div>
    </div>    
    

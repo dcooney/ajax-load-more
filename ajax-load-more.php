@@ -6,13 +6,13 @@ Description: A simple solution for lazy loading WordPress posts and pages with A
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.5.1
+Version: 2.6.0
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */	
 	
-define('ALM_VERSION', '2.5.1');
-define('ALM_RELEASE', 'February 12, 2015');
+define('ALM_VERSION', '2.6.0');
+define('ALM_RELEASE', 'March 12, 2015');
 
 /*
 *  alm_install
@@ -101,8 +101,8 @@ if( !class_exists('AjaxLoadMore') ):
    	*/   
       
       function alm_action_links( $links ) {
-         $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more') .'">Settings</a>';
-         $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more-shortcode-builder') .'">Shortcode  Builder</a>';
+         $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more') .'">'.__('Settings', ALM_NAME).'</a>';
+         $links[] = '<a href="'. get_admin_url(null, 'admin.php?page=ajax-load-more-shortcode-builder') .'">'.__('Shortcode  Builder', ALM_NAME).'</a>';
          return $links;
       }
    
@@ -146,6 +146,8 @@ if( !class_exists('AjaxLoadMore') ):
    		$options = get_option( 'alm_settings' ); //Get plugin options
    		
    		extract(shortcode_atts(array(
+				'cache' => 'false',		
+				'cache_id' => '',	
 				'preloaded' => 'false',
 				'preloaded_amount' => '5',
 				'seo' => 'false',
@@ -174,11 +176,12 @@ if( !class_exists('AjaxLoadMore') ):
 				'offset' => '0',
 				'posts_per_page' => '5',
 				'scroll' => 'true',
+				'scroll_distance' => '150',
 				'max_pages' => '5',
 				'pause' => 'false',
 				'destroy_after' => '',
 				'transition' => 'slide',
-				'button_label' => 'Older Posts',			
+				'button_label' => 'Older Posts',		
 			), $atts));
             
          // Get container elements (ul | div)
@@ -207,8 +210,15 @@ if( !class_exists('AjaxLoadMore') ):
    		if (function_exists('pll_current_language')) // Polylang - https://wordpress.org/plugins/polylang/
    		   $lang = pll_current_language();   		   
          if (function_exists('qtrans_getLanguage')) // qTranslate - https://wordpress.org/plugins/qtranslate/
-   		   $lang = qtrans_getLanguage();   	
-   		   	
+   		   $lang = qtrans_getLanguage();  
+               
+         
+   		$wp_posts_per_page = get_option( 'posts_per_page' ); // Posts per page	- settings -> reading
+   		
+   		/* If $wp_posts_per_page > than shortcode value then $posts_per_page to $wp_posts_per_page */
+   		if(has_action('alm_seo_installed') && $wp_posts_per_page > $posts_per_page && $seo === 'true')
+      		$posts_per_page = $wp_posts_per_page;  
+      		      				   	
    		
    		// Start ALM object
    		$ajaxloadmore = '<div id="ajax-load-more" class="ajax-load-more-wrap '. $btn_color .'">';
@@ -218,7 +228,7 @@ if( !class_exists('AjaxLoadMore') ):
    		   
    		   // If SEO then set $preloaded_amount to $posts_per_page
    		   if(has_action('alm_seo_installed') && $seo === 'true'){
-   		      $preloaded_amount = $posts_per_page; // 
+   		      $preloaded_amount = $posts_per_page; 
             }
             
       		$preloaded_arr = array( // Create preload data array
@@ -270,16 +280,34 @@ if( !class_exists('AjaxLoadMore') ):
    			endif;
    			$preloaded_output = '<'.$container_element.' class="alm-listing alm-preloaded'. $classname .'" data-total-posts="'. $alm_total_posts .'">';
    			$preloaded_output .= $output;
-   			$preloaded_output .= '</'.$container_element.'>';
+   			$preloaded_output .= '</'.$container_element.'>';   			
    			
-   			// Add $preloadeded data to $ajaxloadmore
-   			$ajaxloadmore .= $preloaded_output; 
+   			$ajaxloadmore .= $preloaded_output; // Add $preloadeded data to $ajaxloadmore
          }
          // End Preload Posts
    		
    		
-   		// Build ALM container 
-   		$ajaxloadmore .= '<'.$container_element.' class="alm-listing alm-ajax'. $classname . '"';
+   		
+   		$ajaxloadmore .= '<'.$container_element.' class="alm-listing alm-ajax'. $classname . '"'; // Build ALM container 
+   		
+   		//Cache Add-on
+   		if(has_action('alm_cache_installed')){   
+   		   $ajaxloadmore .= ' data-cache="'.$cache.'"';
+   		   $ajaxloadmore .= ' data-cache-id="'.$cache_id.'"';
+            $ajaxloadmore .= ' data-cache-path="'.ALM_CACHE_URL.'/_cache/'.$cache_id.'"';
+            
+            // Check for known users
+            if(isset($options['_alm_cache_known_users']) && $options['_alm_cache_known_users'] === '1' && is_user_logged_in()) 
+   		      $ajaxloadmore .= ' data-cache-logged-in="true"';   		     
+   		}
+   		
+   		// Preloaded Add-on
+         if(has_action('alm_preload_installed') && $preloaded === 'true'){
+   		   $ajaxloadmore .= ' data-preloaded="'.$preloaded.'"';	
+            $ajaxloadmore .= ' data-preloaded-amount="'.$preloaded_amount.'"';
+   		}
+   		
+   		
    		$ajaxloadmore .= ' data-repeater="'.$repeater.'"';
    		$ajaxloadmore .= ' data-post-type="'.$post_type.'"';
    		$ajaxloadmore .= ' data-post-format="'.$post_format.'"';
@@ -302,47 +330,33 @@ if( !class_exists('AjaxLoadMore') ):
    		$ajaxloadmore .= ' data-order="'.$order.'"';
    		$ajaxloadmore .= ' data-orderby="'.$orderby.'"';
    		$ajaxloadmore .= ' data-exclude="'.$exclude.'"';
-   		$ajaxloadmore .= ' data-offset="'.$offset.'"';
-   		$ajaxloadmore .= ' data-preloaded="'.$preloaded.'"';	
-   		$ajaxloadmore .= ' data-preloaded_amount="'.$preloaded_amount.'"';	
-   		
-   		// Posts per page	
-   		$wp_posts_per_page = get_option( 'posts_per_page' );		
-   		/* If posts per page on settings -> reading is greater than shortcode value set $posts_per_page to be new value
-   		*/
-   		if(has_action('alm_seo_installed') && $wp_posts_per_page > $posts_per_page && $seo === 'true')
-      		$posts_per_page = $wp_posts_per_page;
-   		
-         $ajaxloadmore .= ' data-posts-per-page="'.$posts_per_page.'"';
-         
+   		$ajaxloadmore .= ' data-offset="'.$offset.'"';	
+   		$ajaxloadmore .= ' data-posts-per-page="'.$posts_per_page.'"';         
    		$ajaxloadmore .= ' data-lang="'.$lang.'"';
    		$ajaxloadmore .= ' data-scroll="'.$scroll.'"';
+   		$ajaxloadmore .= ' data-scroll-distance="'.$scroll_distance.'"';
    		$ajaxloadmore .= ' data-max-pages="'.$max_pages.'"';
    		$ajaxloadmore .= ' data-pause="'.$pause.'"';
    		$ajaxloadmore .= ' data-button-label="'.$button_label.'"';
          $ajaxloadmore .= ' data-button-class="'.$button_classname.'"';
-   		$ajaxloadmore .= ' data-destroy_after="'.$destroy_after.'"';
-   		$ajaxloadmore .= ' data-transition="'.$transition.'"';   		
-   		
-   		
-   		// Disables SEO if $preload
-   		// To be removed in future versions
-   		if($seo === 'true' && $preloaded === 'true')
-   			$seo = 'false';
-   			
-   		
+   		$ajaxloadmore .= ' data-destroy-after="'.$destroy_after.'"';
+   		$ajaxloadmore .= ' data-transition="'.$transition.'"';   
+   		   			
+   		// SEO Installed
    		if(has_action('alm_seo_installed') && $seo === 'true'){
    		   
-   		   // Get scroll speed
+   		   // Get scroll speed and scrolltop
    		   $seo_scroll_speed = '1000';
-      		if(isset($options['_alm_seo_speed'])){
+   		   $seo_scrolltop = '30';
+      		if(isset($options['_alm_seo_speed']))
       			$seo_scroll_speed = ''.$options['_alm_seo_speed'];
-      		}
+      
+      		if(isset($options['_alm_seo_scrolltop']))
+      			$seo_scrolltop = ''.$options['_alm_seo_scrolltop'];
       		
-   		   // Enabled Scrolling
-   			$ajaxloadmore .= ' data-test-seo-scroll="'.$options['_alm_seo_scroll'].'"';			
+   		   // Enabled Scrolling			
    			$seo_enable_scroll = $options['_alm_seo_scroll'];
-      		if(!isset($seo_enable_scroll) || empty($seo_enable_scroll)){
+      		if(!isset($seo_enable_scroll)){
       			$seo_enable_scroll = 'true';   
             }else{	
          		if($seo_enable_scroll == '1'){
@@ -366,10 +380,17 @@ if( !class_exists('AjaxLoadMore') ):
             } else {
               $current_page = 1;
             }	
+            
+            // If preloaded then minus 1 page from SEO
+            if($preloaded === 'true'){
+               $current_page = $current_page - 1;
+            }
+            
    			$ajaxloadmore .= ' data-seo="'.$seo.'"';		
    			$ajaxloadmore .= ' data-seo-start-page="'.$current_page.'"';	
    			$ajaxloadmore .= ' data-seo-scroll="'.$seo_enable_scroll.'"';
    			$ajaxloadmore .= ' data-seo-scroll-speed="'.$seo_scroll_speed.'"';
+   			$ajaxloadmore .= ' data-seo-scrolltop="'.$seo_scrolltop.'"';
    			$ajaxloadmore .= ' data-seo-permalink="'.$seo_permalink.'"';	
    					
          }      
@@ -398,6 +419,8 @@ if( !class_exists('AjaxLoadMore') ):
    		   if (! wp_verify_nonce( $nonce, 'ajax_load_more_nonce' )) die('Error, could not verify WP nonce.');
          }
    
+   		$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';	
+   		
    		$repeater = (isset($_GET['repeater'])) ? $_GET['repeater'] : 'default';		
    		$type = preg_split('/(?=\d)/', $repeater, 2); // split $repeater value at number to determine type
    		$type = $type[0]; // default | repeater | template_	
@@ -566,6 +589,13 @@ if( !class_exists('AjaxLoadMore') ):
          }
          
          
+         // CREATE CACHE FOLDER 
+         if(!empty($cache_id) && has_action('alm_cache_create_dir')){            
+            $url = $_SERVER['HTTP_REFERER'];
+            apply_filters('alm_cache_create_dir', $cache_id, $url);            
+            $page_cache = '';
+         }
+         
    		// Run the loop
    		if ($alm_query->have_posts()) : 
             $alm_found_posts = $alm_total_posts;    		     		   
@@ -573,9 +603,20 @@ if( !class_exists('AjaxLoadMore') ):
    				$alm_loop_count++;         
    	         $alm_page = $alm_page_count; // Get page number      
    	         $alm_item = ($alm_page_count * $numPosts) - $numPosts + $alm_loop_count; // Get current item            
-   				include( alm_get_current_repeater($repeater, $type) );//Include repeater template	   					
-            endwhile; 
-         wp_reset_query();
+   				include( alm_get_current_repeater($repeater, $type) );//Include repeater template
+   				
+   				// If cache is enabled
+   				if(!empty($cache_id) && has_action('alm_cache_inc')){
+   				   $page_cache .= apply_filters('alm_cache_inc', $repeater, $type, $alm_page, $alm_found_posts, $alm_item);
+      			}
+   					   					
+            endwhile; wp_reset_query();
+         
+         // If cache is enabled
+         if(!empty($cache_id) && has_action('alm_cache_file')){
+            apply_filters('alm_cache_file', $cache_id, $page, $page_cache);
+         }
+         
    		endif; exit;
    	}
    	  	

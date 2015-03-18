@@ -25,6 +25,9 @@ jQuery(document).ready(function($) {
       });     
       $('.ajax-load-more .tags select.multiple').select2({
          placeholder : 'Select Tags'         
+      });    
+      $('.ajax-load-more.settings select.multiple.post-types').select2({
+         placeholder : 'Select Post Types'         
       });
    };
    _alm.select2();
@@ -55,31 +58,52 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
-      // - Preload      
+      // - Cache      
       // ---------------------------
       
+      var cache = $('#alm-cache input[name=cache]:checked').val(); 
+      if(cache !== 'false' && cache != undefined){
+         if($('input#cache-id').val() === '')
+            _alm.generateUniqueID(10); // Generate unique ID on first load
+            
+         $('.cache_id').slideDown(100, 'alm_easeInOutQuad');
+         output += ' cache="'+cache+'"';
+         var cache_id = $('input#cache-id').val();        
+         if(cache_id)
+            output += ' cache_id="'+cache_id+'"';  
+      }else{
+         $('.cache_id').slideUp(100, 'alm_easeInOutQuad')
+      } 
+      
+      
+      // ---------------------------
+      // - Preload      
+      // ---------------------------
+      var seo = $('.seo input[name=seo]:checked').val();
       var preload = $('.preload input[name=preload]:checked').val(); 
       if(preload !== 'false' && preload != undefined){
-         $('.preload_amount').slideDown(100, 'alm_easeInOutQuad');
+         
+         if(seo !== 'true')
+            $('.preload_amount').slideDown(100, 'alm_easeInOutQuad');
+         
          output += ' preloaded="'+preload+'"';
          var preload_amount = $('.preload input#preload-amount').val();        
          if(preload_amount > 0 && preload_amount != 5)
             output += ' preloaded_amount="'+preload_amount+'"';  
       }else{
-         $('.preload_amount').slideUp(100, 'alm_easeInOutQuad')
+         $('.preload_amount').slideUp(100, 'alm_easeInOutQuad');
       }    
       
       
       // ---------------------------
       // - SEO      
-      // ---------------------------
-      
-      var seo = $('.seo input[name=seo]:checked').val(); 
+      // ---------------------------      
+       
       if(seo !== 'false' && seo != undefined){
 	      if(preload === 'true')
-		      alert("Sorry, at this time Preloaded and SEO can not be used together. Sorry for any inconvenience this may cause.");
-	      else
-         	output += ' seo="'+seo+'"';           
+		      $('.preload_amount').slideUp(100, 'alm_easeInOutQuad');
+	      
+         output += ' seo="'+seo+'"';                   
       }
       
       // ---------------------------
@@ -321,14 +345,17 @@ jQuery(document).ready(function($) {
       
       var scroll_load = $('.scroll_load input[name=scroll]:checked').val();     
       if(scroll_load === 'f'){
-         $('.max_pages').slideUp(100, 'alm_easeInOutQuad');
+         $('.max_pages, .scroll_distance').slideUp(100, 'alm_easeInOutQuad');
          if($('.scroll_load input').hasClass('changed'))          
             output += ' scroll="false"';         
       }else{
-         $('.max_pages').slideDown(100, 'alm_easeInOutQuad');
-         var max_pages = $('.max_pages input').val();         
+         $('.max_pages, .scroll_distance').slideDown(100, 'alm_easeInOutQuad');
+         var scroll_distance = $('.scroll_distance input').val();      
+         if(scroll_distance != 150)           
+            output += ' scroll_distance="'+$('.scroll_distance input').val()+'"';   
+         var max_pages = $('.max_pages input').val();   
          if(max_pages != 5)           
-            output += ' max_pages="'+$('.max_pages input').val()+'"';         
+            output += ' max_pages="'+$('.max_pages input').val()+'"';            
       }        
 
       
@@ -576,6 +603,33 @@ jQuery(document).ready(function($) {
       $('#alm-shortcode-builder-form').trigger("reset");
       _alm.reset_select2();
       _alm.buildShortcode();
+   }); 
+   
+   
+   
+   /*
+   *  _alm.generateUniqueID
+   *  Generate Unique Cache ID
+   *
+   *  @since 2.6.0
+   */  
+   
+   _alm.generateUniqueID = function(length) {
+       var id = Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
+       $('#cache-id').val(id);
+       
+   }
+   
+   
+   
+   /*
+   *  Generate Unique Cache ID Click
+   *
+   *  @since 2.6.0
+   */    
+   
+   $(document).on('click', '.generate-cache-id', function(){
+      _alm.generateUniqueID(10);
    }); 
    
 

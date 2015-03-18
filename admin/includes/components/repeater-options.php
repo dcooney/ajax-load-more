@@ -1,4 +1,4 @@
-<div class="btn alm-repeater-options">
+<div class="alm-drop-btn alm-repeater-options">
    <a href="javascript:void(0);" class="target"><i class="fa fa-cog"></i> <?php _e('Options', ALM_NAME); ?></a>
 	<div class="alm-dropdown">
 	   <div class="alm-drop-inner">

@@ -38,7 +38,7 @@ jQuery(document).ready(function($) {
     
     //Dropdown links
     $('.alm-dropdown').each(function(i){
-        var el = $(this).parent('.btn');
+        var el = $(this).parent('.alm-drop-btn');
         $('> a', el).click(function(e){
             var e = $(this);
             drops.dropdown(e);
