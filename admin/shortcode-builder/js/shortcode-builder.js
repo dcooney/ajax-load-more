@@ -241,6 +241,31 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
+      // - Posts      
+      // ---------------------------
+      
+      var post__in = $('input#post__in').val();    
+      post__in = $.trim(post__in);       
+      if(post__in !== '') 
+         output += ' post__in="'+post__in+'"'; 
+         
+         
+      // ---------------------------
+      // - Exclude posts      
+      // ---------------------------
+      
+      var exclude = $('input#exclude-posts').val();    
+      exclude = $.trim(exclude);       
+      if(exclude !== ''){
+         //Remove trailing comma, if present
+         if(exclude.charAt( exclude.length-1 ) == ",") {
+            exclude = exclude.slice(0, -1)
+         }
+         output += ' exclude="'+exclude+'"';  
+      }  
+      
+      
+      // ---------------------------
       // - Search      
       // ---------------------------
       
@@ -248,6 +273,16 @@ jQuery(document).ready(function($) {
       search = $.trim(search);       
       if(search !== '') 
          output += ' search="'+search+'"'; 
+      
+      
+      // ---------------------------
+      // - Custom Arguments      
+      // ---------------------------
+      
+      var custom_args = $('.custom-arguments input').val();    
+      custom_args = $.trim(custom_args);       
+      if(custom_args !== '') 
+         output += ' custom_args="'+custom_args+'"'; 
       
       
       // ---------------------------
@@ -294,21 +329,6 @@ jQuery(document).ready(function($) {
       var post_status = $('select#post-status').val();   
       if(post_status !== 'publish') 
          output += ' post_status="'+post_status+'"'; 
-         
-         
-      // ---------------------------
-      // - Exclude posts      
-      // ---------------------------
-      
-      var exclude = $('.exclude input').val();    
-      exclude = $.trim(exclude);       
-      if(exclude !== ''){
-         //Remove trailing comma, if present
-         if(exclude.charAt( exclude.length-1 ) == ",") {
-            exclude = exclude.slice(0, -1)
-         }
-         output += ' exclude="'+exclude+'"';  
-      } 
       
       
       // ---------------------------

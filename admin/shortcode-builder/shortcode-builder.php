@@ -481,7 +481,49 @@
             </div>
          </div>
       </div>
-   </div>     
+   </div> 
+    
+   <!-- Custom Arguments -->
+   <div class="row input custom-arguments" id="alm-custom-args">
+      <h3 class="heading"><?php _e('Custom Arguments', ALM_NAME); ?></h3>
+      <div class="expand-wrap">
+         <div class="section-title">
+   		 	<p><?php _e('A comma separated list of custom value:pair arguments.<br/><br/>e.g. tag_slug__and:array(design), event_display:upcoming', ALM_NAME); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">
+               <input name="custom-args" class="alm_element" type="text" id="custom-args" value="" placeholder="<?php _e('event_display:upcoming', ALM_NAME); ?>">
+            </div>
+         </div>
+      </div>
+   </div>   
+    
+   <!-- Post Parameters -->
+   <div class="row input post-in" id="alm-post-in">
+      <h3 class="heading"><?php _e('Post Parameters', ALM_NAME); ?></h3>
+      <div class="expand-wrap">
+         <div class="section-title">
+            <h4>Include</h4>
+   		 	<p><?php _e('A comma separated list of post ID\'s to query.', ALM_NAME); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">
+               <input name="post__in" class="alm_element numbers-only" type="text" id="post__in" value="" placeholder="<?php _e('225, 340, 818, etc...', ALM_NAME); ?>">
+            </div>
+         </div>
+         <div class="clear"></div>
+         <hr/>
+         <div class="section-title">
+            <h4>Exclude</h4>
+   		 	<p><?php _e('A comma separated list of post ID\'s to exclude from query.', ALM_NAME); ?><br/>&raquo; <a href="admin.php?page=ajax-load-more-examples#example-exclude">view example</a></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">
+               <input class="alm_element numbers-only" name="exclude-posts" type="text" id="exclude-posts" value="" placeholder="199, 216, 345, etc...">
+            </div>
+         </div>
+      </div>
+   </div>   
    
    <!-- Post Status -->
    <div class="row input post-status" id="alm-post-status">
@@ -527,7 +569,6 @@
                    <option value="title">Title</option>
                    <option value="name">Name (slug)</option>
                    <option value="menu_order">Menu Order</option>
-                   <option value="rand">Random</option>
                    <option value="author">Author</option>
                    <option value="ID">ID</option>
                    <option value="comment_count">Comment Count</option>
@@ -536,21 +577,6 @@
          </div>
       </div>
    </div>   
-   
-   <!-- Exclude posts -->
-   <div class="row input exclude" id="alm-exclude-posts">
-      <h3 class="heading"><?php _e('Exclude', ALM_NAME); ?></h3>
-      <div class="expand-wrap">
-         <div class="section-title">
-   		 	<p><?php _e('A comma separated list of post ID\'s to exclude from query.', ALM_NAME); ?><br/>&raquo; <a href="admin.php?page=ajax-load-more-examples#example-exclude">view example</a></p>
-   		 </div>
-         <div class="wrap">
-            <div class="inner">
-               <input class="alm_element" name="exclude-posts" type="text" id="exclude-posts" value="" placeholder="199, 216, 345, 565">
-            </div>
-         </div>
-      </div>
-   </div>
    
    <!-- Offset -->
    <div class="row input offset" id="alm-offset">

@@ -2,15 +2,13 @@
 
 /* Admin function */
 
-add_action( 'admin_head', 'alm_admin_vars' );
+add_action( 'plugins_loaded', 'alm_core_update' ); // Core Update
+add_action( 'admin_head', 'alm_admin_vars' ); // Localized Vars
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
-add_action( 'wp_ajax_nopriv_alm_save_repeater', 'alm_save_repeater' );
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
-add_action( 'wp_ajax_nopriv_alm_update_repeater', 'alm_update_repeater' );
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
-add_action( 'wp_ajax_nopriv_alm_get_tax_terms', 'alm_get_tax_terms' );
 add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache
-add_action( 'wp_ajax_nopriv_alm_delete_cache', 'alm_delete_cache' ); 
+
 
 
 /*
@@ -40,47 +38,44 @@ function alm_admin_vars() { ?>
 * @since 2.0.5
 */
 
-add_action('admin_init', 'alm_core_update');
 function alm_core_update() {  
+   
+    if( !get_option( 'alm_version' ) )
+      add_option( 'alm_version', ALM_VERSION ); // Add 'alm_version' to WP options table
+    else  
+      update_option( 'alm_version', ALM_VERSION ); // Update 'alm_version'
+   
+    //$installed_ver = get_option( "alm_version" ); // Get value from WP Option tbl
+     
 	 global $wpdb;
 	 $table_name = $wpdb->prefix . "alm";	     
     // **********************************************
 	 // If table exists
 	 // **********************************************
-	 if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
-	 
-	    // Updated 2.0.5
-       // Check column 'name' exists in $wpdb - this is an upgrade checker.	
-       $row = $wpdb->get_col("Show columns from $table_name like 'name'");
-       if(empty($row)){
-         $wpdb->query("ALTER TABLE $table_name ADD name TEXT NOT NULL");
-         $wpdb->update($table_name , array('name' => 'default'), array('id' => 1));
-       }
-       // ********
-       // @TO-DO - Upgrade test, will remove in future versions
-       // REMOVED - 2.1.3
-       // ********
-       $test = $wpdb->get_col("Show columns from $table_name like 'test'");
-       if(!empty($test)){
-         $wpdb->query("ALTER TABLE $table_name DROP test");
-       }    
-       
-       //Add column for repeater template alias
-       $alias = $wpdb->get_col("Show columns from $table_name like 'alias'");
-       if(empty($alias)){
-         $wpdb->query("ALTER TABLE $table_name ADD alias TEXT NOT NULL");
-       }       
+	 if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {      
 	 
        // Compare versions of repeaters, if template versions do not match, update the repeater with value from DB	       
 	    $version = $wpdb->get_var("SELECT pluginVersion FROM $table_name WHERE name = 'default'");	        
 	    if($version != ALM_VERSION){ // First, make sure versions do not match.
+		   
 		   //Write to repeater file
 		   $data = $wpdb->get_var("SELECT repeaterDefault FROM $table_name WHERE name = 'default'");
 			$f = ALM_PATH. 'core/repeater/default.php'; // File
-			$o = fopen($f, 'w+'); //Open file
-			$w = fwrite($o, $data); //Save the file
-			$r = fread($o, 100000); //Read it
-			fclose($o); //now close it
+			
+			try {
+            $o = fopen($f, 'w+'); //Open file
+            if ( !$o ) {
+              throw new Exception(__('[Ajax Load More] Unable to open the default repeater template (/core/repeater/default.php).', ALM_NAME));
+            } 
+            $w = fwrite($o, $data); //Save the file
+            if ( !$w ) {
+              throw new Exception(__('[Ajax Load More] Unable to save the default repeater (/core/repeater/default.php).', ALM_NAME));
+            } 
+            fclose($o); //now close it
+            
+         } catch ( Exception $e ) {
+            echo '<script>console.log("' .$e->getMessage(). '");</script>';
+         } 
 	    }
     }   
     
@@ -99,7 +94,7 @@ function alm_core_update() {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
 		
-		//Insert default data in newly created table
+		//Insert default data into created table
 		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $createRepeater, 'pluginVersion' => ALM_VERSION));
    }
 }
@@ -348,23 +343,22 @@ function alm_save_repeater(){
 		$f = ALM_REPEATER_PATH. 'repeaters/'.$n .'.php'; // File
    }
 	
-		
-   $o_error = '<span class="saved-error"><b>'. __('Error Opening File', ALM_NAME) .'</b></span>';
-   $o_error .= '<em>'. $f .'</em>';
-   $o_error .=  __('Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/ plugin directory', ALM_NAME);
-   
-   $w_error = '<span class="saved-error"><b>'. __('Error Saving File', ALM_NAME) .'</b></span>';
-   $w_error .= '<em>'. $f .'</em>';
-   $w_error .=  __('Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/ plugin directory', ALM_NAME);
-   
-   // Open file
-	$o = fopen($f, 'w+') or die($o_error); 
 	
-	// Save/Write the file
-	$w = fwrite($o, $c) or die($w_error);
-	
-	// $r = fread($o, 100000); //Read it
-	fclose($o); //now close it
+	try {
+      $o = fopen($f, 'w+'); //Open file
+      if ( !$o ) {
+        throw new Exception(__('[Ajax Load More] Error opening repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory', ALM_NAME));
+      } 
+      $w = fwrite($o, $c); //Save the file
+      if ( !$w ) {
+        throw new Exception(__('[Ajax Load More]Error saving repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory.', ALM_NAME));
+      } 
+      fclose($o); //now close it
+      
+   } catch ( Exception $e ) {
+      //echo $e;
+      echo '<script>console.log("' .$e->getMessage(). '");</script>';
+   }
 	
 	//Save to database
 	global $wpdb;
@@ -528,6 +522,22 @@ function alm_admin_init(){
 		'alm_general_settings' 
 	);
 	
+	add_settings_field(  // Nonce security
+		'_alm_nonce_security', 
+		__('Ajax Security', ALM_NAME ), 
+		'_alm_nonce_security_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);	
+	
+	add_settings_field(  // Scroll to top on load
+		'_alm_scroll_top', 
+		__('Top of Page', ALM_NAME ), 
+		'_alm_scroll_top_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);	
+	
 	add_settings_field(  // Disbale CSS
 		'_alm_disable_css', 
 		__('Disable CSS', ALM_NAME ), 
@@ -690,7 +700,7 @@ function alm_hide_btn_callback(){
 *  alm_disable_dynamic_callback
 *  Disable the dynamic population of categories, tags and authors
 *
-*  @since 3.0.0
+*  @since 2.6.0
 */
 
 function alm_disable_dynamic_callback(){
@@ -835,18 +845,63 @@ function alm_btn_class_callback(){
 		// Check if Disable CSS  === true
 		if(jQuery('input#alm_disable_css_input').is(":checked")){
 	      jQuery('select#alm_settings_btn_color').parent().parent().hide(); // Hide button color
+         jQuery('input.btn-classes').parent().parent().hide(); // Hide Button Classes
     	}
     	jQuery('input#alm_disable_css_input').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent('tr').next('tr').hide(); // Hide button color
+	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide Button Classes
 	      }else{		      
 	      	el.parent().parent('tr').next('tr').show(); // show button color
+	      	el.parent().parent('tr').next('tr').next('tr').show(); // show Button Classes
 	      }
 	   });
 	   
     </script>
 	<?php
+}
+
+
+
+/*
+*  _alm_scroll_top_callback
+*  Move window to top of screen on page load
+*
+*  @since 2.6.0
+*/
+
+function _alm_scroll_top_callback(){
+	$options = get_option( 'alm_settings' );		
+	if(!isset($options['_alm_scroll_top'])) 
+	   $options['_alm_scroll_top'] = '0';
+	
+	$html =  '<input type="hidden" name="alm_settings[_alm_scroll_top]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_scroll_top]" id="_alm_scroll_top" value="1"'. (($options['_alm_scroll_top']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="_alm_scroll_top">'.__('On initial page load, move the user\'s browser window to the top of the screen.<span style="display:block">This <u>may</u> help prevent the loading of unnecessary posts.</span>', ALM_NAME).'</label>';	
+	
+	echo $html;
+}
+
+
+
+/*
+*  _alm_nonce_security_callback
+*  Move window to top of screen on page load
+*
+*  @since 2.6.3
+*/
+
+function _alm_nonce_security_callback(){
+	$options = get_option( 'alm_settings' );		
+	if(!isset($options['_alm_nonce_security'])) 
+	   $options['_alm_nonce_security'] = '0';
+	
+	$html =  '<input type="hidden" name="alm_settings[_alm_nonce_security]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_nonce_security]" id="_alm_nonce_security" value="1"'. (($options['_alm_nonce_security']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="_alm_nonce_security">'.__('Enable <a href="https://codex.wordpress.org/WordPress_Nonces" target="_blank">WP nonce</a> verification to help protect URLs against certain types of misuse, malicious or otherwise on each Ajax Load More query.', ALM_NAME).'</label>';	
+	
+	echo $html;
 }
 
 

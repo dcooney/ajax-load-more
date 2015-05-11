@@ -6,13 +6,13 @@ Description: A simple solution for lazy loading WordPress posts and pages with A
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.6.0
+Version: 2.6.3.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */	
 	
-define('ALM_VERSION', '2.6.0');
-define('ALM_RELEASE', 'March 12, 2015');
+define('ALM_VERSION', '2.6.3.1');
+define('ALM_RELEASE', 'May 4, 2015');
 
 /*
 *  alm_install
@@ -41,7 +41,13 @@ function alm_install() {
 		
 		//Insert the default data in created table
 		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $defaultRepeater, 'pluginVersion' => ALM_VERSION));
-	}			
+	}	
+	
+	if( !get_option( 'alm_version' ) )
+      add_option( 'alm_version', ALM_VERSION ); // Add 'alm_version' to WP options table
+   else  
+      update_option( 'alm_version', ALM_VERSION ); // Update 'alm_version'
+      		
 }
 
 
@@ -116,21 +122,36 @@ if( !class_exists('AjaxLoadMore') ):
    	*/
    
    	function alm_enqueue_scripts(){
-   		$options = get_option( 'alm_settings' );
+   		
    		//wp_enqueue_script( 'ajax-load-more', plugins_url( '/core/js/ajax-load-more.js', __FILE__ ), array('jquery'),  '1.1', true );
    		wp_enqueue_script( 'ajax-load-more', plugins_url( '/core/js/ajax-load-more.min.js', __FILE__ ), array('jquery'),  '1.1', true );
+   		
+   		$options = get_option( 'alm_settings' );
+   		
+   		// Prevent loading of unnessasry posts - move user to top of page
+   		$scrolltop = 'false';
+   		if(!isset($options['_alm_scroll_top']) || $options['_alm_scroll_top'] != '1'){ // if unset or false
+   			$scrolltop = 'false';
+   		}else{ // if checked
+      		$scrolltop = 'true';
+   		}
+   		
+   		// 
+   		if(!isset($options['_alm_disable_css']) || $options['_alm_disable_css'] != '1'){
+   			wp_enqueue_style( 'ajax-load-more', plugins_url('/core/css/ajax-load-more.css', __FILE__ ));
+   		}
+   		
    		wp_localize_script(
    			'ajax-load-more',
    			'alm_localize',
    			array(
    				'ajaxurl'   => admin_url('admin-ajax.php'),
    				'alm_nonce' => wp_create_nonce( "ajax_load_more_nonce" ),
-   				'pluginurl' => ALM_URL
+   				'pluginurl' => ALM_URL,
+   				'scrolltop' => $scrolltop,
    			)
    		);
-   		if(!isset($options['_alm_disable_css']) || $options['_alm_disable_css'] != '1'){
-   			wp_enqueue_style( 'ajax-load-more', plugins_url('/core/css/ajax-load-more.css', __FILE__ ));
-   		}
+   		
    	}
    	
    
@@ -169,9 +190,11 @@ if( !class_exists('AjaxLoadMore') ):
 				'day' => '',
 				'author' => '',
 				'search' => '',					
+				'custom_args' => '',				
 				'post_status' => '',					
 				'order' => 'DESC',
 				'orderby' => 'date',
+				'post__in' => '',
 				'exclude' => '',
 				'offset' => '0',
 				'posts_per_page' => '5',
@@ -181,7 +204,7 @@ if( !class_exists('AjaxLoadMore') ):
 				'pause' => 'false',
 				'destroy_after' => '',
 				'transition' => 'slide',
-				'button_label' => 'Older Posts',		
+				'button_label' => __('Older Posts', ALM_NAME),		
 			), $atts));
             
          // Get container elements (ul | div)
@@ -248,7 +271,9 @@ if( !class_exists('AjaxLoadMore') ):
          		'month'              => $month,
          		'day'                => $day,
          		'author'             => $author,
-         		'search'             => $search,
+         		'post__in'           => $post__in,
+         		'search'             => $search,			
+               'custom_args'        => $custom_args,
          		'post_status'        => $post_status,
          		'order'              => $order,
          		'orderby'            => $orderby,
@@ -292,13 +317,15 @@ if( !class_exists('AjaxLoadMore') ):
    		
    		//Cache Add-on
    		if(has_action('alm_cache_installed')){   
-   		   $ajaxloadmore .= ' data-cache="'.$cache.'"';
-   		   $ajaxloadmore .= ' data-cache-id="'.$cache_id.'"';
-            $ajaxloadmore .= ' data-cache-path="'.ALM_CACHE_URL.'/_cache/'.$cache_id.'"';
-            
-            // Check for known users
-            if(isset($options['_alm_cache_known_users']) && $options['_alm_cache_known_users'] === '1' && is_user_logged_in()) 
-   		      $ajaxloadmore .= ' data-cache-logged-in="true"';   		     
+      		if($cache === 'true'){
+      		   $ajaxloadmore .= ' data-cache="'.$cache.'"';
+      		   $ajaxloadmore .= ' data-cache-id="'.$cache_id.'"';
+               $ajaxloadmore .= ' data-cache-path="'.ALM_CACHE_URL.'/_cache/'.$cache_id.'"';
+               
+               // Check for known users
+               if(isset($options['_alm_cache_known_users']) && $options['_alm_cache_known_users'] === '1' && is_user_logged_in()) 
+      		      $ajaxloadmore .= ' data-cache-logged-in="true"';   
+   		   }		     
    		}
    		
    		// Preloaded Add-on
@@ -312,9 +339,9 @@ if( !class_exists('AjaxLoadMore') ):
    		$ajaxloadmore .= ' data-post-type="'.$post_type.'"';
    		$ajaxloadmore .= ' data-post-format="'.$post_format.'"';
    		$ajaxloadmore .= ' data-category="'.$category.'"';
-   		$ajaxloadmore .= ' data-category__not_in="'.$category__not_in.'"';
+   		$ajaxloadmore .= ' data-category-not-in="'.$category__not_in.'"';
    		$ajaxloadmore .= ' data-tag="'.$tag.'"';
-   		$ajaxloadmore .= ' data-tag__not_in="'.$tag__not_in.'"';
+   		$ajaxloadmore .= ' data-tag-not-in="'.$tag__not_in.'"';
    		$ajaxloadmore .= ' data-taxonomy="'.$taxonomy.'"';
    		$ajaxloadmore .= ' data-taxonomy-terms="'.$taxonomy_terms.'"';
    		$ajaxloadmore .= ' data-taxonomy-operator="'.$taxonomy_operator.'"';
@@ -325,11 +352,13 @@ if( !class_exists('AjaxLoadMore') ):
    		$ajaxloadmore .= ' data-month="'.$month.'"';
    		$ajaxloadmore .= ' data-day="'.$day.'"';
    		$ajaxloadmore .= ' data-author="'.$author.'"';
+   		$ajaxloadmore .= ' data-post-in="'.$post__in.'"';
+   		$ajaxloadmore .= ' data-exclude="'.$exclude.'"';
    		$ajaxloadmore .= ' data-search="'.$search.'"';
+   		$ajaxloadmore .= ' data-custom-args="'.$custom_args.'"';
    		$ajaxloadmore .= ' data-post-status="'.$post_status.'"';
    		$ajaxloadmore .= ' data-order="'.$order.'"';
    		$ajaxloadmore .= ' data-orderby="'.$orderby.'"';
-   		$ajaxloadmore .= ' data-exclude="'.$exclude.'"';
    		$ajaxloadmore .= ' data-offset="'.$offset.'"';	
    		$ajaxloadmore .= ' data-posts-per-page="'.$posts_per_page.'"';         
    		$ajaxloadmore .= ' data-lang="'.$lang.'"';
@@ -414,10 +443,20 @@ if( !class_exists('AjaxLoadMore') ):
    	function alm_query_posts() {
    		
    		$nonce = $_GET['nonce'];
-   		if(!is_user_logged_in()){ // Skip nonce verification if user is logged in
-   		   // Check our nonce, if they don't match then bounce!
-   		   if (! wp_verify_nonce( $nonce, 'ajax_load_more_nonce' )) die('Error, could not verify WP nonce.');
+   		
+   		$options = get_option( 'alm_settings' );
+   		
+   		if(!is_user_logged_in()){ // Skip nonce verification if user is logged in   		   
+   		   
+   		   $options = get_option( 'alm_settings' );
+   		   
+   		   // check alm_settings for _alm_nonce_security
+   		   if(isset($options['_alm_nonce_security']) & $options['_alm_nonce_security'] == '1'){        		   		   
+      		   if (! wp_verify_nonce( $nonce, 'ajax_load_more_nonce' )) // Check our nonce, if they don't match then bounce!
+      		      die('Error, could not verify WP nonce.');      		      
+            }
          }
+         
    
    		$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';	
    		
@@ -450,14 +489,16 @@ if( !class_exists('AjaxLoadMore') ):
    		$meta_compare = $_GET['meta_compare'];
    		if($meta_compare == '') $meta_compare = 'IN'; 
    		
-   		$s = (isset($_GET['search'])) ? $_GET['search'] : '';
+   		$s = (isset($_GET['search'])) ? $_GET['search'] : '';   		
+   		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
    		$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
    		
    		// Ordering
    		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
    		$orderby = (isset($_GET['orderby'])) ? $_GET['orderby'] : 'date';
    		
-   		// Exclude, Offset, Status
+   		// Include, Exclude, Offset, Status
+   		$post__in = (isset($_GET['post__in'])) ? $_GET['post__in'] : '';	
    		$exclude = (isset($_GET['exclude'])) ? $_GET['exclude'] : '';		
    		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
    		$post_status = $_GET['post_status'];
@@ -475,6 +516,9 @@ if( !class_exists('AjaxLoadMore') ):
    		   $old_offset = $preloaded_amount;  	
    		   $offset = $offset + $preloaded_amount;	
          }
+         
+         //SEO
+   		$seo_start_page = (isset($_GET['seo_start_page'])) ? $_GET['seo_start_page'] : 1;         
    		
    		// Language (Is this needed?)   			
    		$lang = (isset($_GET['lang'])) ? $_GET['lang'] : '';
@@ -543,23 +587,39 @@ if( !class_exists('AjaxLoadMore') ):
          // Author
    		if(!empty($author_id)){
    			$args['author'] = $author_id;
-   		}
+   		}     
          
-         // Search Term
-   		if(!empty($s)){
-   			$args['s'] = $s;
-   		}
-   	   
-         // Meta_key, used for ordering by meta value
-         if(!empty($meta_key)){
-            $args['meta_key'] = $meta_key;
-         }         
+   		// Include posts
+   		if(!empty($post__in)){
+   			$post__in = explode(",",$post__in);
+   			$args['post__in'] = $post__in;
+   		}  
          
    		// Exclude posts
    		if(!empty($exclude)){
    			$exclude = explode(",",$exclude);
    			$args['post__not_in'] = $exclude;
    		}
+         
+         // Search Term
+   		if(!empty($s)){
+   			$args['s'] = $s;
+   		}
+         
+         // Custom Args
+         
+   		if(!empty($custom_args)){
+   			$custom_args_array = explode(",",$custom_args); // Split the $custom_args at ','
+   			foreach($custom_args_array as $argument){ // Loop the $custom_args
+   			   $argument = explode(":",$argument);  // Split the $custom_args at ':' 
+   			   $args[$argument[0]] = $argument[1];
+   			}
+   		}
+   	   
+         // Meta_key, used for ordering by meta value
+         if(!empty($meta_key)){
+            $args['meta_key'] = $meta_key;
+         }    
    		
          // Language
    		if(!empty($lang)){
@@ -589,11 +649,11 @@ if( !class_exists('AjaxLoadMore') ):
          }
          
          
-         // CREATE CACHE FOLDER 
+         // Create cache directory 
          if(!empty($cache_id) && has_action('alm_cache_create_dir')){            
             $url = $_SERVER['HTTP_REFERER'];
             apply_filters('alm_cache_create_dir', $cache_id, $url);            
-            $page_cache = '';
+            $page_cache = ''; // set our page cache variable
          }
          
    		// Run the loop
@@ -606,14 +666,18 @@ if( !class_exists('AjaxLoadMore') ):
    				include( alm_get_current_repeater($repeater, $type) );//Include repeater template
    				
    				// If cache is enabled
+   				// Build cache include and store in $page_cache variable
+   				
    				if(!empty($cache_id) && has_action('alm_cache_inc')){
    				   $page_cache .= apply_filters('alm_cache_inc', $repeater, $type, $alm_page, $alm_found_posts, $alm_item);
       			}
    					   					
             endwhile; wp_reset_query();
          
-         // If cache is enabled
-         if(!empty($cache_id) && has_action('alm_cache_file')){
+         // If cache is enabled and seo_start_page is 1 (meaning, a user has not requested /page/12/)
+         // - Only create cached files if the user visits pages in order 1, 2, 3 etc.
+         
+         if(!empty($cache_id) && has_action('alm_cache_installed') && $seo_start_page == 1){
             apply_filters('alm_cache_file', $cache_id, $page, $page_cache);
          }
          

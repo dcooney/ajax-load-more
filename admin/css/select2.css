@@ -140,7 +140,7 @@
 
 /* Search */
 .select2-search {
-    /* display: none; */
+    display: none !important;
     padding: 2px;
     display: block;
     background-color: #fff;

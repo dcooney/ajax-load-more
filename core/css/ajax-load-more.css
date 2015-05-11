@@ -52,9 +52,9 @@ button.alm-load-more-btn{
 		text-decoration: none;
 	}
 	button.alm-load-more-btn:active{
-		-webkit-box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
-		-moz-box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
-		box-shadow: inset 0 3px 2px rgba(0, 0, 0, 0.1);
+		-webkit-box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+		-moz-box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+		box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
 		text-decoration: none;
 	}	
 	
@@ -187,10 +187,8 @@ button.alm-load-more-btn{
 		overflow: hidden;
 		position: relative;
 		list-style: none;
-	}				
-   	.alm-listing li.no-img{
-   		padding: 0;   	
-   	}		
+	}	
+	.alm-listing li.no-img{ padding: 0; }		
 	.alm-listing li a{
 		color: #34383D;
 	}
@@ -207,4 +205,5 @@ button.alm-load-more-btn{
 		-webkit-border-radius:3px;
 		-moz-border-radius:3px;
 		border-radius:3px;
-	}		
+	}	
+		

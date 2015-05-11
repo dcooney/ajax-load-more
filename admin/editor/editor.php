@@ -12,7 +12,7 @@ function alm_editor_init() {
 
 
 //Check for permissions
-add_action('wp_ajax_fscb', 'alm_ajax_tinymce' );
+add_action('wp_ajax_alm_lightbox', 'alm_ajax_tinymce' );
 function alm_ajax_tinymce(){
 	// check for rights
 	if ( ! current_user_can('edit_pages') && ! current_user_can('edit_posts') )
