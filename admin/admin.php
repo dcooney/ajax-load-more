@@ -112,20 +112,79 @@ add_action( 'admin_menu', 'alm_admin_menu' );
 function alm_admin_menu() {  
    $icon = 'dashicons-plus-alt';
    $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
-   $alm_page = add_menu_page( 'Ajax Load More', 'Ajax Load More', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page', $icon );
    
-   $alm_settings_page = add_submenu_page( 'ajax-load-more', 'Settings', 'Settings', 'edit_theme_options', 'ajax-load-more', 'alm_settings_page'); 
+   $alm_page = add_menu_page( 
+      'Ajax Load More', 
+      'Ajax Load More', 
+      'edit_theme_options', 
+      'ajax-load-more', 
+      'alm_settings_page',
+      $icon
+   );
    
-   $alm_template_page = add_submenu_page( 'ajax-load-more', 'Repeater Templates', 'Repeater Templates', 'edit_theme_options', 'ajax-load-more-repeaters', 'alm_repeater_page');
+   $alm_settings_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Settings', 
+      'Settings', 
+      'edit_theme_options', 
+      'ajax-load-more', 
+      'alm_settings_page'
+   ); 
+   
+   $alm_template_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Repeater Templates', 
+      'Repeater Templates', 
+      'edit_theme_options', 
+      'ajax-load-more-repeaters', 
+      'alm_repeater_page'
+   );
     
-   $alm_shortcode_page = add_submenu_page( 'ajax-load-more', 'Shortcode Builder', 'Shortcode Builder', 'edit_theme_options', 'ajax-load-more-shortcode-builder', 'alm_shortcode_builder_page');
+   $alm_shortcode_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Shortcode Builder', 
+      'Shortcode Builder', 
+      'edit_theme_options', 
+      'ajax-load-more-shortcode-builder', 
+      'alm_shortcode_builder_page'
+   );
    
-   $alm_examples_page = add_submenu_page( 'ajax-load-more', 'Examples', 'Examples', 'edit_theme_options', 'ajax-load-more-examples', 'alm_example_page');  	
+   $alm_examples_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Examples', 
+      'Examples', 
+      'edit_theme_options', 
+      'ajax-load-more-examples', 
+      'alm_example_page'
+   );  	
    	
-   $alm_addons_page = add_submenu_page( 'ajax-load-more', 'Add-ons', 'Add-ons', 'edit_theme_options', 'ajax-load-more-add-ons', 'alm_add_ons_page'); 
+   $alm_addons_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Add-ons', 
+      'Add-ons', 
+      'edit_theme_options', 
+      'ajax-load-more-add-ons', 
+      'alm_add_ons_page'
+   ); 
+   
+   $alm_licenses_page = add_submenu_page(
+      'ajax-load-more', 
+      'Licenses', 
+      'Licenses', 
+      'edit_theme_options', 
+      'ajax-load-more-licenses', 
+      'alm_licenses_page'
+   ); 
    
    if(has_action('alm_cache_installed')){
-      $alm_cache_page = add_submenu_page( 'ajax-load-more', 'Cache', '<span style="color: #f2f5bf">Cache<span>', 'edit_theme_options', 'ajax-load-more-cache', 'alm_cache_page');
+      $alm_cache_page = add_submenu_page( 
+         'ajax-load-more', 
+         'Cache', 
+         '<span style="color: #f2f5bf; display:block; border-top: 1px solid #555; padding-top: 8px; border-radius: 3px;">Cache<span>', 
+         'edit_theme_options', 
+         'ajax-load-more-cache', 
+         'alm_cache_page'
+      );
       add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
       add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
    }
@@ -136,6 +195,7 @@ function alm_admin_menu() {
    add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
 }   
       
 
@@ -265,6 +325,19 @@ function alm_example_page(){
 
 function alm_add_ons_page(){ 
    include_once( ALM_PATH . 'admin/views/add-ons.php');
+}
+
+
+
+/*
+*  alm_licenses_page
+*  Ajax Load More Licenses
+*
+*  @since 2.7.0
+*/
+
+function alm_licenses_page(){ 
+   include_once( ALM_PATH . 'admin/views/licenses.php');
 }
 
 
@@ -562,69 +635,34 @@ function alm_admin_init(){
 		'alm_general_settings' 
 	);	
 	
+	
 	// CACHE
-	if(has_action('alm_cache_installed')){
-	   add_settings_section( 
-   		'alm_cache_settings',  
-   		'Cache Settings', 
-   		'alm_cache_settings_callback', 
-   		'ajax-load-more' 
-   	);
-   	add_settings_field( 
-   		'_alm_cache_publish', 
-   		__('Published Posts', ALM_NAME ), 
-   		'_alm_cache_publish_callback', 
-   		'ajax-load-more', 
-   		'alm_cache_settings' 
-   	);	
-   	add_settings_field( 
-   		'_alm_cache_known_users', 
-   		__('Known Users', ALM_NAME ), 
-   		'_alm_cache_known_users_callback', 
-   		'ajax-load-more', 
-   		'alm_cache_settings' 
-   	);	
-   	
+	if(has_action('alm_cache_settings')){	   
+   	do_action('alm_cache_settings');   	
+   }	
+	
+	
+	// CUSTOM REPEATERS
+	if(has_action('alm_unlimited_settings')){	   
+   	do_action('alm_unlimited_settings');   	
    }
    
-	// SEO
-	if(has_action('alm_seo_installed')){	
 	
-	   add_settings_section( 
-   		'alm_seo_settings',  
-   		'SEO Settings', 
-   		'alm_seo_settings_callback', 
-   		'ajax-load-more' 
-   	);
-   	add_settings_field( 
-   		'_alm_seo_permalinks', 
-   		__('SEO Permalinks', ALM_NAME ), 
-   		'_alm_seo_permalinks_callback', 
-   		'ajax-load-more', 
-   		'alm_seo_settings' 
-   	);	
-   	add_settings_field( 
-   		'_alm_seo_scroll', 
-   		__('Scroll to Page', ALM_NAME ), 
-   		'_alm_seo_scroll_callback', 
-   		'ajax-load-more', 
-   		'alm_seo_settings' 
-   	);	
-   	add_settings_field( 
-   		'_alm_seo_speed', 
-   		__('Scroll Speed', ALM_NAME ), 
-   		'_alm_seo_speed_callback', 
-   		'ajax-load-more', 
-   		'alm_seo_settings' 
-   	);	
-   	add_settings_field( 
-   		'_alm_seo_scrolltop', 
-   		__('Scroll Top', ALM_NAME ), 
-   		'_alm_seo_scrolltop_callback', 
-   		'ajax-load-more', 
-   		'alm_seo_settings' 
-   	);	
-   	
+	// PAGINATION
+	if(has_action('alm_paging_settings')){	   
+   	do_action('alm_paging_settings');   	
+   }
+   
+	
+	// PRELOADED
+	if(has_action('alm_preloaded_settings')){	   
+   	do_action('alm_preloaded_settings');   	
+   }
+   
+   
+	// SEO
+	if(has_action('alm_seo_settings')){	
+		do_action('alm_seo_settings');   	
 	}
 }
 
@@ -726,7 +764,7 @@ function alm_disable_dynamic_callback(){
 function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 		
-	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container.', ALM_NAME).'</label><br/>';
+	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container - these classes are applied globally and will appear with every instance of Ajax Load More.<span style="display:block">You can also add classes to the ALM container when building a shortcode.</span>', ALM_NAME).'</label><br/>';
 	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';	
 	
 	echo $html;
@@ -806,7 +844,7 @@ function alm_btn_color_callback() {
     $html .= '<option value="white" ' . $selected6 .'>White</option>';
     $html .= '</select>';
      
-    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap '.$color.'"><span>'.__('Preview', ALM_NAME) .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
+    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$color.'"><span>'.__('Preview', ALM_NAME) .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
     echo $html;
 }
 
@@ -835,8 +873,8 @@ function alm_btn_class_callback(){
     	var colorArray = "default grey purple green red blue white";
     	jQuery("select#alm_settings_btn_color").change(function() {
     		var color = jQuery(this).val();
-			jQuery('.ajax-load-more-wrap').removeClass(colorArray);
-			jQuery('.ajax-load-more-wrap').addClass(color);
+			jQuery('.ajax-load-more-wrap.core').removeClass(colorArray);
+			jQuery('.ajax-load-more-wrap.core').addClass(color);
 		});
 		jQuery("select#alm_settings_btn_color").click(function(e){
 			e.preventDefault();
@@ -903,199 +941,4 @@ function _alm_nonce_security_callback(){
 	
 	echo $html;
 }
-
-
-
-/*
-*  alm_cache_settings_callback
-*  Cache Setting Heading
-*
-*  @since 2.6.0
-*/
-
-function alm_cache_settings_callback() {
-   $html = '<p>' . __('Customize your installation of the <a href="http://connekthq.com/plugins/ajax-load-more/cache/">Cache</a> add-on.', ALM_NAME) . '</p>';
-   
-   echo $html;
-}
-
-
-
-/*
-*  _alm_cache_publish_callback
-*  Clear cache when a new post is published
-*
-*  @since 2.6.0
-*/
-	
-function _alm_cache_publish_callback() {
- 
-   $options = get_option( 'alm_settings' );
-	   
-	if(!isset($options['_alm_cache_publish'])) 
-	   $options['_alm_cache_publish'] = '0';
-	
-	$html = '<input type="hidden" name="alm_settings[_alm_cache_publish]" value="0" /><input type="checkbox" id="alm_cache_publish" name="alm_settings[_alm_cache_publish]" value="1"'. (($options['_alm_cache_publish']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_cache_publish">'.__('Delete cache when new posts are published.', ALM_NAME);
-	$html .= '<span style="display:block">'.__('Cache will be fully cleared whenever a post, page or Custom Post Type is published or updated.', ALM_NAME).'</span>';
-	$html .=' </label>';	
-	
-	
-	echo $html;
- 
-}
-
-
-
-/*
-*  _alm_cache_known_users_callback
-*  Don't cache files for known users
-*
-*  @since 2.6.0
-*/
-	
-function _alm_cache_known_users_callback() {
- 
-   $options = get_option( 'alm_settings' );
-	   
-	if(!isset($options['_alm_cache_known_users'])) 
-	   $options['_alm_cache_known_users'] = '0';
-	
-	$html = '<input type="hidden" name="alm_settings[_alm_cache_known_users]" value="0" /><input type="checkbox" id="alm_cache_known_users" name="alm_settings[_alm_cache_known_users]" value="1"'. (($options['_alm_cache_known_users']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_cache_known_users">'.__('Don\'t cache files for logged in users.', ALM_NAME);
-	$html .= '<span style="display:block">'.__('Logged in users will retrieve content directly from the database and will not view any cached content.', ALM_NAME).'</span>';
-	$html .=' </label>';		
-	
-	echo $html;
- 
-}
-
-
-
-/*
-*  alm_seo_settings_callback
-*  SEO Setting Heading
-*
-*  @since 2.3.0
-*/
-
-function alm_seo_settings_callback() {
-   $html = '<p>' . __('Customize your installation of the <a href="http://connekthq.com/plugins/ajax-load-more/seo/">Search Engine Optimization</a> add-on.', ALM_NAME) . '</p>';
-   
-   echo $html;
-}
-
-
-
-/*
-*  _alm_seo_permalinks
-*  Select permalink type
-*
-*  @since 2.3.0
-*/
-	
-function _alm_seo_permalinks_callback() {
- 
-    $options = get_option( 'alm_settings' );
-    
-    if(!isset($options['_alm_seo_permalinks'])) 
-	   $options['_alm_seo_permalinks'] = 'pretty';
-	   
-     
-    $html  = '<p style="padding-bottom: 15px; overflow: hidden;">Select your WordPress <a href="options-permalink.php"><strong>Permalink structure</strong></a>.</p>'; 
-    $html .= '<input type="radio" id="_alm_seo_type_one" name="alm_settings[_alm_seo_permalinks]" value="pretty"' . checked( 'pretty', $options['_alm_seo_permalinks'], false ) . '/>';
-    $html .= '<label for="_alm_seo_type_one">'.__('Pretty Permalinks (mod_rewrite) <br/><span>http://example.com/2012/post-name/</span>', ALM_NAME).'</label><br/>';
-     
-    $html .= '<input type="radio" id="_alm_seo_type_two" name="alm_settings[_alm_seo_permalinks]" value="default"' . checked( 'default', $options['_alm_seo_permalinks'], false ) . '/>';
-    $html .= '<label for="_alm_seo_type_two">'.__('Default (Ugly) <br/><span>http://example.com/?p=N</span>', ALM_NAME).'</label>';
-     
-    echo $html;
- 
-}
-
-
-
-/*
-*  _alm_seo_scroll_callback
-*  Set the speed of auto scroll
-*
-*  @since 2.3.0
-*/
-	
-function _alm_seo_scroll_callback() {
- 
-    $options = get_option( 'alm_settings' );
-    
-    if(!isset($options['_alm_seo_scroll'])) 
-	   $options['_alm_seo_scroll'] = '1';
-	
-	$html = '<input type="hidden" name="alm_settings[_alm_seo_scroll]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_seo_scroll]" id="alm_scroll_page" value="1"'. (($options['_alm_seo_scroll']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_scroll_page">'.__('Enable window scrolling.<br/><span>If scrolling is enabled, the users window will scroll to the current page on \'Load More\' button click and while interacting with the forward and back browser buttons.</span>', ALM_NAME).'</label>';	
-	
-	echo $html;
-}
-
-
-
-/*
-*  _alm_seo_speed_callback
-*  Set the speed of auto scroll
-*
-*  @since 2.3.0
-*/
-	
-function _alm_seo_speed_callback() {
- 
-    $options = get_option( 'alm_settings' );
-    
-    if(!isset($options['_alm_seo_speed'])) 
-	   $options['_alm_seo_speed'] = '1000';
-     
-		
-	echo '<label for="alm_settings[_alm_seo_speed]">'.__('Set the scrolling speed of the page in milliseconds. <br/><span>e.g. 1 second = 1000</span>', ALM_NAME).'</label><br/><input type="number" class="sm" id="alm_settings[_alm_seo_speed]" name="alm_settings[_alm_seo_speed]" step="50" min="0" value="'.$options['_alm_seo_speed'].'" placeholder="1000" /> ';	
-	  
-}
-
-
-
-/*
-*  _alm_seo_scrolltop_callback
-*  Set the scrlltop value of window scrolling
-*
-*  @since 2.6.0
-*/
-	
-function _alm_seo_scrolltop_callback() {
- 
-    $options = get_option( 'alm_settings' );
-    
-    if(!isset($options['_alm_seo_scrolltop'])) 
-	   $options['_alm_seo_scrolltop'] = '30';
-     
-		
-	echo '<label for="alm_settings[_alm_seo_scrolltop]">'.__('Set the scrolltop position of the window when scrolling to post.', ALM_NAME).'</label><br/><input type="number" class="sm" id="alm_settings[_alm_seo_scrolltop]" name="alm_settings[_alm_seo_scrolltop]" step="1" min="0" value="'.$options['_alm_seo_scrolltop'].'" placeholder="30" /> ';	
-	
-	?>
-	<script>
-		// Check if Scroll to Page  != true
-		if(!jQuery('input#alm_scroll_page').is(":checked")){ 
-	      jQuery('input#alm_scroll_page').parent().parent('tr').next('tr').hide();
-	      jQuery('input#alm_scroll_page').parent().parent('tr').next('tr').next('tr').hide();
-    	}
-    	jQuery('input#alm_scroll_page').change(function() {
-    		var el = jQuery(this);
-	      if(el.is(":checked")) {
-	      	el.parent().parent('tr').next('tr').show();
-	      	el.parent().parent('tr').next('tr').next('tr').show();
-	      }else{		      
-	      	el.parent().parent('tr').next('tr').hide();
-	      	el.parent().parent('tr').next('tr').next('tr').hide();
-	      }
-	   });
-	   
-    </script>
-<?php  
-}
-
 

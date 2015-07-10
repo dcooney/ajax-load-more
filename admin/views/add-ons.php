@@ -6,7 +6,7 @@
 		</div>
 		<div class="cnkt-main">
 		
-		   <!-- Custom Repeaters -->
+		   <!-- Cache -->
 		   <div class="group">
 			   <div class="row no-brd">
 			      <div class="expand-wrap">
@@ -29,9 +29,10 @@
                }
             ?> 		   
 		   </div>
-		   <!-- End Custom Repeaters -->
+		   <!-- End Cache -->
 		   
-		   <!-- Custom Repeaters -->
+		   
+		   <!-- Custom Repeaters v2 -->
 		   <div class="group">
 			   <div class="row no-brd">
 			      <div class="expand-wrap">
@@ -54,7 +55,34 @@
                }
             ?> 		   
 		   </div>
-		   <!-- End Custom Repeaters --> 
+		   <!-- End Custom Repeaters v2 -->		   
+		   
+		   
+		   <!-- Paging -->
+		   <div class="group">
+			   <div class="row no-brd">
+			      <div class="expand-wrap">
+                  <div class="section-title">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg">                         
+                  </div>
+                  <div class="wrap">
+                     <h2 class="addon-title"><?php _e('Paging', ALM_NAME); ?></h2>
+                     <p class="addon-intro"><?php _e('Extend Ajax Load More with a numbered paging navigation.', ALM_NAME); ?></p>
+                     <p><?php _e('The Paging add-on will transform the Ajax Load More lazy load/infinite scroll functionality into a robust ajax powered navigation system.', ALM_NAME); ?></p>                   
+                  </div>           
+               </div>
+			   </div>			   
+            <?php
+            	$paging_url = 'http://connekthq.com/plugins/ajax-load-more/paging/';
+               if (has_action('alm_paging_installed')){
+                  echo '<a class="cnkt-button installed" href="'. $paging_url .'" target="_blank"><i class="fa fa-check-square"></i> Installed</a> ';
+               }else{
+                  echo '<a class="cnkt-button" href="'. $paging_url .'" target="_blank"><i class="fa fa-download"></i> Purchase &amp; Install</a>';
+               }
+            ?> 		   
+		   </div>
+		   <!-- End Custom Repeaters v2 --> 
+		   
 		   
 		   <!-- Preloaded -->
 		   <div class="group">
@@ -80,6 +108,7 @@
             ?> 		   
 		   </div>
 		   <!-- End Preloaded --> 
+		   
 		   
 		   <!-- SEO -->
 		   <div class="group">

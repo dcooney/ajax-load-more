@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
    */  
    _alm.select2 = function(){
       // Default Select2
-      $('.row select, .cnkt-main select, select.jump-menu').not('.multiple').select2({});   
+      $('.row select, .cnkt-main select, select.jump-menu').not('.multiple, .meta-compare').select2({});   
       
       // multiple
       $('.ajax-load-more .categories select.multiple').select2({
@@ -25,9 +25,6 @@ jQuery(document).ready(function($) {
       });     
       $('.ajax-load-more .tags select.multiple').select2({
          placeholder : 'Select Tags'         
-      });    
-      $('.ajax-load-more.settings select.multiple.post-types').select2({
-         placeholder : 'Select Post Types'         
       });
    };
    _alm.select2();
@@ -43,7 +40,58 @@ jQuery(document).ready(function($) {
       $('.ajax-load-more .categories select.multiple').select2();     
       $('.ajax-load-more .tags select.multiple').select2();
    };   
+            
               
+              
+   // Add additional meta_query
+   var meta_query_obj = $('.meta-query-wrap').eq(0).clone();
+   $('.meta-query-wrap .remove').remove();
+   $('select.meta-compare').select2();
+   $('#add-meta-query').on('click', function(e){
+      e.preventDefault();
+      
+      if($('.meta-query-wrap').length > 3){
+         alert("Sorry, There is a maximum of 4 meta_query objects.");
+         return false;
+      }
+      
+      var target = $('#meta-query-extended');
+      $('input, select', meta_query_obj).val('');
+      var el = meta_query_obj.clone().hide();    
+      target.append(el);
+      el.fadeIn(200);
+      $('#meta-query-extended select').select2();
+      
+      if($('.meta-query-wrap').length > 1){
+         $('#meta-query-relation').fadeIn(150);
+      }else{
+         $('#meta-query-relation').fadeOut(150);         
+      }
+      
+      $('select.meta-compare').select2();
+      
+      if($('.meta-query-wrap').length > 3){ // Hide "Add" button if 4 $('.meta-query-wrap')
+         $('#alm-meta-key .controls').delay(200).slideUp(150, 'alm_easeInOutQuad');  
+      }
+      
+   });   
+   
+   /* Delete Meta Query */
+   $(document).on('click', '.remove-meta-query', function(e){
+      var el = $(this);
+      el.parent().parent('.meta-query-wrap').addClass('removing');
+      el.parent().parent('.meta-query-wrap').fadeOut(200, function(){
+         el.parent().parent('.meta-query-wrap').remove();
+         _alm.buildShortcode();
+      });
+      
+      if($('.meta-query-wrap').length > 3){ // Show "Add" button if less than 4 $('.meta-query-wrap')
+         $('#alm-meta-key .controls').delay(200).slideDown(200, 'alm_easeInOutQuad');  
+      }
+      
+   });
+   
+   
    
    
    /*
@@ -56,11 +104,10 @@ jQuery(document).ready(function($) {
    _alm.buildShortcode = function(){
       output = '[ajax_load_more';    
       
-      
       // ---------------------------
       // - Cache      
-      // ---------------------------
-      
+      // ---------------------------     
+       
       var cache = $('#alm-cache input[name=cache]:checked').val(); 
       if(cache !== 'false' && cache != undefined){
          if($('input#cache-id').val() === '')
@@ -77,8 +124,32 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
+      // - PAGING      
+      // ---------------------------     
+      
+      var paging = $('#alm-paging input[name=paging]:checked').val();
+      var paging_controls = $('#alm-paging input[name=paging-controls]:checked').val(); 
+      var paging_show_at_most = $('#alm-paging input#show-at-most').val(); 
+      var paging_classes = $('#alm-paging input#paging-classes').val(); 
+      if(paging !== 'false' && paging != undefined){	      
+         output += ' paging="'+paging+'"';             
+         output += ' paging_controls="'+paging_controls+'"';
+         output += ' paging_show_at_most="'+paging_show_at_most+'"'; 
+         if(paging_classes !== ''){
+            output += ' paging_classes="'+paging_classes+'"';             
+         }         
+         $('#nav-controls').slideDown(100, 'alm_easeInOutQuad');                   
+      }else{
+         $('#nav-controls').slideUp(100, 'alm_easeInOutQuad');
+      }
+      
+      
+      
+      
+      // ---------------------------
       // - Preload      
       // ---------------------------
+      
       var seo = $('.seo input[name=seo]:checked').val();
       var preload = $('.preload input[name=preload]:checked').val(); 
       if(preload !== 'false' && preload != undefined){
@@ -229,6 +300,70 @@ jQuery(document).ready(function($) {
       var dateD = $('.date input#input-day').val(); // Day          
       if(dateD  !== '' && dateD  !== undefined && dateD < 32) 
          output += ' day="'+dateD+'"';   
+         
+         
+      
+      // ---------------------------
+      // - Custom Fields Meta Query
+      // ---------------------------
+      var meta_key = $.trim($('.meta-query-wrap').eq(0).find('input.meta-key').val()),
+          meta_value = $.trim($('.meta-query-wrap').eq(0).find('input.meta-value').val()),
+          meta_compare = $('.meta-query-wrap').eq(0).find('select.meta-compare').val(),
+          meta_relation = $('select.meta-relation').val(),
+          meta_query_length = $('.meta-query-wrap').length;          
+     
+      // Set meta_compare default value
+      if(meta_compare === '' || meta_compare == undefined)       
+          meta_compare = '=';
+      
+      // Single Meta_Query()    
+      if(meta_query_length === 1){
+	      if(meta_key !== '' && meta_key !== undefined){      	         	         	
+	         output += ' meta_key="'+meta_key+'"';
+	         output += ' meta_value="'+meta_value+'"';
+	         
+	         if(meta_compare !== '=')
+	            output += ' meta_compare="'+meta_compare+'"';              
+	         
+	      }
+      }
+      // Multiple Meta_Query()
+      if(meta_query_length > 1){
+	      meta_key = ''; 
+	      meta_value = ''; 
+	      meta_compare = ''; 
+	      $('.meta-query-wrap').each(function(e){
+		      var el = $(this),
+		      	 mk = $.trim(el.find('input.meta-key').val()),
+		      	 mv = $.trim(el.find('input.meta-value').val()),
+		      	 mc = $.trim(el.find('select.meta-compare').val());
+		      
+		      if(e === 0){ // first on first only	 
+		      	meta_key += mk;
+		      	meta_value += mv;
+		      	meta_compare += mc;
+		      }else{			
+   		      if(mk.length > 0 && mv.length > 0){     
+		      	   meta_key += ':'+ mk;
+		      	   meta_value += ':'+ mv;
+		      	   meta_compare += ':'+ mc;
+		      	}
+		      }
+		      
+	      });
+	      output += ' meta_key="'+meta_key+'"';
+	      output += ' meta_value="'+meta_value+'"';
+	      output += ' meta_compare="'+meta_compare+'"';
+	      
+	      var isRelation = $('#meta-query-relation').css("display");
+	      if(meta_relation !== '' && meta_relation !== undefined && isRelation === 'block'){
+	         output += ' meta_relation="'+meta_relation+'"';
+	      }
+	      
+      }else{
+         $('#meta-query-relation').fadeOut(150);
+      }
+      
       
       
       // ---------------------------
@@ -285,33 +420,6 @@ jQuery(document).ready(function($) {
          output += ' custom_args="'+custom_args+'"'; 
       
       
-      // ---------------------------
-      // - Meta Key
-      // ---------------------------
-      var meta_key = $.trim($('input#meta-key').val()),
-          meta_value = $.trim($('input#meta-value').val()),
-          meta_compare = $('select#meta-compare').val();
-     
-      // Set meta_compare default value
-      if(meta_compare === '' || meta_compare == undefined)       
-          meta_compare = '=';
-          
-      if(meta_key !== '' && meta_key !== undefined){
-         if($('input#meta-key').hasClass('changed')){         	
-         	$('#meta-query-extended').slideDown(200, 'alm_easeInOutQuad');
-         	         	
-            output += ' meta_key="'+meta_key+'"';
-            output += ' meta_value="'+meta_value+'"';
-            
-            if(meta_compare !== '=')
-               output += ' meta_compare="'+meta_compare+'"';
-         }
-      }else{
-	      $('#meta-query-extended').slideUp(200, 'alm_easeInOutQuad');
-	      $('input#meta-key').removeClass('changed');
-      } 
-         
-          
       // ---------------------------
       // - Ordering      
       // ---------------------------
@@ -404,7 +512,17 @@ jQuery(document).ready(function($) {
       var btn_lbl = $('.btn-label input').val();    
       btn_lbl = $.trim(btn_lbl);       
       if(btn_lbl !== '' && $('.btn-label input').hasClass('changed')) 
-         output += ' button_label="'+btn_lbl+'"';        
+         output += ' button_label="'+btn_lbl+'"';  
+      
+      
+      // ---------------------------
+      // - Container Classes      
+      // ---------------------------
+      
+      var container_classes = $('.alm-classes input').val();    
+      container_classes = $.trim(container_classes);       
+      if(container_classes !== '' && $('.alm-classes input').hasClass('changed')) 
+         output += ' css_classes="'+container_classes+'"';        
       
       
       output += ']';  //Close shortcode          
@@ -499,6 +617,7 @@ jQuery(document).ready(function($) {
    
 	
 	/* Table of Contents */
+	
 	$('.table-of-contents .toc').append('<option value="#">-- Jump to Option --</option>');
 	$('.table-of-contents .toc').append(jumpOptions).select2();	
 	
@@ -511,6 +630,8 @@ jQuery(document).ready(function($) {
 		}
    });
    
+   /* Table of Contents - onResize */
+   
    function almResizeTOC(){      
       var tocW = $('.cnkt-sidebar').width();
       $('.table-of-contents').css('width', tocW + 'px'); 
@@ -519,8 +640,7 @@ jQuery(document).ready(function($) {
    
    $(window).resize(function() {
       almResizeTOC() 
-   });
-   
+   });   
    
    $(window).scroll(function(){
       almSidebarAttach();
@@ -636,8 +756,7 @@ jQuery(document).ready(function($) {
    
    _alm.generateUniqueID = function(length) {
        var id = Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
-       $('#cache-id').val(id);
-       
+       $('#cache-id').val(id);     
    }
    
    

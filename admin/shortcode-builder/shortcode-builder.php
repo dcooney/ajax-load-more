@@ -16,7 +16,6 @@
    <h3 class="heading"><?php _e('Cache', ALM_NAME); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
-            <h4>Enable Caching</h4>
 		 	<p><?php _e('Turn on content caching for this Ajax Load More query.', ALM_NAME); ?></p>
 		 </div>
       <div class="wrap">
@@ -52,6 +51,83 @@
    </div>
 </div> 
 <?php } ?>
+
+<?php if(has_action('alm_paging_installed')){ ?>
+<!-- PAGING -->
+<div class="row input paging add-on" id="alm-paging">
+   <h3 class="heading"><?php _e('Paging', ALM_NAME); ?></h3>
+   <div class="expand-wrap">
+      <div class="section-title">
+		 	<p><?php _e('Replace infinite scrolling with a paged ajax navigation system.', ALM_NAME); ?></p>
+		 </div>
+      <div class="wrap">
+         <div class="inner">	               
+            <ul>
+                <li>
+                 <input class="alm_element" type="radio" name="paging" value="true" id="paging-true" >
+                 <label for="paging-true"><?php _e('True', ALM_NAME); ?></label>
+                </li>
+                <li>
+                 <input class="alm_element" type="radio" name="paging" value="false" id="paging-false" checked="checked">
+                 <label for="paging-false"><?php _e('False', ALM_NAME); ?></label>
+                </li>
+            </ul>
+         </div>
+      </div>
+      
+      <div class="clear"></div>
+      <div id="nav-controls">
+         
+         <hr/>
+         <div class="section-title">
+            <h4><?php _e('Paging Controls', ALM_NAME); ?></h4>
+   		 	<p><?php _e('Show (&laquo;)previous and next(&raquo;) buttons.', ALM_NAME); ?></p>
+         </div>
+         <div class="wrap">
+            <div class="inner">	               
+               <ul>
+                   <li>
+                    <input class="alm_element" type="radio" name="paging-controls" value="true" id="paging-controls-true" >
+                    <label for="paging-controls-true"><?php _e('True', ALM_NAME); ?></label>
+                   </li>
+                   <li>
+                    <input class="alm_element" type="radio" name="paging-controls" value="false" id="paging-controls-false" checked="checked">
+                    <label for="paging-controls-false"><?php _e('False', ALM_NAME); ?></label>
+                   </li>
+               </ul>
+            </div>
+         </div>
+         
+         <div class="clear"></div>
+         <hr/>
+         <div class="section-title">
+            <h4><?php _e('Paging Navigation Classes', ALM_NAME); ?></h4>
+   		 	<p><?php _e('Add custom CSS classes to the paging navigation menu.', ALM_NAME); ?></p>
+   		 </div>
+   		 <div class="wrap">            
+            <div class="inner">            
+               <input type="text" class="alm_element" name="paging-classes" id="paging-classes" placeholder="portfolio-paging-menu">  
+            </div>
+         </div>
+         
+         <div class="clear"></div>
+         <hr/>
+         <div class="section-title">
+            <h4><?php _e('Show at Most', ALM_NAME); ?></h4>
+   		 	<p><?php _e('The maximum amount of page menu items to show at a time. <br/.>0 = no maximum', ALM_NAME); ?></p>
+   		 </div>
+   		 <div class="wrap">            
+            <div class="inner">            
+               <input type="number" class="alm_element numbers-only" name="show-at-most" id="show-at-most" step="2" min="0" value="7">  
+            </div>
+         </div>
+         
+      </div>
+      
+   </div>
+</div> 
+<?php } ?>
+
 
 <?php if(has_action('alm_preload_installed')){ ?>
 <!-- PRELOAD -->
@@ -393,47 +469,38 @@
    </div>
         
    
-   <?php // Custom Fields ?>
+   <?php // Meta_Query / Custom Fields ?>
    <div class="row input meta-key" id="alm-meta-key">
-      <h3 class="heading"><?php _e('Custom Fields (Meta)', ALM_NAME); ?></h3>
+      <h3 class="heading"><?php _e('Custom Fields (Meta_Query)', ALM_NAME); ?></h3>
       <div class="expand-wrap">
-         <div class="section-title">
-            <p><?php _e('Query by <a href="http://codex.wordpress.org/Class_Reference/WP_Meta_Query" target="_blank">custom fields</a>.  Enter your key(name) and value, then select your operator.', ALM_NAME); ?></p>
+         <div class="section-title full">
+            <p><?php _e('Query for <a href="http://codex.wordpress.org/Class_Reference/WP_Meta_Query" target="_blank">custom field</a> by entering a custom field key, value and operator.', ALM_NAME); ?></p>
          </div>
-         <div class="wrap">
-            <div class="inner">
-               <?php // Meta Key ?>
-               <label for="meta-key" class="full"><?php _e('Key (Name):', ALM_NAME); ?></label>
-               <input class="alm_element" name="meta-key" type="text" id="meta-key" value="" placeholder="<?php _e('Enter custom field key(name)', ALM_NAME); ?>">   
-            </div> 
-            <div id="meta-query-extended">
-               <?php // Meta Value ?>
-               <div class="inner border-top">
-                  <label for="meta-value" class="full"><?php _e('Value:', ALM_NAME); ?></label>
-                  <input class="alm_element" name="meta-value" type="text" id="meta-value" value="" placeholder="<?php _e('Enter custom field value', ALM_NAME); ?>">
-               </div>    
-               <?php // Meta Compare ?>           
-               <div class="inner border-top">
-                  <label for="meta-compare" class="full"><?php _e('Operator:', ALM_NAME); ?></label>
-                  <select class="alm_element" id="meta-compare" name="meta-compare">
-                     <option value="IN" selected="selected">IN</option>
-                     <option value="NOT IN">NOT IN</option>
-                     <option value="BETWEEN">BETWEEN</option>
-                     <option value="NOT BETWEEN">NOT BETWEEN</option>
-                     <option value="=">= &nbsp;&nbsp; (equals)</option>
-                     <option value="!=">!= &nbsp; (does NOT equal)</option>
-                     <option value=">">> &nbsp;&nbsp; (greater than)</option>
-                     <option value=">=">>= &nbsp;(greater than or equal to)</option>
-                     <option value="<">&lt; &nbsp;&nbsp; (less than)</option>
-                     <option value="<=">&lt;= &nbsp;(less than or equal to)</option>
-                     <option value="LIKE">LIKE</option>
-                     <option value="NOT LIKE">NOT LIKE</option>
-                     <option value="EXISTS">EXISTS</option>
-                     <option value="NOT EXISTS">NOT EXISTS</option>
-                  </select>
-               </div>            
+         <div class="wrap full">
+            
+            <div class="meta-query-wrap">
+               <?php include( ALM_PATH . 'admin/shortcode-builder/includes/meta-query-options.php'); ?>
             </div>
-         </div>         
+            <div id="meta-query-relation">
+               <div class="inner border-top highlighted">
+                  <div class="wrap-30">
+                     <label for="meta-relation" class="full"><?php _e('Relation:', ALM_NAME); ?></label>
+                     <select class="alm_element meta-relation" name="meta-relation">
+                        <option value="AND" selected="selected">AND</option>
+                        <option value="OR">OR</option>
+                     </select>
+                  </div>
+               </div>
+            </div>
+            <div id="meta-query-extended">
+               
+            </div>             
+            
+            <div class="inner border-top controls">
+               <button class="button button-primary" id="add-meta-query"><?php _e('Add Another', ALM_NAME); ?></button>  
+            </div> 
+                   
+         </div>      
       </div>
    </div>
    
@@ -488,7 +555,7 @@
       <h3 class="heading"><?php _e('Custom Arguments', ALM_NAME); ?></h3>
       <div class="expand-wrap">
          <div class="section-title">
-   		 	<p><?php _e('A comma separated list of custom value:pair arguments.<br/><br/>e.g. tag_slug__and:array(design), event_display:upcoming', ALM_NAME); ?></p>
+   		 	<p><?php _e('A semicolon separated list of custom value:pair arguments.<br/><br/>e.g. tag_slug__and:design,development; event_display:upcoming. Default', ALM_NAME); ?></p>
    		 </div>
          <div class="wrap">
             <div class="inner">
@@ -496,6 +563,7 @@
             </div>
          </div>
       </div>
+      <p class="warning-callout"><em>custom_args</em> syntax has changed and can now accept an array of values.</p>
    </div>   
     
    <!-- Post Parameters -->
@@ -572,6 +640,7 @@
                    <option value="author">Author</option>
                    <option value="ID">ID</option>
                    <option value="comment_count">Comment Count</option>
+                   <option value="meta_value_num">meta_value_num</option>                   
                </select>
             </div>
          </div>
@@ -587,7 +656,7 @@
    		 </div>
          <div class="wrap">
             <div class="inner"> 
-               <input type="number" class="alm_element numbers-only" name="offset-select" id="offset-select" step="1" min="0">
+               <input type="number" class="alm_element numbers-only" name="offset-select" id="offset-select" value="0" step="1" min="0">
             </div>
          </div>
       </div>
@@ -737,6 +806,21 @@
          <div class="wrap">
             <div class="inner">
                <input class="alm_element" name="button-label" type="text" id="button-label" value="<?php _e('Older Posts', ALM_NAME); ?>">
+            </div>
+         </div>
+      </div>
+   </div>
+   
+   <!-- Container Classes -->
+   <div class="row input alm-classes" id="alm-classes">
+      <h3 class="heading"><?php _e('Container Classes', ALM_NAME); ?></h3>
+      <div class="expand-wrap">
+         <div class="section-title">
+   		 	<p><?php _e('Add custom CSS classes to the Ajax Load More container. <br/><br/> e.g. portfolio-listing large-12 etc', ALM_NAME); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">
+               <input class="alm_element" name="container-classes" type="text" id="container-classes" placeholder="portfolio-listing large-12">
             </div>
          </div>
       </div>

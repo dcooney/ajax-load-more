@@ -83,7 +83,7 @@ button.alm-load-more-btn{
 	
 	/* Loading :before */
 	button.alm-load-more-btn.loading:before {
-      background: #fff url(../../core/img/ajax-loader.gif) no-repeat center center;
+      background: #fff url("../../core/img/ajax-loader.gif") no-repeat center center;
       width: 30px;
       height: 30px;
       margin: 6px;		
@@ -102,28 +102,28 @@ button.alm-load-more-btn{
 	}
 	
 .alm-btn-wrap{
-	text-align:center;
-	padding:10px 10px 30px;
+	text-align: center;
+	padding: 10px 10px 30px;
 	overflow: hidden;
 	display: block;
 }
 
 /* Blue */
 .ajax-load-more-wrap.blue button.alm-load-more-btn{
-	background-color: #529ecf;
+	background-color: #6bb1d9;
 }
 	.ajax-load-more-wrap.blue button.alm-load-more-btn:hover,
 	.ajax-load-more-wrap.blue button.alm-load-more-btn.done{
-		background-color: #468ebb;
+		background-color: #6bb1d9;
 	}
 	
 /* green */
 .ajax-load-more-wrap.green button.alm-load-more-btn{
-	background-color: #80bb46;
+	background-color: #98ca68;
 }
 	.ajax-load-more-wrap.green button.alm-load-more-btn:hover,
 	.ajax-load-more-wrap.green button.alm-load-more-btn.done{
-		background-color: #6fa43c;
+		background-color: #98ca68;
 	}
 	
 /* red */
@@ -137,11 +137,11 @@ button.alm-load-more-btn{
 
 /* purple */
 .ajax-load-more-wrap.purple button.alm-load-more-btn{
-	background-color: #b14fae;
+	background-color: #b369c8;
 }
 	.ajax-load-more-wrap.purple button.alm-load-more-btn:hover,
 	.ajax-load-more-wrap.purple button.alm-load-more-btn.done{
-		background-color: #9c4399;
+		background-color: #b369c8;
 	}	
 
 /* grey */
@@ -171,7 +171,7 @@ button.alm-load-more-btn{
 
 
 /*
-*  Generic alm-listing Styles
+*  Generic alm-listing styles
 *
 *  @since 1.0.0
 */
@@ -206,4 +206,6 @@ button.alm-load-more-btn{
 		-moz-border-radius:3px;
 		border-radius:3px;
 	}	
-		
+
+	
+	

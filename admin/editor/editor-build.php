@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Ajax Load More: Shortcode Builder</title>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" src="<?php echo includes_url($path); ?>js/tinymce/themes/advanced/skins/wp_theme/dialog.css"></link>
 <link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/admin.css" />
 <link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/select2.css" />

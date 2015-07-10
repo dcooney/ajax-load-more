@@ -15,7 +15,7 @@
    color:#666;
    position: relative;
    font-family: 'Open Sans', sans-serif;
-   max-width: 1100px;
+   max-width: 1250px;
 }
 .ajax-load-more a:focus{
    -webkit-box-shadow: none;
@@ -38,8 +38,17 @@
    padding: 15px 10px 140px !important;
 }
 
-#alm-settings h3 + p{
+#alm-settings form h3{
+   padding: 2px 0 6px 12px;
+   border-left: 5px solid #ff5a58;
+   margin: 0;
+}
+#alm-settings form h3 + p{
    color: #999;
+   padding: 0 0 0 12px;
+   border-left: 5px solid #ff5a58;
+   margin: 0 0 16px;
+   font-size: 13px;
 }
 .ajax-load-more code{
 	background: #fcf3d0;
@@ -240,10 +249,63 @@
    margin: 0 0 20px;
    padding: 20px 0 0 !important;
    overflow:hidden;
+   position: relative;
 }
+.ajax-load-more .border-top.controls{
+   padding: 0 !important;
+}
+.ajax-load-more .border-top.controls button{
+   margin-top: 20px !important;  
+}
+
+.ajax-load-more .border-top.highlighted{
+   background-color: #fafbde;
+   padding: 10px !important;
+   border: 1px solid #efefef;
+}
+
+
+.meta-query-wrap{}
+   .ajax-load-more #meta-query-extended .meta-query-wrap .inner{
+      padding: 0 20px 0 0 !important;
+      position: relative;
+   }    
+   .meta-query-wrap .remove-meta-query{
+      position: absolute;
+      right:5px;
+      bottom:8px;
+      width: 23px;
+      height: 23px;
+      line-height: 19px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 13px;
+      -webkit-border-radius: 2px;
+      -moz-border-radius: 2px;
+      border-radius: 2px;
+      background-color: #efefef;
+      color: #999;
+      text-decoration: none;
+      border: 1px solid #ccc;
+   }
+      .meta-query-wrap .remove-meta-query:hover{
+         background-color: #cb2222;
+         border-color: #cb2222;
+         color: #fff;
+      }
+      .meta-query-wrap.removing{
+         /* background-color: #edd4d4; */
+      }
+      
+   .ajax-load-more .meta-query-wrap .border-top:first-of-type{
+      padding: 0 0 0 !important;
+      border: none;
+   }
+
 .ajax-load-more #taxonomy-extended,
-.ajax-load-more #meta-query-extended,
-.ajax-load-more #seo-extended{
+.ajax-load-more #nav-controls,
+.ajax-load-more #seo-extended,
+.ajax-load-more #meta-query-relation{
    display: none;
    overflow: hidden;
 }
@@ -354,7 +416,8 @@
    display: inline-block;
    vertical-align: top;
 }
-.ajax-load-more .wrap-30 input[type=text].sm{
+.ajax-load-more .wrap-30 input[type=text].sm,
+.ajax-load-more .wrap-30 .select2-container{
    width: 100%;
    margin: 0;
 }
@@ -522,6 +585,11 @@
    padding: 21px 15px 10px;
    width: 45%;
 }
+
+.ajax-load-more .section-title.full {
+   width: 100%;
+   float: none;
+}
 	.ajax-load-more .section-title p{		
 		font-size: 13px !important;
 		padding-left: 21px !important;
@@ -567,6 +635,11 @@
   width: 55%;
   float: left;
   position: relative;
+}
+.ajax-load-more .row .wrap.full{
+   float: none;
+   width: 100%;  
+   padding: 0 15px 10px 36px;
 }
    
   
@@ -802,15 +875,24 @@
 	.admin.ajax-load-more.settings .ajax-load-more-wrap button{
 		margin: 0 !important;
 	}
-	.admin.ajax-load-more.settings .ajax-load-more-wrap span{
+	.admin.ajax-load-more.settings .ajax-load-more-wrap > span{
 		display: block;
 		font-size: 11px;
 		opacity: 0.7;
-		padding: 0 0 5px;
+		padding: 0 0 8px;
+		text-transform: uppercase;
 	}
 	.admin.ajax-load-more.settings button.alm-load-more-btn.loading:before {		
 		margin: 5px 6px 6px;
 	}
+	
+	.admin.ajax-load-more.settings .ajax-load-more-wrap.pages{}	
+		.admin.ajax-load-more.settings .ajax-load-more-wrap.pages li{
+			font-size: 14px;	
+		}
+		.admin.ajax-load-more.settings .ajax-load-more-wrap.pages li a{
+			text-decoration: none;	
+		}
 
 
 /* Table Overrides */
@@ -1160,13 +1242,146 @@ table.highlight{
          color: #5da592 !important;
          top: 0;
       }
+      
+/*
+ * Licenses
+ *
+ *  @since 2.7.0
+ */  
+      
+   .license{
+      overflow: hidden;
+      margin: 0;
+      display: block;
+      padding: 20px 0 0;
+      position: relative;
+   }
+   .license:first-of-type{
+      padding: 10px 0 0;
+   }
+      .license-title{
+         border-radius: 3px 3px 0 0;
+         border: 1px solid #ccc;
+         background-color: #efefef;  
+         position: relative;      
+      }
+         .license-title .status{
+            width: 12px;
+            height: 12px;
+            -webkit-border-radius: 100%;
+            -moz-border-radius: 100%;
+            border-radius: 100%;
+            background: #d45656;
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            margin-top: -6px;
+            box-shadow: inset 0 -6px 6px rgba(0, 0, 0, 0.05), 0 1px 0 #fff;
+         }
+            .license-title .status.valid{
+               background-color: #acd481;  
+            }
+         .license h2{
+            margin: 0;
+            padding: 15px 15px 15px 35px;
+            font-size: 16px; 
+            font-weight: 600; 
+            line-height: 1.2;
+         }
+      .license p,
+      .license label{
+         font-size: 400;
+         font-size: 13px;
+      }
+      .license .cnkt-button{
+         position: absolute;
+         top: 9px;
+         right: 15px;
+         padding: 5px 7px !important;
+      }
+      .license a.cnkt-button.installed{
+         background-color: none !important;
+         -webkit-box-shadow: none !important;
+         -moz-box-shadow: none !important;
+         box-shadow: none !important;
+         border-color: transparent !important;
+      }
+      
+   .license-wrap,
+   .license-no-addons{
+      overflow: hidden;
+      display: block;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-top: none;
+      background-color: #f7f7f7;
+      border-radius: 0 0 3px 3px;
+   }
+      .license-wrap label{
+         font-weight: 600;
+         position: relative;
+         top:-3px;
+      }
+      .license-wrap input[type=text]{
+         background-color: #fff;
+         margin: 0 0 15px;
+         width: 100% !important;
+      }
+         .license-wrap input[type=text]:focus{
+            background-color: #fff;  
+         }
+      .license-wrap .button-primary{
+         margin-right: 5px;
+      }
+      .license-key-field{
+         position: relative;
+         display: block;
+      }
+      .license-key-field .status{
+         position: absolute;
+         right:5px;
+         top: 5px;
+         display: inline-block;
+         border-radius: 2px;
+         padding: 6px 12px;
+         line-height: 1.3;
+         color: #fff;
+         border-color: #999;
+      }
+         .license-key-field .status.active{
+            background-color: #acd481;
+         }
+         .license-key-field .status.inactive{
+            background-color: #d45656;
+         }
+         
+   .ajax-load-more .alm-nav{
+      font-size: 600;
+      font-size: 13px;
+      margin: 0 !important;
+      padding: 5px 0 5px;
+   }
+      .ajax-load-more .alm-nav a{
+         display: inline-block;
+      }
+      
+   
+   .license-no-addons{
+      border: 1px solid #bad0da;
+      border-radius: 3px;
+      background-color: #e0f5ff;
+   }
+      .license-no-addons p{
+         margin: 0;
+         padding: 0;
+      }
 
 
 /*
-* Plugin Sidebar
-*
-*  @since 1.0
-*/
+ * Plugin Sidebar
+ *
+ *  @since 1.0
+ */
 .ajax-load-more .cnkt-sidebar{
    width: 30%;
    float: right;
@@ -1212,6 +1427,7 @@ table.highlight{
 		.ajax-load-more .cnkt-sidebar li{
 			font-size: 13px;
 			margin: 0 0 10px;
+			line-height: 1.4;
 		}
 		.ajax-load-more .cnkt-sidebar .item i{
 			font-size: 12px;
@@ -2055,6 +2271,15 @@ p.cache-stats{
    
    .alm-repeater-options{
 		display: none !important;   
+	}
+	
+	.ajax-load-more .wrap-30{
+   	width: 100%;
+   	display: block;
+   	padding: 0 0 10px;
+	}
+	.ajax-load-more .row .wrap.full{
+   	padding: 10px;
 	}
 
 }

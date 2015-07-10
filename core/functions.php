@@ -195,21 +195,35 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 */
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare){
    if(!empty($meta_key) && !empty($meta_value)){ 
-	   // See the docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query)
-	   if($meta_compare === 'IN' || $meta_compare === 'NOT IN' || $meta_compare === 'BETWEEN' || $meta_compare === 'NOT BETWEEN'){
-	   	// Remove all whitespace for meta_value because it needs to be an exact match
-	   	$mv_trimmed = preg_replace('/\s+/', ' ', $meta_value); // Trim whitespace 
-	   	$meta_values = str_replace(', ', ',', $mv_trimmed); // Replace [term, term] with [term,term]
-	   	$meta_values = explode(",", $meta_values);	   
-	   }else{	
-	   	$meta_values = $meta_value;
-	   }	
-      $args = array(
-		   'key' => $meta_key,
-         'value' => $meta_values,
-		   'compare' => $meta_compare,
-		);
-		return $args;
-	}
+      
+         $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
+         $return = array('key' => $meta_key,'value' => $meta_values,'compare' => $meta_compare); 
+      
+      return $return; 
+         
+   }
+		
+}
+
+
+
+/*
+*  alm_parse_meta_value
+*  Parse the meta value for multiple vals
+*  
+*  @return array;
+*  @since 2.6.4
+*/
+function alm_parse_meta_value($meta_value, $meta_compare){
+   // See the docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query)
+   if($meta_compare === 'IN' || $meta_compare === 'NOT IN' || $meta_compare === 'BETWEEN' || $meta_compare === 'NOT BETWEEN'){
+   	// Remove all whitespace for meta_value because it needs to be an exact match
+   	$mv_trimmed = preg_replace('/\s+/', ' ', $meta_value); // Trim whitespace 
+   	$meta_values = str_replace(', ', ',', $mv_trimmed); // Replace [term, term] with [term,term]
+   	$meta_values = explode(",", $meta_values);	   
+   }else{	
+   	$meta_values = $meta_value;
+   }         
+   return $meta_values;
 }
 
