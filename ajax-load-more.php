@@ -467,11 +467,12 @@ if( !class_exists('AjaxLoadMore') ):
    		// Custom Fields
    		$meta_key = (isset($_GET['meta_key'])) ? $_GET['meta_key'] : '';
          $meta_value = (isset($_GET['meta_value'])) ? $_GET['meta_value'] : '';
-   		$meta_type = (isset($_GET['meta_type'])) ? $_GET['meta_type'] : '';
    		$meta_compare = $_GET['meta_compare'];
    		if($meta_compare == '') $meta_compare = 'IN'; 
-   		$meta_relation = $_GET['meta_relation'];
-   		if($meta_relation == '') $meta_relation = 'AND'; 
+         $meta_relation = $_GET['meta_relation'];
+         if($meta_relation == '') $meta_relation = 'AND'; 
+   		$meta_type = $_GET['meta_type'];
+   		if($meta_type == '') $meta_type = 'CHAR'; 
    		
    		$s = (isset($_GET['search'])) ? $_GET['search'] : '';   		
    		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
