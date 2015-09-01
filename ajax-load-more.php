@@ -576,7 +576,7 @@ if( !class_exists('AjaxLoadMore') ):
             $meta_compare = explode(":", $meta_compare); // convert to array
             $meta_type = explode(":", $meta_type); // convert to array
 
-            $tmp_args = array();
+			$tmp_args = count($meta_keys) > 1 ? array('relation' => $meta_relation) : array();
             for($i = 0; $i < $total; $i++) {
                $tmp_args[] = alm_get_meta_query($meta_keys[$i], $meta_value[$i], $meta_compare[$i], $meta_type[$i]);
             }
