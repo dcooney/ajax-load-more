@@ -193,11 +193,11 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 *  @return $args = array();
 *  @since 2.5.0
 */
-function alm_get_meta_query($meta_key, $meta_value, $meta_compare){
+function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
    if(!empty($meta_key) && !empty($meta_value)){ 
       
-         $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
-         $return = array('key' => $meta_key,'value' => $meta_values,'compare' => $meta_compare); 
+         $meta_values = alm_parse_meta_value($meta_value, $meta_compare);
+         $return = array('key' => $meta_key,'value' => $meta_values,'compare' => $meta_compare, 'type'=> $meta_type);
       
       return $return; 
          

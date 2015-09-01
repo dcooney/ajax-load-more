@@ -49,6 +49,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **meta_value** - Custom field value. Default = null
 *   **meta_compare** - Operator to compare meta_key and meta_value against (IN/NOT IN/=/!=/>/>=/</<= etc.). Default = ‘IN’
 *   **meta_relation** - Used with multiple custom field entries (AND/OR). Default = ‘AND’
+*   **meta_type** - Used with various meta value formats (NUMERIC/BINARY/CHAR/DATE/DATETIME/DECIMAL/SIGNED/TIME/UNSIGNED). Default = ‘CHAR’
 *   **author** - Query by author id. Default = null
 *   **post__in** - Comma separated list of post ID’s to include in query. Default = null 
 *   **exclude** - Comma separated list of post ID’s to exclude from query. Default = null 
