@@ -196,7 +196,8 @@ if( !class_exists('AjaxLoadMore') ):
 				'meta_key' => '',
 				'meta_value' => '',
 				'meta_compare' => '',
-				'meta_relation' => '',
+            'meta_relation' => '',
+				'meta_type' => '',
 				'year' => '',
 				'month' => '',
 				'day' => '',
@@ -291,6 +292,7 @@ if( !class_exists('AjaxLoadMore') ):
          		'meta_value'         => $meta_value,
          		'meta_compare'       => $meta_compare,
                'meta_relation'      => $meta_relation,
+               'meta_type'          => $$meta_type,
          		'year'               => $year,
          		'month'              => $month,
          		'day'                => $day,
@@ -377,6 +379,7 @@ if( !class_exists('AjaxLoadMore') ):
    		$ajaxloadmore .= ' data-meta-value="'.$meta_value.'"';
    		$ajaxloadmore .= ' data-meta-compare="'.$meta_compare.'"';
    		$ajaxloadmore .= ' data-meta-relation="'.$meta_relation.'"';
+         $ajaxloadmore .= ' data-meta-type="'.$meta_type.'"';
    		$ajaxloadmore .= ' data-year="'.$year.'"';
    		$ajaxloadmore .= ' data-month="'.$month.'"';
    		$ajaxloadmore .= ' data-day="'.$day.'"';
@@ -463,7 +466,8 @@ if( !class_exists('AjaxLoadMore') ):
    		
    		// Custom Fields
    		$meta_key = (isset($_GET['meta_key'])) ? $_GET['meta_key'] : '';
-   		$meta_value = (isset($_GET['meta_value'])) ? $_GET['meta_value'] : '';
+         $meta_value = (isset($_GET['meta_value'])) ? $_GET['meta_value'] : '';
+   		$meta_type = (isset($_GET['meta_type'])) ? $_GET['meta_type'] : '';
    		$meta_compare = $_GET['meta_compare'];
    		if($meta_compare == '') $meta_compare = 'IN'; 
    		$meta_relation = $_GET['meta_relation'];
@@ -518,10 +522,14 @@ if( !class_exists('AjaxLoadMore') ):
          
    	   // Post Format & taxonomy
    		if(!empty($post_format) || !empty($taxonomy)){	
-   		   $args['tax_query'] = array(			
-   				'relation' => 'AND',
-   		      alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_operator)
-   		   );
+   		   $tax_queries = explode(':', $taxonomy);
+            $tax_terms = explode(':', $taxonomy_terms);
+            $args['tax_query'] = array(
+                'relation' => 'AND'
+            );
+            foreach($tax_queries as $k => $tax) {
+               $args['tax_query'][] = alm_get_tax_query($post_format, $tax, $tax_terms[$k], $taxonomy_operator);
+            }
    	   }
          
          // Category
@@ -565,36 +573,13 @@ if( !class_exists('AjaxLoadMore') ):
             $meta_keys = explode(":", $meta_key); // convert to array
             $meta_value = explode(":", $meta_value); // convert to array
             $meta_compare = explode(":", $meta_compare); // convert to array
-            
-            if($total == 1){
-      			$args['meta_query'] = array(
-      			   alm_get_meta_query($meta_keys[0], $meta_value[0], $meta_compare[0]),
-      			);
-   			}
-   			if($total == 2){
-      			$args['meta_query'] = array(
-         			'relation' => $meta_relation,
-      			   alm_get_meta_query($meta_keys[0], $meta_value[0], $meta_compare[0]),	
-      			   alm_get_meta_query($meta_keys[1], $meta_value[1], $meta_compare[1]),		
-      			);
-   			}
-   			if($total == 3){
-      			$args['meta_query'] = array(
-         			'relation' => $meta_relation,
-      			   alm_get_meta_query($meta_keys[0], $meta_value[0], $meta_compare[0]),	
-      			   alm_get_meta_query($meta_keys[1], $meta_value[1], $meta_compare[1]),	
-      			   alm_get_meta_query($meta_keys[2], $meta_value[2], $meta_compare[2]),		
-      			);
-   			}
-   			if($total == 4){
-      			$args['meta_query'] = array(
-         			'relation' => $meta_relation,
-      			   alm_get_meta_query($meta_keys[0], $meta_value[0], $meta_compare[0]),	
-      			   alm_get_meta_query($meta_keys[1], $meta_value[1], $meta_compare[1]),	
-      			   alm_get_meta_query($meta_keys[2], $meta_value[2], $meta_compare[2]),	
-      			   alm_get_meta_query($meta_keys[3], $meta_value[3], $meta_compare[3]),		
-      			);
-   			}
+            $meta_type = explode(":", $meta_type); // convert to array
+
+            $tmp_args = array();
+            for($i = 0; $i < $total; $i++) {
+               $tmp_args[] = alm_get_meta_query($meta_keys[$i], $meta_value[$i], $meta_compare[$i], $meta_type[$i]);
+            }
+            $args['meta_query'] = $tmp_args;
    			
    	   }
    	   

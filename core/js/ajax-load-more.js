@@ -330,6 +330,7 @@
                meta_value: alm.content.attr('data-meta-value'),
                meta_compare: alm.content.attr('data-meta-compare'),
                meta_relation: alm.content.attr('data-meta-relation'), 
+               meta_type: alm.content.attr('data-meta-type'),
                author: alm.content.attr('data-author'),
                year: alm.content.attr('data-year'),
                month: alm.content.attr('data-month'),
