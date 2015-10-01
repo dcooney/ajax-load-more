@@ -523,7 +523,7 @@
          }
          
          alm.init = false; 
-         
+         $(window).trigger('alm:success');
       };
       
       
