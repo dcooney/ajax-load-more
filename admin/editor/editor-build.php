@@ -37,21 +37,21 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
       <div class="pop-up-jump">
          <div class="jump-menu-wrap">
          	<select class="jump-menu">
-         		<option value="null" selected="selected">-- <?php _e('Jump to Option', ALM_NAME); ?> --</option>	
+         		<option value="null" selected="selected">-- <?php _e('Jump to Option', 'ajax-load-more'); ?> --</option>	
          	</select>
          </div>
          <div class="intro-wrap">
-      	   <p class="intro"><?php _e('Create your own Ajax Load More shortcode by adjusting the parameters below:', ALM_NAME); ?></p> 
+      	   <p class="intro"><?php _e('Create your own Ajax Load More shortcode by adjusting the parameters below:', 'ajax-load-more'); ?></p> 
          </div> 
       </div>
       <div class="clear"></div>
       <?php include (ALM_PATH . '/admin/shortcode-builder/shortcode-builder.php'); ?>   	
 
    	<div class="output-wrap">
-   	    <a href="javascript:AjaxLoadMoreModal.insert(AjaxLoadMoreModal.local_ed)" id="insert" class="insert_alm"><i class="fa fa-chevron-circle-right"></i> <?php _e('Insert Shortcode', ALM_NAME); ?></a>
+   	    <a href="javascript:AjaxLoadMoreModal.insert(AjaxLoadMoreModal.local_ed)" id="insert" class="insert_alm"><i class="fa fa-chevron-circle-right"></i> <?php _e('Insert Shortcode', 'ajax-load-more'); ?></a>
    	   <div class="shortcode-display">
    		   <div id="shortcode_output"></div>
-   		   <span class="copy"><?php _e('Copy', ALM_NAME); ?></span>
+   		   <span class="copy"><?php _e('Copy', 'ajax-load-more'); ?></span>
    	   </div>
    	</div
    </div>	

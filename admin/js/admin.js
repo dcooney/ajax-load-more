@@ -3,6 +3,75 @@ var _alm = _alm || {};
 jQuery(document).ready(function($) {
 	"use strict"; 	
 	
+	
+	
+	$('.alm-template-listing li a').click(function(e){
+   	e.preventDefault();
+   	var el = $(this),
+   	    val = el.data('path');
+   	el.parent().parent().next('.template-selection').val(val);
+	});
+	
+	$('.alm-template-section-nav li a').click(function(e){
+   	e.preventDefault();
+   	var el = $(this),
+   	    index = el.parent().index(),
+   	    parent = el.parent().parent().parent('.repeater-wrap');
+   	    
+   	if(!el.hasClass('active')){
+      	el.parent().addClass('active').siblings().removeClass('active');
+      	$('.alm-template-toggle', parent).hide()
+      	$('.alm-template-toggle', parent).eq(index).show();
+   	}
+   });
+	
+	
+	
+	/*
+	*  Mailchimp Signup
+	*  From the setting screen
+	*
+	*  @since 2.7.2
+	*/
+	$('form#alm-mc-embedded').submit(function() {
+      var el = $('#alm-mailing-list'),
+          email = $('input#mc_email', el).val(),
+          data_path = $('form', el).data('path'); 
+   	
+   	// update user interface
+   	$('#response', el).fadeIn(250).addClass('loading');
+   	$('#response p', el).html('Adding email address...');   	
+   	
+   	// Verify email address
+   	if(!IsEmail(email)){
+   		$('#response p', el).html('<i class="fa fa-exclamation-circle"></i> Please enter a valid email address.');
+   		$('#response', el).removeClass('loading');
+   		$('#response', el).delay(2000).fadeOut(250);
+   		return false;
+   	}
+   	// Prepare query string and send AJAX request
+   	$.ajax({
+   		url: data_path,
+   		data: 'ajax=true&email=' + escape(email),
+   		success: function(msg) {
+   		   $('#response', el).removeClass('loading');
+   			$('#response p', el).html(msg);			
+   		},
+   		error: function() {
+            $('#response', el).removeClass('loading').delay(2000).fadeOut(250);	
+   			$('#response p', el).html('There was an error submitting your email address.');
+   		}
+   	});
+   	
+   	return false;
+   });
+   function IsEmail(email) {
+	  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+	  return regex.test(email);
+	}		
+	
+	
+	
 	/*
 	*  _alm.copyToClipboard
 	*  Copy shortcode to clipboard
@@ -63,6 +132,213 @@ jQuery(document).ready(function($) {
 			$('.expand-wrap').slideUp(100, 'alm_easeInOutQuad');
 		}
    });
+   
+   
+   /*
+   *  Activate License
+   *
+   *  @since 2.8.3
+   */ 
+   // 
+   var almActivating = false;
+   $(document).on('click', '.license-btn', function(e){	   
+      e.preventDefault();
+      if(!almActivating){
+	      $('.license-btn-wrap .msg').remove();
+	      almActivating = true;
+	      var el = $(this),
+	      	 wrap = el.closest('.license-btn-wrap'),
+	      	 parent = el.closest('.license'),
+	      	 type = el.data('type'),
+	      	 item = wrap.data('name'),
+	      	 url = wrap.data('url'),
+	      	 upgrade = wrap.data('upgrade-url'),
+	      	 status = wrap.data('option-status'),
+	      	 key = wrap.data('option-key'),
+	      	 license = parent.find('input[type=text]').val();
+	      	 
+			$('.loading', parent).fadeIn(300);
+	   	   
+		   // Get value from Ajax
+		   $.ajax({
+	   		type: 'GET',
+	   		url: alm_admin_localize.ajax_admin_url,
+				dataType: 'json',
+	   		
+	   		data: {
+	   			action: 'alm_license_activation',
+	   			nonce: alm_admin_localize.alm_admin_nonce,
+	   			type: type,
+	   			item: item,
+	   			status: status,
+	   			url: url,
+	   			upgrade: upgrade, 
+	   			key: key,
+	   			license: license,
+	   		},
+	   		
+	   		success: function(data) { 
+		   		 
+		   		//console.log(data);
+		   		
+		   		if(data['msg']){
+			   		$('.license-btn-wrap', parent).append('<div class="msg">'+data['msg']+'</div>');
+		   		}
+		   		
+		   		if(data['license'] === 'valid'){
+			   		$('.license-key-field .status', parent).addClass('active').removeClass('inactive').text(alm_admin_localize.active);
+			   		$('.license-title .status', parent).addClass('valid').removeClass('invalid');
+			   		$('.activate.license-btn', parent).addClass('hide');
+			   		$('.deactivate.license-btn', parent).removeClass('hide');
+			   		
+		   		}else{
+			   		$('.license-key-field .status', parent).removeClass('active').addClass('inactive').text(alm_admin_localize.inactive);
+			   		$('.license-title .status', parent).removeClass('valid').addClass('invalid');	
+			   		$('.activate.license-btn', parent).removeClass('hide');
+			   		$('.deactivate.license-btn', parent).addClass('hide');	   		
+		   		}
+		   		
+					$('.loading', parent).delay(250).fadeOut(300);
+					almActivating = false;
+	            
+	   		},
+	   		error: function(xhr, status, error) {
+	      		console.log(status);
+	      		$('.loading', parent).delay(250).fadeOut(300);
+	      		almActivating = false;
+	   		}
+	   	});
+   	}
+   	
+   });
+   
+   
+   
+   // Get layout value Ajax
+   //$('.alm-layout-selection ul li a.layout').click(function(){
+   $(document).on('click', '.alm-layout-selection li a.layout', function(e){
+      e.preventDefault();
+      var el = $(this),
+          type = el.data('type'),
+          layout_btn_text = el.html(),
+          name = el.closest('.repeater-wrap').data('name');
+          
+      if(!el.hasClass('updating')){
+         
+         el.addClass('updating').text("Applying layout...");
+         
+         // Get editor ID
+         var eid = '';         
+         if(name === 'default'){ // Default Template  
+            eid = window['editorDefault'];         			   
+   	   }else{ // Repeater Templates   	   
+            eid = window['editor_'+name]; // Set editor ID	      
+   	   }
+   	   
+   	   // Get value from Ajax
+   	   $.ajax({
+      		type: 'GET',
+      		url: alm_admin_localize.ajax_admin_url,
+      		data: {
+      			action: 'alm_layouts_get',
+      			type: type,
+      			nonce: alm_admin_localize.alm_admin_nonce,
+      		},
+      		dataType: "JSON",
+      		success: function(data) {  
+               eid.setValue(data.value);
+               
+               // Clear button styles				  
+				   setTimeout(function() { 
+                  el.text('Template Updated').blur();                                 
+                  setTimeout(function() { 
+                     el.removeClass('updating').html(layout_btn_text).blur();	// CLose drop menu
+                     el.closest('.alm-drop-btn').trigger('click');										
+						}, 400);										
+					}, 400);
+               
+               
+      		},
+      		error: function(xhr, status, error) {
+         		console.log(status);
+      		}
+      	});
+   	}
+      
+   });
+
+   
+   
+   
+   /*
+   *  Scroll to setting section
+   *
+   *  @since 2.7.3
+   */ 
+   
+	$(document).on('click', '.alm-settings-nav li a', function(e){
+		e.preventDefault();
+		var el = $(this).parent(),
+			 index = el.index();
+			 
+		
+		$('html, body').animate({
+        scrollTop: $("#alm_OptionsForm h3").eq(index).offset().top - 40
+    	}, 500);
+		
+		
+	});
+   
+   
+   
+   /*
+   *  equalheight()
+   *
+   *  @since 2.7.3
+   */ 
+   
+   function equalheight(container){
+
+      var currentTallest = 0,
+           currentRowStart = 0,
+           rowDivs = new Array(),
+           $el,
+           topPosition = 0;
+       $(container).each(function() {
+      
+         $el = $(this);
+         $($el).height('auto')
+         topPosition = $el.position().top;
+      
+         if (currentRowStart != topPosition) {
+           for (var currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+             rowDivs[currentDiv].height(currentTallest);
+           }
+           rowDivs.length = 0; // empty the array
+           currentRowStart = topPosition;
+           currentTallest = $el.height();
+           rowDivs.push($el);
+         } else {
+           rowDivs.push($el);
+           currentTallest = (currentTallest < $el.height()) ? ($el.height()) : (currentTallest);
+        }
+         for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
+           rowDivs[currentDiv].height(currentTallest);
+         }
+       });
+   }
+   if($('#alm-add-ons').length){
+      var addOnColumns = $('#alm-add-ons .group .expand-wrap');
+      $(window).load(function() {
+         equalheight(addOnColumns);
+      });      
+      $(window).resize(function() {
+         setTimeout(function(){ 
+            equalheight(addOnColumns); 
+         }, 500);        
+      });
+   }
+
 	
 	
 });

@@ -1,4 +1,5 @@
 var drops = drops || {};
+
 jQuery(document).ready(function($) {
    "use strict"; 
     
@@ -25,9 +26,11 @@ jQuery(document).ready(function($) {
         text.focus(); //Focus on input boxes
         
         $(window).unbind('click').bind('click', drops.closeDropDown); // Bind click event to site container   
-        dropdown.click(function(e){
-            e.stopPropagation();
+        
+        dropdown.unbind('click').bind('click', function(event){
+            //event.stopPropagation(); 
         }); 
+        //http://stackoverflow.com/questions/10439779/closing-modal-popup-by-clicking-away-from-it
     };
     drops.closeDropDown = function() {
         $('.alm-dropdown').each(function(i) {
@@ -37,12 +40,13 @@ jQuery(document).ready(function($) {
     };    
     
     //Dropdown links
-    $('.alm-dropdown').each(function(i){
-        var el = $(this).parent('.alm-drop-btn');
-        $('> a', el).click(function(e){
-            var e = $(this);
-            drops.dropdown(e);
-            return false;
-        });
+    $(document).on('click', '.alm-drop-btn a.target', function(){
+         var e = $(this);
+         drops.dropdown(e);
+         return false;
     });
+    
+    
+    
+    
 });

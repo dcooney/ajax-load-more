@@ -3,11 +3,141 @@
 /* Admin function */
 
 add_action( 'plugins_loaded', 'alm_core_update' ); // Core Update
-add_action( 'admin_head', 'alm_admin_vars' ); // Localized Vars
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
 add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache
+add_action( 'wp_ajax_alm_layouts_dismiss', 'alm_layouts_dismiss' ); // Dismiss Layouts CTA
+add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Activate Add-on
+add_action( 'add_layout_listing', 'add_layout_listing' ); // Add layout dropmenu  		
+add_action( 'wp_ajax_alm_layouts_get', 'alm_layouts_get' ); // Get layout
+add_action( 'admin_init', 'alm_image_sizes' ); // Add image size
+
+
+/*
+*  alm_license_activation
+*  Activate Add-on licenses
+*
+*  @since 2.8.3
+*/
+
+function alm_license_activation(){
+	
+	$nonce = $_GET["nonce"];
+   $type = $_GET["type"]; // activate / deactivate
+   $item = $_GET["item"];    
+   $license = $_GET["license"];     
+   $url = $_GET["url"];      
+   $upgrade = $_GET["upgrade"];     
+   $option_status = $_GET["status"];   
+   $option_key = $_GET["key"];   
+      
+   // Check our nonce, if they don't match then bounce!
+   if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+      die('Error - unable to verify nonce, please try again.');          
+
+	// data to send in our API request
+	if($type === 'activate'){
+		$action = 'activate_license';
+	}else{
+		$action = 'deactivate_license';
+	}
+	
+	$api_params = array( 
+		'edd_action'=> $action, 
+		'license' 	=> $license, 
+		'item_id'   => $item, // the ID of our product in EDD
+		'url'       => home_url()
+	);
+	
+	// Call the custom API.
+	$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
+	
+	$license_data = $response['body'];
+	$license_data = json_decode($license_data); // decode the license data
+	
+
+	$return["success"] = $license_data->success;
+		
+	$msg = '';
+	if($type === 'activate'){		
+		$return["license_limit"] = $license_data->license_limit;
+		$return["expires"] = $license_data->expires;
+		$return["site_count"] = $license_data->site_count;
+		$return["activations_left"] = $license_data->activations_left;
+		$return["license"] = $license_data->license;
+		$return["item_name"] = $license_data->item_name;	
+		if($license_data->activations_left === 0 && $license_data->success === false){
+			$msg = '<strong>Sorry, but you are out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em>.</strong> Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> page to add additional licenses.';
+		}	
+	}
+	$return["msg"] = $msg;
+	
+	
+	update_option( $option_status, $license_data->license);
+	update_option( $option_key, $license );	
+	
+   echo json_encode($return);
+	
+	die();
+}
+
+
+
+/*
+*  alm_layouts_get
+*  Get layout and return value to repeater template
+*
+*  @since 2.8.3
+*/
+
+function alm_layouts_get(){	
+   if (current_user_can( 'edit_theme_options' )){         
+   
+      $nonce = $_GET["nonce"];
+      $type = $_GET["type"];      
+      // Check our nonce, if they don't match then bounce!
+      if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+         die('Error - unable to verify nonce, please try again.');    
+      
+      if($type === 'default'){
+         $content =  file_get_contents(ALM_PATH.'admin/includes/layout/'.$type.'.php');
+      }else{
+         $content =  file_get_contents(ALM_LAYOUTS_PATH.'layouts/'.$type.'.php');         
+      }      
+      
+      $return["value"] = $content;
+      echo json_encode($return);        
+   }else {
+         echo __('You don\'t belong here.', ALM_NAME);
+   }   
+   die();      
+}
+
+
+
+/*
+*  alm_layouts_image_sizes
+*  Add the required image sizes
+*
+*  @since 2.8.3
+*/
+
+function alm_image_sizes(){   
+	add_image_size( 'alm-thumbnail', 150, 150, true); // Custom ALM thumbnail size
+} 
+
+
+
+/*
+*  add_layout_listing
+*  Get the list of layouts
+*
+*  @since 2.8.3
+*/
+function add_layout_listing(){
+   //include( ALM_PATH . 'admin/includes/components/layout-list.php'); 
+}
 
 
 
@@ -22,11 +152,24 @@ function alm_admin_vars() { ?>
 	 /* <![CDATA[ */
     var alm_admin_localize = <?php echo json_encode( array( 
         'ajax_admin_url' => admin_url( 'admin-ajax.php' ),
+        'active' => __('Active', 'ajax-load-more'),
+        'inactive' => __('Inactive', 'ajax-load-more'),
         'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' )
     )); ?>
     /* ]]> */
     </script>
 <?php }
+
+
+/*
+*  alm_set_admin_nonce
+*  Create admin nonce on Repeater Template page only
+*
+*  @since 2.8.2
+*/
+function alm_set_admin_nonce(){
+   add_action( 'admin_head', 'alm_admin_vars' ); // Localized Vars
+}
 
 
 
@@ -40,64 +183,100 @@ function alm_admin_vars() { ?>
 
 function alm_core_update() {  
    
-    if( !get_option( 'alm_version' ) )
-      add_option( 'alm_version', ALM_VERSION ); // Add 'alm_version' to WP options table
-    else  
-      update_option( 'alm_version', ALM_VERSION ); // Update 'alm_version'
+	if(!get_option( 'alm_version')){ // Add 'alm_version' to WP options table if it does not exist
+		add_option( 'alm_version', ALM_VERSION ); 
+	}  
+	
+	$alm_installed_ver = get_option( "alm_version" ); // Get value from WP Option tbl
+	if ( $alm_installed_ver != ALM_VERSION ) {
+		alm_run_update();	
+	}  
+}
+
+
+
+/**
+* alm_run_update
+* Run the update on all 'blogs'
+*
+* @since 2.7.2
+*/
+
+function alm_run_update(){
+   global $wpdb;	
    
-    //$installed_ver = get_option( "alm_version" ); // Get value from WP Option tbl
-     
-	 global $wpdb;
-	 $table_name = $wpdb->prefix . "alm";	     
-    // **********************************************
-	 // If table exists
-	 // **********************************************
-	 if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {      
-	 
-       // Compare versions of repeaters, if template versions do not match, update the repeater with value from DB	       
-	    $version = $wpdb->get_var("SELECT pluginVersion FROM $table_name WHERE name = 'default'");	        
-	    if($version != ALM_VERSION){ // First, make sure versions do not match.
-		   
-		   //Write to repeater file
-		   $data = $wpdb->get_var("SELECT repeaterDefault FROM $table_name WHERE name = 'default'");
-			$f = ALM_PATH. 'core/repeater/default.php'; // File
-			
-			try {
+   if ( is_multisite()) {           
+   	$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );   	
+      
+   	// Loop all blogs and run update routine   	
+      foreach ( $blog_ids as $blog_id ) {
+         switch_to_blog( $blog_id );
+         alm_update_template_files();
+         restore_current_blog();
+      }
+      
+   } else {
+      alm_update_template_files();
+   }
+      
+   update_option( "alm_version", ALM_VERSION ); // Update the WP Option tbl with the new version num
+}
+
+
+
+/**
+* alm_update_template_files
+* Update routine for template files
+*
+* @since 2.7.2
+*/
+
+function alm_update_template_files(){
+   global $wpdb;	
+	$table_name = $wpdb->prefix . "alm";
+	$blog_id = $wpdb->blogid;	
+   
+	// Get all templates ($rows) where name is 'default' 
+   $rows = $wpdb->get_results("SELECT * FROM $table_name WHERE name = 'default'"); 
+
+   if($rows){
+      foreach( $rows as $row ) { // Loop $rows
+         
+         $data = $wpdb->get_var("SELECT repeaterDefault FROM $table_name WHERE name = 'default'");
+         
+         if($blog_id > 1){
+	         $dir = ALM_PATH. 'core/repeater/'. $blog_id;
+			   if( !is_dir($dir) ){
+			      mkdir($dir);
+			   }			   
+			   $f = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php';
+         }else{
+            $f = ALM_PATH. 'core/repeater/default.php';
+         }
+         
+         try {
             $o = fopen($f, 'w+'); //Open file
             if ( !$o ) {
-              throw new Exception(__('[Ajax Load More] Unable to open the default repeater template (/core/repeater/default.php).', ALM_NAME));
+              throw new Exception(__('[Ajax Load More] Error opening default repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory', 'ajax-load-more'));
             } 
             $w = fwrite($o, $data); //Save the file
             if ( !$w ) {
-              throw new Exception(__('[Ajax Load More] Unable to save the default repeater (/core/repeater/default.php).', ALM_NAME));
+              throw new Exception(__('[Ajax Load More] Error updating default repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory.', 'ajax-load-more'));
             } 
             fclose($o); //now close it
             
          } catch ( Exception $e ) {
-            echo '<script>console.log("' .$e->getMessage(). '");</script>';
-         } 
-	    }
-    }   
-    
-    // **********************************************
-    // If table DOES NOT exist, create it.	
-    // **********************************************
-    if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {	
-	   $createRepeater = '<li><?php if ( has_post_thumbnail() ) { the_post_thumbnail(array(100,100));}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';
-		$sql = "CREATE TABLE $table_name (
-			id mediumint(9) NOT NULL AUTO_INCREMENT,
-			name text NOT NULL,
-			repeaterDefault longtext NOT NULL,
-			pluginVersion text NOT NULL,
-			UNIQUE KEY id (id)
-		);";		
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
-		
-		//Insert default data into created table
-		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $createRepeater, 'pluginVersion' => ALM_VERSION));
+            // Display error message in console.
+            if(!isset($options['_alm_error_notices']) || $options['_alm_error_notices'] == '1'){ 	 
+               echo '<script>console.log("' .$e->getMessage(). '");</script>';
+            }
+         }
+         
+      }
    }
+   
 }
+
 
 
 
@@ -192,10 +371,13 @@ function alm_admin_menu() {
    //Add our admin scripts
    add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_template_page, 'alm_set_admin_nonce' );   
    add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_nonce' );
    add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_licenses_page, 'alm_set_admin_nonce' );
 }   
       
 
@@ -229,7 +411,7 @@ function alm_enqueue_admin_scripts(){
    wp_enqueue_style( 'alm-admin-css', ALM_ADMIN_URL. 'css/admin.css');
    wp_enqueue_style( 'alm-select2-css', ALM_ADMIN_URL. 'css/select2.css');
    wp_enqueue_style( 'alm-core-css', ALM_URL. '/core/css/ajax-load-more.css');
-   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
    
    //Load CodeMirror Syntax Highlighting if on Repater Template page 
    $screen = get_current_screen();
@@ -355,37 +537,6 @@ function alm_cache_page(){
 
 
 /*
-*  alm_delete_cache
-*  Delete induvidual cached items
-*
-*  @return   null
-*  @since 2.6.0
-*/
-
-function alm_delete_cache(){	
-	$nonce = $_POST["nonce"];
-	$cache = $_POST["cache"];
-	// Check our nonce, if they don't match then bounce!
-	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-		die('Get Bounced!');
-	
-	$dir = ALM_CACHE_PATH .'_cache/'.$cache;
-	
-	if (is_dir($dir)) {
-      foreach (glob($dir."/*.*") as $filename) {
-          if (is_file($filename)) {
-              unlink($filename);
-          }
-      }
-      rmdir($dir);
-   }
-	
-	die();
-}
-
-
-
-/*
 *  alm_save_repeater
 *  Repeater Save function
 *
@@ -394,72 +545,109 @@ function alm_delete_cache(){
 */
 
 function alm_save_repeater(){
-	$nonce = $_POST["nonce"];
-	// Check our nonce, if they don't match then bounce!
-	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-		die('Error - unable to verify nonce, please try again.');
+	
+	if (current_user_can( 'edit_theme_options' )){
 		
-   // Get _POST Vars 
-	$c = Trim(stripslashes($_POST["value"])); // Repeater Value
-	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
-	$t = Trim(stripslashes($_POST["type"])); // Repeater name
-	$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
-	
-	// Write to repeater file
-	if($t === 'default'){
-		$f = ALM_PATH. 'core/repeater/'.$n .'.php'; // File
-   }
-   elseif($t === 'unlimited'){      
-		$f = ALM_UNLIMITED_PATH. 'repeaters/'.$n .'.php'; // File
-   }
-	else{
-		$f = ALM_REPEATER_PATH. 'repeaters/'.$n .'.php'; // File
-   }
-	
-	
-	try {
-      $o = fopen($f, 'w+'); //Open file
-      if ( !$o ) {
-        throw new Exception(__('[Ajax Load More] Error opening repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory', ALM_NAME));
-      } 
-      $w = fwrite($o, $c); //Save the file
-      if ( !$w ) {
-        throw new Exception(__('[Ajax Load More]Error saving repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory.', ALM_NAME));
-      } 
-      fclose($o); //now close it
-      
-   } catch ( Exception $e ) {
-      //echo $e;
-      echo '<script>console.log("' .$e->getMessage(). '");</script>';
-   }
-	
-	//Save to database
-	global $wpdb;
-	$table_name = $wpdb->prefix . "alm";	
+		global $wpdb;
+		$table_name = $wpdb->prefix . "alm";
+		$blog_id = $wpdb->blogid;	
+		$options = get_option( 'alm_settings' ); //Get plugin options
 		
-	if($t === 'default')	{	   
-	   $data_update = array('repeaterDefault' => "$c", 'pluginVersion' => ALM_VERSION);
-	   $data_where = array('name' => "default");
-   }
-   elseif($t === 'unlimited'){ // Unlimited Repeaters	  
-      $table_name = $wpdb->prefix . "alm_unlimited"; 
-	   $data_update = array('repeaterDefault' => "$c", 'alias' => "$a", 'pluginVersion' => ALM_UNLIMITED_VERSION);
-	   $data_where = array('name' => $n);
-   }
-   else{ // Custom Repeaters
-	   $data_update = array('repeaterDefault' => "$c", 'alias' => "$a", 'pluginVersion' => ALM_REPEATER_VERSION);
-      $data_where = array('name' => $n);
-   }
-   
-	$wpdb->update($table_name , $data_update, $data_where);
-	
-	//Our results
-	if($w){
-	    echo '<span class="saved">Template Saved Successfully</span>';
-	} else {
-	    echo '<span class="saved-error"><b>'. __('Error Writing File', ALM_NAME) .'</b></span><br/>Something went wrong and the data could not be saved.';
+		$nonce = $_POST["nonce"];
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die('Error - unable to verify nonce, please try again.');
+			
+	   // Get _POST Vars 
+		$c = Trim(stripslashes($_POST["value"])); // Repeater Value
+		$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
+		$t = Trim(stripslashes($_POST["type"])); // Repeater name
+		$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
+		
+		// Write to repeater templates 
+		
+		// (Default)
+		if($t === 'default'){
+			
+			if($blog_id > 1){				
+				$dir = ALM_PATH. 'core/repeater/'. $blog_id;
+			   if( !is_dir($dir) ){
+			      mkdir($dir);
+			   }		   
+			   $f = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php';
+			}else{
+				$f = ALM_PATH. 'core/repeater/default.php';			
+			}
+			
+	   }
+	   // (Unlimited)
+	   elseif($t === 'unlimited'){
+		      
+		   if($blog_id > 1){
+			   $dir = ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id;
+		   	if( !is_dir($dir) ){
+		         mkdir($dir);
+		      }
+				$f = ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id .'/'.$n .'.php';
+			}else{
+				$f = ALM_UNLIMITED_PATH. 'repeaters/'.$n .'.php';
+			}
+			
+	   }
+	   // (Unlimited v1)
+		else{
+			
+			$f = ALM_REPEATER_PATH. 'repeaters/'.$n .'.php';
+			
+	   }
+		
+	   try {
+	      $o = fopen($f, 'w+'); //Open file
+	      if ( !$o ) {
+	        throw new Exception(__('[Ajax Load More] Unable to open repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more'));
+	      } 
+	      $w = fwrite($o, $c); //Save the file
+	      if ( !$w ) {
+	        throw new Exception(__('[Ajax Load More] Error saving repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more'));
+	      } 
+	      fclose($o); //now close it
+	      
+	   } catch ( Exception $e ) {
+	      // Display error message in console.
+	      if(!isset($options['_alm_error_notices']) || $options['_alm_error_notices'] == '1'){ 	 
+	         echo '<script>console.log("' .$e->getMessage(). '");</script>';
+	      }
+	   }
+		
+		//Save to database	
+			
+		if($t === 'default')	{	   
+		   $data_update = array('repeaterDefault' => "$c", 'pluginVersion' => ALM_VERSION);
+		   $data_where = array('name' => "default");
+	   }
+	   elseif($t === 'unlimited'){ // Unlimited Repeaters	  
+	      $table_name = $wpdb->prefix . "alm_unlimited"; 
+		   $data_update = array('repeaterDefault' => "$c", 'alias' => "$a", 'pluginVersion' => ALM_UNLIMITED_VERSION);
+		   $data_where = array('name' => $n);
+	   }
+	   else{ // Custom Repeaters
+		   $data_update = array('repeaterDefault' => "$c", 'alias' => "$a", 'pluginVersion' => ALM_REPEATER_VERSION);
+	      $data_where = array('name' => $n);
+	   }
+	   
+		$wpdb->update($table_name , $data_update, $data_where);
+		
+		//Our results
+		if($w){
+		    echo '<span class="saved">Template Saved Successfully</span>';
+		} else {
+		    echo '<span class="saved-error"><b>'. __('Error Writing File', 'ajax-load-more') .'</b></span><br/>Something went wrong and the data could not be saved.';
+		}
+		die();
+		
+	}else {
+		echo __('You don\'t belong here.', 'ajax-load-more');
 	}
-	die();
 }
 
 
@@ -475,28 +663,36 @@ function alm_save_repeater(){
 */
 
 function alm_update_repeater(){
-	$nonce = $_POST["nonce"];
-	// Check our nonce, if they don't match then bounce!
-	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-		die('Error - unable to verify nonce, please try again.');
 		
-   // Get _POST Vars  	
-	$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
-	$t = Trim(stripslashes($_POST["type"])); // Repeater type (default | unlimited)
-	
-	
-	// Get value from database
-	global $wpdb;
-	$table_name = $wpdb->prefix . "alm";	
+	if (current_user_can( 'edit_theme_options' )){
 		
-	if($t === 'default')	$n = 'default';   
-   if($t === 'unlimited') $table_name = $wpdb->prefix . "alm_unlimited";    
-   
-   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
-   
-   echo $the_repeater; // Return repeater value
-   
-	die();
+		$nonce = $_POST["nonce"];
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die('Error - unable to verify nonce, please try again.');
+			
+	   // Get _POST Vars  	
+		$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
+		$t = Trim(stripslashes($_POST["type"])); // Repeater type (default | unlimited)
+		
+		
+		// Get value from database
+		global $wpdb;
+		$table_name = $wpdb->prefix . "alm";	
+			
+		if($t === 'default')	$n = 'default';   
+	   if($t === 'unlimited') $table_name = $wpdb->prefix . "alm_unlimited";    
+	   
+	   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
+	   
+	   echo $the_repeater; // Return repeater value
+	   
+		die();
+		
+	} else {
+		echo __('You don\'t belong here.', 'ajax-load-more');
+	}
+	
 }
 
 
@@ -510,33 +706,64 @@ function alm_update_repeater(){
 */
 
 function alm_get_tax_terms(){	
-	$nonce = $_GET["nonce"];
-	// Check our nonce, if they don't match then bounce!
-	if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-		die('Get Bounced!');
+	if (current_user_can( 'edit_theme_options' )){
 		
-	$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';	
-	$tax_args = array(
-		'orderby'       => 'name', 
-		'order'         => 'ASC',
-		'hide_empty'    => false
-	);	
-	$terms = get_terms($taxonomy, $tax_args);
-	$returnVal = '';
-	if ( !empty( $terms ) && !is_wp_error( $terms ) ){		
-		$returnVal .= '<ul>';
-		foreach ( $terms as $term ) {
-			//print_r($term);
-			$returnVal .='<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'">'.$term->name.'</label></li>';		
+		$nonce = $_GET["nonce"];
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die('Get Bounced!');
+			
+		$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';	
+		$tax_args = array(
+			'orderby'       => 'name', 
+			'order'         => 'ASC',
+			'hide_empty'    => false
+		);	
+		$terms = get_terms($taxonomy, $tax_args);
+		$returnVal = '';
+		if ( !empty( $terms ) && !is_wp_error( $terms ) ){		
+			$returnVal .= '<ul>';
+			foreach ( $terms as $term ) {
+				//print_r($term);
+				$returnVal .='<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'">'.$term->name.'</label></li>';		
+			}
+			$returnVal .= '</ul>';		
+			echo $returnVal;
+			die();
+		}else{
+			echo "<p class='warning'>No terms exist within this taxonomy</p>";
+			die();
 		}
-		$returnVal .= '</ul>';		
-		echo $returnVal;
-		die();
-	}else{
-		echo "<p class='warning'>No terms exist within this taxonomy</p>";
-		die();
+		
+	} else {		
+		echo __('You don\'t belong here.', 'ajax-load-more');		
 	}
 }
+
+
+
+/*
+*  alm_layouts_dismiss
+*  Dismiss Add Layouts CTA in repeater templates.
+*
+*  @since 2.8.2.1
+*/
+function alm_layouts_dismiss(){
+   if (current_user_can( 'edit_theme_options' )){
+	
+		$nonce = $_POST["nonce"];
+		
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die('Error - unable to verify nonce, please try again.');			
+		
+      update_option('alm_layouts_dismiss', 'true');
+      echo 'Success';
+      
+      die();
+   }
+}
+
 
 
 /*
@@ -562,10 +789,16 @@ function alm_admin_init(){
 		'ajax-load-more' 
 	);
 	
+	add_settings_section( 
+		'alm_admin_settings',  
+		'Admin Settings', 
+		'alm_admin_settings_callback', 
+		'ajax-load-more' 
+	);	
 	
 	add_settings_field( // Container type
 	    '_alm_container_type',
-	    __('Container Type', ALM_NAME ),
+	    __('Container Type', 'ajax-load-more' ),
 	    'alm_container_type_callback',
 	    'ajax-load-more',
 	    'alm_general_settings'
@@ -573,47 +806,15 @@ function alm_admin_init(){
 	
 	add_settings_field(  // Classnames
 		'_alm_classname', 
-		__('Container Classes', ALM_NAME ), 
+		__('Container Classes', 'ajax-load-more' ), 
 		'alm_class_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
 	);
 	
-	add_settings_field(  // Hide btn
-		'_alm_hide_btn', 
-		__('Editor Button', ALM_NAME ), 
-		'alm_hide_btn_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);
-	
-	add_settings_field(  // Load dynamic queries
-		'_alm_disable_dynamic', 
-		__('Dynamic Content', ALM_NAME ), 
-		'alm_disable_dynamic_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);
-	
-	add_settings_field(  // Nonce security
-		'_alm_nonce_security', 
-		__('Ajax Security', ALM_NAME ), 
-		'_alm_nonce_security_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);	
-	
-	add_settings_field(  // Scroll to top on load
-		'_alm_scroll_top', 
-		__('Top of Page', ALM_NAME ), 
-		'_alm_scroll_top_callback', 
-		'ajax-load-more', 
-		'alm_general_settings' 
-	);	
-	
 	add_settings_field(  // Disbale CSS
 		'_alm_disable_css', 
-		__('Disable CSS', ALM_NAME ), 
+		__('Disable CSS', 'ajax-load-more' ), 
 		'alm_disable_css_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
@@ -621,7 +822,7 @@ function alm_admin_init(){
 	
 	add_settings_field(  // Btn color
 		'_alm_btn_color', 
-		__('Button Color', ALM_NAME ), 
+		__('Button Color', 'ajax-load-more' ), 
 		'alm_btn_color_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
@@ -629,10 +830,50 @@ function alm_admin_init(){
 	
 	add_settings_field(  // Button classes
 		'_alm_btn_classname', 
-		__('Button Classes', ALM_NAME ), 
+		__('Button Classes', 'ajax-load-more' ), 
 		'alm_btn_class_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
+	);
+	
+	add_settings_field(  // Nonce security
+		'_alm_nonce_security', 
+		__('Ajax Security', 'ajax-load-more' ), 
+		'_alm_nonce_security_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);	
+	
+	add_settings_field(  // Scroll to top on load
+		'_alm_scroll_top', 
+		__('Top of Page', 'ajax-load-more' ), 
+		'_alm_scroll_top_callback', 
+		'ajax-load-more', 
+		'alm_general_settings' 
+	);	
+	
+	add_settings_field(  // Load dynamic queries
+		'_alm_disable_dynamic', 
+		__('Dynamic Content', 'ajax-load-more' ), 
+		'alm_disable_dynamic_callback', 
+		'ajax-load-more', 
+		'alm_admin_settings' 
+	);	
+	
+	add_settings_field(  // Hide btn
+		'_alm_hide_btn', 
+		__('Editor Button', 'ajax-load-more' ), 
+		'alm_hide_btn_callback', 
+		'ajax-load-more', 
+		'alm_admin_settings' 
+	);
+	
+	add_settings_field(  // Display error notices
+		'_alm_error_notices', 
+		__('Error Notices', 'ajax-load-more' ), 
+		'_alm_error_notices_callback', 
+		'ajax-load-more', 
+		'alm_admin_settings' 
 	);	
 	
 	
@@ -646,11 +887,23 @@ function alm_admin_init(){
 	if(has_action('alm_unlimited_settings')){	   
    	do_action('alm_unlimited_settings');   	
    }
+	
+	
+	// LAYOUTS
+	if(has_action('alm_layouts_settings')){	   
+   	do_action('alm_layouts_settings');   	
+   }
    
 	
 	// PAGINATION
 	if(has_action('alm_paging_settings')){	   
    	do_action('alm_paging_settings');   	
+   }
+   
+	
+	// PREVIOUS POST
+	if(has_action('alm_prev_post_settings')){	   
+   	do_action('alm_prev_post_settings');   	
    }
    
 	
@@ -664,6 +917,12 @@ function alm_admin_init(){
 	if(has_action('alm_seo_settings')){	
 		do_action('alm_seo_settings');   	
 	}
+	
+	
+	// THEME REPEATERS
+	if(has_action('alm_theme_repeaters_settings')){	   
+   	do_action('alm_theme_repeaters_settings');   	
+   }	
 }
 
 
@@ -676,7 +935,20 @@ function alm_admin_init(){
 */
 
 function alm_general_settings_callback() {
-    echo '<p>' . __('Customize your version of Ajax Load More by updating the fields below.', ALM_NAME) . '</p>';
+    echo '<p>' . __('Customize the user experience of Ajax Load More by updating the fields below.', 'ajax-load-more') . '</p>';
+}
+
+
+
+/*
+*  alm_admin_settings_callback
+*  Some general admin settings text
+*
+*  @since 2.0.0
+*/
+
+function alm_admin_settings_callback() {
+    echo '<p>' . __('The following settings affect the WordPress admin area only.', 'ajax-load-more') . '</p>';
 }
 
 
@@ -707,7 +979,7 @@ function alm_disable_css_callback(){
 	
 	$html = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
 	$html .= '<input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles.', ALM_NAME).'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', ALM_NAME).'</a></span></label>';
+	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles.', 'ajax-load-more').'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', 'ajax-load-more').'</a></span></label>';
 	
 	echo $html;
 }
@@ -727,7 +999,28 @@ function alm_hide_btn_callback(){
 	   $options['_alm_hide_btn'] = '0';
 	
 	$html = '<input type="hidden" name="alm_settings[_alm_hide_btn]" value="0" /><input type="checkbox" id="alm_hide_btn" name="alm_settings[_alm_hide_btn]" value="1"'. (($options['_alm_hide_btn']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_hide_btn">'.__('Hide shortcode button in WYSIWYG editor.', ALM_NAME).'</label>';	
+	$html .= '<label for="alm_hide_btn">'.__('Hide shortcode button in WYSIWYG editor.', 'ajax-load-more').'</label>';	
+	
+	echo $html;
+}
+
+
+
+/*
+*  _alm_error_notices_callback
+*  Display admin error notices in browser console.
+*
+*  @since 2.7.2
+*/
+
+function _alm_error_notices_callback(){
+	$options = get_option( 'alm_settings' );		
+	if(!isset($options['_alm_error_notices'])) 
+	   $options['_alm_error_notices'] = '1';
+	
+	$html =  '<input type="hidden" name="alm_settings[_alm_error_notices]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_error_notices]" id="_alm_error_notices" value="1"'. (($options['_alm_error_notices']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="_alm_error_notices">'.__('Display error messaging regarding repeater template updates in the browser console.', 'ajax-load-more').'</label>';	
 	
 	echo $html;
 }
@@ -748,24 +1041,7 @@ function alm_disable_dynamic_callback(){
 	
 	$html =  '<input type="hidden" name="alm_settings[_alm_disable_dynamic]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_disable_dynamic]" id="_alm_disable_dynamic" value="1"'. (($options['_alm_disable_dynamic']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="_alm_disable_dynamic">'.__('Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style="display:block">Recommended if you have an extraordinary number of categories, tags and/or authors.', ALM_NAME).'</label>';	
-	
-	echo $html;
-}
-
-
-/*
-*  alm_class_callback
-*  Add classes to the Ajax Load More wrapper
-*
-*  @since 2.0.0
-*/
-
-function alm_class_callback(){
-	$options = get_option( 'alm_settings' );
-		
-	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container - these classes are applied globally and will appear with every instance of Ajax Load More.<span style="display:block">You can also add classes to the ALM container when building a shortcode.</span>', ALM_NAME).'</label><br/>';
-	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';	
+	$html .= '<label for="_alm_disable_dynamic">'.__('Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style="display:block">Recommended if you have an extraordinary number of categories, tags and/or authors.', 'ajax-load-more').'</label>';	
 	
 	echo $html;
 }
@@ -786,13 +1062,32 @@ function alm_container_type_callback() {
 	   $options['_alm_container_type'] = '1';
      
     $html = '<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1"' . checked( 1, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span>&lt;!-- '.__('Ajax Posts Here', ALM_NAME).' --&gt;</span> &lt;/ul&gt;</label><br/>';
+    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span>&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/ul&gt;</label><br/>';
      
     $html .= '<input type="radio" id="_alm_container_type_two" name="alm_settings[_alm_container_type]" value="2"' . checked( 2, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span>&lt;!-- '.__('Ajax Posts Here', ALM_NAME).' --&gt;</span> &lt;/div&gt;</label>';
+    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span>&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/div&gt;</label>';
+    
+    $html .= '<label style="cursor: default !important"><span style="display:block">'.__('You can modify the container type when building a shortcode.', 'ajax-load-more').'</span></label>';
      
     echo $html;
  
+}
+
+
+/*
+*  alm_class_callback
+*  Add classes to the Ajax Load More wrapper
+*
+*  @since 2.0.0
+*/
+
+function alm_class_callback(){
+	$options = get_option( 'alm_settings' );
+		
+	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more').'</label><br/>';
+	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';	
+	
+	echo $html;
 }
 
 
@@ -833,7 +1128,7 @@ function alm_btn_color_callback() {
 	 $selected6 = '';   
 	 if($color == 'white') $selected6 = 'selected="selected"';
 		
-    $html =  '<label for="alm_settings_btn_color">'.__('Choose your <strong>Load More</strong> button color', ALM_NAME).'.</label><br/>';
+    $html =  '<label for="alm_settings_btn_color">'.__('Choose your <strong>Load More</strong> button color', 'ajax-load-more').'.</label><br/>';
     $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
     $html .= '<option value="default" ' . $selected0 .'>Default (Orange)</option>';
     $html .= '<option value="blue" ' . $selected1 .'>Blue</option>';
@@ -844,7 +1139,7 @@ function alm_btn_color_callback() {
     $html .= '<option value="white" ' . $selected6 .'>White</option>';
     $html .= '</select>';
      
-    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$color.'"><span>'.__('Preview', ALM_NAME) .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
+    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$color.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
     echo $html;
 }
 
@@ -863,7 +1158,7 @@ function alm_btn_class_callback(){
     if(!isset($options['_alm_btn_classname'])) 
 	   $options['_alm_btn_classname'] = '';
 		
-	$html = '<label for="alm_settings[_alm_btn_classname]">'.__('Add classes to your <strong>Load More</strong> button', ALM_NAME).'.</label>';
+	$html = '<label for="alm_settings[_alm_btn_classname]">'.__('Add classes to your <strong>Load More</strong> button', 'ajax-load-more').'.</label>';
 	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button rounded listing etc..." /> ';	
 	
 	echo $html;
@@ -873,7 +1168,14 @@ function alm_btn_class_callback(){
     	var colorArray = "default grey purple green red blue white";
     	jQuery("select#alm_settings_btn_color").change(function() {
     		var color = jQuery(this).val();
-			jQuery('.ajax-load-more-wrap.core').removeClass(colorArray);
+    		// Remove other colors
+			jQuery('.ajax-load-more-wrap.core').removeClass('default');
+			jQuery('.ajax-load-more-wrap.core').removeClass('grey');
+			jQuery('.ajax-load-more-wrap.core').removeClass('purple');
+			jQuery('.ajax-load-more-wrap.core').removeClass('green');
+			jQuery('.ajax-load-more-wrap.core').removeClass('red');
+			jQuery('.ajax-load-more-wrap.core').removeClass('blue');
+			jQuery('.ajax-load-more-wrap.core').removeClass('white');
 			jQuery('.ajax-load-more-wrap.core').addClass(color);
 		});
 		jQuery("select#alm_settings_btn_color").click(function(e){
@@ -916,7 +1218,7 @@ function _alm_scroll_top_callback(){
 	
 	$html =  '<input type="hidden" name="alm_settings[_alm_scroll_top]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_scroll_top]" id="_alm_scroll_top" value="1"'. (($options['_alm_scroll_top']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="_alm_scroll_top">'.__('On initial page load, move the user\'s browser window to the top of the screen.<span style="display:block">This <u>may</u> help prevent the loading of unnecessary posts.</span>', ALM_NAME).'</label>';	
+	$html .= '<label for="_alm_scroll_top">'.__('On initial page load, move the user\'s browser window to the top of the screen.<span style="display:block">This <u>may</u> help prevent the loading of unnecessary posts.</span>', 'ajax-load-more').'</label>';	
 	
 	echo $html;
 }
@@ -937,7 +1239,7 @@ function _alm_nonce_security_callback(){
 	
 	$html =  '<input type="hidden" name="alm_settings[_alm_nonce_security]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_nonce_security]" id="_alm_nonce_security" value="1"'. (($options['_alm_nonce_security']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="_alm_nonce_security">'.__('Enable <a href="https://codex.wordpress.org/WordPress_Nonces" target="_blank">WP nonce</a> verification to help protect URLs against certain types of misuse, malicious or otherwise on each Ajax Load More query.', ALM_NAME).'</label>';	
+	$html .= '<label for="_alm_nonce_security">'.__('Enable <a href="https://codex.wordpress.org/WordPress_Nonces" target="_blank">WP nonce</a> verification to help protect URLs against certain types of misuse, malicious or otherwise on each Ajax Load More query.', 'ajax-load-more').'</label>';	
 	
 	echo $html;
 }

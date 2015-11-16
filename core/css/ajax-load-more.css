@@ -1,7 +1,6 @@
 /*
- * WordPress Ajax Load More
+ * Ajax Load More
  * http://wordpress.org/plugins/ajax-load-more/
- * https://github.com/dcooney/wordpress-ajax-load-more
  *
  * Copyright 2015 Connekt Media - http://connekthq.com
  * Free to use under the GPLv2 license.
@@ -36,13 +35,10 @@ button.alm-load-more-btn{
    -webkit-appearance: none; 
    -moz-appearance: none;   
    appearance: none;      
-   /* Prevents text selection */
    -webkit-touch-callout: none;
    -webkit-user-select: none;
-   -khtml-user-select: none;
    -moz-user-select: -moz-none;
    -ms-user-select: none;
-   -o-user-select: none;
    user-select: none;
    cursor: pointer;
 }
@@ -172,7 +168,6 @@ button.alm-load-more-btn{
 
 /*
 *  Generic alm-listing styles
-*
 *  @since 1.0.0
 */
 

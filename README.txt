@@ -1,20 +1,23 @@
 === Ajax Load More ===
 Contributors: dcooney
 Donate link: http://connekthq.com/donate/
-Tags: ajax, query, loop, paging, filter, infinite scroll, infinite, dynamic, jquery, shortcode builder, shortcode, search, tags, category, post types, taxonomy, meta_query, post format, wmpl, archives, date
+Tags: infinite scroll, scroll, infinite, lazy load, lazy loading, pagination, ajax pagination, ajax, ajax posts, ajax load posts, loop, query, dynamic, shortcode builder, wp_query, search, tags, category, post types, taxonomy, meta_query, archives, date, infinite scrolling
 Requires at least: 3.6
-Tested up to: 4.2.2
-Stable tag: 2.7.1
+Tested up to: 4.3.1
+Stable tag: 2.8.3 
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A simple solution for lazy loading your WordPress posts and pages with Ajax.
+A powerful solution to add infinite scroll functionality to your website
 
 == Description ==
 
-Ajax Load More is a simple yet powerful solution for lazy loading WordPress posts and pages with Ajax.
-Build complex WordPress queries using our shortcode builder then add the shortcode to your pages via the content editor or directly into your template files.
- 
+Ajax Load More is the ultimate solution for infinite scrolling and lazy loading posts, custom post types and pages with Ajax powered queries.
+
+Build complex WordPress queries using the Ajax Load More custom shortcode builder then add the shortcode to your pages via the content editor or directly into your template files. 
+
+**[Get More Information](http://connekthq.com/plugins/ajax-load-more/)**
+
 
 = Features =
 * **Shortcode Builder** - Easily create your own Ajax Load More shortcode by adjusting the various WordPress query parameters in our easy-to-use shortcode builder.(see Shortcode Parameters).
@@ -22,6 +25,7 @@ Build complex WordPress queries using our shortcode builder then add the shortco
 * **Customizable Repeater Templates** - Edit and extend the functionality of Ajax Load More by creating your own repeater template to match the look and feel of your website (see screenshots).
 * **Setting Panel** - Customize your version of Ajax Load More by updating various plugin settings (see screenshots).
 * **Multiple Instances** - You can include multiple instances of Ajax Load More on a single page, post or template.
+* **Multisite Compatibility** - As of Ajax Load More 2.7.2 you can now manage repeater templates across all sites in your network.
 
 Check out the **[demo site](http://connekthq.com/plugins/ajax-load-more/)** for more information!
 
@@ -32,6 +36,7 @@ Check out the **[demo site](http://connekthq.com/plugins/ajax-load-more/)** for 
 Ajax Load More accepts a number of parameters that are passed to the WordPress query. These parameters are transferred via shortcode - don't worry, creating your shortcode is simple with our intuitive Shortcode Builder.
  
 *   **repeater** - Choose a repeater template (<a href="http://connekthq.com/plugins/ajax-load-more/custom-repeaters/">Add-on available</a>). Default = ‘default’
+*   **theme_repeater** - Select from a list of template files in your current theme directory (<a href="http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/">Add-on only</a>). Default = null
 *   **post_type** - Comma separated list of post types. Default = ‘post’
 *   **post_format** - Query by post format. Default = null
 *   **category** - A comma separated list of categories to include by slug. Default = null
@@ -47,7 +52,8 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **taxonomy_operator** - Operator to compare Taxonomy Terms against (IN/NOT IN). Default = ‘IN’
 *   **meta_key** - Custom field key(name). Default = null
 *   **meta_value** - Custom field value. Default = null
-*   **meta_compare** - Operator to compare meta_key and meta_value against (IN/NOT IN/=/!=/>/>=/</<= etc.). Default = ‘IN’
+*   **meta_compare** - Operator to compare meta_key and meta_value against. Default = ‘IN’
+*   **meta_type** - Custom field type. Default = ‘CHAR’
 *   **meta_relation** - Used with multiple custom field entries (AND/OR). Default = ‘AND’
 *   **author** - Query by author id. Default = null
 *   **post__in** - Comma separated list of post ID’s to include in query. Default = null 
@@ -62,10 +68,13 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **scroll** - Load more posts as the user scrolls the page (true/false). Default = ‘true’
 *   **scroll_distance** - The distance from the bottom of the screen to trigger the loading of posts while scrolling. Default = '150'
 *   **max_pages** - Maximum number of pages to load while user is scrolling (activated on when scroll = true). Default = '5' 
+*   **pause_override** - Allow scrolling to override the Pause parameter and trigger the loading of posts on scroll. Default = null 
 *   **pause** - Do not load posts until user clicks the Load More button (true/false). Default = 'false'
 *   **transition** - Choose a posts reveal transition (slide/fade/none). Default = 'slide' 
+*   **images_loaded** - Wait for all images to load before displaying ajax loaded content (true/false). Default = 'false' 
 *   **destroy_after** - Remove ajax load more functionality after 'n' number of pages have been loaded. Default = null
 *   **button_label** - The label text for Load More button. Default = 'Older Posts'
+*   **container_type** - Override the global Container Type that was set on ALM Settings page. Default = null
 *   **css_classes** - Add custom CSS classes to the Ajax Load More container. Default = null
 *   **cache** - Turn on content caching for the specific Ajax Load More query. <a href="http://connekthq.com/plugins/ajax-load-more/cache/">add-on only</a> - (true/false). Default = ‘false’
 *   **cache_id** - A unique 10 digit ID for the cached query. <a href="http://connekthq.com/plugins/ajax-load-more/cache/">add-on only</a> - Default = A random 10 digit integer
@@ -110,36 +119,50 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
  The following Add-ons are available to increase the functionality of Ajax Load More.
 
 > #### Custom Repeaters
-> The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.<br />
-> [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters)
+> The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)
 > 
 > #### Cache
-> The **[Cache](http://connekthq.com/plugins/ajax-load-more/cache)** creates static HTML files of Ajax Load More requests then serves those static pages to your visitors without querying the database.<br />
-> [Get More Information](http://connekthq.com/plugins/ajax-load-more/cache)
+> The **[Cache](http://connekthq.com/plugins/ajax-load-more/cache/)** add-oncreates static HTML files of Ajax Load More requests then serves those static pages to your visitors without querying the database.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/cache/)
 > 
 > #### Paging
-> The **[Paging](http://connekthq.com/plugins/ajax-load-more/paging)** add-on will transform Ajax Load More’s lazy load/infinite scroll functionality into a robust ajax powered navigation system.<br />
-> [Get More Information](http://connekthq.com/plugins/ajax-load-more/paging)
-> > 
+> The **[Paging](http://connekthq.com/plugins/ajax-load-more/paging/)** add-on will transform Ajax Load More’s lazy load/infinite scroll functionality into a robust ajax powered navigation system.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/paging/)
+>
 > #### Preloaded
-> The **[Preloaded](http://connekthq.com/plugins/ajax-load-more/preloaded)** add-on will allow you to quickly and easily preload an initial set of posts before completing any Ajax requests to the server.<br />
-> [Get More Information](http://connekthq.com/plugins/ajax-load-more/preloaded)
+> The **[Preloaded](http://connekthq.com/plugins/ajax-load-more/preloaded/)** add-on will allow you to quickly and easily preload an initial set of posts before completing any Ajax requests to the server.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/preloaded/)
+>
+> #### Previous Post
+> The **[Previous Post](http://connekthq.com/plugins/ajax-load-more/previous-post/)** add-on will allow you to navigate single posts with Ajax Load More.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/previous-post/)
 > 
 > #### Search Engine Optimization
 > The **[SEO](http://connekthq.com/plugins/ajax-load-more/seo/)** add-on will optimize your ajax loaded content for search engines and site visitors by generating standard WordPress paging URLs with each Ajax Load More query.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/seo/)
+> 
+> #### Theme Repeaters
+> The **[Theme Repeaters](http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)** add-on will allow you load, edit and maintain templates from your current theme directory.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)
 
 ***
 
 = Callback Functions =
-The following functions are available to be dispatched by Ajax Load More. 
-[Get More Information](https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/)
+The following [functions](https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/) are available to be dispatched by Ajax Load More.
 
 
-**Ajax Complete** - The almComplete() function is triggered after every *successful* ajax call made by Ajax Load More.
+**ALM Complete** - The almComplete() function is triggered after every *successful* ajax call made by Ajax Load More.
 
     $.fn.almComplete = function(alm){
     	// Your on complete code goes here
+    };
+    
+
+**ALM Done** - The almDone() function is triggered after all posts have been loaded..
+
+    $.fn.almDone = function(alm){
+    	console.log('All posts have been loaded!');
     };
     
 **ALM Empty** - The almEmpty() function is triggered if there are zero results returned in the initial query.
@@ -147,8 +170,7 @@ The following functions are available to be dispatched by Ajax Load More.
     $.fn.almEmpty = function(alm){
        console.log('Sorry, but we could not locate any posts that matched your criteria.');
     };
-
-***    
+   
 **ALM Filter Complete** - The almFilterComplete() function is triggered after a successful call to the public function almFilter().
 
     $.fn.almFilterComplete = function(){
@@ -159,7 +181,7 @@ The following functions are available to be dispatched by Ajax Load More.
     
 = Variables =
 
-Ajax Load More passes the following PHP variables to each repeater template - these template variables can help you style and transform your repeater templates.
+Ajax Load More passes the following PHP [variables](https://connekthq.com/plugins/ajax-load-more/docs/variables/) to each repeater template - these template variables can help you style and transform your repeater templates.
  
 *   **$alm_page** - Returns the current page number. 'echo $alm_page;'
 *   **$alm_item** - Returns the current item number within your loop. 'echo $alm_item;'
@@ -261,7 +283,64 @@ How to install Ajax Load More.
 6. Edit Page Shortcode Builder
 7. Shortcode and implementation examples
 
+
 == Changelog ==
+
+
+= 2.8.3 =
+* PERFORMANCE - Updating ALM core to enqueue Ajax Load More js only when shortcode is present on screen.
+* NEW - Adding 'canonical-url' data attribute to ALM plugin wrapper - this will be used by various functions throughout the core plugin and add-ons.
+* NEW - Adding new alm-thumbnail image size.
+* NEW - Adding required functionality for upcoming Layouts add-on.
+* NEW - To increase SEO and crawler access we added a <noscript> paging navigation when seo and preloaded are both 'true'.
+* FIX - Fixed issue with almDone() function not firing in certain instances.
+* UPDATE - Rebuilt License activation screen to use ajax and alert users when licenses run out.
+* UPDATE - Various admin UI enhancements.
+
+
+= 2.8.2 =
+* FIX - Fixed issue with the passing of ALM template variables to Theme Repeaters add-on.
+* FIX - Fixed issue shortcode builder returning an error when loading custom taxonomies.
+* NEW - Added new almDone() function that is dispatched after all posts have been loaded. $.fn.almDone(alm)
+
+
+= 2.8.1.2 =
+* SECURITY - Due to a security scare with non-admin logged-in users I have updated all admin-ajax.php calls to verify nonce variables (wp_verify_nonce) and check user capabilities(edit_theme_options).
+
+
+= 2.8.1.1 =
+* FIX - Update for issue where Ajax Load More CSS would load even if unchecked.
+
+
+= 2.8.1.1 =
+* UPDATE - Adding required support/update for Language Pack translations (https://translate.wordpress.org/)
+* FIX - Update to automatically set posts_per_page to 1 if Previous Post add-on is in use.
+* FIX - Various core JS updates/improvements
+* FIX - Licenses not showing for Theme Repeaters and Previous Post add-ons
+* UPDATE - Various admin UI updates and enhancements.
+
+= 2.8.0 =
+* NEW - Adding required support and functionality for new Previous Post add-on - https://connekthq.com/plugins/ajax-load-more/add-ons/previous-post/
+* NEW - Adding a set of filters to inject content into ALM containers.
+* NEW - Adding 'container_type' shortcode parameter that allows for override of the global Container Type.
+* NEW - Adding 'pause_override' shortcode parameter that will allow scrolling to override the Pause parameter and trigger the loading of posts on scroll.
+* NEW - Adding 'meta_type' shortcode parameter that will allow for specification of a custom field type..
+* UPDATE - Added unique id(classname/data-id) to each instance of ajax load more - this will allow for targeting of specific instances from outside elements.
+* FIX - Fixed JS issue with Paging add-on + SEO add-on URLs.
+* UPDATE - Various admin fixes and updates.
+
+
+= 2.7.3 =
+* NEW - Adding required support and functionality for new Theme Repeaters add-on - https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/
+* NEW - Added new shortcode parameter 'images_loaded' which will allow you to wait for all images to load before displaying ajax loaded content.
+* UPDATE - General admin UI enhancements to settings screen.
+
+
+= 2.7.2 =
+* NEW - Adding multisite support for Repeater Templates - if using a multisite, please deactivate then re-activate Ajax Load More.
+* NEW - Completely rebuilt update script for repeater templates to be more efficient and integrate with multisite installations.
+* UPDATE - Split up ALM setting fields into Global and Admin settings for increased usability.
+* NEW - Added new setting field for Error Reporting - User can now choose to display error notices regarding repeater template updating in the browser console.
 
 
 = 2.7.1 =

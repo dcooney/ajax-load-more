@@ -16,7 +16,7 @@ add_action('wp_ajax_alm_lightbox', 'alm_ajax_tinymce' );
 function alm_ajax_tinymce(){
 	// check for rights
 	if ( ! current_user_can('edit_pages') && ! current_user_can('edit_posts') )
-		die( __("You are not allowed to be here", ALM_NAME) );
+		die( __("You are not allowed to be here", 'ajax-load-more') );
 
 	$window = dirname(__FILE__) . '/editor-build.php';
 	include_once( $window );
