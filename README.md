@@ -100,38 +100,36 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 #Add-ons
  The following Add-ons are available to increase the functionality of Ajax Load More.
 
-> #### Custom Repeaters
+#### Custom Repeaters
 > The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)
-> 
-> #### Cache
+
+#### Cache
 > The **[Cache](http://connekthq.com/plugins/ajax-load-more/cache/)** add-oncreates static HTML files of Ajax Load More requests then serves those static pages to your visitors without querying the database.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/cache/)
-> 
-> #### Paging
+
+#### Paging
 > The **[Paging](http://connekthq.com/plugins/ajax-load-more/paging/)** add-on will transform Ajax Load More’s lazy load/infinite scroll functionality into a robust ajax powered navigation system.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/paging/)
->
-> #### Preloaded
+
+#### Preloaded
 > The **[Preloaded](http://connekthq.com/plugins/ajax-load-more/preloaded/)** add-on will allow you to quickly and easily preload an initial set of posts before completing any Ajax requests to the server.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/preloaded/)
->
-> #### Previous Post
+
+#### Previous Post
 > The **[Previous Post](http://connekthq.com/plugins/ajax-load-more/previous-post/)** add-on will allow you to navigate single posts with Ajax Load More.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/previous-post/)
-> 
-> #### Search Engine Optimization
+
+#### Search Engine Optimization
 > The **[SEO](http://connekthq.com/plugins/ajax-load-more/seo/)** add-on will optimize your ajax loaded content for search engines and site visitors by generating standard WordPress paging URLs with each Ajax Load More query.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/seo/)
-> 
-> #### Theme Repeaters
+
+#### Theme Repeaters
 > The **[Theme Repeaters](http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)** add-on will allow you load, edit and maintain templates from your current theme directory.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)
 
 
-
-
-##Tested Browsers =
+##Tested Browsers
 
 * Firefox (Mac, PC)
 * Chrome (Mac, PC, iOS, Android)
@@ -139,6 +137,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 * IE8+
 * Android (Native)
 * BB10 (Native)
+
 
 ##Website =
 http://connekthq.com/ajax-load-more/
