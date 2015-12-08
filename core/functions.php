@@ -217,6 +217,24 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 
 
 /*
+*  alm_get_multi_tax_query
+*  Query by custom taxonomy values
+*  
+*  @return $args = array();
+*/
+function alm_get_multi_tax_query($taxonomy, $taxonomy_term, $taxonomy_field){
+   
+   if(!empty($taxonomy) && !empty($taxonomy_term) && !empty($taxonomy_field)){
+
+      $return = array('taxonomy' => $taxonomy,'terms' => $taxonomy_term,'field' => $taxonomy_field);
+      
+      return $return; 
+	}
+}
+
+
+
+/*
 *  alm_get_meta_query
 *  Query by custom field values
 *  

@@ -279,6 +279,9 @@ if( !class_exists('AjaxLoadMore') ):
 				'category__not_in' => '',	
 				'tag' => '',
 				'tag__not_in' => '',
+            'multi_tax' => '',
+            'multi_tax_terms' => '',
+            'multi_tax_field' => '',
 				'taxonomy' => '',
 				'taxonomy_terms' => '',
 				'taxonomy_operator' => '',	
@@ -436,6 +439,9 @@ if( !class_exists('AjaxLoadMore') ):
          		'category__not_in'   => $category__not_in,
          		'tag'                => $tag,
          		'tag__not_in'        => $tag__not_in,
+               'multi_tax'          => $multi_tax,
+               'multi_tax_terms'    => $multi_tax_terms,
+               'multi_tax_field'    => $multi_tax_field,
          		'taxonomy'           => $taxonomy,
          		'taxonomy_terms'     => $taxonomy_terms,
          		'taxonomy_operator'  => $taxonomy_operator,
@@ -665,6 +671,11 @@ if( !class_exists('AjaxLoadMore') ):
    		$taxonomy_terms = (isset($_GET['taxonomy_terms'])) ? $_GET['taxonomy_terms'] : '';
    		$taxonomy_operator = $_GET['taxonomy_operator'];
    		if(empty($taxonomy_operator)) $taxonomy_operator = 'IN';
+
+         // Multi Taxonomies
+         $multi_tax = (isset($_GET['multi_tax'])) ? $_GET['multi_tax'] : '';
+         $multi_tax_terms = (isset($_GET['multi_tax_terms'])) ? $_GET['multi_tax_terms'] : '';
+         $multi_tax_field = (isset($_GET['multi_tax_field'])) ? $_GET['multi_tax_field'] : '';
    		
    		// Date
    		$year = (isset($_GET['year'])) ? $_GET['year'] : '';
@@ -772,6 +783,48 @@ if( !class_exists('AjaxLoadMore') ):
    	   if(!empty($day)){
       		$args['day'] = $day;
    	   } 
+
+         // Multi Taxonomies
+         if(!empty($multi_tax) && !empty($multi_tax_terms) && !empty($multi_tax_field)){
+            
+            // Parse multiple taxonomy query   
+            $total = count(explode(":", $multi_tax)); // Total meta_query objects
+            $taxonomies = explode(":", $multi_tax); // convert to array
+            $taxonomy_terms = explode(":", $multi_tax_terms); // convert to array
+            $taxonomy_fields = explode(":", $multi_tax_field); // convert to array
+
+             if($total == 1){
+               $args['tax_query'] = array(
+                  'relation' => 'AND',
+                     alm_get_multi_tax_query($taxonomies[0], $taxonomy_terms[0], $taxonomy_fields[0]), 
+               );
+            }
+            
+            if($total == 2){
+               $args['tax_query'] = array(
+                  'relation' => 'AND',
+                     alm_get_multi_tax_query($taxonomies[0], $taxonomy_terms[0], $taxonomy_fields[0]), 
+                     alm_get_multi_tax_query($taxonomies[1], $taxonomy_terms[1], $taxonomy_fields[1]),     
+               );
+            }
+            if($total == 3){
+               $args['tax_query'] = array(
+                  'relation' => 'AND',
+                     alm_get_multi_tax_query($taxonomies[0], $taxonomy_terms[0], $taxonomy_fields[0]), 
+                     alm_get_multi_tax_query($taxonomies[1], $taxonomy_terms[1], $taxonomy_fields[1]),
+                     alm_get_multi_tax_query($taxonomies[2], $taxonomy_terms[2], $taxonomy_fields[2]),        
+               );
+            }
+            if($total == 4){
+               $args['tax_query'] = array(
+                  'relation' => 'AND',
+                     alm_get_multi_tax_query($taxonomies[0], $taxonomy_terms[0], $taxonomy_fields[0]), 
+                     alm_get_multi_tax_query($taxonomies[1], $taxonomy_terms[1], $taxonomy_fields[1]),
+                     alm_get_multi_tax_query($taxonomies[2], $taxonomy_terms[2], $taxonomy_fields[2]),
+                     alm_get_multi_tax_query($taxonomies[3], $taxonomy_terms[3], $taxonomy_fields[3]),    
+               );
+            }
+         }
    	    
    	   // Meta Query
    		if(!empty($meta_key) && !empty($meta_value)){
