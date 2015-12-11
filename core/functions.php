@@ -49,24 +49,33 @@ function alm_get_current_repeater($repeater, $type) {
 
 
 /*
-*  alm_get_default_repeater
-*  Get the default repeater template for current blog
-*
-*  @return $include (file path)
-*  @since 2.5.0
-*/
+ *  alm_get_default_repeater
+ *  Get the default repeater template for current blog
+ *  First check if there is default repeater template within the current template
+ *  If there is not then read the plug-in default template
+ *  @return $include (file path)
+ *  @since 2.5.0
+ */
 
 function alm_get_default_repeater() {
-	global $wpdb;
-	$blog_id = $wpdb->blogid;
-	
-	if($blog_id > 1){	
-		$file = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php'; // File
-	}else{
-		$file = ALM_PATH. 'core/repeater/default.php';			
-	}
-	
-	return $file;
+    global $wpdb;
+    // Let user is able to load their customise template in theme
+    $template_theme_file = get_template_directory().'/repeater/default.php';
+    // load repeater template from current theme folder
+    if(file_exists($template_theme_file)){
+        $file = $template_theme_file;
+    }
+    // if cannot find such file, load from plug-in repeater folder
+    else{
+        $blog_id = $wpdb->blogid;
+        if($blog_id > 1){	
+            $file = ALM_PATH.'core/repeater/'.$blog_id.'/default.php'; // File
+        }
+        else{
+            $file = ALM_PATH.'core/repeater/default.php';			
+        }
+    }
+    return $file;
 }
 
 
