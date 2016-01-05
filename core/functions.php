@@ -58,52 +58,41 @@ function alm_get_current_repeater($repeater, $type) {
 
 function alm_get_default_repeater() {
 	global $wpdb;
-	$blog_id = $wpdb->blogid;
+	$file = null;
+	$template_dir = 'alm_templates';
 	
-	if($blog_id > 1){	
-		$file = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php'; // File
-	}else{
-		$file = ALM_PATH. 'core/repeater/default.php';			
+	
+	// Allow user to load template from theme directory
+	// Since 2.8.5
+	 
+    // load repeater template from current theme folder
+	if(is_child_theme()){
+		$template_theme_file = get_stylesheet_directory().'/'. $template_dir .'/default.php';
+		// if child theme does not have repeater template, then use the parent theme dir
+		if(!file_exists($template_theme_file)){
+			$template_theme_file = get_template_directory().'/'. $template_dir .'/default.php';
+		}
+	}
+	else{
+		$template_theme_file = get_template_directory().'/'. $template_dir .'/default.php';
+	}
+	// if theme or child theme contains the template, use that file
+	if(file_exists($template_theme_file)){
+		$file = $template_theme_file;
+	}
+	
+	// Since 2.0
+	// otherwise use pre-defined plug-in templates
+	if($file == null){		
+		$blog_id = $wpdb->blogid;
+		if($blog_id > 1){	
+			$file = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php'; // File
+		}else{
+			$file = ALM_PATH. 'core/repeater/default.php';			
+		}
 	}
 	
 	return $file;
-}
-
-
-
-/*
-*  alm_get_post_format
-*  Query by post format
-*  
-*  @return $args = array();
-*  @since 2.5.0
-*/
-function alm_get_post_format($post_format){
-   if(!empty($post_format)){
-	   $format = "post-format-$post_format";
-	   //If query is for standard then we need to filter by NOT IN
-	   if($format == 'post-format-standard'){		   
-      	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
-            $terms = array();
-            foreach ($post_formats[0] as $format) {
-               $terms[] = 'post-format-'.$format;
-            }
-         }		      
-	      $args = array(
-            'taxonomy' => 'post_format',
-            'terms' => $terms,
-            'field' => 'slug',
-            'operator' => 'NOT IN',
-         );
-	   }else{
-			$args = array(
-			   'taxonomy' => 'post_format',
-			   'field' => 'slug',
-			   'terms' => array($format),
-			);			
-		}
-		return $args;
-	}
 }
 
 
@@ -114,6 +103,8 @@ function alm_get_post_format($post_format){
 *  
 *  @return $args = array();
 *  @since 2.5.0
+*
+*  @deprecated in 2.5.0
 */
 function alm_get_taxonomy($taxonomy, $taxonomy_terms, $taxonomy_operator){
    if(!empty($taxonomy) && !empty($taxonomy_terms) && !empty($taxonomy_operator)){
@@ -129,6 +120,83 @@ function alm_get_taxonomy($taxonomy, $taxonomy_terms, $taxonomy_operator){
 }
 
 
+/*
+*  alm_get_post_format
+*  Query by post format
+*  
+*  @return $args = array();
+*  @since 2.5.0
+*  @updated 2.8.5
+*/
+function alm_get_post_format($post_format){
+   if(!empty($post_format)){
+	   $format = "post-format-$post_format";
+	   //If query is for standard then we need to filter by NOT IN
+	   if($format == 'post-format-standard'){		   
+      	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
+            $terms = array();
+            foreach ($post_formats[0] as $format) {
+               $terms[] = 'post-format-'.$format;
+            }
+         }		      
+	      $return = array(
+            'taxonomy' => 'post_format',
+            'terms' => $terms,
+            'field' => 'slug',
+            'operator' => 'NOT IN',
+         );
+	   }else{
+			$return = array(
+			   'taxonomy' => 'post_format',
+			   'field' => 'slug',
+			   'terms' => array($format),
+			);			
+		}
+		return $return; 
+	}
+}
+
+
+
+/*
+*  alm_get_taxonomy_query
+*  Query for custom taxonomy
+*  
+*  @return $args = array();
+*  @since 2.8.5
+*/
+function alm_get_taxonomy_query($taxonomy, $taxonomy_terms, $taxonomy_operator){
+   if(!empty($taxonomy) && !empty($taxonomy_terms)){       
+      $taxonomy_term_values = alm_parse_tax_terms($taxonomy_terms); 
+      $return = array(
+         'taxonomy' => $taxonomy, 
+         'field' => 'slug', 
+         'terms' => $taxonomy_term_values, 
+         'operator' => $taxonomy_operator
+      );       
+      return $return;          
+   }
+}
+
+
+
+/*
+*  alm_parse_tax_terms
+*  Parse the taxonomy terms for multiple vals
+*  
+*  @helper function @alm_get_taxonomy_query()
+*  @return array;
+*  @since 2.8.5
+*/
+function alm_parse_tax_terms($taxonomy_terms){
+	// Remove all whitespace for $taxonomy_terms because it needs to be an exact match
+	$taxonomy_terms = preg_replace('/\s+/', ' ', $taxonomy_terms); // Trim whitespace 
+	$taxonomy_terms = str_replace(', ', ',', $taxonomy_terms); // Replace [term, term] with [term,term]
+	$taxonomy_terms = explode(",", $taxonomy_terms);	            
+   return $taxonomy_terms;
+}
+
+
 
 /*
 *  alm_get_tax_query
@@ -136,6 +204,8 @@ function alm_get_taxonomy($taxonomy, $taxonomy_terms, $taxonomy_operator){
 *  
 *  @return $args = array();
 *  @since 2.5.0
+
+*  @deprecated in 2.8.5
 */
 function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_operator){
    
@@ -154,6 +224,7 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 	// Post Format [ONLY]
    if(!empty($post_format) && empty($taxonomy)){
 	   $format = "post-format-$post_format";
+	   
 	   //If query is for standard then we need to filter by NOT IN
 	   if($format == 'post-format-standard'){		   
       	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
@@ -226,8 +297,13 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
    if(!empty($meta_key) && !empty($meta_value)){ 
       
-         $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
-         $return = array('key' => $meta_key,'value' => $meta_values,'compare' => $meta_compare,'type' => $meta_type); 
+      $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
+      $return = array(
+         'key' => $meta_key,
+         'value' => $meta_values,
+         'compare' => $meta_compare,
+         'type' => $meta_type
+      ); 
       
       return $return; 
          
@@ -241,6 +317,7 @@ function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
 *  alm_parse_meta_value
 *  Parse the meta value for multiple vals
 *  
+*  @helper function @alm_get_meta_query()
 *  @return array;
 *  @since 2.6.4
 */

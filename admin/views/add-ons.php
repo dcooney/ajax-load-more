@@ -2,12 +2,12 @@
 	<div class="wrap">
 		<div class="header-wrap">
 	   		<h1><?php echo ALM_TITLE; ?>: <strong><?php _e('Add-ons', 'ajax-load-more'); ?></strong></h1>
-	   		<p><?php _e('Add-ons are available to extend and enhance the core functionality of Ajax Load More', 'ajax-load-more'); ?></p>  
+	   		<p><?php _e('Add-ons are available to extend and enhance the core functionality of Ajax Load More', 'ajax-load-more'); ?>.</p>  
 		</div>
 		<div class="cnkt-main full">
 		
 		   <!-- Cache -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_cache_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
    			   <?php 
                   	$cache_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/cache/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Cache'; ?>
@@ -33,8 +33,35 @@
 		   <!-- End Cache -->
 		   
 		   
+		   <!-- Comments -->
+		   <div class="group<?php if (has_action('alm_comments_installed')){echo ' installed'; } ?>">
+			   <div class="row no-brd">
+   			   <?php 
+                  	$comments_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/comments/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Comments'; ?>
+                  	
+               <a href="<?php echo $comments_url; ?>">
+   			      <div class="expand-wrap">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/comments-add-on.jpg">                         
+                     <h2 class="addon-title"><?php _e('Comments', 'ajax-load-more'); ?></h2>
+                     <p class="addon-intro"><?php _e('Load blog comments on demand with Ajax Load More.', 'ajax-load-more'); ?></p>
+                     <p><?php _e('The Comments add-on will display your blog comments with Ajax Load More\'s infinite scroll functionality.', 'ajax-load-more'); ?></p>    
+                     <?php
+                        if (has_action('alm_comments_installed')){
+                           echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> Installed</span> ';
+                        }else{
+                           echo '<span class="cnkt-button"><i class="fa fa-download"></i> Purchase &amp; Install</span>';
+                        }
+                     ?>               
+                  </div>
+               </a>
+			   </div>		   
+             		   
+		   </div>
+		   <!-- End Cache -->
+		   
+		   
 		   <!-- Custom Repeaters -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_unlimited_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
    			   <?php $cr_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/custom-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Custom%20Repeaters'; ?>
    			   <a href="<?php echo $cr_url; ?>">
@@ -62,7 +89,7 @@
 		   
 		   
 		   <!-- Paging -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_paging_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
    			   <?php
                   	$paging_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/paging/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Paging';
@@ -89,7 +116,7 @@
 		   
 		   
 		   <!-- Preloaded -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_preload_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">   			   
    			   <?php
       			   $preload_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/preloaded/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Preloaded';
@@ -115,7 +142,7 @@
 		   
 		   
 		   <!-- Previous Post -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_prev_post_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">   			   
    			   <?php
       			   $prev_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/previous-post/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Previous Post';
@@ -141,7 +168,7 @@
 		   
 		   
 		   <!-- SEO -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_seo_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
    			   <?php
       			   $seo_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=SEO';
@@ -169,7 +196,7 @@
 		   
 		   
 		   <!-- Theme Repeaters -->
-		   <div class="group">
+		   <div class="group<?php if (has_action('alm_theme_repeaters_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
 			      <?php $themer_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Theme Repeaters'; ?>
 			      <a href="<?php echo $themer_url; ?>">

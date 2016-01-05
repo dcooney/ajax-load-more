@@ -1,10 +1,10 @@
-=== Ajax Load More ===
+=== Ajax Load More - Infinite Scroll ===
 Contributors: dcooney
 Donate link: http://connekthq.com/donate/
-Tags: infinite scroll, scroll, infinite, lazy load, lazy loading, pagination, ajax pagination, ajax, ajax posts, ajax load posts, loop, query, dynamic, shortcode builder, wp_query, search, tags, category, post types, taxonomy, meta_query, archives, date, infinite scrolling
+Tags: infinite scroll, scroll, infinite, lazy load, lazy loading, pagination, ajax pagination, ajax, ajax posts, ajax load posts, loop, query, dynamic, shortcode builder, wp_query, search, tags, category, post types, taxonomy, meta_query, archives, date, infinite scrolling, endless scroll, endless, endless scroll
 Requires at least: 3.6
-Tested up to: 4.3.1
-Stable tag: 2.8.3 
+Tested up to: 4.4
+Stable tag: 2.8.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ A powerful solution to add infinite scroll functionality to your website
 
 == Description ==
 
-Ajax Load More is the ultimate solution for infinite scrolling and lazy loading posts, custom post types and pages with Ajax powered queries.
+Ajax Load More is the ultimate solution for infinite scrolling and lazy loading posts, custom post types, single posts, pages and comments with Ajax powered queries.
 
 Build complex WordPress queries using the Ajax Load More custom shortcode builder then add the shortcode to your pages via the content editor or directly into your template files. 
 
@@ -31,6 +31,18 @@ Check out the **[demo site](http://connekthq.com/plugins/ajax-load-more/)** for 
 
 ***
 
+= Content Types =
+Ajax Load More will allow for infinite scrolling of pretty much any content type WordPress offers. 
+
+*   [Posts](https://connekthq.com/plugins/ajax-load-more/examples/default/)
+*   [Custom Post Types](https://connekthq.com/plugins/ajax-load-more/examples/masonry/)
+*   [Pages](https://connekthq.com/plugins/ajax-load-more/examples/search-results/)
+*   [Single Posts](https://connekthq.com/ajax-load-more-posts/alm-post-example/) **
+*   [Comments](http://comments.connekthq.com/example-post/) **
+
+** Add-on required
+
+
 = Shortcode Parameters =
 
 Ajax Load More accepts a number of parameters that are passed to the WordPress query. These parameters are transferred via shortcode - don't worry, creating your shortcode is simple with our intuitive Shortcode Builder.
@@ -46,6 +58,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **taxonomy** - Query by custom taxonomy name. Default = null
 *   **taxonomy_terms** - Comma separated list of custom taxonomy terms(slug). Default = null
 *   **taxonomy_operator** - Operator to compare Taxonomy Terms against (IN/NOT IN). Default = ‘IN’
+*   **taxonomy_relation** - The logical relationship between each taxonomy when there is more than one. (AND/OR). Default = ‘AND’
 *   **day** - Day of the week. Default = null
 *   **month** - Month of the year. Default = null
 *   **year** - Year of post. Default = null
@@ -57,7 +70,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **meta_relation** - Used with multiple custom field entries (AND/OR). Default = ‘AND’
 *   **author** - Query by author id. Default = null
 *   **post__in** - Comma separated list of post ID’s to include in query. Default = null 
-*   **exclude** - Comma separated list of post ID’s to exclude from query. Default = null 
+*   **post__not_in** - Comma separated list of post ID’s to exclude from query. Default = null 
 *   **search** - Query search term (‘s’). Default = null
 *   **custom_args** - A semicolon separated list of value:pair arguments. e.g. tag_slug__and:design,development; event_display:upcoming. Default = null
 *   **post_status** - Select status of the post. Default = 'publish' 
@@ -74,6 +87,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **images_loaded** - Wait for all images to load before displaying ajax loaded content (true/false). Default = 'false' 
 *   **destroy_after** - Remove ajax load more functionality after 'n' number of pages have been loaded. Default = null
 *   **button_label** - The label text for Load More button. Default = 'Older Posts'
+*   **button_loading_label** - Update the text of the Load More button while content is loading. Default = null
 *   **container_type** - Override the global Container Type that was set on ALM Settings page. Default = null
 *   **css_classes** - Add custom CSS classes to the Ajax Load More container. Default = null
 *   **cache** - Turn on content caching for the specific Ajax Load More query. <a href="http://connekthq.com/plugins/ajax-load-more/cache/">add-on only</a> - (true/false). Default = ‘false’
@@ -100,6 +114,8 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 * **[Destroy After](http://connekthq.com/plugins/ajax-load-more/examples/destroy-after/)** - Remove Ajax Load More functionality after 'n' number of pages
 * **[Fade Transition](http://connekthq.com/plugins/ajax-load-more/examples/fade-transition/)** - Elements fade in as posts are loaded
 * **[Filtering](http://connekthq.com/plugins/ajax-load-more/examples/filtering/)** - Reset and filter an Ajax Load More instance
+* **[Infinite Scroll](http://connekthq.com/plugins/ajax-load-more/examples/infinite-scroll/)** - A look at the new loading functionality and style
+* **[Images Loaded](http://connekthq.com/plugins/ajax-load-more/examples/images-loaded/)** - Download images before displaying ajax loaded content
 * **[Masonry](http://connekthq.com/plugins/ajax-load-more/examples/masonry/)** - Creating a flexible grid layout with Masonry JS
 * **[Multiple Instances](http://connekthq.com/plugins/ajax-load-more/examples/multiple-instances/)** - Include multiple Ajax Load More' on a single page
 * **[Paging URLs](http://connekthq.com/plugins/ajax-load-more/examples/paging-urls/)** - Generate unique paging URLs for every Ajax Load More query with the SEO add-on
@@ -118,13 +134,17 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 = Add-ons =
  The following Add-ons are available to increase the functionality of Ajax Load More.
 
-> #### Custom Repeaters
-> The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.<br />
-> [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)
-> 
 > #### Cache
 > The **[Cache](http://connekthq.com/plugins/ajax-load-more/cache/)** add-oncreates static HTML files of Ajax Load More requests then serves those static pages to your visitors without querying the database.<br />
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/cache/)
+> 
+> #### Comments
+> The **[Comments](http://connekthq.com/plugins/ajax-load-more/add-ons/comments/)** add-on will load and display blog comments using the core Ajax Load More infinite scroll functionality.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/add-ons/comments/)
+> 
+> #### Custom Repeaters
+> The **[Custom Repeaters](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)** add-on will allow for **unlimited repeater templates** and provide the ability to create unique templates for different content types throughout your theme.<br />
+> [Get More Information](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/)
 > 
 > #### Paging
 > The **[Paging](http://connekthq.com/plugins/ajax-load-more/paging/)** add-on will transform Ajax Load More’s lazy load/infinite scroll functionality into a robust ajax powered navigation system.<br />
@@ -175,6 +195,13 @@ The following [functions](https://connekthq.com/plugins/ajax-load-more/docs/call
 
     $.fn.almFilterComplete = function(){
         console.log('Ajax Load More filter has completed!'); 
+    };
+
+   
+**ALM URL Update** - The almUrlUpdate() function is triggered after a successful URL update (pushState) from the Previous Post or the Search Engine Optimization add-on
+
+    $.fn.almUrlUpdate = function(permalink, type){
+        console.log("URL updated to " + permalink + '- dispatched from the '+ type + ' add-on.'); 
     };
 
 ***
@@ -285,6 +312,30 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 2.8.6 =
+* NEW - Adding a set of filter hooks to enable users to hook into Ajax Load More to insert or modify data. See https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/ for more information.
+* FIX - Updated infinite scrolling css styling.
+
+
+= 2.8.5 =
+* FIX - Update for ALM settings screen - layout was broken with WP 4.4 release.
+* NEW - Adding new functionality to allow for loading of local default repeater template. Users can create a /alm_templates directory within their current theme and add default.php. If default.php is present it will be loaded before repeater template shipped with Ajax Load More.
+* NEW - Adding multiple taxonomy support - you can now query WordPress by up to 3 unique taxonomy queries.
+* NEW - Adding taxonomy_relation shortcode parameter.
+* FIX - Fixed JS error in shortcode builder popup.
+* FIX - Fix for issue with '<' and '<=' Custom Field operators, WP was rendering these tags as HTML (https://github.com/dcooney/wordpress-ajax-load-more/issues/98). Users can now enter 'lessthan' and 'lessthanequalto' to fix this issue.
+* UPDATE - Changing 'exclude' shortcode parameter name to be 'post__not_in' to follow WordPress naming conventions. 'exclude' will continue to work along side 'post__not_in'.
+
+
+= 2.8.4 =
+* NEW - Adding new loading styles and button types.
+* NEW - Adding new 'button_loading_label' parameter allowing users to change button text while loading content.
+* NEW - Adding required support and functionality for new Comments add-on - https://connekthq.com/plugins/ajax-load-more/add-ons/comments/
+* UPDATE - Updating JS functions for release of Previous Post v1.1.
+* UPDATE - Various admin enhancements and removing deprecated code.
+* UPDATE - removing default link color in ajax-load-more.css.
+
 
 
 = 2.8.3 =

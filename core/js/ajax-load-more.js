@@ -37,11 +37,11 @@
       alm.el = el;
       alm.container = el;
       alm.container.addClass('alm-'+e).attr('data-id', e); // Add unique classname and data id
-      alm.content = $('.alm-listing.alm-ajax', alm.container);
+      alm.content = $('.alm-ajax', alm.container);
       alm.content_preloaded = $('.alm-listing.alm-preloaded', alm.container);
       alm.canonical_url = alm.el.attr('data-canonical-url');
+      alm.slug = alm.el.attr('data-slug');
       alm.prefix = 'alm-';
-      
       alm.cache = alm.content.attr('data-cache'); // cache (true/false) 
       alm.cache_id = alm.content.attr('data-cache-id'); // cache value 
       alm.cache_path = alm.content.attr('data-cache-path'); // cache path 
@@ -61,7 +61,21 @@
       alm.posts_per_page = alm.content.attr('data-posts-per-page');  
       
       alm.previous_post = alm.content.attr('data-previous-post'); // Next Post add-on  
-      alm.previous_post_id = alm.content.attr('data-previous-post-id'); // Get the post id   
+      alm.previous_post_id = alm.content.attr('data-previous-post-id'); // Get the post id 
+      alm.previous_post_taxonomy = alm.content.attr('data-previous-post-taxonomy'); // Get the post taxonomy   
+      
+      alm.comments = alm.content.attr('data-comments'); // true | false 
+      // if comments, then set alm.content to comments wrap
+      if(alm.comments === 'true'){
+         alm.content = $('.alm-comments', alm.container);
+      }
+      alm.comments_array =  '';
+      alm.comments_post_id = alm.content.attr('data-comments_post_id'); // current post id  
+      alm.comments_per_page = alm.content.attr('data-comments_per_page');  
+      alm.comments_type = alm.content.attr('data-comments_type');    
+      alm.comments_style = alm.content.attr('data-comments_style');    
+      alm.comments_template = alm.content.attr('data-comments_template'); 
+      alm.comments_callback = alm.content.attr('data-comments_callback');     
       
       alm.seo = alm.content.attr('data-seo'); // true | false   
       
@@ -106,6 +120,11 @@
       }
       /* /end Cache  */
          
+      /* Comments */
+      if (alm.comments_per_page === undefined){
+         alm.comments_per_page = '5';
+      }
+      /* /end Comments
          
       /* Preloaded */
       /* Check preloaded posts to ensure posts_per_page > alm.total_posts - if posts_per_page <= total_posts disable ajax load more */
@@ -169,6 +188,9 @@
       }              	   
       if (alm.previous_post_id === undefined){
          alm.previous_post_id = '';      
+      }               	   
+      if (alm.previous_post_taxonomy === undefined){
+         alm.previous_post_taxonomy = '';      
       }       
       alm.previous_post_title_template = alm.content.attr('data-previous-post-title-template');
       alm.siteTitle = alm.content.attr('data-previous-post-site-title');
@@ -247,12 +269,19 @@
       if (alm.destroy_after !== undefined) {}
       
 
-      /* Button Label */
+      /* Button Labels */
       if (alm.content.attr('data-button-label') === undefined){
          alm.button_label = 'Older Posts';
       }else{
          alm.button_label = alm.content.attr('data-button-label');
-      }  
+      } 
+      
+      
+      alm.button_loading_label = alm.content.attr('data-button-loading-label');
+      if (alm.button_loading_label === undefined){
+         alm.button_loading_label = false;
+      }
+       
          
       /* Button Class */  
       if (alm.content.attr('data-button-class') === undefined){
@@ -302,6 +331,9 @@
          if(!alm.disable_ajax){ // Check for ajax blocker
 	         if(!alm.paging){
             	alm.button.addClass('loading');
+            	if(alm.button_loading_label !== false){
+               	alm.button.text(alm.button_loading_label);
+            	}
             }
             alm.loading = true;        
             
@@ -345,18 +377,41 @@
          
          if(alm.previous_post){
             alm.previous_post_id = alm.content.attr('data-previous-post-id');
+            alm.previous_post_taxonomy = alm.content.attr('data-previous-post-taxonomy');
          }
          
+         var action = 'alm_query_posts';
+         
+         // If this is a comment query
+         
+         if(alm.comments === 'true'){
+            action = 'alm_comments_query';
+            alm.posts_per_page = alm.comments_per_page;
+            
+            alm.comments_array = {
+               'comments': 'true',
+               'post_id': alm.comments_post_id,
+               'per_page': alm.comments_per_page,
+               'type': alm.comments_type,
+               'style': alm.comments_style,
+               'template': alm.comments_template,
+               'callback': alm.comments_callback,
+            };
+            
+         }
+          
+      
          $.ajax({
             type: "GET",
             url: alm_localize.ajaxurl,
             data: {
-               action: 'alm_query_posts',
+               action: action,
 	            query_type: queryType,
                nonce: alm_localize.alm_nonce,
                cache_id: alm.cache_id,
                repeater: alm.repeater,
                theme_repeater: alm.theme_repeater,
+               comments: alm.comments_array,
                post_type: alm.post_type,
                post_format: alm.content.attr('data-post-format'),
                category: alm.content.attr('data-category'),
@@ -366,6 +421,7 @@
                taxonomy: alm.content.attr('data-taxonomy'),
                taxonomy_terms: alm.content.attr('data-taxonomy-terms'),
                taxonomy_operator: alm.content.attr('data-taxonomy-operator'),
+               taxonomy_relation: alm.content.attr('data-taxonomy-relation'),
                meta_key: alm.content.attr('data-meta-key'),
                meta_value: alm.content.attr('data-meta-value'),
                meta_compare: alm.content.attr('data-meta-compare'),
@@ -379,7 +435,8 @@
                order: alm.content.attr('data-order'),
                orderby: alm.content.attr('data-orderby'),
                post__in: alm.content.attr('data-post-in'),
-               exclude: alm.content.attr('data-exclude'),
+               post__not_in: alm.content.attr('data-post-not-in'),
+               exclude: alm.content.attr('data-exclude'), // Deprecate soon in favor of post__not_in
                search: alm.content.attr('data-search'),
                custom_args: alm.content.attr('data-custom-args'),
                posts_per_page: alm.posts_per_page,
@@ -390,7 +447,9 @@
                seo_start_page: alm.start_page,
                previous_post: alm.previous_post,
                previous_post_id: alm.previous_post_id,
-               lang: alm.lang
+               previous_post_taxonomy: alm.previous_post_taxonomy,
+               lang: alm.lang,
+	            slug: alm.slug,
             },
             dataType: "html",
             // parse the data as html
@@ -431,9 +490,9 @@
        
       alm.AjaxLoadMore.success = function (data) {
               
-         if(alm.previous_post){	         
-            alm.AjaxLoadMore.getPreviousPost(); // Get previous page data           
-         }         
+         if(alm.previous_post){ // Get previous page data	         
+            alm.AjaxLoadMore.getPreviousPost();           
+         }     
          
          alm.data = $(data); // Convert data to an object                  
          if (alm.init) {
@@ -449,7 +508,9 @@
                   alm.el.append('<div class="alm-paging-content"></div><div class="alm-paging-loading"></div>');
                   $('.alm-paging-content', alm.el).append(alm.data).hide();
                   alm.content.append(alm.el);                  
-               	alm.content.parent().removeClass('loading'); // Remove loading class from main container
+               	alm.content.parent().removeClass('loading'); // Remove loading class from main container               	 
+						alm.resetBtnText();
+			         
                   $('.alm-paging-content', alm.el).fadeIn( alm.speed, 'alm_easeInOutQuad', function(){  
 	                  var paddingT = parseInt(alm.content.css('padding-top')),
 								 paddingB = parseInt(alm.content.css('padding-bottom'));                   
@@ -497,6 +558,7 @@
 		                     alm.loading = false;
 		                     if(!alm.paging){
 		                     	alm.button.delay(alm.speed).removeClass('loading');
+		                     	alm.resetBtnText();
 		                     }
 		                     if (alm.data.length < alm.posts_per_page) {
 		                        alm.finished = true;
@@ -511,6 +573,7 @@
 	                     alm.loading = false;
 	                     if(!alm.paging){
 	                     	alm.button.delay(alm.speed).removeClass('loading');
+	                     	alm.resetBtnText();
 	                     }
 	                     if (alm.data.length < alm.posts_per_page) {
 	                        alm.finished = true;
@@ -537,6 +600,7 @@
                   alm.loading = false;
                   if(!alm.paging){
                   	alm.button.delay(alm.speed).removeClass('loading');
+                  	alm.resetBtnText();
                   }
                   if (alm.data.length < alm.posts_per_page) {
                      alm.finished = true;
@@ -553,6 +617,7 @@
 		                     alm.loading = false;
 		                     if(!alm.paging){
 		                     	alm.button.delay(alm.speed).removeClass('loading');
+		                     	alm.resetBtnText();
 		                     }
 		                     if (alm.data.length < alm.posts_per_page) {
 		                        alm.finished = true;
@@ -569,6 +634,7 @@
 	                     alm.loading = false;
 	                     if(!alm.paging){
 	                     	alm.button.delay(alm.speed).removeClass('loading');
+	                     	alm.resetBtnText();
 	                     }
 	                     if (alm.data.length < alm.posts_per_page) {
 	                        alm.finished = true;
@@ -637,6 +703,7 @@
             
 	         if(!alm.paging){
             	alm.button.delay(alm.speed).removeClass('loading').addClass('done');
+            	alm.resetBtnText();
             }
             alm.loading = false;
             alm.finished = true;
@@ -676,7 +743,8 @@
             url: alm_localize.ajaxurl,
             data: {
                action: 'alm_query_previous_post',
-               id: alm.previous_post_id
+               id: alm.previous_post_id,
+               taxonomy: alm.previous_post_taxonomy
             },
             success: function (data) {
                if(data.has_previous_post){
@@ -705,6 +773,19 @@
       
       
       
+      /*  alm.resetBtnText()
+       * 
+       *  Resets the loading button text after loading has completed
+       *  @since 2.8.4
+       */
+      alm.resetBtnText = function(){
+	      if(alm.button_loading_label !== false){ // Reset button text 
+            alm.button.text(alm.button_label); 
+         } 
+      };
+      
+      
+      
       /*  alm.AjaxLoadMore.error()
        * 
        *  Error function after failed data
@@ -715,6 +796,7 @@
          alm.loading = false;
          if(!alm.paging){
          	alm.button.removeClass('loading');
+         	alm.resetBtnText();
          }
          console.log(errorThrown);
       };

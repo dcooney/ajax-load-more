@@ -12,6 +12,7 @@
 		      		      
 		      <?php 
    		      // alm_cache_installed
+   		      // alm_comments_installed
    		      // alm_unlimited_installed
    		      // alm_layouts_installed
    		      // alm_preload_installed
@@ -23,7 +24,7 @@
    		   
    		   <?php 
       		   // Check if any add ons are installed. 
-      		   if(has_action('alm_cache_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
+      		   if(has_action('alm_cache_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
 		      
 		      
 		      <?php 
@@ -78,6 +79,60 @@
             <?php 
                }
                // End CACHE 
+            ?>	
+            
+            <?php 
+   		      if (has_action('alm_comments_installed')){
+   		      // Comments 
+				   $alm_comments_license = get_option( 'alm_comments_license_key' );
+               $alm_comments_status = get_option( 'alm_comments_license_status' );
+		      ?>
+	         <div class="license" id="license-comments">
+		         <div class="license-title"> 
+   		         <div class="status <?php if($alm_comments_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>        
+         			<h2><?php _e('Comments', 'ajax-load-more'); ?></h2> 
+		         </div>	
+               <div class="license-wrap">
+   			      <form method="post" action="options.php">               			
+         			
+	         			<?php settings_fields('alm_comments_license'); ?>   
+	         			<label class="description" for="alm_comments_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<div class="license-key-field">
+	         			   <input id="alm_comments_license_key" name="alm_comments_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_comments_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
+	         			   <?php if( $alm_comments_status !== false && $alm_comments_status == 'valid' ) { ?>
+	            		   <span class="status active">
+	            		      <?php _e('Active', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } else { ?>
+	            		   <span class="status inactive">
+	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } ?>
+	         			</div>
+	         			
+	         			<?php wp_nonce_field( 'alm_comments_license_nonce', 'alm_comments_license_nonce' ); ?>
+	         			<div class="license-btn-wrap"	         			
+						   		data-name="<?php echo ALM_COMMENTS_ITEM_NAME; ?>" 
+				         		data-url="<?php echo ALM_STORE_URL; ?>" 
+					         	data-option-status="alm_comments_license_status" 
+						         data-option-key="alm_comments_license_key"
+						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/comments/">
+		         			<button type="button" class="activate license-btn <?php if($alm_comments_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+							   	<?php _e('Activate License', 'ajax-load-more'); ?>
+							   </button>
+							   
+							   <button type="button" class="deactivate license-btn <?php if($alm_comments_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
+							   </button>  
+	         			</div>
+         			
+               	</form>
+			      </div> 
+			      <div class="loading"></div>
+            </div> 	
+            <?php 
+               }
+               // End Comments 
             ?>		      
 		      
 		      

@@ -43,16 +43,16 @@
    					$options = get_option( '_alm_settings' ); ?>	
    					<div class="row no-brd alm-save-settings">	       
    		            <?php submit_button('Save Settings'); ?>
-                     <div class="loading"></div>	
+                     <div class="spinner"></div>	
    					</div>	        
    			</form>
    			<script type="text/javascript">
             jQuery(document).ready(function() {
                jQuery('#alm_OptionsForm').submit(function() { 
-                  jQuery('.alm-save-settings .loading').fadeIn();
+                  jQuery('.alm-save-settings .spinner').fadeIn();
                   jQuery(this).ajaxSubmit({
                      success: function(){
-                        jQuery('.alm-save-settings .loading').fadeOut(250, function(){
+                        jQuery('.alm-save-settings .spinner').fadeOut(250, function(){
                            window.location.reload();
                         });
                      },

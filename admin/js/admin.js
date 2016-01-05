@@ -5,6 +5,56 @@ jQuery(document).ready(function($) {
 	
 	
 	
+	/*
+   *  Tooltipster
+   *  http://iamceege.github.io/tooltipster/
+   *
+   *  @since 2.8.4
+   */ 
+   
+	$('.tooltip').tooltipster({
+		delay: 100,
+		speed: 175,
+		maxWidth: 400
+	});
+	
+	
+	
+	
+	/*
+   *  Button preview pane
+   *  Found on Settings and Shortcode Builder
+   *
+   *  @since 2.8.4
+   */ 
+   
+ 	$("select#alm_settings_btn_color").change(function() {
+ 		var color = jQuery(this).val();
+ 		// Remove other colors
+		$('.ajax-load-more-wrap.core.preview-pane').removeClass('none');
+		$('.ajax-load-more-wrap.core').removeClass('default');
+		$('.ajax-load-more-wrap.core').removeClass('grey');
+		$('.ajax-load-more-wrap.core').removeClass('purple');
+		$('.ajax-load-more-wrap.core').removeClass('green');
+		$('.ajax-load-more-wrap.core').removeClass('red');
+		$('.ajax-load-more-wrap.core').removeClass('blue');
+		$('.ajax-load-more-wrap.core').removeClass('white');
+		$('.ajax-load-more-wrap.core').removeClass('infinite');
+		$('.ajax-load-more-wrap.core').removeClass('skype');
+		$('.ajax-load-more-wrap.core').removeClass('ring');
+		$('.ajax-load-more-wrap.core').removeClass('fading-blocks');
+		$('.ajax-load-more-wrap.core').removeClass('fading-circles');
+		$('.ajax-load-more-wrap.core').removeClass('chasing-arrows');
+		$('.ajax-load-more-wrap.core').addClass(color);
+		
+	});
+	$("select#alm_settings_btn_color").click(function(e){
+		e.preventDefault();
+	});
+	
+	
+	
+	
 	$('.alm-template-listing li a').click(function(e){
    	e.preventDefault();
    	var el = $(this),
@@ -27,12 +77,14 @@ jQuery(document).ready(function($) {
 	
 	
 	
+	
 	/*
 	*  Mailchimp Signup
 	*  From the setting screen
 	*
 	*  @since 2.7.2
 	*/
+	
 	$('form#alm-mc-embedded').submit(function() {
       var el = $('#alm-mailing-list'),
           email = $('input#mc_email', el).val(),
@@ -139,7 +191,7 @@ jQuery(document).ready(function($) {
    *
    *  @since 2.8.3
    */ 
-   // 
+   
    var almActivating = false;
    $(document).on('click', '.license-btn', function(e){	   
       e.preventDefault();
@@ -279,11 +331,9 @@ jQuery(document).ready(function($) {
 	$(document).on('click', '.alm-settings-nav li a', function(e){
 		e.preventDefault();
 		var el = $(this).parent(),
-			 index = el.index();
-			 
-		
+			 index = el.index();	
 		$('html, body').animate({
-        scrollTop: $("#alm_OptionsForm h3").eq(index).offset().top - 40
+        scrollTop: $("#alm_OptionsForm h2").eq(index).offset().top - 40
     	}, 500);
 		
 		

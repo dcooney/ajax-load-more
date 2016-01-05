@@ -410,6 +410,7 @@ function alm_enqueue_admin_scripts(){
    //Load Admin CSS
    wp_enqueue_style( 'alm-admin-css', ALM_ADMIN_URL. 'css/admin.css');
    wp_enqueue_style( 'alm-select2-css', ALM_ADMIN_URL. 'css/select2.css');
+   wp_enqueue_style( 'alm-tooltipster', ALM_ADMIN_URL. 'css/tooltipster/tooltipster.css');
    wp_enqueue_style( 'alm-core-css', ALM_URL. '/core/css/ajax-load-more.css');
    wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
    
@@ -436,6 +437,7 @@ function alm_enqueue_admin_scripts(){
    wp_enqueue_script( 'jquery-form' );
    wp_enqueue_script( 'alm-select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
    wp_enqueue_script( 'alm-drops', ALM_ADMIN_URL. 'js/libs/jquery.drops.js', array( 'jquery' ));
+   wp_enqueue_script( 'alm-tipster', ALM_ADMIN_URL. 'js/libs/jquery.tooltipster.min.js', array( 'jquery' ));
    wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'js/admin.js', array( 'jquery' ));
    wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
 }
@@ -714,6 +716,8 @@ function alm_get_tax_terms(){
 			die('Get Bounced!');
 			
 		$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';	
+		$index = (isset($_GET['index'])) ? $_GET['index'] : '1';	
+		
 		$tax_args = array(
 			'orderby'       => 'name', 
 			'order'         => 'ASC',
@@ -724,11 +728,13 @@ function alm_get_tax_terms(){
 		if ( !empty( $terms ) && !is_wp_error( $terms ) ){		
 			$returnVal .= '<ul>';
 			foreach ( $terms as $term ) {
-				//print_r($term);
-				$returnVal .='<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'">'.$term->name.'</label></li>';		
+
+				$returnVal .='<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'-'.$index.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'-'.$index.'">'.$term->name.'</label></li>';	
+					
 			}
 			$returnVal .= '</ul>';		
 			echo $returnVal;
+			
 			die();
 		}else{
 			echo "<p class='warning'>No terms exist within this taxonomy</p>";
@@ -822,7 +828,7 @@ function alm_admin_init(){
 	
 	add_settings_field(  // Btn color
 		'_alm_btn_color', 
-		__('Button Color', 'ajax-load-more' ), 
+		__('Button/Loading Style', 'ajax-load-more' ), 
 		'alm_btn_color_callback', 
 		'ajax-load-more', 
 		'alm_general_settings' 
@@ -1102,44 +1108,74 @@ function alm_class_callback(){
 function alm_btn_color_callback() {
  
     $options = get_option( 'alm_settings' );
-    $color = $options['_alm_btn_color'];
+    $type = $options['_alm_btn_color'];
     
-    if(!isset($color)) 
+    if(!isset($type)) 
 	   $options['_alm_btn_color'] = '0';
 	
 	 $selected0 = '';   
-	 if($color == 'default') $selected0 = 'selected="selected"';
+	 if($type == 'default') $selected0 = 'selected="selected"';
 		
 	 $selected1 = '';   
-	 if($color == 'blue') $selected1 = 'selected="selected"';
+	 if($type == 'blue') $selected1 = 'selected="selected"';
 		
 	 $selected2 = '';   
-	 if($color == 'green') $selected2 = 'selected="selected"';
+	 if($type == 'green') $selected2 = 'selected="selected"';
 		
 	 $selected3 = '';   
-	 if($color == 'red') $selected3 = 'selected="selected"';
+	 if($type == 'red') $selected3 = 'selected="selected"';
 		
 	 $selected4 = '';   
-	 if($color == 'purple') $selected4 = 'selected="selected"';
+	 if($type == 'purple') $selected4 = 'selected="selected"';
 		
 	 $selected5 = '';   
-	 if($color == 'grey') $selected5 = 'selected="selected"';
+	 if($type == 'grey') $selected5 = 'selected="selected"';
 		
 	 $selected6 = '';   
-	 if($color == 'white') $selected6 = 'selected="selected"';
+	 if($type == 'white') $selected6 = 'selected="selected"';
 		
-    $html =  '<label for="alm_settings_btn_color">'.__('Choose your <strong>Load More</strong> button color', 'ajax-load-more').'.</label><br/>';
+	 $selected7 = '';   
+	 if($type == 'infinite classic') $selected7 = 'selected="selected"';
+		
+	 $selected8 = '';   
+	 if($type == 'infinite skype') $selected8 = 'selected="selected"';
+	 
+	 $selected9 = '';   
+	 if($type == 'infinite ring') $selected9 = 'selected="selected"';
+	 
+	 $selected10 = '';   
+	 if($type == 'infinite fading-blocks') $selected10 = 'selected="selected"';
+	 
+	 $selected11 = '';   
+	 if($type == 'infinite fading-circles') $selected11 = 'selected="selected"';
+	 
+	 $selected12 = '';   
+	 if($type == 'infinite chasing-arrows') $selected12 = 'selected="selected"';
+		
+    $html =  '<label for="alm_settings_btn_color">'.__('Select an Ajax loading style - you can choose between a <strong>button</strong> or <strong>infinite scroll</strong>', 'ajax-load-more');
+    $html .= '.<br/><span style="display:block">Selecting an Infinite Scroll button style will remove the click interaction and load content on scroll only.</span>';
+    $html .= '</label>';
     $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
-    $html .= '<option value="default" ' . $selected0 .'>Default (Orange)</option>';
-    $html .= '<option value="blue" ' . $selected1 .'>Blue</option>';
-    $html .= '<option value="green" ' . $selected2 .'>Green</option>';
-    $html .= '<option value="red" ' . $selected3 .'>Red</option>';
-    $html .= '<option value="purple" ' . $selected4 .'>Purple</option>';
-    $html .= '<option value="grey" ' . $selected5 .'>Grey</option>';
-    $html .= '<option value="white" ' . $selected6 .'>White</option>';
+    $html .= '<optgroup label="Buttons">';
+    $html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
+    $html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
+    $html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
+    //$html .= '<option value="red" ' . $selected3 .'>Red</option>';
+    $html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
+    $html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
+    //$html .= '<option value="white" ' . $selected6 .'>White (Button)</option>';
+    $html .= '</optgroup>';
+    $html .= '<optgroup label="Infinite Scroll (no button)">';
+    $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
+    $html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
+    $html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 .'>Circle Fill</option>';
+    $html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 .'>Fading Blocks</option>';
+    $html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 .'>Fading Circles</option>';
+    $html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 .'>Chasing Arrows</option>';
+    $html .= '</optgroup>';
     $html .= '</select>';
      
-    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$color.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
+    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
     echo $html;
 }
 
@@ -1164,23 +1200,6 @@ function alm_btn_class_callback(){
 	echo $html;
 	?>	
     <script>
-    	//Button preview
-    	var colorArray = "default grey purple green red blue white";
-    	jQuery("select#alm_settings_btn_color").change(function() {
-    		var color = jQuery(this).val();
-    		// Remove other colors
-			jQuery('.ajax-load-more-wrap.core').removeClass('default');
-			jQuery('.ajax-load-more-wrap.core').removeClass('grey');
-			jQuery('.ajax-load-more-wrap.core').removeClass('purple');
-			jQuery('.ajax-load-more-wrap.core').removeClass('green');
-			jQuery('.ajax-load-more-wrap.core').removeClass('red');
-			jQuery('.ajax-load-more-wrap.core').removeClass('blue');
-			jQuery('.ajax-load-more-wrap.core').removeClass('white');
-			jQuery('.ajax-load-more-wrap.core').addClass(color);
-		});
-		jQuery("select#alm_settings_btn_color").click(function(e){
-			e.preventDefault();
-		});
 		
 		// Check if Disable CSS  === true
 		if(jQuery('input#alm_disable_css_input').is(":checked")){

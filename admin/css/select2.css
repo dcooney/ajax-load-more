@@ -220,13 +220,17 @@
     overflow-y: auto;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
+.select2-result-sub{
+   margin: 0;
+   padding: 0;
+}
 
 .select2-results li {
     list-style: none;
     display: block;
     background-image: none;
     padding: 0;
-    margin: 0;
+    margin: 0 !important;
     border-top: 1px solid #efefef;
     color: #666;
     width: auto;
@@ -234,15 +238,17 @@
 }
 
 .select2-results li.select2-result-with-children > .select2-result-label {
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: default;
+    color: #222;
 }
 
 .select2-results .select2-result-label {
     margin: 0;
     cursor: pointer;
     min-height: 1em;
-    padding: 10px 7px;
-    border-left: 4px solid transparent;
+    padding: 10px 8px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -254,7 +260,6 @@
    .select2-results .select2-highlighted .select2-result-label{ /* Hover */
        background: #f7f7f7;
        color: #ca5252;
-       border-color: #efefef;
    }
 
 .select2-results .select2-highlighted:active {
