@@ -14,7 +14,7 @@
                   	
                <a href="<?php echo $cache_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/cache-add-on.jpg">                         
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/cache-add-on.jpg" alt="">                         
                      <h2 class="addon-title"><?php _e('Cache', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Improve performance with the Ajax Load More caching engine.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The Cache add-on creates static HTML files of Ajax Load More requests then delivers those static files to your visitors.', 'ajax-load-more'); ?></p>    
@@ -41,7 +41,7 @@
                   	
                <a href="<?php echo $comments_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/comments-add-on.jpg">                         
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/comments-add-on.jpg" alt="">                         
                      <h2 class="addon-title"><?php _e('Comments', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Load blog comments on demand with Ajax Load More.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The Comments add-on will display your blog comments with Ajax Load More\'s infinite scroll functionality.', 'ajax-load-more'); ?></p>    
@@ -66,7 +66,7 @@
    			   <?php $cr_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/custom-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Custom%20Repeaters'; ?>
    			   <a href="<?php echo $cr_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/unlimited-add-ons.jpg">      
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/unlimited-add-ons.jpg" alt="">      
                      <h2 class="addon-title"><?php _e('Custom Repeaters', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Extend Ajax Load More with unlimited repeater templates.', 'ajax-load-more'); ?></p>
                      <p><?php _e('Create, delete and modify repeater templates as you need them with absolutely zero restrictions.', 'ajax-load-more'); ?></p>
@@ -83,9 +83,33 @@
 			   </div>		   
             		   
 		   </div>
-		   <!-- End Custom Repeaters -->	
+		   <!-- End Custom Repeaters -->	  
 		   
-		   	   
+		   
+		   <!-- Layouts -->
+		   <div class="group<?php if (has_action('alm_layouts_installed')){echo ' installed'; } ?>">
+			   <div class="row no-brd">   			   
+   			   <?php
+      			   $layout_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Layouts';
+      			   ?>
+   			   <a href="<?php echo $layout_url; ?>">
+   			      <div class="expand-wrap">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/layouts-add-on.jpg" alt="">  
+                     <h2 class="addon-title"><?php _e('Layouts', 'ajax-load-more'); ?></h2>
+                     <p class="addon-intro"><?php _e('Predefined layouts for your repeater templates.', 'ajax-load-more'); ?></p>
+                     <p><?php _e('The Layouts add-on provides a collection of unique, well designed and fully responsive templates.', 'ajax-load-more'); ?></p>        	   
+                     <?php
+                        if (has_action('alm_layouts_installed')){
+                           echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> Installed</span> ';
+                        }else{
+                           echo '<span class="cnkt-button"><i class="fa fa-download"></i> Purchase &amp; Install</span>';
+                        }
+                     ?>            
+                  </div>
+   			   </a>
+			   </div>				   
+		   </div>
+		   <!-- End Layouts -->  
 		   
 		   
 		   <!-- Paging -->
@@ -96,7 +120,7 @@
       			   ?>
    			   <a href="<?php echo $paging_url; ?>">
 			      <div class="expand-wrap">
-                  <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg">          
+                  <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg" alt="">          
                   <h2 class="addon-title"><?php _e('Paging', 'ajax-load-more'); ?></h2>
                   <p class="addon-intro"><?php _e('Extend Ajax Load More with a numbered navigation.', 'ajax-load-more'); ?></p>
                   <p><?php _e('The Paging add-on will transform the default infinite scroll functionality into a robust ajax powered navigation system.', 'ajax-load-more'); ?></p>   
@@ -123,7 +147,7 @@
       			   ?>
    			   <a href="<?php echo $preload_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/preloaded-add-ons.jpg">  
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/preloaded-add-ons.jpg" alt="">  
                      <h2 class="addon-title"><?php _e('Preloaded', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Load an initial set of posts before making Ajax requests to the server.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The Preloaded add-on will display content quicker and allow caching of the initial query which can reduce stress on your server.', 'ajax-load-more'); ?></p>        	   
@@ -138,7 +162,7 @@
    			   </a>
 			   </div>				   
 		   </div>
-		   <!-- End Preloaded --> 
+		   <!-- End Preloaded -->   
 		   
 		   
 		   <!-- Previous Post -->
@@ -149,7 +173,7 @@
       			?>
    			   <a href="<?php echo $prev_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/prev-post-add-on.jpg">  
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/prev-post-add-on.jpg" alt="">  
                      <h2 class="addon-title"><?php _e('Previous Post', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('An extension to enable infinite scrolling of single posts.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The Previous Post add-on will load single posts as you scroll and update the browser URL to the current post.', 'ajax-load-more'); ?></p>        	   
@@ -175,7 +199,7 @@
       			   ?>
    			   <a href="<?php echo $seo_url; ?>">
    			      <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/seo-add-ons.jpg"> 
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/seo-add-ons.jpg" alt=""> 
                      <h2 class="addon-title"><?php _e('Search Engine Optimization', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Generate unique paging URLs with every Ajax Load More query.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The SEO add-on will optimize your ajax loaded content for search engines by generating unique URLs with every query.</p>', 'ajax-load-more'); ?></p>    
@@ -201,7 +225,7 @@
 			      <?php $themer_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Theme Repeaters'; ?>
 			      <a href="<?php echo $themer_url; ?>">
 			         <div class="expand-wrap">
-                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/theme-repeater-add-on.jpg"> 
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/theme-repeater-add-on.jpg" alt=""> 
                      <h2 class="addon-title"><?php _e('Theme Repeaters', 'ajax-load-more'); ?></h2>
                      <p class="addon-intro"><?php _e('Manage repeater templates within your current theme directory.', 'ajax-load-more'); ?></p>
                      <p><?php _e('The Theme Repeater add-on will allow you load, edit and maintain templates from your current theme directory.</p>', 'ajax-load-more'); ?></p>    
@@ -229,7 +253,7 @@
       			?>
    			   <a href="<?php echo $layouts_url; ?>">
 			      <div class="expand-wrap">
-                  <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg">          
+                  <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg" alt="">          
                   <h2 class="addon-title"><?php _e('Layouts', 'ajax-load-more'); ?></h2>
                   <p class="addon-intro"><?php _e('Extend Ajax Load More with predefined responsive layouts.', 'ajax-load-more'); ?></p>
                   <p><?php _e('Boost the look of your theme with a library of mobile ready layouts.', 'ajax-load-more'); ?></p>   

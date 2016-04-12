@@ -100,7 +100,7 @@
     top: 100%;
     background: #fff;
     color: #000;
-    border: 1px solid #ccc;
+    border: 1px solid #efefef;
     border-top: 0;
     border-radius: 0 0 2px 2px;
     box-shadow: 0 2px 1px rgba(0, 0, 0, 0.1);
@@ -109,7 +109,7 @@
 
 .select2-drop.select2-drop-above {
     margin-top: 1px;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid #efefef;
     border-bottom: 0;
     border-radius: 2px 2px 0 0;
     box-shadow: 0 -2px -1px rgba(0, 0, 0, 0.1);

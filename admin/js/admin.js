@@ -266,18 +266,23 @@ jQuery(document).ready(function($) {
    
    
    
-   // Get layout value Ajax
-   //$('.alm-layout-selection ul li a.layout').click(function(){
+   /*
+   *  Get layout value Ajax
+   *
+   *  @since 2.8.7
+   */ 
    $(document).on('click', '.alm-layout-selection li a.layout', function(e){
       e.preventDefault();
       var el = $(this),
           type = el.data('type'),
+          textarea = el.closest('.repeater-wrap').find('.CodeMirror'),
           layout_btn_text = el.html(),
           name = el.closest('.repeater-wrap').data('name');
           
       if(!el.hasClass('updating')){
          
-         el.addClass('updating').text("Applying layout...");
+         el.addClass('updating').text(alm_admin_localize.applying_layout+"...");
+         textarea.addClass('loading');
          
          // Get editor ID
          var eid = '';         
@@ -302,10 +307,11 @@ jQuery(document).ready(function($) {
                
                // Clear button styles				  
 				   setTimeout(function() { 
-                  el.text('Template Updated').blur();                                 
+                  el.text(alm_admin_localize.template_updated).blur();                                 
                   setTimeout(function() { 
                      el.removeClass('updating').html(layout_btn_text).blur();	// CLose drop menu
-                     el.closest('.alm-drop-btn').trigger('click');										
+                     el.closest('.alm-drop-btn').trigger('click');	
+                     textarea.removeClass('loading');									
 						}, 400);										
 					}, 400);
                
@@ -313,9 +319,39 @@ jQuery(document).ready(function($) {
       		},
       		error: function(xhr, status, error) {
          		console.log(status);
+         		textarea.removeClass('loading');
       		}
       	});
    	}
+      
+   });
+   
+   
+   
+   /*
+   *  Dismiss Sharing (Transient)
+   *
+   *  @since 2.8.7
+   */ 
+   $(document).on('click', '#alm_dismiss_sharing', function(e){
+      e.preventDefault();      
+      var el = $(this),
+          container = el.parent('.group');     	   
+	   // Get value from Ajax
+	   $.ajax({
+   		type: 'POST',
+   		url: alm_admin_localize.ajax_admin_url,
+   		data: {
+   			action: 'alm_dismiss_sharing',
+   			nonce: alm_admin_localize.alm_admin_nonce,
+   		},
+   		success: function(data) {  
+            container.fadeOut();
+   		},
+   		error: function(xhr, status, error) {
+      		console.log(status);
+   		}
+   	});
       
    });
 
@@ -328,13 +364,15 @@ jQuery(document).ready(function($) {
    *  @since 2.7.3
    */ 
    
-	$(document).on('click', '.alm-settings-nav li a', function(e){
+	$(document).on('change', '#alm-settings-nav', function(e){
 		e.preventDefault();
-		var el = $(this).parent(),
-			 index = el.index();	
-		$('html, body').animate({
-        scrollTop: $("#alm_OptionsForm h2").eq(index).offset().top - 40
-    	}, 500);
+		var el = $(this),
+		    index = el.val();
+      if(index !== '#'){
+   		$('html, body').animate({
+           scrollTop: $("#alm_OptionsForm h2").eq(index).offset().top - 40
+       	}, 500);
+    	}
 		
 		
 	});

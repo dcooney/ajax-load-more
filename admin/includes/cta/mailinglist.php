@@ -1,7 +1,7 @@
 <div class="cta mailing-list social" id="alm-mailing-list">
 	<div class="head-wrap">
-		<h3><?php _e('Join the Mailing List', 'ajax-load-more'); ?></h3>
-		<p><?php _e('Enter your email below to receive product updates delivered directly to your inbox.', 'ajax-load-more'); ?></p>
+		<h3><?php _e('Join our mailing list', 'ajax-load-more'); ?></h3>
+		<p><?php _e('Get product updates delivered directly to your inbox.', 'ajax-load-more'); ?></p>
 	</div>
 	<form action="" method="post" id="alm-mc-embedded" name="mc-embedded-subscribe-form" class="validate" data-path="<?php echo ALM_ADMIN_URL; ?>includes/mailchimp/mailchimp-info.php" novalidate>   	
       <div class="form-wrap">

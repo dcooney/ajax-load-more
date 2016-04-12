@@ -11,6 +11,7 @@
 		      <p><?php _e('Manage your Ajax Load More license key\'s below - enter a key for each of your add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); ?></p>
 		      		      
 		      <?php 
+   		      // alm_alternating_installed
    		      // alm_cache_installed
    		      // alm_comments_installed
    		      // alm_unlimited_installed
@@ -24,7 +25,62 @@
    		   
    		   <?php 
       		   // Check if any add ons are installed. 
-      		   if(has_action('alm_cache_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
+      		   if(has_action('alm_alternating_installed') || has_action('alm_cache_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
+		      
+		      
+		      <?php 
+   		      if (has_action('alm_alternating_installed')){
+   		      // CACHE 
+				   $alm_alternating_license = get_option( 'alm_alternating_license_key' );
+               $alm_alternating_status = get_option( 'alm_alternating_license_status' );
+		      ?>
+	         <div class="license" id="license-alternating">
+		         <div class="license-title"> 
+   		         <div class="status <?php if($alm_alternating_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>        
+         			<h2><?php _e('Alternating Templates', 'ajax-load-more'); ?></h2> 
+		         </div>	
+               <div class="license-wrap">
+   			      <form method="post" action="options.php">               			
+         			
+	         			<?php settings_fields('alm_alternating_license'); ?>   
+	         			<label class="description" for="alm_alternating_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<div class="license-key-field">
+	         			   <input id="alm_alternating_license_key" name="alm_alternating_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_alternating_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
+	         			   <?php if( $alm_alternating_status !== false && $alm_alternating_status == 'valid' ) { ?>
+	            		   <span class="status active">
+	            		      <?php _e('Active', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } else { ?>
+	            		   <span class="status inactive">
+	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } ?>
+	         			</div>
+	         			
+	         			<?php wp_nonce_field( 'alm_alternating_license_nonce', 'alm_alternating_license_nonce' ); ?>
+	         			<div class="license-btn-wrap"	         			
+						   		data-name="<?php echo ALM_ALTERNATING_ITEM_NAME; ?>" 
+				         		data-url="<?php echo ALM_STORE_URL; ?>" 
+					         	data-option-status="alm_alternating_license_status" 
+						         data-option-key="alm_alternating_license_key"
+						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/alternating-templates/">
+		         			<button type="button" class="activate license-btn <?php if($alm_alternating_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+							   	<?php _e('Activate License', 'ajax-load-more'); ?>
+							   </button>
+							   
+							   <button type="button" class="deactivate license-btn <?php if($alm_alternating_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
+							   </button>  
+	         			</div>
+         			
+               	</form>
+			      </div> 
+			      <div class="loading"></div>
+            </div> 	
+            <?php 
+               }
+               // End alternating 
+            ?>	
 		      
 		      
 		      <?php 
@@ -189,6 +245,62 @@
                }
                // End Custom Repeaters v2 
             ?>
+            
+            
+            
+            <?php 
+   		      if (has_action('alm_layouts_installed')){
+   		      // LAYOUTS 
+				   $alm_layouts_license = get_option( 'alm_layouts_license_key' );
+               $alm_layouts_status = get_option( 'alm_layouts_license_status' );
+		      ?>
+	         <div class="license" id="license-layouts">
+		         <div class="license-title">       
+   		         <div class="status <?php if($alm_layouts_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>   
+         			<h2><?php _e('Layouts', 'ajax-load-more'); ?></h2> 
+		         </div>	
+               <div class="license-wrap">
+   			      <form method="post" action="options.php">               			
+         			
+	         			<?php settings_fields('alm_layouts_license'); ?>   
+	         			<label class="description" for="alm_layouts_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<div class="license-key-field">
+	         			   <input id="alm_layouts_license_key" name="alm_layouts_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_layouts_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
+	         			   <?php if( $alm_layouts_status !== false && $alm_layouts_status == 'valid' ) { ?>
+	            		   <span class="status active">
+	            		      <?php _e('Active', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } else { ?>
+	            		   <span class="status inactive">
+	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } ?>
+	         			</div>
+         			
+         				<?php wp_nonce_field( 'alm_layouts_license_nonce', 'alm_layouts_license_nonce' ); ?>
+         				<div class="license-btn-wrap"	         			
+						   		data-name="<?php echo ALM_LAYOUTS_ITEM_NAME; ?>" 
+				         		data-url="<?php echo ALM_STORE_URL; ?>" 
+					         	data-option-status="alm_layouts_license_status" 
+						         data-option-key="alm_layouts_license_key"
+						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/">
+		         			<button type="button" class="activate license-btn <?php if($alm_layouts_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+							   	<?php _e('Activate License', 'ajax-load-more'); ?>
+							   </button>
+							   
+							   <button type="button" class="deactivate license-btn <?php if($alm_layouts_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
+							   </button>  
+	         			</div>
+         			
+               	</form>
+			      </div> 
+			      <div class="loading"></div>
+            </div> 	
+            <?php 
+               }
+               // End LAYOUTS 
+            ?>	
             
             
             

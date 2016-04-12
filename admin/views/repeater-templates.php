@@ -8,8 +8,13 @@
 		   <!-- Repeaters -->
 		   <div class="group">
 		   <?php 
-		   	if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
-				<span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em><em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em></span></span> 
+		   if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
+				<span class="toggle-all">
+					<span class="inner-wrap">
+						<em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em>
+						<em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em>
+					</span>
+				</span> 
 			<?php } ?>			
 			   <!-- Default Template -->
 			   <div class="row template default-repeater">
@@ -38,7 +43,7 @@
                      </label>		
                                  
 							<?php 
-                        do_action('add_layout_listing'); // Layouts - Template Selection
+                        do_action('alm_get_layouts'); // Layouts - Template Selection
       			      ?> 
 			            <textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; ?></textarea>
 			            <script>
@@ -90,6 +95,7 @@
 						_alm_admin.saveRepeater = function(btn, editorId) {							   
 							var container = btn.parent('.repeater-wrap'),
 								el = $('textarea._alm_repeater', container),
+								textarea = el.next('.CodeMirror'),
 								btn = btn,
 								value = '',
 								repeater = container.data('name'), // Get templete name
@@ -118,6 +124,7 @@
 						   //If template is not already saving, then proceed
 							if (!btn.hasClass('saving')) {
 							   btn.addClass('saving');
+							   textarea.addClass('loading');
 								responseText.addClass('loading').html('<?php _e('Saving template...', 'ajax-load-more') ?>');
 								responseText.animate({'opacity' : 1});
 								
@@ -137,7 +144,8 @@
 									  $('textarea#'+editorId).val(value); // Set the target textarea val to 'value'
 									  
 									  setTimeout(function() { 
-										   responseText.delay(500).html(response).removeClass('loading');				
+										   responseText.delay(500).html(response).removeClass('loading');
+										   textarea.removeClass('loading');				
 									  }, 250);
 									  						  
 									  setTimeout(function() { 
@@ -146,12 +154,13 @@
                                     btn.removeClass('saving');
 										   });
 											
-										}, 6000);	
+										}, 4500);	
 															
 									},
 									error: function(xhr, status, error) {
 										responseText.html('<?php _e('Something went wrong and the data could not be saved.', 'ajax-load-more') ?>').removeClass('loading');
 										btn.removeClass('saving');
+										textarea.removeClass('loading');
 									}
                         });                        
 							}
@@ -188,7 +197,7 @@
 						   //If template is not already saving, then proceed
 							if (!btn.hasClass('updating')) {
 							   btn.addClass('updating').text("<?php _e('Updating template...', 'ajax-load-more'); ?>");
-							   								
+							   editor.addClass('loading');								
 								$.ajax({
 									type: 'POST',
 									url: alm_admin_localize.ajax_admin_url,
@@ -211,13 +220,15 @@
                                  btn.text("<?php _e('Template Updated', 'ajax-load-more'); ?>").blur();                                 
                                  setTimeout(function() { 
                                     btn.closest('.alm-drop-btn').trigger('click'); // CLose drop menu
-	                                 btn.removeClass('updating').html(btn_text).blur();											
+	                                 btn.removeClass('updating').html(btn_text).blur();		
+	                                 editor.removeClass('loading');									
 											}, 400);										
 										}, 400);		
 													
 									},
 									error: function(xhr, status, error) {
                               btn.removeClass('updating').html(btn_text).blur();	
+                              editor.removeClass('loading');	
 									}
                         });                        
 							}

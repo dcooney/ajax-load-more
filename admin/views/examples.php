@@ -70,8 +70,8 @@
 		   
 	   </div>	   
 	   <div class="cnkt-sidebar">
-	   	<?php include_once( ALM_PATH . 'admin/includes/cta/resources.php');	?>
 	   	<?php include_once( ALM_PATH . 'admin/includes/cta/dyk.php');	?>   	
+	   	<?php include_once( ALM_PATH . 'admin/includes/cta/resources.php');	?>
 	   </div>	  
 	   	
 	</div>

@@ -1,7 +1,5 @@
 <?php
-
-/* Admin function */
-
+   
 add_action( 'plugins_loaded', 'alm_core_update' ); // Core Update
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
@@ -9,9 +7,9 @@ add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxo
 add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache
 add_action( 'wp_ajax_alm_layouts_dismiss', 'alm_layouts_dismiss' ); // Dismiss Layouts CTA
 add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Activate Add-on
-add_action( 'add_layout_listing', 'add_layout_listing' ); // Add layout dropmenu  		
+add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection  
 add_action( 'wp_ajax_alm_layouts_get', 'alm_layouts_get' ); // Get layout
-add_action( 'admin_init', 'alm_image_sizes' ); // Add image size
+
 
 
 /*
@@ -51,7 +49,15 @@ function alm_license_activation(){
 	);
 	
 	// Call the custom API.
-	$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
+	//$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
+	
+	// Updated 2.8.7
+	$response = wp_remote_post( ALM_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
+
+	// make sure the response came back okay
+	if ( is_wp_error( $response ) )
+		return false;
+	
 	
 	$license_data = $response['body'];
 	$license_data = json_decode($license_data); // decode the license data
@@ -72,7 +78,6 @@ function alm_license_activation(){
 		}	
 	}
 	$return["msg"] = $msg;
-	
 	
 	update_option( $option_status, $license_data->license);
 	update_option( $option_key, $license );	
@@ -116,29 +121,16 @@ function alm_layouts_get(){
 
 
 
-/*
-*  alm_layouts_image_sizes
-*  Add the required image sizes
-*
-*  @since 2.8.3
-*/
-
-function alm_image_sizes(){   
-	add_image_size( 'alm-thumbnail', 150, 150, true); // Custom ALM thumbnail size
-} 
-
-
 
 /*
-*  add_layout_listing
-*  Get the list of layouts
+*  alm_get_layouts
+*  Get the list of layout templates
 *
-*  @since 2.8.3
+*  @since 2.8.7
 */
-function add_layout_listing(){
-   //include( ALM_PATH . 'admin/includes/components/layout-list.php'); 
+function alm_get_layouts(){ // do_action
+   include( ALM_PATH . 'admin/includes/components/layout-list.php'); 
 }
-
 
 
 /*
@@ -154,6 +146,8 @@ function alm_admin_vars() { ?>
         'ajax_admin_url' => admin_url( 'admin-ajax.php' ),
         'active' => __('Active', 'ajax-load-more'),
         'inactive' => __('Inactive', 'ajax-load-more'),
+        'applying_layout' => __('Applying layout', 'ajax-load-more'),
+        'template_updated' => __('Template Updated', 'ajax-load-more'),
         'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' )
     )); ?>
     /* ]]> */
@@ -189,6 +183,11 @@ function alm_core_update() {
 	
 	$alm_installed_ver = get_option( "alm_version" ); // Get value from WP Option tbl
 	if ( $alm_installed_ver != ALM_VERSION ) {
+   	
+   	// Delete our ALM transients
+   	delete_transient( 'alm_dismiss_sharing' );
+		
+		// Update repeaters
 		alm_run_update();	
 	}  
 }
@@ -327,15 +326,6 @@ function alm_admin_menu() {
       'ajax-load-more-shortcode-builder', 
       'alm_shortcode_builder_page'
    );
-   
-   $alm_examples_page = add_submenu_page( 
-      'ajax-load-more', 
-      'Examples', 
-      'Examples', 
-      'edit_theme_options', 
-      'ajax-load-more-examples', 
-      'alm_example_page'
-   );  	
    	
    $alm_addons_page = add_submenu_page( 
       'ajax-load-more', 
@@ -344,7 +334,25 @@ function alm_admin_menu() {
       'edit_theme_options', 
       'ajax-load-more-add-ons', 
       'alm_add_ons_page'
-   ); 
+   );     
+   
+   $alm_examples_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Examples', 
+      'Examples', 
+      'edit_theme_options', 
+      'ajax-load-more-examples', 
+      'alm_examples_page'
+   );    
+   
+   $alm_help_page = add_submenu_page( 
+      'ajax-load-more', 
+      'Help', 
+      'Help', 
+      'edit_theme_options', 
+      'ajax-load-more-help', 
+      'alm_help_page'
+   );  	
    
    $alm_licenses_page = add_submenu_page(
       'ajax-load-more', 
@@ -370,11 +378,13 @@ function alm_admin_menu() {
    
    //Add our admin scripts
    add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_settings_page, 'alm_set_admin_nonce' );   
    add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_template_page, 'alm_set_admin_nonce' );   
    add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_nonce' );
    add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_licenses_page, 'alm_set_admin_nonce' );
@@ -408,10 +418,10 @@ function alm_load_cache_admin_js(){
 function alm_enqueue_admin_scripts(){
 
    //Load Admin CSS
-   wp_enqueue_style( 'alm-admin-css', ALM_ADMIN_URL. 'css/admin.css');
-   wp_enqueue_style( 'alm-select2-css', ALM_ADMIN_URL. 'css/select2.css');
+   wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL. 'css/admin.css');
+   wp_enqueue_style( 'alm-select2', ALM_ADMIN_URL. 'css/select2.css');
    wp_enqueue_style( 'alm-tooltipster', ALM_ADMIN_URL. 'css/tooltipster/tooltipster.css');
-   wp_enqueue_style( 'alm-core-css', ALM_URL. '/core/css/ajax-load-more.css');
+   wp_enqueue_style( 'alm-core', ALM_URL. '/core/css/ajax-load-more.css');
    wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
    
    //Load CodeMirror Syntax Highlighting if on Repater Template page 
@@ -494,8 +504,21 @@ function alm_shortcode_builder_page(){
 *  @since 2.0.0
 */
 
-function alm_example_page(){ 
+function alm_examples_page(){ 
    include_once( ALM_PATH . 'admin/views/examples.php');		
+}
+
+
+
+/*
+*  alm_help_page
+*  Help Page (Implementation Inforgraphic) 
+*
+*  @since 2.8.7
+*/
+
+function alm_help_page(){ 
+   include_once( ALM_PATH . 'admin/views/help.php');		
 }
 
 
@@ -770,6 +793,30 @@ function alm_layouts_dismiss(){
    }
 }
 
+
+
+/*
+*  alm_dismiss_sharing
+*  Dismiss sharing widget on plugin settings page.
+*
+*  @since 2.8.2.1
+*/
+function alm_dismiss_sharing(){
+   if (current_user_can( 'edit_theme_options' )){
+	
+		$nonce = $_POST["nonce"];
+		
+		// Check our nonce, if they don't match then bounce!
+		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+			die('Error - unable to verify nonce, please try again.');			
+		
+      set_transient( 'alm_dismiss_sharing', 'true', 365 * DAY_IN_SECONDS );
+      echo 'Success';
+      
+      die();
+   }
+}
+add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' );
 
 
 /*
@@ -1175,7 +1222,7 @@ function alm_btn_color_callback() {
     $html .= '</optgroup>';
     $html .= '</select>';
      
-    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">Load More</button></div>';
+    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button></div>';
     echo $html;
 }
 
@@ -1204,16 +1251,16 @@ function alm_btn_class_callback(){
 		// Check if Disable CSS  === true
 		if(jQuery('input#alm_disable_css_input').is(":checked")){
 	      jQuery('select#alm_settings_btn_color').parent().parent().hide(); // Hide button color
-         jQuery('input.btn-classes').parent().parent().hide(); // Hide Button Classes
+         //jQuery('input.btn-classes').parent().parent().hide(); // Hide Button Classes
     	}
     	jQuery('input#alm_disable_css_input').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent('tr').next('tr').hide(); // Hide button color
-	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide Button Classes
+	      	//el.parent().parent('tr').next('tr').next('tr').hide(); // Hide Button Classes
 	      }else{		      
 	      	el.parent().parent('tr').next('tr').show(); // show button color
-	      	el.parent().parent('tr').next('tr').next('tr').show(); // show Button Classes
+	      	//el.parent().parent('tr').next('tr').next('tr').show(); // show Button Classes
 	      }
 	   });
 	   

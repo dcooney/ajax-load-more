@@ -1,10 +1,9 @@
-
 /*
  * Ajax Load More
  * http://wordpress.org/plugins/ajax-load-more/
  * https://connekthq.com/plugins/ajax-load-more/
  *
- * Copyright 2015 Connekt Media - http://connekthq.com
+ * Copyright 2016 Connekt Media - https://connekthq.com
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -25,7 +24,6 @@
       var alm = this;
       alm.AjaxLoadMore = {};
       alm.page = 0;
-      alm.speed = 250;
       alm.proceed = false;
       alm.disable_ajax = false;
       alm.init = true;
@@ -49,11 +47,20 @@
       alm.repeater = alm.content.attr('data-repeater');
       alm.theme_repeater = alm.content.attr('data-theme-repeater');
       
+      alm.alternate_array =  '';
+      alm.alternate = alm.content.attr('data-alternate'); // is Alternating Templates enabled?
+      alm.alternate_sequence = alm.content.attr('data-alternate-sequence');
+      alm.alternate_sequence_max = alm.content.attr('data-alternate-sequence-max');
+      alm.alternate_repeater = alm.content.attr('data-alternate-repeater');
+      alm.alternate_theme_repeater = alm.content.attr('data-alternate-theme-repeater');
+      
       alm.scroll_distance = parseInt(alm.content.attr('data-scroll-distance'));
       alm.max_pages = parseInt(alm.content.attr('data-max-pages'));
       alm.pause_override = alm.content.attr('data-pause-override'); // true | false  
       alm.pause = alm.content.attr('data-pause'); // true | false 
-      alm.transition = alm.content.attr('data-transition');
+      alm.transition = alm.content.attr('data-transition'); 
+      alm.transition_container = alm.content.attr('data-transition-container');
+      alm.speed = alm.content.attr('data-transition-speed')
       alm.images_loaded = alm.content.attr('data-images-loaded');
       alm.destroy_after = alm.content.attr('data-destroy-after');
       alm.lang = alm.content.attr('data-lang');
@@ -149,7 +156,10 @@
       }
       if (alm.seo === 'true'){
          alm.seo = true; // Convert string to boolean  
-      }       
+      } 
+      if($(".ajax-load-more-wrap").length > 1){
+	      alm.seo = false;
+      }      
       
       alm.permalink = alm.content.attr('data-seo-permalink');
       alm.pageview = alm.content.attr('data-seo-pageview');
@@ -247,7 +257,7 @@
       }
       
 
-      /* Select the transition */ 
+      /* Transition Params */ 
       if (alm.transition === undefined){
          alm.transition = 'slide';
       }else if (alm.transition === "fade"){
@@ -256,6 +266,18 @@
          alm.transition = 'none';
       }else {
          alm.transition = 'slide';
+      }   
+      
+      if (alm.speed === undefined){
+         alm.speed = 250;
+      } else{
+         alm.speed = parseInt(alm.speed);
+      }
+      
+      if (alm.transition_container === undefined || alm.transition_container === 'true'){
+         alm.transition_container = true;
+      }else {
+         alm.transition_container = false;
       }
       
 
@@ -350,7 +372,7 @@
                   var cachePage = alm.cache_path + '/page-' + alm.page +'.html';
                          
                   $.get(cachePage, function( data ) {       
-                     alm.AjaxLoadMore.success(data); // data contains whatever the request has returned                     
+                     alm.AjaxLoadMore.success(data, true); // data contains whatever the request has returned                     
                   }).fail(function() { 
                      alm.AjaxLoadMore.ajax('standard'); 
                   });
@@ -382,12 +404,10 @@
          
          var action = 'alm_query_posts';
          
-         // If this is a comment query
-         
+         // If this is a comment query         
          if(alm.comments === 'true'){
             action = 'alm_comments_query';
-            alm.posts_per_page = alm.comments_per_page;
-            
+            alm.posts_per_page = alm.comments_per_page;            
             alm.comments_array = {
                'comments': 'true',
                'post_id': alm.comments_post_id,
@@ -399,7 +419,17 @@
             };
             
          }
-          
+         
+         // Set Alternate Query params         
+         if(alm.alternate === 'true'){            
+            alm.alternate_array = {
+               'alternate': 'true',
+               'alternate_sequence': alm.alternate_sequence,
+               'alternate_sequence_max': alm.alternate_sequence_max,
+               'alternate_repeater': alm.alternate_repeater,
+               'alternate_theme_repeater': alm.alternate_theme_repeater,
+            };            
+         }          
       
          $.ajax({
             type: "GET",
@@ -411,6 +441,7 @@
                cache_id: alm.cache_id,
                repeater: alm.repeater,
                theme_repeater: alm.theme_repeater,
+               alternate: alm.alternate_array,
                comments: alm.comments_array,
                post_type: alm.post_type,
                post_format: alm.content.attr('data-post-format'),
@@ -450,8 +481,9 @@
                previous_post_taxonomy: alm.previous_post_taxonomy,
                lang: alm.lang,
 	            slug: alm.slug,
+	            canonical_url: alm.canonical_url,
             },
-            dataType: "html",
+            dataType: "JSON",
             // parse the data as html
             beforeSend: function () {
                if (alm.page != 1 && !alm.paging) {
@@ -460,7 +492,7 @@
             },
             success: function (data) {
 	            if(queryType === 'standard'){
-               	alm.AjaxLoadMore.success(data);
+               	alm.AjaxLoadMore.success(data, false);
                }
                else if(queryType === 'totalposts' && alm.paging){	  
 	               if($.isFunction($.fn.almBuildPagination)){   
@@ -488,13 +520,21 @@
        *  @since 2.6.0
        */
        
-      alm.AjaxLoadMore.success = function (data) {
+      alm.AjaxLoadMore.success = function (data, is_cache) {
               
          if(alm.previous_post){ // Get previous page data	         
             alm.AjaxLoadMore.getPreviousPost();           
          }     
+         var html;                  
          
-         alm.data = $(data); // Convert data to an object                  
+         if(!is_cache){
+            html = data.html;
+         }else{
+            html = data; // If is cache, don't look for json data
+         }
+         
+         alm.data = $(html); // Convert data to an object   
+         
          if (alm.init) {
 	         if(!alm.paging){
    	         
@@ -503,7 +543,7 @@
             } else { 
                
                // Is pagination
-               if (alm.data.length > 0) {                  
+               if (alm.data.length > 0) {            
                   alm.el = $('<div class="alm-reveal"/>');
                   alm.el.append('<div class="alm-paging-content"></div><div class="alm-paging-loading"></div>');
                   $('.alm-paging-content', alm.el).append(alm.data).hide();
@@ -530,29 +570,108 @@
                }
             }
             
+            // isPaged
             if(alm.isPaged){ 
                alm.posts_per_page = alm.content.attr('data-posts-per-page'); // Reset our posts per page variable
                alm.page = alm.start_page - 1; // Set our new page #
             }                    
          }         
          
-         
+         // We have results!
          if (alm.data.length > 0) {
             if(!alm.paging){
                
-               if(alm.previous_post){
-               	alm.el = $('<div class="alm-reveal alm-previous-post post-'+alm.previous_post_id+'" data-id="'+alm.previous_post_id+'" data-title="'+alm.previous_post_title+'" data-url="'+alm.previous_post_permalink+'"/>');	               
+               if(alm.previous_post){ // If Previous Post, create container and append data              
+               	
+               	alm.el = $('<div class="alm-reveal alm-previous-post post-'+alm.previous_post_id+'" data-id="'+alm.previous_post_id+'" data-title="'+alm.previous_post_title+'" data-url="'+alm.previous_post_permalink+'"/>');	  
+               	alm.el.append(alm.data).hide();   
+               	       
                }else{
-               	alm.el = $('<div class="alm-reveal"/>');
+                        
+                  if(!alm.transition_container){ 
+                     // If transiton container == false
+                     alm.data.hide();
+                     alm.el = alm.data;
+                     
+                  }else{ 
+                     // Standard transition container
+                     
+                     // if start_page is > 1
+                     // - loop through items and break them separate alm-reveal divs
+                     if (alm.init && alm.start_page > 1){
+                        
+                        var data = [];
+                        var size = Math.ceil(alm.data.length/alm.start_page); // slice data array into pages
+                        //console.log(size);
+                        for (var i = 0; i < alm.data.length; i += size) {
+                           data.push(alm.data.slice(i, size + i));
+                        }   
+                        
+                        alm.el = alm.content; // Set alm.el to be alm-listing div
+                        for (var k = 0; k < data.length; k++){
+                           
+                           var p = 0; // Add 1 page if items are preloaded.
+                           if(alm.preloaded === 'true'){
+                              p = 1;
+                           }
+                           
+                           var div;
+                           if(k > 0 || alm.preloaded === 'true'){ // > Paged                              
+                              var pagenum = (k + 1 + p);
+                              if(alm.permalink === 'default'){
+                                 div = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'&paged='+ pagenum+'" data-page="'+ pagenum +'" />');                              
+                              }else{
+                                 div = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'page/'+ pagenum +'/" data-page="'+ pagenum +'" />');
+                              }                              
+                           }else{ // First Page
+                              div = $('<div class="alm-reveal alm-seo"  data-url="'+alm.canonical_url+'" data-page="1" />');
+                           }
+                           div.append(data[k]);
+                           div = $(div); // convert to object
+                           alm.el.append(div).hide(); // Add data to .alm-listing wrapper
+                        }      
+                     }
+                     
+                     else {
+                        // If is SEO and paged, or preloaded.
+                        if(alm.seo && alm.page > 0 || alm.preloaded === 'true'){
+                           
+                           var p = 0; // Add 1 page if items are preloaded.
+                           if(alm.preloaded === 'true'){
+                              p = 1;
+                           }
+                           // SEO [Paged]
+                           var pagenum = (alm.page + 1 + p);
+                           if(alm.seo){
+                              if(alm.permalink === 'default'){
+                                 alm.el = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'&paged='+ pagenum+'" data-page="'+ pagenum +'" />');                              
+                              }else{
+                                 alm.el = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'page/'+ pagenum +'/" data-page="'+ pagenum +'" />');
+                              }     
+                           }else{
+                              // Basic ALM ****
+                              alm.el = $('<div class="alm-reveal" />');                              
+                           }                        
+                              
+                        }else{ 
+                           if(alm.seo){
+                              // SEO [Page 1]
+                              alm.el = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'" data-page="1" />');                              
+                           }else{
+                              // Basic ALM ****
+                              alm.el = $('<div class="alm-reveal" />');                              
+                           }
+                        }  
+   
+                        alm.el.append(alm.data).hide();                   
+                     }
+               	}               	
                }
                
-               alm.el.append(alm.data).hide();
                alm.content.append(alm.el);
                
                if (alm.transition === 'fade') { // Fade transition
-	               
 	               if(alm.images_loaded === 'true'){
-		               
 		               alm.el.almWaitForImages().done(function(){
 			               alm.el.fadeIn(alm.speed, 'alm_easeInOutQuad', function () {
 		                     alm.loading = false;
@@ -566,6 +685,9 @@
 		                        	alm.button.addClass('done');
 		                        }
 		                     }
+				               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+					               $.fn.almSEO(alm);
+					            } 
 		                  });
 	                  });
 	               }else{
@@ -580,22 +702,26 @@
 	                        if(!alm.paging){
 	                        	alm.button.addClass('done');
 	                        }
-	                     }
+	                     }	                     	                     
+			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+				               $.fn.almSEO(alm);
+				            } 
 	                  });
 	               }
                   
                }else if(alm.transition === 'none') { // No transition
-	               
 	               if(alm.images_loaded === 'true'){
-		               
 		               alm.el.almWaitForImages().done(function(){
-			               alm.el.show();
+			               alm.el.show();			               
+			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+				               $.fn.almSEO(alm);
+				            } 
 			            });
-			            
 		            }else{
-			            
-                  	alm.el.show();     
-                  	             
+			            alm.el.show();    			            
+		               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+			               $.fn.almSEO(alm);
+			            }  
                   }
                   alm.loading = false;
                   if(!alm.paging){
@@ -608,10 +734,9 @@
                      	alm.button.addClass('done');
                      }
                   }  
-                                        
+                                     
                }else { // Slide transition
 	               if(alm.images_loaded === 'true'){
-		               
 		               alm.el.almWaitForImages().done(function(){
 		                  alm.el.slideDown(alm.speed, 'alm_easeInOutQuad', function () {
 		                     alm.loading = false;
@@ -624,12 +749,13 @@
 		                        if(!alm.paging){
 		                        	alm.button.addClass('done');
 		                        }
-		                     }
+		                     }		                     
+				               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+					               $.fn.almSEO(alm);
+					            } 
 		                  });
 	                  });
-	                  
-                  }else{
-	                  	                  
+	               }else{
 	                  alm.el.slideDown(alm.speed, 'alm_easeInOutQuad', function () {
 	                     alm.loading = false;
 	                     if(!alm.paging){
@@ -641,9 +767,11 @@
 	                        if(!alm.paging){
 	                        	alm.button.addClass('done');
 	                        }
-	                     }
+	                     }                     
+			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+				               $.fn.almSEO(alm);
+				            } 
 	                  });
-
                   }
                }
                
@@ -651,14 +779,15 @@
 	            	            
                // Is Paging               
                if(!alm.init){
-	               
                   $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function(){  // Remove loading class and append data
                      $('.alm-paging-loading', alm.el).fadeOut(alm.speed); // Fade out loader
                      if ($.isFunction($.fn.almOnPagingComplete)){
                         $.fn.almOnPagingComplete(alm);     
-                     }
+                     }                     
+		               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+			               $.fn.almSEO(alm);
+			            } 
                   });
-		            
                }              
             }                            
                   
@@ -674,37 +803,28 @@
             }  
             
             // ALM Done
-            // If data is returned but it's less than the posts per page.
+            // - If data is returned but it's less than the posts per page.
             if(alm.data.length < alm.posts_per_page){
                if ($.isFunction($.fn.almDone)) {
-                  $.fn.almDone(alm);				
+                  // Delay done until after animation
+                  setTimeout(function(){ 
+                     $.fn.almDone(alm) 
+                  }, alm.speed + 10);		
                } 
-            }
-            
-            // ALM SEO
-            if($(".ajax-load-more-wrap").length === 1){ // only run if a single instance
-               if ($.isFunction($.fn.almSEO) && alm.seo) {
-	               if(alm.images_loaded === 'true'){
-		               alm.el.almWaitForImages().done(function(){
-                  		$.fn.almSEO(alm);
-                  	});
-                  }else{
-	                  $.fn.almSEO(alm);
-                  }
-               }
-            }             
+            }                       
 
          } else { 
-            
-            // ALM Done
-            if ($.isFunction($.fn.almDone)) {
-               $.fn.almDone(alm);				
-            }
             
 	         if(!alm.paging){
             	alm.button.delay(alm.speed).removeClass('loading').addClass('done');
             	alm.resetBtnText();
+            }            
+            
+            // ALM Done
+            if ($.isFunction($.fn.almDone) && !alm.init) {
+               $.fn.almDone(alm);				
             }
+            
             alm.loading = false;
             alm.finished = true;
          }
@@ -724,7 +844,8 @@
                }
             }
          }
-         alm.init = false; 
+         alm.init = false;
+          
       };
       
       
@@ -747,8 +868,7 @@
                taxonomy: alm.previous_post_taxonomy
             },
             success: function (data) {
-               if(data.has_previous_post){
-	               
+               if(data.has_previous_post){	               
                   alm.content.attr('data-previous-post-id', data.prev_id); // update previous-post-id on ALM element
                   alm.previous_post_permalink = data.prev_permalink;             	           
                   alm.previous_post_title = data.prev_title;             	           
@@ -756,6 +876,9 @@
                   if(!data.has_previous_post){
                      alm.finished = true;
                      alm.button.addClass('done');
+                     if ($.isFunction($.fn.almDone)) { // ALM Done
+                        $.fn.almDone(alm);			
+                     } 
                   }
                }                               
                if($.isFunction($.fn.almSetPreviousPost)){ 
@@ -780,7 +903,9 @@
        */
       alm.resetBtnText = function(){
 	      if(alm.button_loading_label !== false){ // Reset button text 
-            alm.button.text(alm.button_label); 
+   	      if(!alm.paging){
+               alm.button.text(alm.button_label); 
+            }
          } 
       };
       
@@ -838,7 +963,7 @@
 
 
 
-      /* alm.AjaxLoadMore.isVisible()
+      /*  alm.AjaxLoadMore.isVisible()
        * 
        *  Check to see if element is visible before loading posts
        *  @since 2.1.2
@@ -854,7 +979,7 @@
       
       
 
-      /* Window scroll and touchmove events
+      /*  Window scroll and touchmove events
        * 
        *  Load posts as user scrolls the page
        *  @since 1.0
@@ -935,7 +1060,7 @@
 		      var data = $('.alm-preloaded', alm.el).html(); // Content of preloaded page
 		      $('.alm-preloaded', alm.el).remove();
 		      alm.preloaded_amount = 0; // Reset 
-		      alm.AjaxLoadMore.success(data); // Skip post loading and go right to success() for display
+		      alm.AjaxLoadMore.success(data, false); // Skip post loading and go right to success() for display
 		      
 	      }else{
 		      

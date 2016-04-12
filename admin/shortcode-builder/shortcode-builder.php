@@ -380,16 +380,19 @@
             	); 
             	$pp_tax_output = 'objects';
             	$pp_taxonomies = get_taxonomies( $pp_tax_args, $pp_tax_output ); 
-            	if ( $pp_taxonomies ) { 
-            	   echo '<select class="alm_element" name="pp-taxonomy-select" id="pp-taxonomy-select">';
-               		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', 'ajax-load-more') . ' --</option>';
-               	   echo '<option value="category">' . __('Category', 'ajax-load-more') . '</option>';
-               	   echo '<option value="tag">' . __('Tag', 'ajax-load-more') . '</option>';
-               	   foreach( $pp_taxonomies as $pp_taxonomy ){
-                        echo '<option name="pp-'.$pp_taxonomy->query_var.'" id="pp-'.$pp_taxonomy->query_var.'" value="'.$pp_taxonomy->query_var.'">'.$pp_taxonomy->label.'</option>';
-               	   }
-            	    echo '</select>';
-            	} ?>
+            	echo '<select class="alm_element" name="pp-taxonomy-select" id="pp-taxonomy-select">';
+         		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', 'ajax-load-more') . ' --</option>';
+         	   echo '<option value="category">' . __('Category', 'ajax-load-more') . '</option>';
+         	   echo '<option value="tag">' . __('Tag', 'ajax-load-more') . '</option>';
+               if ( $pp_taxonomies ) { 
+            	   
+            	   foreach( $pp_taxonomies as $pp_taxonomy ){
+                     echo '<option name="pp-'.$pp_taxonomy->query_var.'" id="pp-'.$pp_taxonomy->query_var.'" value="'.$pp_taxonomy->query_var.'">'.$pp_taxonomy->label.'</option>';
+            	   } 
+            	              	    
+            	} 
+            	echo '</select>';
+            	?>
             </div>
          </div> 
          
@@ -441,8 +444,8 @@
 	echo '<p>'.__('Select which <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater template</a> you would like to use.', 'ajax-load-more'). '</p>';
 	echo '</div>';
 	echo '<div class="wrap"><div class="inner">';
-	echo '<select name="repeater-select" id="repeater-select" class="alm_element">';
-	echo '<option name="default" id="chk-default" value="default" selected="selected">Default</option>';		
+	echo '<select name="repeater-select" class="alm_element">';
+	echo '<option name="default" value="default" selected="selected">Default</option>';		
 	if (has_action('alm_get_custom_repeaters')) {
 	  do_action('alm_get_custom_repeaters');
 	}
@@ -452,13 +455,17 @@
 	echo '</select>';
 	
 	echo '</div></div>';
+	?>
 	
 	
+	<?php 
+	// Get Theme Repeaters
    if (has_action('alm_theme_repeaters_selection')){
       do_action('alm_theme_repeaters_selection');  
-   }    		               
-                     
-	
+   }     
+   ?>
+                        
+	<?php
 	// Custom Repeaters v2 - /cta/extend.php
 	if (!has_action('alm_get_unlimited_repeaters') && !has_action('alm_get_custom_repeaters')) {
       include( ALM_PATH . 'admin/includes/cta/extend.php');
@@ -466,8 +473,109 @@
 	
 	echo '</div>';
 	echo '</div>';
+	
+	?>
  	
- 
+ 	<?php if(has_action('alm_alternating_installed')){ ?>
+ 	<div class="row alternating add-on" id="alm-alternate">
+      <h3 class="heading"><?php _e('Alternating Templates', 'ajax-load-more'); ?></h3>
+      <div class="expand-wrap">
+         
+         <div class="section-title">
+   		 	<p><?php _e('Select an alternate repeater template to be display every <em>x</em> number of posts.', 'ajax-load-more'); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">	               
+               <ul>
+                   <li>
+                    <input class="alm_element" type="radio" name="alternate" value="true" id="alternate-true" >
+                    <label for="alternate-true"><?php _e('True', 'ajax-load-more'); ?></label>
+                   </li>
+                   <li>
+                    <input class="alm_element" type="radio" name="alternate" value="false" id="alternate-false" checked="checked">
+                    <label for="alternate-false"><?php _e('False', 'ajax-load-more'); ?></label>
+                   </li>
+               </ul>
+            </div>
+         </div>
+         <div class="clear"></div>
+         
+         <div class="alternate_template_wrap">
+            
+   		   <hr/>
+   		   <div class="spacer"></div>
+   		   
+   		   <div class="section-title">	      	   
+   				<h4><?php _e('Template Sequencing', 'ajax-load-more'); ?></h4>
+   				<p><?php _e('A comma separated list of post position values. Posts in these positions will be replaced by the alternate template', 'ajax-load-more'); ?>.<br/><br/>
+   				<strong><?php _e('Pro-Tip', 'ajax-load-more'); ?></strong> - 
+   				<?php _e('Use sequence "even" to use an alternate template for every even result', 'ajax-load-more'); ?>.</p>
+   			</div>
+   			<div class="wrap">
+      			<div class="inner">                                                         
+                  <input type="text" placeholder="3, 4, 7, 8" id="alternate-sequence-max" class="alm_element sm" name="alternate-sequence">
+      			</div>
+   			</div>  
+   			
+   			<div class="clear"></div>
+   			<hr/>
+   			<div class="spacer"></div>
+   			
+   			<div class="section-title">	      	   
+   				<h4><?php _e('Sequence Loop', 'ajax-load-more'); ?></h4>
+   				<p>
+      				<?php _e('Select the maximum number of loops to repeat alternate template sequence.', 'ajax-load-more'); ?><br/><br/>
+      				<?php _e('0 = no maximum', 'ajax-load-more'); ?>
+   				</p>
+   			</div>
+   			<div class="wrap">
+      			<div class="inner">                     
+                     <input type="number" placeholder="0" id="alternate-sequence-max" class="alm_element sm numbers-only" name="alternate-sequence-max" value="0" step="1" min="0">
+                     
+               </div>
+   			</div>
+   			
+            <div class="clear"></div>   			
+            <hr/>
+            <div class="spacer"></div>
+            
+   			<div class="section-title">	      	   
+   				<h4><?php _e('Repeater Template', 'ajax-load-more'); ?></h4>
+   				<?php
+      				echo '<p>'.__('Select an alternate <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater template</a>.', 'ajax-load-more'). '</p>';
+      			?>
+   			</div>
+   			<div class="wrap">
+   				<div class="inner">
+   					<?php
+   						echo '<select name="alternate-repeater-select" class="alm_element">';
+   						echo '<option name="" value="" selected="selected">'.__('-- Select Repeater --', 'ajax-load-more').'</option>';	
+   						echo '<option name="default" value="default">Default</option>';		
+   						if (has_action('alm_get_custom_repeaters')) {
+   						  do_action('alm_get_custom_repeaters');
+   						}
+   						if (has_action('alm_get_unlimited_repeaters')) {
+   						  do_action('alm_get_unlimited_repeaters');
+   						}
+   						echo '</select>';						
+   					?>
+   				</div>
+   			</div>
+   			<?php 
+   			// Get Theme Repeaters
+   		   if (has_action('alm_theme_repeaters_selection')){
+   		      do_action('alm_theme_repeaters_selection');  
+   		   }     
+   		   ?>
+   		   
+         </div>
+         
+      </div>
+   </div>
+   <?php } ?>
+   
+	
+	<?php
    // List registered post_types
    $pt_args = array(
       'public'   => true
@@ -860,6 +968,7 @@
                    <option value="author">Author</option>
                    <option value="ID">ID</option>
                    <option value="comment_count">Comment Count</option>
+                   <option value="modified">Modified</option>
                    <option value="meta_value_num">meta_value_num</option>                   
                </select>
             </div>
@@ -998,10 +1107,11 @@
       <h3 class="heading"><?php _e('Transition', 'ajax-load-more'); ?></h3>
       <div class="expand-wrap">
          <div class="section-title">
-   		 	<p><?php _e('Select a loading transition.', 'ajax-load-more'); ?></p>
+            <h4><?php _e('Transition Type', 'ajax-load-more'); ?></h4>
+   		 	<p><?php _e('Select a loading transition style.', 'ajax-load-more'); ?></p>
    		 </div>
          <div class="wrap">
-            <div class="inner">	               
+            <div class="inner">	                
                <ul>
                    <li>
                     <input class="alm_element" type="radio" name="transition" value="slide" id="transition-slide" checked="checked">
@@ -1016,6 +1126,37 @@
                     <label for="transition-none"><?php _e('None', 'ajax-load-more'); ?></label>
                    </li>
                </ul>
+            </div>
+         </div>
+         
+         <div class="clear"></div>
+         <hr>
+         
+         <div class="section-title">
+            <h4><?php _e('Transition Speed', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('0.5 seconds = 500, 1 second = 1000 etc.','ajax-load-more'); ?>"></a></h4>
+   		 	<p><?php _e('The speed of the loading transition in milliseconds', 'ajax-load-more'); ?>.<br/></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">            
+               <input type="number" class="alm_element numbers-only" name="transition-speed" id="transition-speed" step="50" min="50" value="250">  
+            </div>
+         </div> 
+         
+         <div class="clear"></div>
+         <hr>
+         
+         <div class="section-title">
+            <h4><?php _e('Transition Container', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Removing the transition container may have undesired results and is not recommended.','ajax-load-more'); ?>"></a></h4>
+   		 	<p><?php _e('Remove the Ajax Load More (.alm-reveal) loading container.', 'ajax-load-more'); ?></p>
+   		 </div>
+         <div class="wrap">
+            <div class="inner">            
+               <ul>
+                   <li style="width:100%;">
+                   <input class="alm_element" type="checkbox" name="remove_container" id="remove_container" value="f">
+                   <label for="remove_container">Remove Container</label>
+                   </li>
+               </ul>  
             </div>
          </div>
       </div>
@@ -1113,6 +1254,10 @@
                    <li>
                     <input type="radio" id="type-div" value="div" name="alm_container_type" class="alm_element">
                     <label for="type-div">&lt;div&gt; &lt;/div&gt;</label>
+                   </li>
+                   <li>
+                    <input type="radio" id="type-table" value="table" name="alm_container_type" class="alm_element">
+                    <label for="type-table">&lt;table&gt; &lt;/table&gt;</label>
                    </li>
                </ul>
             </div>
