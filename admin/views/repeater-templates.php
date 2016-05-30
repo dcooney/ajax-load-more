@@ -247,8 +247,7 @@
 	   </div>
 	   
 	   <div class="cnkt-sidebar">
-	   	<?php include_once( ALM_PATH . 'admin/includes/cta/writeable.php'); ?>
-   		<div class="cta">
+   	   <div class="cta">
 				<h3><?php _e('Templating Help', 'ajax-load-more'); ?></h3>
 				<div class="item">
 					<p><strong><?php _e('What is a repeater template?', 'ajax-load-more'); ?></strong></p>
@@ -265,6 +264,7 @@
 					</ul>
 				</div>		
 	   	</div>
+	   	<?php include_once( ALM_PATH . 'admin/includes/cta/writeable.php'); ?>
 	   </div>	
 	   
 	</div>

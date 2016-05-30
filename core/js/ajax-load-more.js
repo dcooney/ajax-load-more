@@ -45,14 +45,8 @@
       alm.cache_path = alm.content.attr('data-cache-path'); // cache path 
       alm.cache_logged_in = alm.content.attr('data-cache-logged-in'); // cache logged in (settings) 
       alm.repeater = alm.content.attr('data-repeater');
-      alm.theme_repeater = alm.content.attr('data-theme-repeater');
       
-      alm.alternate_array =  '';
-      alm.alternate = alm.content.attr('data-alternate'); // is Alternating Templates enabled?
-      alm.alternate_sequence = alm.content.attr('data-alternate-sequence');
-      alm.alternate_sequence_max = alm.content.attr('data-alternate-sequence-max');
-      alm.alternate_repeater = alm.content.attr('data-alternate-repeater');
-      alm.alternate_theme_repeater = alm.content.attr('data-alternate-theme-repeater');
+      alm.theme_repeater = alm.content.attr('data-theme-repeater');
       
       alm.scroll_distance = parseInt(alm.content.attr('data-scroll-distance'));
       alm.max_pages = parseInt(alm.content.attr('data-max-pages'));
@@ -60,12 +54,19 @@
       alm.pause = alm.content.attr('data-pause'); // true | false 
       alm.transition = alm.content.attr('data-transition'); 
       alm.transition_container = alm.content.attr('data-transition-container');
-      alm.speed = alm.content.attr('data-transition-speed')
+      alm.speed = alm.content.attr('data-transition-speed');
       alm.images_loaded = alm.content.attr('data-images-loaded');
       alm.destroy_after = alm.content.attr('data-destroy-after');
       alm.lang = alm.content.attr('data-lang');
       alm.orginal_posts_per_page = alm.content.attr('data-posts-per-page'); // Used for paging add-on
       alm.posts_per_page = alm.content.attr('data-posts-per-page');  
+      
+      alm.alternate_array =  '';
+      alm.alternate = alm.content.attr('data-alternate'); // is Alternating Templates enabled?
+      alm.alternate_sequence = alm.content.attr('data-alternate-sequence');
+      alm.alternate_sequence_max = alm.content.attr('data-alternate-sequence-max');
+      alm.alternate_repeater = alm.content.attr('data-alternate-repeater');
+      alm.alternate_theme_repeater = alm.content.attr('data-alternate-theme-repeater');
       
       alm.previous_post = alm.content.attr('data-previous-post'); // Next Post add-on  
       alm.previous_post_id = alm.content.attr('data-previous-post-id'); // Get the post id 
@@ -82,7 +83,14 @@
       alm.comments_type = alm.content.attr('data-comments_type');    
       alm.comments_style = alm.content.attr('data-comments_style');    
       alm.comments_template = alm.content.attr('data-comments_template'); 
-      alm.comments_callback = alm.content.attr('data-comments_callback');     
+      alm.comments_callback = alm.content.attr('data-comments_callback');   
+      
+      alm.restapi = alm.content.attr('data-restapi');
+      alm.restapi_base_url = alm.content.attr('data-restapi-base-url');
+      alm.restapi_namespace = alm.content.attr('data-restapi-namespace');
+      alm.restapi_endpoint = alm.content.attr('data-restapi-endpoint');
+      alm.restapi_template_id = alm.content.attr('data-restapi-template-id');
+      alm.restapi_debug = alm.content.attr('data-restapi-debug');
       
       alm.seo = alm.content.attr('data-seo'); // true | false   
       
@@ -92,9 +100,24 @@
       alm.paging = alm.content.attr('data-paging'); // is paging enabled 
       alm.paging_controls = alm.content.attr('data-paging-controls');
       alm.paging_show_at_most = alm.content.attr('data-paging-show-at-most');
-      alm.paging_classes = alm.content.attr('data-paging-classes');
-
+      alm.paging_classes = alm.content.attr('data-paging-classes');     
       
+      /* REST API */
+		if(alm.restapi === 'true'){
+			alm.restapi = true;				
+			
+			if(alm.restapi_debug === undefined){
+   			alm.restapi_debug = false;
+			}	
+			if(alm.restapi_template_id === ''){
+   			alm.restapi = false;
+			}
+			
+		}else{
+   		alm.restapi = false;
+		}
+      /* /end REST API  */
+       
 		/* Paging */
 		if(alm.paging === 'true'){
 			alm.paging = true;	
@@ -208,8 +231,7 @@
       alm.previous_post_pageview = alm.content.attr('data-previous-post-pageview');
       alm.previous_post_scroll = alm.content.attr('data-previous-post-scroll');
       alm.previous_post_scroll_speed = alm.content.attr('data-previous-post-scroll-speed');
-      alm.previous_post_scroll_top = alm.content.attr('data-previous-post-scrolltop');
-      
+      alm.previous_post_scroll_top = alm.content.attr('data-previous-post-scrolltop');      
       /* /end Previous Post */
       
 
@@ -218,8 +240,7 @@
          alm.offset = 0;
       }else{
          alm.offset = alm.content.attr('data-offset');
-      }
-      
+      }      
       
       /* Check for pause on init
        * Pause could be used to hold the loading of posts for a button click.
@@ -335,8 +356,8 @@
 		}else{
       	
       			
-         // If paging is false      
-      	$('.'+ alm.prefix + 'btn-wrap', alm.container).append('<button id="load-more" class="' + alm.prefix + 'load-more-btn more'+ alm.button_class +'">' + alm.button_label + '</button>');
+      // If paging is false      
+      $('.'+ alm.prefix + 'btn-wrap', alm.container).append('<button id="load-more" class="' + alm.prefix + 'load-more-btn more'+ alm.button_class +'">' + alm.button_label + '</button>');
 			alm.button = $('.alm-load-more-btn', alm.container);
 		}
 
@@ -349,7 +370,6 @@
        */
        
       alm.AjaxLoadMore.loadPosts = function () {      
-         
          if(!alm.disable_ajax){ // Check for ajax blocker
 	         if(!alm.paging){
             	alm.button.addClass('loading');
@@ -397,14 +417,14 @@
        
       alm.AjaxLoadMore.ajax = function (queryType) {
          
+         var action = 'alm_query_posts';
+         
          if(alm.previous_post){
             alm.previous_post_id = alm.content.attr('data-previous-post-id');
             alm.previous_post_taxonomy = alm.content.attr('data-previous-post-taxonomy');
          }
          
-         var action = 'alm_query_posts';
-         
-         // If this is a comment query         
+         // Comment query         
          if(alm.comments === 'true'){
             action = 'alm_comments_query';
             alm.posts_per_page = alm.comments_per_page;            
@@ -420,91 +440,164 @@
             
          }
          
-         // Set Alternate Query params         
+         // Alternate Query params         
          if(alm.alternate === 'true'){            
-            alm.alternate_array = {
+            alm.alternate_array = { 
                'alternate': 'true',
                'alternate_sequence': alm.alternate_sequence,
                'alternate_sequence_max': alm.alternate_sequence_max,
                'alternate_repeater': alm.alternate_repeater,
                'alternate_theme_repeater': alm.alternate_theme_repeater,
             };            
-         }          
-      
-         $.ajax({
-            type: "GET",
-            url: alm_localize.ajaxurl,
-            data: {
-               action: action,
-	            query_type: queryType,
-               nonce: alm_localize.alm_nonce,
-               cache_id: alm.cache_id,
-               repeater: alm.repeater,
-               theme_repeater: alm.theme_repeater,
-               alternate: alm.alternate_array,
-               comments: alm.comments_array,
-               post_type: alm.post_type,
-               post_format: alm.content.attr('data-post-format'),
-               category: alm.content.attr('data-category'),
-               category__not_in: alm.content.attr('data-category-not-in'),
-               tag: alm.content.attr('data-tag'),
-               tag__not_in: alm.content.attr('data-tag-not-in'),
-               taxonomy: alm.content.attr('data-taxonomy'),
-               taxonomy_terms: alm.content.attr('data-taxonomy-terms'),
-               taxonomy_operator: alm.content.attr('data-taxonomy-operator'),
-               taxonomy_relation: alm.content.attr('data-taxonomy-relation'),
-               meta_key: alm.content.attr('data-meta-key'),
-               meta_value: alm.content.attr('data-meta-value'),
-               meta_compare: alm.content.attr('data-meta-compare'),
-               meta_relation: alm.content.attr('data-meta-relation'), 
-               meta_type: alm.content.attr('data-meta-type'),
-               author: alm.content.attr('data-author'),
-               year: alm.content.attr('data-year'),
-               month: alm.content.attr('data-month'),
-               day: alm.content.attr('data-day'),
-               post_status: alm.content.attr('data-post-status'),
-               order: alm.content.attr('data-order'),
-               orderby: alm.content.attr('data-orderby'),
-               post__in: alm.content.attr('data-post-in'),
-               post__not_in: alm.content.attr('data-post-not-in'),
-               exclude: alm.content.attr('data-exclude'), // Deprecate soon in favor of post__not_in
-               search: alm.content.attr('data-search'),
-               custom_args: alm.content.attr('data-custom-args'),
-               posts_per_page: alm.posts_per_page,
-               pageNumber: alm.page,
-               offset: alm.offset,
-               preloaded: alm.preloaded,
-               preloaded_amount: alm.preloaded_amount,
-               seo_start_page: alm.start_page,
-               previous_post: alm.previous_post,
-               previous_post_id: alm.previous_post_id,
-               previous_post_taxonomy: alm.previous_post_taxonomy,
-               lang: alm.lang,
-	            slug: alm.slug,
-	            canonical_url: alm.canonical_url,
-            },
-            dataType: "JSON",
-            // parse the data as html
-            beforeSend: function () {
-               if (alm.page != 1 && !alm.paging) {
-                  alm.button.addClass('loading');
-               }
-            },
-            success: function (data) {
-	            if(queryType === 'standard'){
-               	alm.AjaxLoadMore.success(data, false);
-               }
-               else if(queryType === 'totalposts' && alm.paging){	  
-	               if($.isFunction($.fn.almBuildPagination)){   
-               		$.fn.almBuildPagination(data, alm);
-               	}
-               }              
+         }              
+         
+         // REST API
+         if(alm.restapi){
+            var alm_template = wp.template(alm.restapi_template_id),
+                rest_url = alm.restapi_base_url + '/' + alm.restapi_namespace + '/' + alm.restapi_endpoint,
+                rest_data = {
+                  posts_per_page    : alm.posts_per_page,
+                  page              : alm.page,
+                  offset            : alm.offset,
+   	            slug              : alm.slug,
+   	            canonical_url     : alm.canonical_url,
+                  post_type         : alm.post_type,                  
+                  post_format       : alm.content.attr('data-post-format'),
+                  category          : alm.content.attr('data-category'),
+                  category__not_in  : alm.content.attr('data-category-not-in'),
+                  tag               : alm.content.attr('data-tag'),
+                  tag__not_in       : alm.content.attr('data-tag-not-in'),
+                  taxonomy          : alm.content.attr('data-taxonomy'),
+                  taxonomy_terms    : alm.content.attr('data-taxonomy-terms'),
+                  taxonomy_operator : alm.content.attr('data-taxonomy-operator'),
+                  taxonomy_relation : alm.content.attr('data-taxonomy-relation'),
+                  meta_key          : alm.content.attr('data-meta-key'),
+                  meta_value        : alm.content.attr('data-meta-value'),
+                  meta_compare      : alm.content.attr('data-meta-compare'),
+                  meta_relation     : alm.content.attr('data-meta-relation'), 
+                  meta_type         : alm.content.attr('data-meta-type'),
+                  author            : alm.content.attr('data-author'),
+                  year              : alm.content.attr('data-year'),
+                  month             : alm.content.attr('data-month'),
+                  day               : alm.content.attr('data-day'),
+                  post_status       : alm.content.attr('data-post-status'),
+                  order             : alm.content.attr('data-order'),
+                  orderby           : alm.content.attr('data-orderby'),
+                  post__in          : alm.content.attr('data-post-in'),
+                  post__not_in      : alm.content.attr('data-post-not-in'),
+                  search            : alm.content.attr('data-search'),
+                  custom_args       : alm.content.attr('data-custom-args'),
+                  lang              : alm.lang,
+                  preloaded         : alm.preloaded,
+                  preloaded_amount  : alm.preloaded_amount,
+                  seo_start_page    : alm.start_page
+               };           
+            
+            $.ajax({ 
+               type : "GET",
+               url : rest_url,
+               data: rest_data,  
+               dataType: "JSON",             
+               beforeSend: function () {
+                  if (alm.page != 1 && !alm.paging) {
+                     alm.button.addClass('loading');
+                  }
+               },               
+               success: function (results) {
+                  var data;                  
+                  // loop results to get data from each
+                  $.each(results, function(e){                     
+                     var result = results[e];                                          
+                     if(alm.restapi_debug === 'true'){ // If debug
+                        console.log(result);
+                     }                                          
+                     data += alm_template(result);                                          
+                  });                  
+                  alm.AjaxLoadMore.success(data, true); // Send data to alm object                                   
+               }               
+            });           
+         }
+         
+         // Standard ALM
+         else{
+            $.ajax({
+               type: "GET",
+               url: alm_localize.ajaxurl,
+               dataType: "JSON",
+               data: { 
+                  action               : action,
+   	            query_type           : queryType,
+                  nonce                : alm_localize.alm_nonce,
+                  cache_id             : alm.cache_id,
+                  repeater             : alm.repeater,
+                  theme_repeater       : alm.theme_repeater,
+                  alternate            : alm.alternate_array,
+                  comments             : alm.comments_array,
+                  post_type            : alm.post_type,
+                  post_format          : alm.content.attr('data-post-format'),
+                  category             : alm.content.attr('data-category'),
+                  category__not_in     : alm.content.attr('data-category-not-in'),
+                  tag                  : alm.content.attr('data-tag'),
+                  tag__not_in          : alm.content.attr('data-tag-not-in'),
+                  taxonomy             : alm.content.attr('data-taxonomy'),
+                  taxonomy_terms       : alm.content.attr('data-taxonomy-terms'),
+                  taxonomy_operator    : alm.content.attr('data-taxonomy-operator'),
+                  taxonomy_relation    : alm.content.attr('data-taxonomy-relation'),
+                  meta_key             : alm.content.attr('data-meta-key'),
+                  meta_value           : alm.content.attr('data-meta-value'),
+                  meta_compare         : alm.content.attr('data-meta-compare'),
+                  meta_relation        : alm.content.attr('data-meta-relation'), 
+                  meta_type            : alm.content.attr('data-meta-type'),
+                  author               : alm.content.attr('data-author'),
+                  year                 : alm.content.attr('data-year'),
+                  month                : alm.content.attr('data-month'),
+                  day                  : alm.content.attr('data-day'),
+                  post_status          : alm.content.attr('data-post-status'),
+                  order                : alm.content.attr('data-order'),
+                  orderby              : alm.content.attr('data-orderby'),
+                  post__in             : alm.content.attr('data-post-in'),
+                  post__not_in         : alm.content.attr('data-post-not-in'),
+                  exclude              : alm.content.attr('data-exclude'), // Deprecate soon in favor of post__not_in
+                  search               : alm.content.attr('data-search'),
+                  custom_args          : alm.content.attr('data-custom-args'),
+                  posts_per_page       : alm.posts_per_page,
+                  page           		: alm.page,
+                  offset               : alm.offset,
+                  preloaded            : alm.preloaded,
+                  preloaded_amount     : alm.preloaded_amount,
+                  seo_start_page       : alm.start_page,
+                  paging               : alm.paging,
+                  previous_post        : alm.previous_post,
+                  previous_post_id     : alm.previous_post_id,
+                  previous_post_taxonomy: alm.previous_post_taxonomy,
+                  lang                 : alm.lang,
+   	            slug                 : alm.slug,
+   	            canonical_url        : alm.canonical_url
+               },
                
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-               alm.AjaxLoadMore.error(jqXHR, textStatus, errorThrown);
-            }
-         });
+               beforeSend: function () {
+                  if (alm.page != 1 && !alm.paging) {
+                     alm.button.addClass('loading');
+                  }
+               },
+               
+               success: function (data) {
+                  //console.log(data);
+   	            if(queryType === 'standard'){
+                  	alm.AjaxLoadMore.success(data, false);
+                  }
+                  else if(queryType === 'totalposts' && alm.paging){	  
+   	               if($.isFunction($.fn.almBuildPagination)){   
+                  		$.fn.almBuildPagination(data, alm);
+                  	}
+                  }              
+                  
+               },
+               error: function (jqXHR, textStatus, errorThrown) {
+                  alm.AjaxLoadMore.error(jqXHR, textStatus, errorThrown);
+               }
+            });
+         }                   
       };      
       
       // If pagination enabled, run totalposts query
@@ -520,7 +613,7 @@
        *  @since 2.6.0
        */
        
-      alm.AjaxLoadMore.success = function (data, is_cache) {
+      alm.AjaxLoadMore.success = function (data, is_cache) {    
               
          if(alm.previous_post){ // Get previous page data	         
             alm.AjaxLoadMore.getPreviousPost();           
@@ -775,10 +868,10 @@
                   }
                }
                
-            } else { 
-	            	            
+            } else {          
                // Is Paging               
                if(!alm.init){
+                   
                   $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function(){  // Remove loading class and append data
                      $('.alm-paging-loading', alm.el).fadeOut(alm.speed); // Fade out loader
                      if ($.isFunction($.fn.almOnPagingComplete)){
@@ -1005,8 +1098,7 @@
 	                  alm.AjaxLoadMore.loadPosts();
 	                  
 	               }
-               }
-               
+               }               
             }
          });
       }
@@ -1051,10 +1143,12 @@
        *  @since 2.7.0
        */
        
-      $.fn.almUpdateCurrentPage = function(current, alm_paging_init){
-	      
+      $.fn.almUpdateCurrentPage = function(current, obj, alm){
          alm.page = current;
-         // If is paging and preloaded
+         
+         // We will eventually use this function to combine Paging + Preloaded add-ons
+         var alm_paging_init = false;
+         // If is paging init and preloaded, grab preloaded data, and append it .alm-reveal
 	      if(alm_paging_init && alm.preloaded === 'true'){
 		      
 		      var data = $('.alm-preloaded', alm.el).html(); // Content of preloaded page

@@ -10,6 +10,7 @@
 */
 
 function alm_get_current_repeater($repeater, $type) {
+   
 	$template = $repeater;
 	$include = '';
 		
@@ -42,6 +43,7 @@ function alm_get_current_repeater($repeater, $type) {
 	}
 	
 	return $include;
+	
 }
 
 
@@ -57,8 +59,7 @@ function alm_get_current_repeater($repeater, $type) {
 function alm_get_default_repeater() {
 	global $wpdb;
 	$file = null;
-	$template_dir = 'alm_templates';
-	
+	$template_dir = 'alm_templates';	
 	
 	// Allow user to load template from theme directory
 	// Since 2.8.5
@@ -294,15 +295,26 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 *  @since 2.5.0
 */
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
-   if(!empty($meta_key) && !empty($meta_value)){ 
+   if(!empty($meta_key)){ 
       
       $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
-      $return = array(
-         'key' => $meta_key,
-         'value' => $meta_values,
-         'compare' => $meta_compare,
-         'type' => $meta_type
-      ); 
+      if(!empty($meta_values)){
+         
+         $return = array(
+            'key' => $meta_key,
+            'value' => $meta_values,
+            'compare' => $meta_compare,
+            'type' => $meta_type
+         );          
+      }else{
+         // If $meta_values is empty, don't query for 'value'
+         $return = array(
+            'key' => $meta_key,
+            'compare' => $meta_compare,
+            'type' => $meta_type
+         ); 
+         
+      }
       
       return $return; 
          
@@ -347,6 +359,7 @@ function alm_get_repeater_type($repeater){
    $type = $type[0]; // default | repeater | template_	
 	return $type;
 }
+
 
 
 /*

@@ -668,6 +668,9 @@ a.layout-hover{
 .ajax-load-more .repeaters input[type=text]{
 	padding: 9px 10px;
 }
+.ajax-load-more input[type=number]{
+   height: auto;
+}
  
 .ajax-load-more input.disabled-input{
    opacity: 0.5;
@@ -873,7 +876,8 @@ a.layout-hover{
 	
 .preload_amount,
 .cache_id,
-.alternate_template_wrap{
+.alternate_template_wrap,
+.restapi_options{
    display: none;
 }
 	
@@ -2106,18 +2110,18 @@ table.highlight{
    text-align: center;
    margin: 15px 0 0 !important;
    display: block;
-   font-size: 14px !important;
+   font-size: 15px !important;
    font-weight: 700;
    text-transform: none !important;
    text-align: center;
-   /* text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1); */
 }
    .alm-add-template a{
       background: #efefef;
       border: 1px solid #e1e1e1;
       color: #333;
       display: inline-block;
-      padding: 9px 14px 8px;
+      padding: 11px 16px 13px;
+      line-height: 1;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;

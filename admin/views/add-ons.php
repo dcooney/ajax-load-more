@@ -191,6 +191,34 @@
 		   <!-- End Previous Post --> 
 		   
 		   
+		   <!-- REST API -->
+		   <div class="group<?php if (has_action('alm_rest_api_installed')){echo ' installed'; } ?>">
+			   <div class="row no-brd">
+   			   <?php
+      			   $seo_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/rest-api/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=RESTAPI';
+      			   ?>
+   			   <a href="<?php echo $seo_url; ?>">
+   			      <div class="expand-wrap">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/rest-api-add-on.jpg" alt=""> 
+                     <h2 class="addon-title"><?php _e('REST API', 'ajax-load-more'); ?></h2>
+                     <p class="addon-intro"><?php _e('Infinite scroll with the WP REST API and Ajax Load More plugins.', 'ajax-load-more'); ?></p>
+                     <p><?php _e('The REST API add-on will enable compatibility between Ajax Load More and the WP REST API plugins.</p>', 'ajax-load-more'); ?></p>    
+                     <?php
+                     	
+                        if (has_action('alm_rest_api_installed')){
+                           echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> Installed</span> ';
+                        }else{
+                           echo '<span class="cnkt-button"><i class="fa fa-download"></i> Purchase &amp; Install</span>';
+                        }
+                     ?>                  
+                  </div>
+   			   </a>
+			   </div>			   
+            		   
+		   </div>
+		   <!-- End SEO -->
+		   
+		   
 		   <!-- SEO -->
 		   <div class="group<?php if (has_action('alm_seo_installed')){echo ' installed'; } ?>">
 			   <div class="row no-brd">
@@ -243,32 +271,6 @@
             		   
 		   </div>
 		   <!-- End Theme Repeaters -->
-		   
-		   
-		   <!-- Layouts -->
-		   <div class="group" style="display: none !important;">
-			   <div class="row no-brd">
-   			   <?php
-                  $layouts_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Layouts';
-      			?>
-   			   <a href="<?php echo $layouts_url; ?>">
-			      <div class="expand-wrap">
-                  <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/paging-add-ons.jpg" alt="">          
-                  <h2 class="addon-title"><?php _e('Layouts', 'ajax-load-more'); ?></h2>
-                  <p class="addon-intro"><?php _e('Extend Ajax Load More with predefined responsive layouts.', 'ajax-load-more'); ?></p>
-                  <p><?php _e('Boost the look of your theme with a library of mobile ready layouts.', 'ajax-load-more'); ?></p>   
-                  <?php
-                     if (has_action('alm_layouts_installed')){
-                        echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> Installed</span> ';
-                     }else{
-                        echo '<span class="cnkt-button"><i class="fa fa-download"></i> Purchase &amp; Install</span>';
-                     }
-                  ?>             
-               </div>
-   			   </a>
-			   </div>        		   
-		   </div>
-		   <!-- End Layouts --> 
 		   
 	   </div>	   
 	   

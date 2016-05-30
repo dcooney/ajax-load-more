@@ -55,10 +55,12 @@
                      echo '<option value="4">'.__('Paging', 'ajax-load-more').'</option>';
          	   	if(has_action('alm_prev_post_settings')) 
                      echo '<option value="5">'.__('Previous Post', 'ajax-load-more').'</option>';
+                  if(has_action('alm_rest_api_settings')) 
+                     echo '<option value="6">'.__('REST API', 'ajax-load-more').'</option>';  
                   if(has_action('alm_seo_settings')) 
-                     echo '<option value="6">'.__('SEO', 'ajax-load-more').'</option>';
+                     echo '<option value="7">'.__('SEO', 'ajax-load-more').'</option>';
                   if(has_action('alm_theme_repeaters_settings')) 
-                     echo '<option value="7">'.__('Theme Repeaters', 'ajax-load-more').'</option>';         	   	 
+                     echo '<option value="8">'.__('Theme Repeaters', 'ajax-load-more').'</option>';         	   	 
          	   ?>
    	   	   </select>
        	   </div>

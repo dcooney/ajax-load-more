@@ -21,70 +21,76 @@ add_action( 'wp_ajax_alm_layouts_get', 'alm_layouts_get' ); // Get layout
 
 function alm_license_activation(){
 	
-	$nonce = $_GET["nonce"];
-   $type = $_GET["type"]; // activate / deactivate
-   $item = $_GET["item"];    
-   $license = $_GET["license"];     
-   $url = $_GET["url"];      
-   $upgrade = $_GET["upgrade"];     
-   $option_status = $_GET["status"];   
-   $option_key = $_GET["key"];   
-      
-   // Check our nonce, if they don't match then bounce!
-   if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-      die('Error - unable to verify nonce, please try again.');          
-
-	// data to send in our API request
-	if($type === 'activate'){
-		$action = 'activate_license';
-	}else{
-		$action = 'deactivate_license';
-	}
-	
-	$api_params = array( 
-		'edd_action'=> $action, 
-		'license' 	=> $license, 
-		'item_id'   => $item, // the ID of our product in EDD
-		'url'       => home_url()
-	);
-	
-	// Call the custom API.
-	//$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
-	
-	// Updated 2.8.7
-	$response = wp_remote_post( ALM_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-
-	// make sure the response came back okay
-	if ( is_wp_error( $response ) )
-		return false;
-	
-	
-	$license_data = $response['body'];
-	$license_data = json_decode($license_data); // decode the license data
-	
-
-	$return["success"] = $license_data->success;
+	if (current_user_can( 'edit_theme_options' )){
 		
-	$msg = '';
-	if($type === 'activate'){		
-		$return["license_limit"] = $license_data->license_limit;
-		$return["expires"] = $license_data->expires;
-		$return["site_count"] = $license_data->site_count;
-		$return["activations_left"] = $license_data->activations_left;
-		$return["license"] = $license_data->license;
-		$return["item_name"] = $license_data->item_name;	
-		if($license_data->activations_left === 0 && $license_data->success === false){
-			$msg = '<strong>Sorry, but you are out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em>.</strong> Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> page to add additional licenses.';
-		}	
-	}
-	$return["msg"] = $msg;
+		$nonce = $_GET["nonce"];
+	   $type = $_GET["type"]; // activate / deactivate
+	   $item = $_GET["item"];    
+	   $license = $_GET["license"];     
+	   $url = $_GET["url"];      
+	   $upgrade = $_GET["upgrade"];     
+	   $option_status = $_GET["status"];   
+	   $option_key = $_GET["key"];   
+	      
+	   // Check our nonce, if they don't match then bounce!
+	   if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
+	      die('Error - unable to verify nonce, please try again.');          
 	
-	update_option( $option_status, $license_data->license);
-	update_option( $option_key, $license );	
+		// data to send in our API request
+		if($type === 'activate'){
+			$action = 'activate_license';
+		}else{
+			$action = 'deactivate_license';
+		}
+		
+		$api_params = array( 
+			'edd_action'=> $action, 
+			'license' 	=> $license, 
+			'item_id'   => $item, // the ID of our product in EDD
+			'url'       => home_url()
+		);
+		
+		// Call the custom API.
+		//$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
+		
+		// Updated 2.8.7
+		$response = wp_remote_post( ALM_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 	
-   echo json_encode($return);
+		// make sure the response came back okay
+		if ( is_wp_error( $response ) )
+			return false;
+		
+		
+		$license_data = $response['body'];
+		$license_data = json_decode($license_data); // decode the license data
+		
 	
-	die();
+		$return["success"] = $license_data->success;
+			
+		$msg = '';
+		if($type === 'activate'){		
+			$return["license_limit"] = $license_data->license_limit;
+			$return["expires"] = $license_data->expires;
+			$return["site_count"] = $license_data->site_count;
+			$return["activations_left"] = $license_data->activations_left;
+			$return["license"] = $license_data->license;
+			$return["item_name"] = $license_data->item_name;	
+			if($license_data->activations_left === 0 && $license_data->success === false){
+				$msg = '<strong>Sorry, but you are out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em>.</strong> Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> page to add additional licenses.';
+			}	
+		}
+		$return["msg"] = $msg;
+		
+		update_option( $option_status, $license_data->license);
+		update_option( $option_key, $license );	
+		
+	   echo json_encode($return);
+		
+		die();
+	
+	} else {
+      echo __('You don\'t belong here.', ALM_NAME);
+   } 
 }
 
 
@@ -153,6 +159,7 @@ function alm_admin_vars() { ?>
     /* ]]> */
     </script>
 <?php }
+
 
 
 /*
@@ -963,6 +970,12 @@ function alm_admin_init(){
 	// PRELOADED
 	if(has_action('alm_preloaded_settings')){	   
    	do_action('alm_preloaded_settings');   	
+   }
+   
+	
+	// REST API
+	if(has_action('alm_rest_api_settings')){	   
+   	do_action('alm_rest_api_settings');   	
    }
    
    
