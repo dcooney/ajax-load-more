@@ -375,8 +375,16 @@ if( !class_exists('AjaxLoadMore') ):
    		
    		$s = (isset($_GET['search'])) ? $_GET['search'] : '';   		
    		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
-   		$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
-   		
+
+   		// Author
+   		$author_raw = (isset($_GET['author'])) ? $_GET['author'] : '';
+   		if(!is_numeric($author_raw) && $author_raw !== '') {
+   			$author = get_user_by('slug', $author_raw);
+   			$author_id = (isset($author)) ? $author->ID : '';
+   		} else {
+   			$author_id = $author_raw;
+   		}
+
    		// Ordering
    		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
    		$orderby = (isset($_GET['orderby'])) ? $_GET['orderby'] : 'date';
