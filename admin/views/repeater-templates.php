@@ -7,28 +7,44 @@
 		<div class="cnkt-main form-table repeaters">				
 		   <!-- Repeaters -->
 		   <div class="group">
-		   <?php 
-		   if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
+   		   
+		      <?php 
+            if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
 				<span class="toggle-all">
 					<span class="inner-wrap">
 						<em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em>
 						<em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em>
 					</span>
 				</span> 
-			<?php } ?>			
+            <?php } ?>
+						
 			   <!-- Default Template -->
 			   <div class="row template default-repeater">
-	   		   <?php      
-		   		   global $wpdb;
-						$table_name = $wpdb->prefix . "alm";
-						$blog_id = $wpdb->blogid;  
-						if($blog_id > 1){	
-							$filename = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php';
-						}else{
-							$filename = ALM_PATH. 'core/repeater/default.php';			
-						} 
+   			   
+   			   <?php
+      			   
+      			   // Check for local repeater template
+         			$local_template = false;
+         			$readOnly = 'false';
+         			$template_dir = 'alm_templates';	
+               	if(is_child_theme()){
+               		$template_theme_file = get_stylesheet_directory().'/'. $template_dir .'/default.php';
+               		if(!file_exists($template_theme_file)){
+                  		$template_theme_file = get_template_directory().'/'. $template_dir .'/default.php';
+               		}
+               	}
+               	else{
+               		$template_theme_file = get_template_directory().'/'. $template_dir .'/default.php';
+               	}
+               	// if theme or child theme contains the template, use that file
+               	if(file_exists($template_theme_file)){
+               		$local_template = true;
+               		$readOnly = true;
+               	}      
+						
+                  $filename = alm_get_default_repeater(); // Get default repeater template
 							               
-	               $handle = fopen ($filename, "r");
+	               $handle = fopen ($filename, "r"); // Open file
       				$contents = '';
       				if(filesize ($filename) != 0){
       				   $contents = fread ($handle, filesize ($filename));		               
@@ -37,7 +53,7 @@
 	            ?> 
 	            <h3 class="heading"><?php _e('Default Template', 'ajax-load-more'); ?></h3>	            
 	            <div class="expand-wrap">           	            
-		            <div class="wrap repeater-wrap" data-name="default" data-type="default">							
+		            <div class="wrap repeater-wrap<?php if($local_template){ echo ' cm-readonly'; } ?>" data-name="default" data-type="default">							
 							<label class="template-title" for="template-default">
 							   <?php _e('Enter the HTML and PHP code for the default template', 'ajax-load-more'); ?>:
                      </label>		
@@ -53,16 +69,22 @@
                           lineWrapping: true,
                           indentUnit: 0,
                           matchBrackets: true,
+                          readOnly: <?php echo $readOnly; ?>,
                           viewportMargin: Infinity,
                           extraKeys: {"Ctrl-Space": "autocomplete"},
                         });
-                     </script>      		            
+                     </script>   
+                     <?php if(!$local_template){ ?>  		            
 							<input type="submit" value="<?php _e('Save Template', 'ajax-load-more'); ?>" class="button button-primary save-repeater" data-editor-id="template-default">
 		            	<div class="saved-response">&nbsp;</div>  
-							<?php include( ALM_PATH . 'admin/includes/components/repeater-options.php'); ?>       	
+							<?php include( ALM_PATH . 'admin/includes/components/repeater-options.php'); ?>
+							<?php } else { ?>
+							<p class="warning-callout"><?php _e('It appears you are loading the <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/#default-template" target="_blank"><b>default template</b></a> (<em>default.php</em>) from your current theme directory. To modify this template, you must edit the file directly on your server.', 'ajax-load-more'); ?></p>
+							<?php } ?>       	
 		            </div>		               		               	            
 	            </div>	            	
 			   </div>
+			   
 			   <!-- End Default Template -->		
 			   	   
             <?php               
@@ -73,11 +95,12 @@
                   echo '</div>';                  
 				   }				   
 				    
-			   	if (has_action('alm_custom_repeaters')) // List custom repeaters v1
+			   	if (has_action('alm_custom_repeaters')){ // List custom repeaters v1
 						do_action('alm_custom_repeaters'); 						
-						
-			   	if (has_action('alm_unlimited_repeaters')) // List custom repeaters v2
+					}	
+			   	if (has_action('alm_unlimited_repeaters')){ // List custom repeaters v2
 						do_action('alm_unlimited_repeaters'); 
+               }
 				?>
 					   
 				<script>

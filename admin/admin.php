@@ -9,6 +9,8 @@ add_action( 'wp_ajax_alm_layouts_dismiss', 'alm_layouts_dismiss' ); // Dismiss L
 add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Activate Add-on
 add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection  
 add_action( 'wp_ajax_alm_layouts_get', 'alm_layouts_get' ); // Get layout
+add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing
+add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu text
 
 
 
@@ -823,7 +825,25 @@ function alm_dismiss_sharing(){
       die();
    }
 }
-add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' );
+
+
+
+/*
+*  alm_filter_admin_footer_text
+*  Filter the WP Admin footer text only on ALM pages
+*
+*  @since 2.12.0
+*/
+
+function alm_filter_admin_footer_text( $text ) {	
+	$screen = alm_is_admin_screen();	
+	if(!$screen){
+		return;
+	}
+	
+	echo 'Ajax Load More is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
+}
+
 
 
 /*
@@ -1220,10 +1240,8 @@ function alm_btn_color_callback() {
     $html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
     $html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
     $html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
-    //$html .= '<option value="red" ' . $selected3 .'>Red</option>';
     $html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
     $html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
-    //$html .= '<option value="white" ' . $selected6 .'>White (Button)</option>';
     $html .= '</optgroup>';
     $html .= '<optgroup label="Infinite Scroll (no button)">';
     $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';

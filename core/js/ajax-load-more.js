@@ -24,6 +24,8 @@
       var alm = this;
       alm.AjaxLoadMore = {};
       alm.page = 0;
+      alm.posts = 0;
+      alm.totalposts = 0;
       alm.proceed = false;
       alm.disable_ajax = false;
       alm.init = true;
@@ -44,8 +46,7 @@
       alm.cache_id = alm.content.attr('data-cache-id'); // cache value 
       alm.cache_path = alm.content.attr('data-cache-path'); // cache path 
       alm.cache_logged_in = alm.content.attr('data-cache-logged-in'); // cache logged in (settings) 
-      alm.repeater = alm.content.attr('data-repeater');
-      
+      alm.repeater = alm.content.attr('data-repeater');      
       alm.theme_repeater = alm.content.attr('data-theme-repeater');
       
       alm.scroll_distance = parseInt(alm.content.attr('data-scroll-distance'));
@@ -61,12 +62,11 @@
       alm.orginal_posts_per_page = alm.content.attr('data-posts-per-page'); // Used for paging add-on
       alm.posts_per_page = alm.content.attr('data-posts-per-page');  
       
-      alm.alternate_array =  '';
-      alm.alternate = alm.content.attr('data-alternate'); // is Alternating Templates enabled?
-      alm.alternate_sequence = alm.content.attr('data-alternate-sequence');
-      alm.alternate_sequence_max = alm.content.attr('data-alternate-sequence-max');
-      alm.alternate_repeater = alm.content.attr('data-alternate-repeater');
-      alm.alternate_theme_repeater = alm.content.attr('data-alternate-theme-repeater');
+      alm.cta_array =  '';
+      alm.cta = alm.content.attr('data-cta'); // is Alternating Templates enabled?
+      alm.cta_position = alm.content.attr('data-cta-position');
+      alm.cta_repeater = alm.content.attr('data-cta-repeater');
+      alm.cta_theme_repeater = alm.content.attr('data-cta-theme-repeater');
       
       alm.previous_post = alm.content.attr('data-previous-post'); // Next Post add-on  
       alm.previous_post_id = alm.content.attr('data-previous-post-id'); // Get the post id 
@@ -92,15 +92,17 @@
       alm.restapi_template_id = alm.content.attr('data-restapi-template-id');
       alm.restapi_debug = alm.content.attr('data-restapi-debug');
       
-      alm.seo = alm.content.attr('data-seo'); // true | false   
+      alm.seo = alm.content.attr('data-seo'); // true | false 
       
       alm.preloaded = alm.content.attr('data-preloaded'); // true | false 
-      alm.preloaded_amount = alm.content.attr('data-preloaded-amount'); // 0 - ?   
+      alm.preloaded_amount = alm.content.attr('data-preloaded-amount'); // 0   
       
       alm.paging = alm.content.attr('data-paging'); // is paging enabled 
       alm.paging_controls = alm.content.attr('data-paging-controls');
       alm.paging_show_at_most = alm.content.attr('data-paging-show-at-most');
-      alm.paging_classes = alm.content.attr('data-paging-classes');     
+      alm.paging_classes = alm.content.attr('data-paging-classes');   
+      alm.paging_init = true;  
+      
       
       /* REST API */
 		if(alm.restapi === 'true'){
@@ -116,7 +118,8 @@
 		}else{
    		alm.restapi = false;
 		}
-      /* /end REST API  */
+      /* End REST API  */
+       
        
 		/* Paging */
 		if(alm.paging === 'true'){
@@ -137,7 +140,7 @@
 		}else{
 			alm.paging_controls = false;
 		}		
-      /* /end Paging  */
+      /* End Paging  */
       
       
       /* Cache */
@@ -148,29 +151,31 @@
       if (alm.cache_logged_in === undefined){
          alm.cache_logged_in = false;      
       }
-      /* /end Cache  */
+      /* End Cache  */
+         
          
       /* Comments */
       if (alm.comments_per_page === undefined){
          alm.comments_per_page = '5';
       }
-      /* /end Comments
+      /* End Comments  */
+         
          
       /* Preloaded */
-      /* Check preloaded posts to ensure posts_per_page > alm.total_posts - if posts_per_page <= total_posts disable ajax load more */
+      /* If posts_per_page <= preloaded_total_posts disable ajax load more */
       if (alm.preloaded === 'true'){
          alm.preload_wrap = alm.content.prev('.alm-preloaded');
-         alm.total_posts = parseInt(alm.preload_wrap.attr('data-total-posts'));
+         alm.preloaded_total_posts = parseInt(alm.preload_wrap.attr('data-total-posts'));
          if (alm.preloaded_amount === undefined){
             alm.preloaded_amount = false;
          }
-         if (alm.total_posts <= alm.preloaded_amount){
+         if (alm.preloaded_total_posts <= alm.preloaded_amount){
             alm.disable_ajax = true;
          }
       }else{
 	      alm.preloaded = 'false';
       }
-      /* /end Preloaded  */
+      /* End Preloaded  */
        
       
       /* SEO */                 	   
@@ -179,10 +184,7 @@
       }
       if (alm.seo === 'true'){
          alm.seo = true; // Convert string to boolean  
-      } 
-      if($(".ajax-load-more-wrap").length > 1){
-	      alm.seo = false;
-      }      
+      }     
       
       alm.permalink = alm.content.attr('data-seo-permalink');
       alm.pageview = alm.content.attr('data-seo-pageview');
@@ -208,7 +210,7 @@
       }else{
          alm.start_page = 1; 
       }
-      /* /end SEO  */ 
+      /* End SEO  */ 
             
        
       /* Previous Post */                 	   
@@ -232,7 +234,7 @@
       alm.previous_post_scroll = alm.content.attr('data-previous-post-scroll');
       alm.previous_post_scroll_speed = alm.content.attr('data-previous-post-scroll-speed');
       alm.previous_post_scroll_top = alm.content.attr('data-previous-post-scrolltop');      
-      /* /end Previous Post */
+      /* End Previous Post */
       
 
       /* Define offset */
@@ -250,6 +252,9 @@
       }   
       if (alm.preloaded === 'true' && alm.seo && alm.start_page > 0){ // SEO + Preloaded
          alm.pause = false;
+      }      
+      if(alm.preloaded === 'true' && alm.paging){
+         alm.pause = true;
       }
 
 
@@ -265,8 +270,7 @@
       /* Max number of pages to load while scrolling */
       if (alm.max_pages === undefined){
          alm.max_pages = 5;
-      }
-         
+      }         
       if (alm.max_pages === 0){
          alm.max_pages = 10000;
       }
@@ -332,6 +336,7 @@
       }else{
          alm.button_class = ' ' + alm.content.attr('data-button-class');
       }
+      
 
       /* Define scroll event */
       if (alm.content.attr('data-scroll') === undefined){
@@ -341,6 +346,7 @@
       }else{
          alm.scroll = true;
       }
+      
 
       /* Parse multiple Post Types */  
       alm.post_type = alm.content.attr('data-post-type');
@@ -351,10 +357,11 @@
       alm.container.append('<div class="' + alm.prefix + 'btn-wrap"/>');
       alm.btnWrap = $('.' + alm.prefix + 'btn-wrap', alm.container);
       if(alm.paging){ 
+	      
    		// Paging add-on				
       	alm.content.parent().addClass('loading'); // add loading class to main container
-		}else{
       	
+		}else{      	
       			
       // If paging is false      
       $('.'+ alm.prefix + 'btn-wrap', alm.container).append('<button id="load-more" class="' + alm.prefix + 'load-more-btn more'+ alm.button_class +'">' + alm.button_label + '</button>');
@@ -363,7 +370,7 @@
 
 
 
-      /*  alm.AjaxLoadMore.loadPosts()
+      /*  loadPosts()
        * 
        *  The function to get posts via Ajax
        *  @since 2.0.0
@@ -409,7 +416,7 @@
       
       
       
-      /*  alm.AjaxLoadMore.ajax()
+      /*  ajax()
        * 
        *  Ajax Load Moe Ajax function
        *  @since 2.6.0
@@ -440,14 +447,13 @@
             
          }
          
-         // Alternate Query params         
-         if(alm.alternate === 'true'){            
-            alm.alternate_array = { 
-               'alternate': 'true',
-               'alternate_sequence': alm.alternate_sequence,
-               'alternate_sequence_max': alm.alternate_sequence_max,
-               'alternate_repeater': alm.alternate_repeater,
-               'alternate_theme_repeater': alm.alternate_theme_repeater,
+         // CTA Add-on Query params         
+         if(alm.cta === 'true'){            
+            alm.cta_array = { 
+               'cta': 'true',
+               'cta_position': alm.cta_position,
+               'cta_repeater': alm.cta_repeater,
+               'cta_theme_repeater': alm.cta_theme_repeater,
             };            
          }              
          
@@ -503,23 +509,37 @@
                      alm.button.addClass('loading');
                   }
                },               
-               success: function (results) {
-                  var data;                  
+               success: function (results) { 	               	                
+                  var data,
+                  	 html = results.html,
+                  	 meta = results.meta,
+                  	 postcount = meta.postcount,
+                  	 totalposts = meta.totalposts;
+                  	    
                   // loop results to get data from each
-                  $.each(results, function(e){                     
-                     var result = results[e];                                          
+                  $.each(html, function(e){                     
+                     var result = html[e];                                          
                      if(alm.restapi_debug === 'true'){ // If debug
                         console.log(result);
                      }                                          
                      data += alm_template(result);                                          
-                  });                  
-                  alm.AjaxLoadMore.success(data, true); // Send data to alm object                                   
+                  }); 
+                  
+                  // Create object to pass to success()
+                  var obj = {
+	                  'html' : data, 
+	                  'meta' : {
+		                  'postcount' : postcount,
+		                  'totalposts' : totalposts
+	                  },
+	               }               
+                  alm.AjaxLoadMore.success(obj, false); // Send data                                                     
                }               
             });           
          }
          
          // Standard ALM
-         else{
+         else {
             $.ajax({
                type: "GET",
                url: alm_localize.ajaxurl,
@@ -531,7 +551,7 @@
                   cache_id             : alm.cache_id,
                   repeater             : alm.repeater,
                   theme_repeater       : alm.theme_repeater,
-                  alternate            : alm.alternate_array,
+                  cta            		: alm.cta_array,
                   comments             : alm.comments_array,
                   post_type            : alm.post_type,
                   post_format          : alm.content.attr('data-post-format'),
@@ -593,12 +613,16 @@
                   }              
                   
                },
+               
                error: function (jqXHR, textStatus, errorThrown) {
                   alm.AjaxLoadMore.error(jqXHR, textStatus, errorThrown);
                }
+               
             });
          }                   
-      };      
+      };     
+      
+      
       
       // If pagination enabled, run totalposts query
       if(alm.paging){ 
@@ -607,42 +631,55 @@
       
       
       
-      /*  alm.AjaxLoadMore.success()
+      /*  success()
        * 
        *  Success function after loading data
        *  @since 2.6.0
        */
        
       alm.AjaxLoadMore.success = function (data, is_cache) {    
-              
+
          if(alm.previous_post){ // Get previous page data	         
             alm.AjaxLoadMore.getPreviousPost();           
-         }     
-         var html;                  
+         }   
+           
+         var html, meta, total;                  
          
-         if(!is_cache){
+         if(is_cache){            
+            // If content is cached don't look for json data - we won't be querying the DB.
+            html = data;                  
+         }else{       
+	         // Standard ALM query results     
             html = data.html;
-         }else{
-            html = data; // If is cache, don't look for json data
+            meta = data.meta;
+            alm.posts = alm.posts + meta.postcount;       
+	         total = meta.postcount;  
+            alm.totalposts = meta.totalposts;
+            if(alm.preloaded === 'true'){
+	            alm.totalposts = alm.totalposts - alm.preloaded_amount;
+            }            
          }
          
-         alm.data = $(html); // Convert data to an object   
+         alm.data = $(html); // data converted to an object 
+          
+         if(is_cache){ // If cache, get the length of the data object
+	      	total = alm.data.length; 
+	      }
          
-         if (alm.init) {
-	         if(!alm.paging){
-   	         
-            	alm.button.text(alm.button_label);
-            	
-            } else { 
-               
+         // First Run
+         if (alm.init) {             
+	         
+	         if(!alm.paging){   	         
+            	alm.button.text(alm.button_label);            	
+            } else {                
                // Is pagination
-               if (alm.data.length > 0) {            
+               if (total > 0) {            
                   alm.el = $('<div class="alm-reveal"/>');
                   alm.el.append('<div class="alm-paging-content"></div><div class="alm-paging-loading"></div>');
                   $('.alm-paging-content', alm.el).append(alm.data).hide();
                   alm.content.append(alm.el);                  
                	alm.content.parent().removeClass('loading'); // Remove loading class from main container               	 
-						alm.resetBtnText();
+						alm.AjaxLoadMore.resetBtnText();
 			         
                   $('.alm-paging-content', alm.el).fadeIn( alm.speed, 'alm_easeInOutQuad', function(){  
 	                  var paddingT = parseInt(alm.content.css('padding-top')),
@@ -652,12 +689,11 @@
                         $.fn.almFadePageControls(alm.btnWrap);     
                      }
                   });
-               }
-               
+               }               
             }
             
-            // ALM Empty - triggers if zero results were returned 
-            if(alm.data.length === 0){
+            // ALM Empty
+            if(total === 0){
                if ($.isFunction($.fn.almEmpty)) {
                   $.fn.almEmpty(alm);
                }
@@ -667,11 +703,14 @@
             if(alm.isPaged){ 
                alm.posts_per_page = alm.content.attr('data-posts-per-page'); // Reset our posts per page variable
                alm.page = alm.start_page - 1; // Set our new page #
-            }                    
-         }         
+            } 
+                               
+         }        
          
-         // We have results!
-         if (alm.data.length > 0) {
+         
+         if (total > 0) {
+            
+            // Results!
             if(!alm.paging){
                
                if(alm.previous_post){ // If Previous Post, create container and append data              
@@ -679,25 +718,32 @@
                	alm.el = $('<div class="alm-reveal alm-previous-post post-'+alm.previous_post_id+'" data-id="'+alm.previous_post_id+'" data-title="'+alm.previous_post_title+'" data-url="'+alm.previous_post_permalink+'"/>');	  
                	alm.el.append(alm.data).hide();   
                	       
-               }else{
+               } else {
                         
                   if(!alm.transition_container){ 
-                     // If transiton container == false
+                     // No transiton container
+                     
                      alm.data.hide();
                      alm.el = alm.data;
                      
-                  }else{ 
-                     // Standard transition container
+                  } else { 
+                     // Standard container
                      
-                     // if start_page is > 1
-                     // - loop through items and break them separate alm-reveal divs
+                     // SEO
                      if (alm.init && alm.start_page > 1){
+                        // loop through items and break into separate alm-reveal divs for paging
                         
-                        var data = [];
-                        var size = Math.ceil(alm.data.length/alm.start_page); // slice data array into pages
-                        //console.log(size);
-                        for (var i = 0; i < alm.data.length; i += size) {
-                           data.push(alm.data.slice(i, size + i));
+                        var data = [],
+                            posts_per_page = parseInt(alm.posts_per_page);
+                        
+                        if(alm.cta === 'true'){
+                           // If CTA, +1 to posts_per_page to offset the CTA template and correct the display
+                           posts_per_page = posts_per_page + 1; 
+                        }  
+                        
+                        var pages = Math.ceil(total/posts_per_page); // slice data array into pages
+                        for (var i = 0; i < total; i += posts_per_page) {
+                           data.push(alm.data.slice(i, posts_per_page + i));
                         }   
                         
                         alm.el = alm.content; // Set alm.el to be alm-listing div
@@ -724,6 +770,7 @@
                            alm.el.append(div).hide(); // Add data to .alm-listing wrapper
                         }      
                      }
+                     // End SEO -- /
                      
                      else {
                         // If is SEO and paged, or preloaded.
@@ -742,7 +789,7 @@
                                  alm.el = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'page/'+ pagenum +'/" data-page="'+ pagenum +'" />');
                               }     
                            }else{
-                              // Basic ALM ****
+                              // Basic ALM
                               alm.el = $('<div class="alm-reveal" />');                              
                            }                        
                               
@@ -751,7 +798,7 @@
                               // SEO [Page 1]
                               alm.el = $('<div class="alm-reveal alm-seo" data-url="'+alm.canonical_url+'" data-page="1" />');                              
                            }else{
-                              // Basic ALM ****
+                              // Basic ALM
                               alm.el = $('<div class="alm-reveal" />');                              
                            }
                         }  
@@ -761,24 +808,20 @@
                	}               	
                }
                
+               // Append alm.el to ALM container 
                alm.content.append(alm.el);
                
-               if (alm.transition === 'fade') { // Fade transition
+               // Transition
+               if (alm.transition === 'fade') { // Fade
 	               if(alm.images_loaded === 'true'){
 		               alm.el.almWaitForImages().done(function(){
 			               alm.el.fadeIn(alm.speed, 'alm_easeInOutQuad', function () {
 		                     alm.loading = false;
 		                     if(!alm.paging){
 		                     	alm.button.delay(alm.speed).removeClass('loading');
-		                     	alm.resetBtnText();
+		                     	alm.AjaxLoadMore.resetBtnText();
 		                     }
-		                     if (alm.data.length < alm.posts_per_page) {
-		                        alm.finished = true;
-		                        if(!alm.paging){
-		                        	alm.button.addClass('done');
-		                        }
-		                     }
-				               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+				               if ($.isFunction($.fn.almSEO) && alm.seo) {
 					               $.fn.almSEO(alm);
 					            } 
 		                  });
@@ -788,62 +831,44 @@
 	                     alm.loading = false;
 	                     if(!alm.paging){
 	                     	alm.button.delay(alm.speed).removeClass('loading');
-	                     	alm.resetBtnText();
-	                     }
-	                     if (alm.data.length < alm.posts_per_page) {
-	                        alm.finished = true;
-	                        if(!alm.paging){
-	                        	alm.button.addClass('done');
-	                        }
-	                     }	                     	                     
-			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+	                     	alm.AjaxLoadMore.resetBtnText();
+	                     }                     	                     
+			               if ($.isFunction($.fn.almSEO) && alm.seo) {
 				               $.fn.almSEO(alm);
 				            } 
 	                  });
 	               }
                   
-               }else if(alm.transition === 'none') { // No transition
+               }else if(alm.transition === 'none') { // None
 	               if(alm.images_loaded === 'true'){
 		               alm.el.almWaitForImages().done(function(){
 			               alm.el.show();			               
-			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+			               if ($.isFunction($.fn.almSEO) && alm.seo) {
 				               $.fn.almSEO(alm);
 				            } 
 			            });
 		            }else{
 			            alm.el.show();    			            
-		               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+		               if ($.isFunction($.fn.almSEO) && alm.seo) {
 			               $.fn.almSEO(alm);
 			            }  
                   }
                   alm.loading = false;
                   if(!alm.paging){
                   	alm.button.delay(alm.speed).removeClass('loading');
-                  	alm.resetBtnText();
-                  }
-                  if (alm.data.length < alm.posts_per_page) {
-                     alm.finished = true;
-                     if(!alm.paging){
-                     	alm.button.addClass('done');
-                     }
-                  }  
+                  	alm.AjaxLoadMore.resetBtnText();
+                  } 
                                      
-               }else { // Slide transition
+               }else { // Slide
 	               if(alm.images_loaded === 'true'){
 		               alm.el.almWaitForImages().done(function(){
 		                  alm.el.slideDown(alm.speed, 'alm_easeInOutQuad', function () {
 		                     alm.loading = false;
 		                     if(!alm.paging){
 		                     	alm.button.delay(alm.speed).removeClass('loading');
-		                     	alm.resetBtnText();
-		                     }
-		                     if (alm.data.length < alm.posts_per_page) {
-		                        alm.finished = true;
-		                        if(!alm.paging){
-		                        	alm.button.addClass('done');
-		                        }
-		                     }		                     
-				               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+		                     	alm.AjaxLoadMore.resetBtnText();
+		                     }	                     
+				               if ($.isFunction($.fn.almSEO) && alm.seo) {
 					               $.fn.almSEO(alm);
 					            } 
 		                  });
@@ -853,25 +878,20 @@
 	                     alm.loading = false;
 	                     if(!alm.paging){
 	                     	alm.button.delay(alm.speed).removeClass('loading');
-	                     	alm.resetBtnText();
-	                     }
-	                     if (alm.data.length < alm.posts_per_page) {
-	                        alm.finished = true;
-	                        if(!alm.paging){
-	                        	alm.button.addClass('done');
-	                        }
-	                     }                     
-			               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+	                     	alm.AjaxLoadMore.resetBtnText();
+	                     }                   
+			               if ($.isFunction($.fn.almSEO) && alm.seo) {
 				               $.fn.almSEO(alm);
 				            } 
 	                  });
                   }
                }
+               // End Transition -- /
                
-            } else {          
-               // Is Paging               
-               if(!alm.init){
-                   
+            } else { 
+               
+               // Paging     
+               if(!alm.init){                   
                   $('.alm-paging-content', alm.el).html('').append(alm.data).almWaitForImages().done(function(){  // Remove loading class and append data
                      $('.alm-paging-loading', alm.el).fadeOut(alm.speed); // Fade out loader
                      if ($.isFunction($.fn.almOnPagingComplete)){
@@ -881,7 +901,13 @@
 			               $.fn.almSEO(alm);
 			            } 
                   });
-               }              
+               } else {
+	               if ($.isFunction($.fn.almSEO) && alm.seo) { // ALM SEO
+		               $.fn.almSEO(alm);
+		            } 
+               }  
+               // End Paging -- /
+                          
             }                            
                   
             // ALM Complete
@@ -894,42 +920,40 @@
 						$.fn.almComplete(alm);
 					}					
             }  
+            // End ALM Complete -- /
             
             // ALM Done
-            // - If data is returned but it's less than the posts per page.
-            if(alm.data.length < alm.posts_per_page){
-               if ($.isFunction($.fn.almDone)) {
-                  // Delay done until after animation
-                  setTimeout(function(){ 
-                     $.fn.almDone(alm) 
-                  }, alm.speed + 10);		
-               } 
-            }                       
+            if(!alm.cache){ 
+	            // Not Cache & Previous Post	            
+	            if(alm.posts >= alm.totalposts && !alm.previous_post){ 
+	               alm.AjaxLoadMore.triggerDone();
+	            }                       
+            }else{ // Cache 	                       
+	            if(total < alm.posts_per_page){
+	               alm.AjaxLoadMore.triggerDone();
+	            } 
+            }  
+            // End ALM Done -- /                 
 
          } else { 
+	         
+	         // No Results!
             
 	         if(!alm.paging){
             	alm.button.delay(alm.speed).removeClass('loading').addClass('done');
-            	alm.resetBtnText();
-            }            
+            	alm.AjaxLoadMore.resetBtnText();
+            }        
+            alm.AjaxLoadMore.triggerDone(); // ALM Done
             
-            // ALM Done
-            if ($.isFunction($.fn.almDone) && !alm.init) {
-               $.fn.almDone(alm);				
-            }
-            
-            alm.loading = false;
-            alm.finished = true;
          }
          
-         // Destroy After param
+         
+         // Destroy After
          if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
-            var currentPage = alm.page + 1; // Add 1 because alm.page starts at 0
-            
+            var currentPage = alm.page + 1; // Add 1 because alm.page starts at 0            
             if(alm.preload){
                currentPage++;
-            }
-            
+            }            
             if(currentPage == alm.destroy_after){ // - Disable ALM is page = alm.destroy_after value
                alm.disable_ajax = true;
                if(!alm.paging){
@@ -937,18 +961,46 @@
                }
             }
          }
-         alm.init = false;
-          
+         // End Destroy After  -- /
+         
+         alm.init = false;   
+                
       };
       
       
       
-      /*  alm.AjaxLoadMore.getPreviousPost()
+      /*  pagingPreloadedInit()
+       * 
+       *  First run for Paging + Preloaded add-ons
+       *  Moves preloaded content into ajax container
+       *  @since 2.11.3
+       */ 
+      alm.AjaxLoadMore.pagingPreloadedInit = function(data){
+         alm.el = $('<div class="alm-reveal"/>');
+         alm.el.append('<div class="alm-paging-content">'+data+'</div><div class="alm-paging-loading"></div>');
+         alm.content.append(alm.el);                  
+      	alm.content.parent().removeClass('loading'); // Remove loading class from main container               	 
+			alm.AjaxLoadMore.resetBtnText();
+			
+         var paddingT = parseInt(alm.content.css('padding-top')),
+				 paddingB = parseInt(alm.content.css('padding-bottom'));                   
+         alm.content.css('height', alm.el.height() + paddingT + paddingB + 'px');
+         
+         if ($.isFunction($.fn.almFadePageControls)){
+            $.fn.almFadePageControls(alm.btnWrap);     
+         }
+      }
+      
+      
+      
+      
+      /*  getPreviousPost()
        * 
        *  Get the previous post ID via ajax
        *  @since 2.7.4
        */
       alm.fetchingPreviousPost = false;
+      
       alm.AjaxLoadMore.getPreviousPost = function () {
 	      alm.fetchingPreviousPost = true;
          $.ajax({
@@ -967,11 +1019,7 @@
                   alm.previous_post_title = data.prev_title;             	           
                }else{
                   if(!data.has_previous_post){
-                     alm.finished = true;
-                     alm.button.addClass('done');
-                     if ($.isFunction($.fn.almDone)) { // ALM Done
-                        $.fn.almDone(alm);			
-                     } 
+                     alm.AjaxLoadMore.triggerDone();
                   }
                }                               
                if($.isFunction($.fn.almSetPreviousPost)){ 
@@ -989,12 +1037,33 @@
       
       
       
-      /*  alm.resetBtnText()
+      /*  triggerDone()
+       * 
+       *  Fires the almDone() function (if available).
+       *  @since 2.11.3
+       */
+      alm.AjaxLoadMore.triggerDone = function(){
+	      alm.loading = false;
+         alm.finished = true;
+         if(!alm.paging){
+         	alm.button.addClass('done');
+         }
+			if ($.isFunction($.fn.almDone)) {
+				// Delay done until after animation
+				setTimeout(function(){ 
+					$.fn.almDone(alm) 
+				}, alm.speed + 10);		
+			}  
+      };
+      
+      
+      
+      /*  resetBtnText()
        * 
        *  Resets the loading button text after loading has completed
        *  @since 2.8.4
        */
-      alm.resetBtnText = function(){
+      alm.AjaxLoadMore.resetBtnText = function(){
 	      if(alm.button_loading_label !== false){ // Reset button text 
    	      if(!alm.paging){
                alm.button.text(alm.button_label); 
@@ -1004,7 +1073,7 @@
       
       
       
-      /*  alm.AjaxLoadMore.error()
+      /* error()
        * 
        *  Error function after failed data
        *  @since 2.6.0
@@ -1014,7 +1083,7 @@
          alm.loading = false;
          if(!alm.paging){
          	alm.button.removeClass('loading');
-         	alm.resetBtnText();
+         	alm.AjaxLoadMore.resetBtnText();
          }
          console.log(errorThrown);
       };
@@ -1079,24 +1148,20 @@
        */
       if (alm.scroll && !alm.paging) {
          alm.window.bind("scroll touchstart", function () {
-            if (alm.AjaxLoadMore.isVisible() && !alm.fetchingPreviousPost) {
-	            	            
+            if (alm.AjaxLoadMore.isVisible() && !alm.fetchingPreviousPost) {	            	            
                var content_offset = alm.button.offset(),
-               	 top = Math.round(content_offset.top - (alm.window.height() - alm.scroll_distance));  
+               	 top = Math.round(content_offset.top - (alm.window.height() - alm.scroll_distance));               
                
-               // Pause Override	 
-	            if(!alm.loading && !alm.finished && (alm.window.scrollTop() >= top) && alm.page < (alm.max_pages - 1) && alm.proceed && alm.pause === 'true' && alm.pause_override === 'true'){
-		            // If Pause && Pause Override
-		            alm.button.trigger('click');               
-                  
+               // If Pause && Pause Override 
+	            if(!alm.loading && !alm.finished && (alm.window.scrollTop() >= top) && alm.page < (alm.max_pages - 1) && alm.proceed && alm.pause === 'true' && alm.pause_override === 'true'){		            
+		            alm.button.trigger('click');                  
 	            }
+	           
 	            // Standard Scroll event 
 	            else{		                       
-	               if (!alm.loading && !alm.finished && (alm.window.scrollTop() >= top) && alm.page < (alm.max_pages - 1) && alm.proceed && alm.pause !== 'true') {  
-		                               
+	               if (!alm.loading && !alm.finished && (alm.window.scrollTop() >= top) && alm.page < (alm.max_pages - 1) && alm.proceed && alm.pause !== 'true') {  		                               
 	                  alm.page++;
-	                  alm.AjaxLoadMore.loadPosts();
-	                  
+	                  alm.AjaxLoadMore.loadPosts();	                  
 	               }
                }               
             }
@@ -1116,7 +1181,7 @@
             alm.button.addClass('done');
          }else{
             if (alm.pause === 'true') {
-               alm.button.text(alm.button_label);
+               alm.button.text(alm.button_label); 
                alm.loading = false;
             } else {
                alm.AjaxLoadMore.loadPosts();
@@ -1130,10 +1195,10 @@
       
 
 
-      //flag to prevent unnecessary loading of post on init. Hold for 1 second
+      //flag to prevent unnecessary loading of post on init. Hold for 3/10 of a second
       setTimeout(function () {
          alm.proceed = true;
-      }, 500);
+      }, 300);
       
       
       
@@ -1147,21 +1212,24 @@
          alm.page = current;
          
          // We will eventually use this function to combine Paging + Preloaded add-ons
-         var alm_paging_init = false;
+         //var alm_paging_init = false;
          // If is paging init and preloaded, grab preloaded data, and append it .alm-reveal
-	      if(alm_paging_init && alm.preloaded === 'true'){
+	      if(alm.paging_init && alm.preloaded === 'true'){
 		      
-		      var data = $('.alm-preloaded', alm.el).html(); // Content of preloaded page
+		      var data = $('.alm-preloaded .alm-reveal', alm.el).html(); // Content of preloaded page
 		      $('.alm-preloaded', alm.el).remove();
 		      alm.preloaded_amount = 0; // Reset 
-		      alm.AjaxLoadMore.success(data, false); // Skip post loading and go right to success() for display
+		      //alm.AjaxLoadMore.success(data, true); // Skip post loading and go right to success() for display
+		      alm.AjaxLoadMore.pagingPreloadedInit(data);
+		      alm.paging_init = false;
+		      alm.init = false;
 		      
 	      }else{
-		      
+   	      
          	alm.AjaxLoadMore.loadPosts();		 
          	     
 	      }
-      };
+      };      
       
       
       
@@ -1187,6 +1255,19 @@
        */
       $.fn.almGetObj = function(){
          return alm; // Return the entire alm object
+      };
+      
+      
+      
+      /*  $.fn.almTriggerClick()
+       * 
+       *  Trigger ajaxloadmore from any element on page
+       *
+       *  @since 2.12.0
+       *  @return null
+       */
+      $.fn.almTriggerClick = function(){
+         alm.button.trigger('click');
       };
       
 
@@ -1292,6 +1373,7 @@
       
 
 })(jQuery);
+
 
 
 

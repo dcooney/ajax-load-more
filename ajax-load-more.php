@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.11.1
+Version: 2.12.0
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */	  
 
    		
-define('ALM_VERSION', '2.11.1');
-define('ALM_RELEASE', 'May 30, 2016');
+define('ALM_VERSION', '2.12.0');
+define('ALM_RELEASE', 'September 5, 2016');
 define('ALM_STORE_URL', 'https://connekthq.com');	
 
 
@@ -147,8 +147,8 @@ if( !class_exists('AjaxLoadMore') ):
    		define('ALM_NAME', '_ajax_load_more');		
    		define('ALM_TITLE', 'Ajax Load More');	
          
-         if (!defined('ALM_ALTERNATING_ITEM_NAME')) define('ALM_ALTERNATING_ITEM_NAME', '14456');
          if (!defined('ALM_CACHE_ITEM_NAME')) define('ALM_CACHE_ITEM_NAME', '4878');
+         if (!defined('ALM_CTA_ITEM_NAME')) define('ALM_CTA_ITEM_NAME', '14456');
          if (!defined('ALM_COMMENTS_ITEM_NAME')) define('ALM_COMMENTS_ITEM_NAME', '12172');
          if (!defined('ALM_UNLIMITED_ITEM_NAME')) define('ALM_UNLIMITED_ITEM_NAME', '3118');
          if (!defined('ALM_LAYOUTS_ITEM_NAME')) define('ALM_LAYOUTS_ITEM_NAME', '11398');
@@ -178,6 +178,7 @@ if( !class_exists('AjaxLoadMore') ):
    		if( is_admin() ){
    			include_once('admin/editor/editor.php');
    			include_once('admin/admin.php');
+   			include_once('admin/admin-functions.php');
    		}
    				
       }	
@@ -253,9 +254,7 @@ if( !class_exists('AjaxLoadMore') ):
       		
          	//$file = plugins_url('/core/css/ajax-load-more.css', __FILE__ );
          	$file = plugins_url('/core/css/ajax-load-more.min.css', __FILE__ );
-         	
-         	$filename = 'ajax-load-more';
-            ALM_ENQUEUE::alm_enqueue_css($filename, $file);
+            ALM_ENQUEUE::alm_enqueue_css('ajax-load-more', $file);
          	 			
    		} 
    		
@@ -321,24 +320,11 @@ if( !class_exists('AjaxLoadMore') ):
    
    		$queryType = (isset($_GET['query_type'])) ? $_GET['query_type'] : 'standard';	// 'standard' or 'totalposts'; totalposts returns $alm_found_posts
    		
-   		$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';	
+   		$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';
    		
    		$repeater = (isset($_GET['repeater'])) ? $_GET['repeater'] : 'default';		
    		$type = alm_get_repeater_type($repeater);
    		$theme_repeater = (isset($_GET['theme_repeater'])) ? $_GET['theme_repeater'] : 'null';	
-   		
-   		// Alternate Template data array - from ajax-load-more.js
-         $alternate = false;
-         $alternateData = (isset($_GET['alternate'])) ? $_GET['alternate'] : '';
-         if($alternateData){
-            $alternate = true;
-   		   $alternate_sequence = (isset($alternateData['alternate_sequence'])) ? $alternateData['alternate_sequence'] : '';
-   		   $alternate_sequence_max = (isset($alternateData['alternate_sequence_max'])) ? $alternateData['alternate_sequence_max'] : '9999';
-            if($alternate_sequence_max === '0')
-               $alternate_sequence_max = '9999';
-   		   $alternate_repeater = (isset($alternateData['alternate_repeater'])) ? $alternateData['alternate_repeater'] : 'null';
-   		   $alternate_theme_repeater = (isset($alternateData['alternate_theme_repeater'])) ? $alternateData['alternate_theme_repeater'] : 'null';
-         }
    		
    		$postType = (isset($_GET['post_type'])) ? $_GET['post_type'] : 'post';
    		$post_format = (isset($_GET['post_format'])) ? $_GET['post_format'] : '';
@@ -375,7 +361,19 @@ if( !class_exists('AjaxLoadMore') ):
    		
    		$s = (isset($_GET['search'])) ? $_GET['search'] : '';   		
    		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
-   		$author_id = (isset($_GET['author'])) ? $_GET['author'] : '';
+   		
+   		// Author
+         $author = (isset($_GET['author'])) ? $_GET['author'] : '';
+         if(!is_numeric($author) && $author !== '') {
+            $author = get_user_by('slug', $author); // Allow access to authors via slug
+            if($author){
+               $author_id = (isset($author)) ? $author->ID : '';
+            }else{
+               $author_id = '';
+            }
+         } else {
+            $author_id = $author;
+         }
    		
    		// Ordering
    		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
@@ -388,8 +386,8 @@ if( !class_exists('AjaxLoadMore') ):
    		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
    		$post_status = $_GET['post_status'];
    		if($post_status == '') $post_status = 'publish';   		
-   		if($post_status != 'publish'){
-      		// If not 'publish', confirm user has rights to view these old posts.
+   		if($post_status != 'publish' || $post_status != 'inherit'){
+      		// If not 'publish', OR 'inherit' confirm user has rights to view these old posts.
       		if (current_user_can( 'edit_theme_options' )){
          		$post_status = $post_status;
             } else {
@@ -398,9 +396,9 @@ if( !class_exists('AjaxLoadMore') ):
          }
    		
    		
-   		// Page
+   		// Page Parameters
    		$posts_per_page = (isset($_GET['posts_per_page'])) ? $_GET['posts_per_page'] : 5;		
-   		$page = (isset($_GET['page'])) ? $_GET['page'] : 0;
+   		$page = (isset($_GET['page'])) ? $_GET['page'] : 0;   	   		
    		
    		// Preload Add-on
    		$preloaded = (isset($_GET['preloaded'])) ? $_GET['preloaded'] : 'false'; 
@@ -411,20 +409,36 @@ if( !class_exists('AjaxLoadMore') ):
    		   $offset = $offset + $preloaded_amount;	
          }
          
-         //Previous Post Add-on
+   		// CTA Add-on
+         $cta = false;
+         $ctaData = (isset($_GET['cta'])) ? $_GET['cta'] : '';
+         if($ctaData){
+            $cta = true;
+   		   $cta_position = (isset($ctaData['cta_position'])) ? $ctaData['cta_position'] : 'before:1';   		   
+            $cta_position_array = explode(":", $cta_position);
+				$cta_pos = (string)$cta_position_array[0];
+				$cta_val = (string)$cta_position_array[1];
+            if($cta_pos != 'after'){
+               $cta_pos = 'before';
+            }
+   		   $cta_repeater = (isset($ctaData['cta_repeater'])) ? $ctaData['cta_repeater'] : 'null';
+   		   $cta_theme_repeater = (isset($ctaData['cta_theme_repeater'])) ? $ctaData['cta_theme_repeater'] : 'null';
+         }
+         
+         // Previous Post Add-on
    		$is_previous_post = (isset($_GET['previous_post'])) ? $_GET['previous_post'] : false;
    		$previous_post_id = (isset($_GET['previous_post_id'])) ? $_GET['previous_post_id'] : '';
          
          // Paging Add-on
          $paging = (isset($_GET['paging'])) ? $_GET['paging'] : false;
          
-         //SEO Add-on
+         // SEO Add-on
    		$seo_start_page = (isset($_GET['seo_start_page'])) ? $_GET['seo_start_page'] : 1;         
    		
-   		// Language (Is this needed?)   			
+   		// Language (Is this required?)   			
    		$lang = (isset($_GET['lang'])) ? $_GET['lang'] : '';
    
-   		// Set up initial args      
+   		// Set up initial query arguments     
          $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
    		$args = array(
    			'post_type'                => $postType,
@@ -632,18 +646,40 @@ if( !class_exists('AjaxLoadMore') ):
    		}   	   		
    		
    		
-   		// Previous Post Add-on
-   		// Hijack $args and and return previous post only   		
+   		/*
+	   	 *	alm_prev_post_args
+	   	 *
+	   	 * Hijack $args and and return previous post only $args
+	   	 *
+	   	 * @return $args;
+	   	 */   		
    		if($is_previous_post == 'true' && has_action('alm_prev_post_installed')){
       		$args = apply_filters('alm_prev_post_args', $previous_post_id, $postType);
-         }
-   		
-         $args = apply_filters('alm_modify_query_args', $args, $slug); // ALM Core Filter Hook
+         }  
          
-   		// WP_Query()
-   		$alm_query = new WP_Query( $args );	
+          		
    		
-   		// If preload, set our loop count and total posts to
+   		/*
+	   	 *	alm_modify_query_args
+	   	 *
+	   	 * ALM Core Filter Hook
+	   	 *
+	   	 * @return $args;
+	   	 */
+         $args = apply_filters('alm_modify_query_args', $args, $slug); // ALM Core Filter Hook              
+   		
+   		
+   		/*
+	   	 *	WP_Query
+	   	 *
+	   	 * ALM Query
+	   	 *
+	   	 * @return $alm_query;
+	   	 */
+   		$alm_query = new WP_Query( $args ); // WP_Query()	
+   		
+   		
+   		// If preload, update our loop count and total posts
          if(has_action('alm_preload_installed') && $preloaded === 'true'){ 
             $alm_total_posts = $alm_query->found_posts - $offset + $preloaded_amount;
             if($old_offset > 0)
@@ -655,67 +691,68 @@ if( !class_exists('AjaxLoadMore') ):
             $alm_loop_count = 0;
          }
          
-         // Create cache directory 
+         
+         // Create cache directory + meta .txt file
          if(!empty($cache_id) && has_action('alm_cache_create_dir')){    
             apply_filters('alm_cache_create_dir', $cache_id, $canonical_url);            
             $page_cache = ''; // set our page cache variable
          } 
          
-         // Alternating Templates
-         if($alternate && has_action('alm_alternating_installed')){
-            $alternate_sequence_array = '';
-            if($alternate_sequence === 'even'){
-               $alternate_sequence_array = 'even';
-            }else{
-               $alternate_sequence_array = explode(',', $alternate_sequence);
-            }
-				$global_repeater = $repeater;
-				$global_type = $type;
-				$global_theme_repeater = $theme_repeater;
-			}
-         
          
          if($queryType === 'standard'){   		
 	   		
 	   		// Run the loop
-	   		if ($alm_query->have_posts()) : 
-	            $alm_found_posts = $alm_total_posts;  
-	            $alm_current = 0; 	
+	         
+	   		if ($alm_query->have_posts()) { 
+	   		
+		         $alm_found_posts = $alm_total_posts;
+	            $alm_post_count = $alm_query->post_count;  
+	            $alm_current = 0; 	             
+	            $alm_has_cta = false;
+	            
+               $cta_array = Array(); 
+	            if($cta && has_action('alm_cta_pos_array')){ // Build CTA Position Array
+		            $cta_array = apply_filters('alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $cta_repeat);
+	            } 	
 	            
 	            ob_start();
-	            	     		   
+	            
+	            // ALM Loop	
+	                 		   
 	   			while ($alm_query->have_posts()): $alm_query->the_post();	
 	   			
 	   				$alm_loop_count++;  
 	   				$alm_current++;	   
 	   	         $alm_page = $alm_page_count; // Get page number      
-	   	         $alm_item = ($alm_page_count * $posts_per_page) - $posts_per_page + $alm_loop_count; // Get current item            
-	   				
-	   				// Alternating Templates
-	   				if($alternate && has_action('alm_alternating_installed') && $alm_page <= $alternate_sequence_max){
-   	   				if (function_exists('alm_alternate_is_in_array')) {
-      	   	         if(alm_alternate_is_in_array($alm_current, $alternate_sequence_array)){ // If $alm_current is found in array
-         	   	         if($alternate_theme_repeater != 'null' && has_filter('alm_get_theme_repeater')){
-            	   	         $theme_repeater = $alternate_theme_repeater;
-               			   }else{
-                  			   $repeater = $alternate_repeater;
-                  			   $type = alm_get_repeater_type($repeater);
-               			   }  
-            			   }else{ // Reset $repeater values
-               			   $repeater = $global_repeater;
-               			   $type = $global_type;
-               			   $theme_repeater = $global_theme_repeater;
-            			   } 
-         			   }
+	   	         $alm_item = ($alm_page_count * $posts_per_page) - $posts_per_page + $alm_loop_count; // Get current item 
+      			      
+      			      
+      			   // Call to Action [Before]
+	   				if($cta && has_action('alm_cta_inc') && $cta_pos === 'before' && in_array($alm_current, $cta_array)){ 
+      	   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false); 
+      	   	   	$alm_has_cta = true;
       			   }  
-	   				
-	   				if($theme_repeater != 'null' && has_action('alm_get_theme_repeater')){
-		   				do_action('alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current); // Theme Repeater
+      			       		
+      			        			   
+      			   // Repeater Template
+	   				if($theme_repeater != 'null' && has_action('alm_get_theme_repeater')){  // Theme Repeater
+		   				do_action('alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current);
 						}else{
-							include( alm_get_current_repeater($repeater, $type) ); //Include repeater template
+							include(alm_get_current_repeater( $repeater, $type )); //Include repeater template
 						}
+						// End Repeater Template		 
+	   	         
+	   	            				   				 
+	   				// Call to Action [After]
+	   				if($cta && has_action('alm_cta_inc') && $cta_pos === 'after' && in_array($alm_current, $cta_array)){ 
+      	   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false); 
+      	   	   	$alm_has_cta = true;
+      			   } 
+      			   
 	   					   					
 	            endwhile; wp_reset_query();
+	            
+	            // End ALM Loop	            
 	            
 	            $data = ob_get_clean();
                
@@ -726,22 +763,31 @@ if( !class_exists('AjaxLoadMore') ):
    	         }   	         
    	                  
    	         $return = array(
-                  'html' => $data
-               );
-               
+                  'html' => $data,
+                  'meta'  => array(
+                     'postcount' => $alm_post_count,
+                     'totalposts' => $alm_found_posts
+                  )
+               );                             
                wp_send_json($return);
 	         
-	   		else :
+	   		 } else {
 	   		   
 	   		   $return = array(
-                  'html' => null
-               );
+                  'html' => null,
+                  'meta'  => array(
+                     'postcount' => null,
+                     'totalposts' => null
+                  )
+               );               
                wp_send_json($return);
 	   		
-	   		endif;
+	   		}
    		
    		}elseif($queryType === 'totalposts'){
-	   		echo $alm_total_posts;  
+	   		
+	   		echo $alm_total_posts; // Paging add-on 
+	   		
 	   	}
 	   	
 	   	wp_die();
@@ -764,9 +810,8 @@ if( !class_exists('AjaxLoadMore') ):
    		$ajax_load_more = new AjaxLoadMore();
    	  
    	return $ajax_load_more;
-   }  
-   // initialize
-   AjaxLoadMore();
+   }    
+   AjaxLoadMore(); // initialize
    
 
 endif; // class_exists check

@@ -12,8 +12,9 @@
 	   <div class="cnkt-main">
    	   
    	   <?php      	   
-         $alm_dismiss_sharing = get_transient( 'alm_dismiss_sharing');   
-         if($alm_dismiss_sharing !== 'true'){
+         $alm_dismiss_sharing = get_transient( 'alm_dismiss_sharing');  
+         if(!isset($alm_dismiss_sharing)){
+	         // If transient has not been set - display this notice.
          ?>
 	   	<div class="group share-alm">
    	   	<div class="dotted">     

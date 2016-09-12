@@ -242,12 +242,14 @@ jQuery(document).ready(function($) {
 			   		$('.license-title .status', parent).addClass('valid').removeClass('invalid');
 			   		$('.activate.license-btn', parent).addClass('hide');
 			   		$('.deactivate.license-btn', parent).removeClass('hide');
+			   		$('.no-license', parent).slideUp(200);
 			   		
 		   		}else{
 			   		$('.license-key-field .status', parent).removeClass('active').addClass('inactive').text(alm_admin_localize.inactive);
 			   		$('.license-title .status', parent).removeClass('valid').addClass('invalid');	
 			   		$('.activate.license-btn', parent).removeClass('hide');
-			   		$('.deactivate.license-btn', parent).addClass('hide');	   		
+			   		$('.deactivate.license-btn', parent).addClass('hide');
+			   		$('.no-license', parent).slideDown(200);	   		
 		   		}
 		   		
 					$('.loading', parent).delay(250).fadeOut(300);

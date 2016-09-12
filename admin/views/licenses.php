@@ -11,8 +11,8 @@
 		      <p><?php _e('Manage your Ajax Load More license key\'s below - enter a key for each of your add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); ?></p>
 		      		      
 		      <?php 
-   		      // alm_alternating_installed
    		      // alm_cache_installed
+   		      // alm_cta_installed
    		      // alm_comments_installed
    		      // alm_unlimited_installed
    		      // alm_layouts_installed
@@ -26,69 +26,15 @@
    		   
    		   <?php 
       		   // Check if any add ons are installed. 
-      		   if(has_action('alm_alternating_installed') || has_action('alm_cache_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_rest_api_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
-		      
-		      
-		      <?php 
-   		      if (has_action('alm_alternating_installed')){
-   		      // CACHE 
-				   $alm_alternating_license = get_option( 'alm_alternating_license_key' );
-               $alm_alternating_status = get_option( 'alm_alternating_license_status' );
-		      ?>
-	         <div class="license" id="license-alternating">
-		         <div class="license-title"> 
-   		         <div class="status <?php if($alm_alternating_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>        
-         			<h2><?php _e('Alternating Templates', 'ajax-load-more'); ?></h2> 
-		         </div>	
-               <div class="license-wrap">
-   			      <form method="post" action="options.php">               			
-         			
-	         			<?php settings_fields('alm_alternating_license'); ?>   
-	         			<label class="description" for="alm_alternating_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
-	         			<div class="license-key-field">
-	         			   <input id="alm_alternating_license_key" name="alm_alternating_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_alternating_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
-	         			   <?php if( $alm_alternating_status !== false && $alm_alternating_status == 'valid' ) { ?>
-	            		   <span class="status active">
-	            		      <?php _e('Active', 'ajax-load-more'); ?>
-	            		   </span>
-	            		   <?php } else { ?>
-	            		   <span class="status inactive">
-	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
-	            		   </span>
-	            		   <?php } ?>
-	         			</div>
-	         			
-	         			<?php wp_nonce_field( 'alm_alternating_license_nonce', 'alm_alternating_license_nonce' ); ?>
-	         			<div class="license-btn-wrap"	         			
-						   		data-name="<?php echo ALM_ALTERNATING_ITEM_NAME; ?>" 
-				         		data-url="<?php echo ALM_STORE_URL; ?>" 
-					         	data-option-status="alm_alternating_license_status" 
-						         data-option-key="alm_alternating_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/alternating-templates/">
-		         			<button type="button" class="activate license-btn <?php if($alm_alternating_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
-							   	<?php _e('Activate License', 'ajax-load-more'); ?>
-							   </button>
-							   
-							   <button type="button" class="deactivate license-btn <?php if($alm_alternating_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
-							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
-							   </button>  
-	         			</div>
-         			
-               	</form>
-			      </div> 
-			      <div class="loading"></div>
-            </div> 	
-            <?php 
-               }
-               // End alternating 
-            ?>	
-		      
+      		   if(has_action('alm_cache_installed') || has_action('alm_cta_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_rest_api_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
+		     		      
 		      
 		      <?php 
    		      if (has_action('alm_cache_installed')){
    		      // CACHE 
 				   $alm_cache_license = get_option( 'alm_cache_license_key' );
                $alm_cache_status = get_option( 'alm_cache_license_status' );
+               $alm_cache_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/cache/';
 		      ?>
 	         <div class="license" id="license-cache">
 		         <div class="license-title"> 
@@ -98,8 +44,18 @@
                <div class="license-wrap">
    			      <form method="post" action="options.php">               			
          			
-	         			<?php settings_fields('alm_cache_license'); ?>   
-	         			<label class="description" for="alm_cache_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+         			   <?php if( $alm_cache_status !== false && $alm_cache_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_cache_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Cache" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
+	         			<?php settings_fields('alm_cache_license'); ?>  
+	         			 
+	         			<label class="description offscreen" for="alm_cache_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_cache_license_key" name="alm_cache_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_cache_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_cache_status !== false && $alm_cache_status == 'valid' ) { ?>
@@ -119,7 +75,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_cache_license_status" 
 						         data-option-key="alm_cache_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/cache/">
+						         data-upgrade-url="<?php echo $alm_cache_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_cache_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -137,12 +93,78 @@
                }
                // End CACHE 
             ?>	
+		      
+		      <?php 
+   		      if (has_action('alm_cta_installed')){
+   		      // Call to Actions 
+				   $alm_cta_license = get_option( 'alm_cta_license_key' );
+               $alm_cta_status = get_option( 'alm_cta_license_status' );
+               $alm_cta_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/call-to-actions/';
+		      ?>
+	         <div class="license" id="license-cta">
+		         <div class="license-title"> 
+   		         <div class="status <?php if($alm_cta_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>        
+         			<h2><?php _e('Call to Actions', 'ajax-load-more'); ?></h2> 
+		         </div>	
+               <div class="license-wrap">
+   			      <form method="post" action="options.php">       
+      			      
+      			      <?php if( $alm_cta_status !== false && $alm_cta_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_cta_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=CTA" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>        			
+         			
+	         			<?php settings_fields('alm_cta_license'); ?> 
+	         			  
+	         			<label class="description offscreen" for="alm_cta_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<div class="license-key-field">
+	         			   <input id="alm_cta_license_key" name="alm_cta_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_cta_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
+	         			   <?php if( $alm_cta_status !== false && $alm_cta_status == 'valid' ) { ?>
+	            		   <span class="status active">
+	            		      <?php _e('Active', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } else { ?>
+	            		   <span class="status inactive">
+	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
+	            		   </span>
+	            		   <?php } ?>
+	         			</div>
+	         			
+	         			<?php wp_nonce_field( 'alm_cta_license_nonce', 'alm_cta_license_nonce' ); ?>
+	         			<div class="license-btn-wrap"	         			
+						   		data-name="<?php echo ALM_CTA_ITEM_NAME; ?>" 
+				         		data-url="<?php echo ALM_STORE_URL; ?>" 
+					         	data-option-status="alm_cta_license_status" 
+						         data-option-key="alm_cta_license_key"
+						         data-upgrade-url="<?php echo $alm_cta_url; ?>">
+		         			<button type="button" class="activate license-btn <?php if($alm_cta_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+							   	<?php _e('Activate License', 'ajax-load-more'); ?>
+							   </button>
+							   
+							   <button type="button" class="deactivate license-btn <?php if($alm_cta_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
+							   </button>  
+	         			</div>
+         			
+               	</form>
+			      </div> 
+			      <div class="loading"></div>
+            </div> 	
+            <?php 
+               }
+               // End Call to Actions 
+            ?>	
             
             <?php 
    		      if (has_action('alm_comments_installed')){
    		      // Comments 
 				   $alm_comments_license = get_option( 'alm_comments_license_key' );
                $alm_comments_status = get_option( 'alm_comments_license_status' );
+               $alm_comments_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/comments/';
 		      ?>
 	         <div class="license" id="license-comments">
 		         <div class="license-title"> 
@@ -150,10 +172,20 @@
          			<h2><?php _e('Comments', 'ajax-load-more'); ?></h2> 
 		         </div>	
                <div class="license-wrap">
-   			      <form method="post" action="options.php">               			
+   			      <form method="post" action="options.php">      
+      			      
+      			      <?php if( $alm_comments_status !== false && $alm_comments_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_comments_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Comments" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>         			
          			
-	         			<?php settings_fields('alm_comments_license'); ?>   
-	         			<label class="description" for="alm_comments_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<?php settings_fields('alm_comments_license'); ?>  
+	         			 
+	         			<label class="description offscreen" for="alm_comments_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_comments_license_key" name="alm_comments_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_comments_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_comments_status !== false && $alm_comments_status == 'valid' ) { ?>
@@ -173,7 +205,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_comments_license_status" 
 						         data-option-key="alm_comments_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/comments/">
+						         data-upgrade-url="<?php echo $alm_comments_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_comments_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -198,6 +230,7 @@
    		      // Custom Repeaters 
 				   $alm_unlimited_license = get_option( 'alm_unlimited_license_key' );
                $alm_unlimited_status = get_option( 'alm_unlimited_license_status' );
+               $alm_unlimited_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/custom-repeaters/';
 		      ?>
 	         <div class="license" id="license-repeaters">
 		         <div class="license-title">       
@@ -207,8 +240,18 @@
                <div class="license-wrap">
    			      <form method="post" action="options.php">               			
          			
+	         			<?php if( $alm_unlimited_status !== false && $alm_unlimited_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_unlimited_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Custom Repeaters" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+	         			
 	         			<?php settings_fields('alm_unlimited_license'); ?>   
-	         			<label class="description" for="alm_unlimited_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			
+	         			<label class="description offscreen" for="alm_unlimited_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_unlimited_license_key" name="alm_unlimited_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_unlimited_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_unlimited_status !== false && $alm_unlimited_status == 'valid' ) { ?>
@@ -228,7 +271,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_unlimited_license_status" 
 						         data-option-key="alm_unlimited_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/custom-repeaters/">
+						         data-upgrade-url="<?php echo $alm_unlimited_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_unlimited_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -254,6 +297,7 @@
    		      // LAYOUTS 
 				   $alm_layouts_license = get_option( 'alm_layouts_license_key' );
                $alm_layouts_status = get_option( 'alm_layouts_license_status' );
+               $alm_layouts_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/';
 		      ?>
 	         <div class="license" id="license-layouts">
 		         <div class="license-title">       
@@ -261,10 +305,20 @@
          			<h2><?php _e('Layouts', 'ajax-load-more'); ?></h2> 
 		         </div>	
                <div class="license-wrap">
-   			      <form method="post" action="options.php">               			
-         			
+   			      <form method="post" action="options.php">       
+            		
+	            		<?php if( $alm_layouts_status !== false && $alm_layouts_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_layouts_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Layouts" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
 	         			<?php settings_fields('alm_layouts_license'); ?>   
-	         			<label class="description" for="alm_layouts_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			
+	         			<label class="description offscreen" for="alm_layouts_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_layouts_license_key" name="alm_layouts_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_layouts_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_layouts_status !== false && $alm_layouts_status == 'valid' ) { ?>
@@ -284,7 +338,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_layouts_license_status" 
 						         data-option-key="alm_layouts_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/">
+						         data-upgrade-url="<?php echo $alm_layouts_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_layouts_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -310,6 +364,7 @@
    		      // PAGING 
 				   $alm_paging_license = get_option( 'alm_paging_license_key' );
                $alm_paging_status = get_option( 'alm_paging_license_status' );
+               $alm_paging_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/paging/';
 		      ?>
 	         <div class="license" id="license-paging">
 		         <div class="license-title">       
@@ -318,9 +373,19 @@
 		         </div>	
                <div class="license-wrap">
    			      <form method="post" action="options.php">               			
+            		
+	            		<?php if( $alm_paging_status !== false && $alm_paging_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_paging_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Paging" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>           			
          			
-	         			<?php settings_fields('alm_paging_license'); ?>   
-	         			<label class="description" for="alm_paging_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			<?php settings_fields('alm_paging_license'); ?>  
+	         			 
+	         			<label class="description offscreen" for="alm_paging_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_paging_license_key" name="alm_paging_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_paging_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_paging_status !== false && $alm_paging_status == 'valid' ) { ?>
@@ -340,7 +405,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_paging_license_status" 
 						         data-option-key="alm_paging_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/paging/">
+						         data-upgrade-url="<?php echo $alm_paging_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_paging_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -364,6 +429,7 @@
                // PRELOADED 
                $alm_preloaded_license = get_option( 'alm_preloaded_license_key' );
                $alm_preloaded_status = get_option( 'alm_preloaded_license_status' );
+               $alm_preloaded_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/preloaded/';
             ?>
             <div class="license" id="license-preloaded">
                <div class="license-title">   
@@ -373,8 +439,18 @@
                <div class="license-wrap">
                   <form method="post" action="options.php">               			
             		
+	            		<?php if( $alm_preloaded_status !== false && $alm_preloaded_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_preloaded_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Preloaded" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+	            		
 	            		<?php settings_fields('alm_preloaded_license'); ?>   
-	            		<label class="description" for="alm_preloaded_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	            		
+	            		<label class="description offscreen" for="alm_preloaded_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	            		<div class="license-key-field">
 	            		   <input id="alm_preloaded_license_key" name="alm_preloaded_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_preloaded_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	            		   <?php if( $alm_preloaded_status !== false && $alm_preloaded_status == 'valid' ) { ?>
@@ -393,7 +469,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_preloaded_license_status" 
 						         data-option-key="alm_preloaded_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/preloaded/">
+						         data-upgrade-url="<?php echo $alm_preloaded_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_preloaded_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -417,6 +493,7 @@
                // PREVIOUS POST 
                $alm_prev_post_license = get_option( 'alm_prev_post_license_key' );
                $alm_prev_post_status = get_option( 'alm_prev_post_license_status' );
+               $alm_prev_post_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/previous-post/';
             ?>
             <div class="license" id="license-previous-post">
                <div class="license-title">   
@@ -424,10 +501,20 @@
             		<h2><?php _e('Previous Post', 'ajax-load-more'); ?></h2> 
                </div>	
                <div class="license-wrap">
-                  <form method="post" action="options.php">               			
-            		
-	            		<?php settings_fields('alm_prev_post_license'); ?>   
-	            		<label class="description" for="alm_prev_post_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+                  <form method="post" action="options.php">      			
+         			   
+         			   <?php if( $alm_prev_post_status !== false && $alm_prev_post_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_prev_post_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Previous Post" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
+	         			<?php settings_fields('alm_prev_post_license'); ?>   
+	            		
+	            		<label class="description offscreen" for="alm_prev_post_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	            		<div class="license-key-field">
 	            		   <input id="alm_prev_post_license_key" name="alm_prev_post_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_prev_post_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	            		   <?php if( $alm_prev_post_status !== false && $alm_prev_post_status == 'valid' ) { ?>
@@ -447,7 +534,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_prev_post_license_status" 
 						         data-option-key="alm_prev_post_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/previous-post/">
+						         data-upgrade-url="<?php echo $alm_prev_post_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_prev_post_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -472,6 +559,7 @@
    		      // REST API 
 				   $alm_restapi_license = get_option( 'alm_rest_api_license_key' );
                $alm_restapi_status = get_option( 'alm_rest_api_license_status' );
+               $alm_restapi_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/rest-api/';
 		      ?>
 	         <div class="license" id="license-rest">
 		         <div class="license-title"> 
@@ -480,9 +568,19 @@
 		         </div>	
                <div class="license-wrap">
    			      <form method="post" action="options.php">               			
-         			
+         			   
+         			   <?php if( $alm_restapi_status !== false && $alm_restapi_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_restapi_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=RESTAPI" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
 	         			<?php settings_fields('alm_rest_api_license'); ?>   
-	         			<label class="description" for="alm_rest_api_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			
+	         			<label class="description offscreen" for="alm_rest_api_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_rest_api_license_key" name="alm_rest_api_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_restapi_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_restapi_status !== false && $alm_restapi_status == 'valid' ) { ?>
@@ -502,7 +600,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_rest_api_license_status" 
 						         data-option-key="alm_rest_api_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/rest-api/">
+						         data-upgrade-url="<?php echo $alm_restapi_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_restapi_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -523,10 +621,11 @@
             ?>
             
             <?php 
-   		      if (has_action('alm_rest_api_installed')){
+   		      if (has_action('alm_seo_installed')){
    		      // SEO 
 				   $alm_seo_license = get_option( 'alm_seo_license_key' );
                $alm_seo_status = get_option( 'alm_seo_license_status' );
+               $alm_seo_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/';
 		      ?>
 	         <div class="license" id="license-seo">
 		         <div class="license-title"> 
@@ -534,10 +633,20 @@
          			<h2><?php _e('Search Engine Optimization', 'ajax-load-more'); ?></h2> 
 		         </div>	
                <div class="license-wrap">
-   			      <form method="post" action="options.php">               			
-         			
+   			      <form method="post" action="options.php">                  			
+         			   
+         			   <?php if( $alm_seo_status !== false && $alm_seo_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_seo_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=SEO" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
 	         			<?php settings_fields('alm_seo_license'); ?>   
-	         			<label class="description" for="alm_seo_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+	         			
+	         			<label class="description offscreen" for="alm_seo_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_seo_license_key" name="alm_seo_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_seo_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_seo_status !== false && $alm_seo_status == 'valid' ) { ?>
@@ -557,7 +666,7 @@
 				         		data-url="<?php echo ALM_STORE_URL; ?>" 
 					         	data-option-status="alm_seo_license_status" 
 						         data-option-key="alm_seo_license_key"
-						         data-upgrade-url="https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/">
+						         data-upgrade-url="<?php echo $alm_seo_url; ?>">
 		         			<button type="button" class="activate license-btn <?php if($alm_seo_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
 							   	<?php _e('Activate License', 'ajax-load-more'); ?>
 							   </button>
@@ -584,6 +693,7 @@
 	         	
 				   $alm_theme_repeaters_license = get_option( 'alm_theme_repeaters_license_key' );
                $alm_theme_repeaters_status = get_option( 'alm_theme_repeaters_license_status' );
+               $alm_theme_repeaters_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/';
 		      ?>
 	         <div class="license" id="license-theme_repeaters">
 		         <div class="license-title">       
@@ -592,9 +702,19 @@
 		         </div>	
                <div class="license-wrap">
    			      <form method="post" action="options.php">               			
-         			
-	         			<?php settings_fields('alm_theme_repeaters_license'); ?>   
-	         			<label class="description" for="alm_theme_repeaters_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
+         			   
+         			   <?php if( $alm_theme_repeaters_status !== false && $alm_theme_repeaters_status == 'valid' ) { ?>
+         			   <!-- nothing -->
+         			   <?php } else { ?>
+         			   <div class="no-license">
+            	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
+            	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $alm_theme_repeaters_url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=Theme Repeaters" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
+                     </div> 
+         			   <?php } ?>
+         			   
+	         			<?php settings_fields('alm_theme_repeaters_license'); ?>
+	         			   
+	         			<label class="description offscreen" for="alm_theme_repeaters_license_key"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
 	         			<div class="license-key-field">
 	         			   <input id="alm_theme_repeaters_license_key" name="alm_theme_repeaters_license_key" type="text" class="regular-text" value="<?php esc_attr_e( $alm_theme_repeaters_license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
 	         			   <?php if( $alm_theme_repeaters_status !== false && $alm_theme_repeaters_status == 'valid' ) { ?>
@@ -612,7 +732,7 @@
 	         			<div class="license-btn-wrap"	         			
 						   	data-name="<?php echo ALM_THEME_REPEATERS_ITEM_NAME; ?>" 
 			         		data-url="<?php echo ALM_STORE_URL; ?>"
-				         	data-upgrade-url="http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/"
+				         	data-upgrade-url="<?php echo $alm_theme_repeaters_url; ?>"
 				         	data-option-status="alm_theme_repeaters_license_status" 
 					         data-option-key="alm_theme_repeaters_license_key"
 		         			>

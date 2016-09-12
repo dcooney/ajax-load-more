@@ -30,7 +30,34 @@
 			   </div>		   
              		   
 		   </div>
-		   <!-- End Cache -->
+		   <!-- End Cache -->	
+		   
+		   
+		   <!-- Call to Actions -->
+		   <div class="group<?php if (has_action('alm_cta_installed')){echo ' installed'; } ?>">
+			   <div class="row no-brd">
+   			   <?php 
+                  	$cta_url = 'https://connekthq.com/plugins/ajax-load-more/add-ons/call-to-actions/?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=Call to Actions'; ?>
+                  	
+               <a href="<?php echo $cta_url; ?>">
+   			      <div class="expand-wrap">
+                     <img src="<?php echo ALM_ADMIN_URL; ?>img/add-ons/cta-add-on.jpg" alt="">                         
+                     <h2 class="addon-title"><?php _e('Call to Actions', 'ajax-load-more'); ?></h2>
+                     <p class="addon-intro"><?php _e('Ajax Load More extension for displaying advertisements and call to actions.', 'ajax-load-more'); ?></p>
+                     <p><?php _e('The Call to Actions add-on will provide the ability to inject a custom CTA template within each Ajax Load More loop.', 'ajax-load-more'); ?></p>    
+                     <?php
+                        if (has_action('alm_cta_installed')){
+                           echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> Installed</span> ';
+                        }else{
+                           echo '<span class="cnkt-button"><i class="fa fa-download"></i> Purchase &amp; Install</span>';
+                        }
+                     ?>               
+                  </div>
+               </a>
+			   </div>		   
+             		   
+		   </div>
+		   <!-- End Call to Actions -->	   
 		   
 		   
 		   <!-- Comments -->
@@ -57,7 +84,7 @@
 			   </div>		   
              		   
 		   </div>
-		   <!-- End Cache -->
+		   <!-- End Comments -->
 		   
 		   
 		   <!-- Custom Repeaters -->

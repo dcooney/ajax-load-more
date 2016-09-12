@@ -138,7 +138,7 @@
    color: #999;
    padding: 0 0 0 12px;
    border-left: 5px solid #ff5a58;
-   margin: 0 0 16px;
+   margin: 0 0 30px;
    font-size: 13px;
 }
 .ajax-load-more code{
@@ -520,15 +520,16 @@ a.layout-hover{
 
 .ajax-load-more p.warning-callout{
 	background-color: #cbecf7;
+	border-left: 5px solid #5e99ac;
 	color: #333;
 	font-size: 13px;
 	margin: 0;
 	display: block;
-	padding: 10px;
+	padding: 12px 12px 12px 17px;
 	border-radius: 3px;
 	margin: 10px;
 	width: auto;
-	line-height: 1.75;
+	line-height: 1.55;
 }
    .ajax-load-more p.warning-callout strong{
       display: inline-block;
@@ -541,6 +542,7 @@ a.layout-hover{
    }  
 .ajax-load-more p.warning-callout.notify{
 	background-color: #ad4141;
+	border-color: #903030;
 	color: #fff;
 }
 	
@@ -877,6 +879,7 @@ a.layout-hover{
 .preload_amount,
 .cache_id,
 .alternate_template_wrap,
+.cta_template_wrap,
 .restapi_options{
    display: none;
 }
@@ -1228,6 +1231,7 @@ a.layout-hover{
 }
 .ajax-load-more h2.addon-title{   
    font-size: 19px !important;
+   line-height: 24px;
    font-weight: 600 !important;
    color: #444 !important;
    padding: 0;
@@ -1478,8 +1482,12 @@ table.highlight{
    font-size: 14px;
    padding: 8px 14px;
 }
-.ajax-load-more .cnkt-main .group.installed{ }
-
+.ajax-load-more .cnkt-main .group.installed{ 
+   opacity: 0.7;
+}
+.ajax-load-more .cnkt-main .group.installed p:before{
+   display: none !important;
+}
 #alm-add-ons .group img{
    padding: 12px 18px 12px;  
 }
@@ -1488,17 +1496,8 @@ table.highlight{
    display: block;
    padding: 15px;
 }
-   #alm-add-ons .group:hover{
-      border-color: #999;
-      -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-      -moz-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
-   }
    #alm-add-ons .group.installed:hover{	   
       border-color: #ccc;
-      -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-      -moz-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
    }
    #alm-add-ons .group a:hover h2{
       color: #ff5a58 !important;
@@ -1683,6 +1682,23 @@ table.highlight{
          border-color: transparent !important;
       }
       
+   .license .no-license{
+   	display: block;
+   	padding: 12px 10px 12px 20px;
+   	margin: 0 0 15px 0;
+   	border: 1px solid #e7e7c6;
+   	border-left: 5px solid #e7e7c6;
+   	background-color: #ffffe5;
+   	border-radius: 3px;
+   }
+   	.license .no-license h4{
+   		margin: 0 0 3px;	
+   	}
+   	.license .no-license p{
+   		margin: 5px 0 0;
+   		padding: 0;	
+   	}
+      
    
    
    .license .loading{
@@ -1727,13 +1743,14 @@ table.highlight{
    }
       .license-wrap label{
          font-weight: 600;
-         position: relative;
+/*          position: relative; */
          top:-3px;
       }
       .license-wrap input[type=text]{
          background-color: #fff;
          margin: 0 0 15px;
          width: 100% !important;
+         border-color: #ccc;
       }
          .license-wrap input[type=text]:focus{
             background-color: #fff;  
@@ -1944,6 +1961,13 @@ table.highlight{
    color: #999;
    line-height: 1.3;
 }
+.ajax-load-more .cm-readonly .CodeMirror{
+   margin: 0 0 20px;
+   opacity: 0.7;
+}
+   .ajax-load-more .cm-readonly p.warning-callout{
+      margin: 0 0 10px;
+   }
    .ajax-load-more .CodeMirror.loading {
       background: #f7f7f7 url("../img/loader-unlimited.gif") no-repeat center center;  
       opacity: 0.6;

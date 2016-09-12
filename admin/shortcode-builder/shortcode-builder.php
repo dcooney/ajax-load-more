@@ -15,7 +15,6 @@
    <h3 class="heading"><?php _e('Cache', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
-	      <h4><?php _e('Enable Caching', 'ajax-load-more'); ?></h4>
 		 	<p><?php _e('Turn on content caching.', 'ajax-load-more'); ?></p>
 		 </div>
       <div class="wrap">
@@ -53,13 +52,108 @@
 <?php } ?>
 
 
+<?php if(has_action('alm_cta_installed')){ ?>
+<!-- Call to Actions -->
+<div class="row cta add-on" id="alm-cta">
+   <h3 class="heading"><?php _e('Call to Actions', 'ajax-load-more'); ?></h3>
+   <div class="expand-wrap">
+      
+      <div class="section-title">
+		 	<p><?php _e('Insert call to action block.', 'ajax-load-more'); ?></p>
+		 </div>
+      <div class="wrap">
+         <div class="inner">	               
+            <ul>
+                <li>
+                 <input class="alm_element" type="radio" name="cta" value="true" id="cta-true" >
+                 <label for="cta-true"><?php _e('True', 'ajax-load-more'); ?></label>
+                </li>
+                <li>
+                 <input class="alm_element" type="radio" name="cta" value="false" id="cta-false" checked="checked">
+                 <label for="cta-false"><?php _e('False', 'ajax-load-more'); ?></label>
+                </li>
+            </ul>
+         </div>
+      </div>
+      <div class="clear"></div>
+      
+      <div class="cta_template_wrap">
+         
+		   <hr/>
+		   <div class="spacer"></div>
+		   
+		   <div class="section-title">	      	   
+				<h4><?php _e('CTA Positioning', 'ajax-load-more'); ?></h4>
+				<p><?php _e('Insert call to action <strong><em id="sequence-update-before-after">before</em></strong> post #<strong><em id="sequence-update">1</em></strong>', 'ajax-load-more'); ?>.</p>
+			</div>
+			<div class="wrap">
+   			<div class="inner"> 
+      			
+               <label class="full"><?php _e('Before / After', 'ajax-load-more'); ?>:</label>
+               <select class="alm_element cta-before-after" name="cta-before-after" id="cta-before-after">
+                  <option value="before" selected="selected"><?php _e('Before', 'ajax-load-more'); ?></option>
+                  <option value="after"><?php _e('After', 'ajax-load-more'); ?></option>
+               </select>
+               <div class="clear"></div>
+               <div class="spacer" style="height: 30px;"></div>
+   			   <label class="full" for="cta-position"><?php _e('Post #', 'ajax-load-more'); ?>:</label>
+               <input type="number" min="1" step="1" value="1" placeholder="1" id="cta-position" class="alm_element numbers-only" name="cta-position">
+               
+   			</div>
+			</div>
+			
+         <div class="clear"></div>   			
+         <hr/>
+         <div class="spacer"></div>
+         
+			<div class="section-title">	      	   
+				<h4><?php _e('Template', 'ajax-load-more'); ?></h4>
+				<?php
+   				echo '<p>'.__('Select the <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater template</a> that will display your call to action.', 'ajax-load-more'). '</p>';
+   			?>
+			</div>
+			<div class="wrap">
+				<div class="inner">
+					<?php
+						echo '<select name="cta-repeater-select" class="alm_element">';
+						echo '<option name="" value="" selected="selected">'.__('-- Select Repeater --', 'ajax-load-more').'</option>';	
+						echo '<option name="default" value="default">Default</option>';		
+						if (has_action('alm_get_custom_repeaters')) {
+						  do_action('alm_get_custom_repeaters');
+						}
+						if (has_action('alm_get_unlimited_repeaters')) {
+						  do_action('alm_get_unlimited_repeaters');
+						}
+						echo '</select>';						
+					?>
+				</div>
+			</div>
+			<?php 
+			// Get Theme Repeaters
+		   if (has_action('alm_theme_repeaters_selection')){
+		      do_action('alm_theme_repeaters_selection');  
+		   }     
+		   ?>
+		   
+		   
+         <p class="warning-callout">
+            <?php _e('Call to actions do NOT count as a post within an Ajax Load More loop.<br/>
+               For example, if you set <strong>posts_per_page="5"</strong> in your shortcode, 6 items will be displayed.', 'ajax-load-more'); ?>
+         </p>
+		   
+      </div>
+      
+   </div>
+</div>
+<?php } ?>
+
+
 <?php if(has_action('alm_comments_installed')){ ?>
 <!-- COMMENTS -->
 <div class="row input comments add-on" id="alm-comments">
    <h3 class="heading"><?php _e('Comments', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
-	      <h4><?php _e('Comments', 'ajax-load-more'); ?></h4>
 		 	<p><?php _e('Enable Ajax Load More to display blog comments.', 'ajax-load-more'); ?></p>
 		 </div>
       <div class="wrap">
@@ -214,8 +308,7 @@
 <div class="row input paging add-on" id="alm-paging">
    <h3 class="heading"><?php _e('Paging', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
-      <div class="section-title">
-		 	<p><?php _e('Replace infinite scrolling with a paged ajax navigation system.', 'ajax-load-more'); ?></p>
+      <div class="section-title">		 	<p><?php _e('Replace infinite scrolling with a paged ajax navigation system.', 'ajax-load-more'); ?></p>
 		 </div>
       <div class="wrap">
          <div class="inner">	               
@@ -604,105 +697,7 @@
 	echo '</div>';
 	echo '</div>';
 	
-	?>
- 	
- 	<?php if(has_action('alm_alternating_installed')){ ?>
- 	<div class="row alternating add-on" id="alm-alternate">
-      <h3 class="heading"><?php _e('Alternating Templates', 'ajax-load-more'); ?></h3>
-      <div class="expand-wrap">
-         
-         <div class="section-title">
-   		 	<p><?php _e('Select an alternate repeater template to be display every <em>x</em> number of posts.', 'ajax-load-more'); ?></p>
-   		 </div>
-         <div class="wrap">
-            <div class="inner">	               
-               <ul>
-                   <li>
-                    <input class="alm_element" type="radio" name="alternate" value="true" id="alternate-true" >
-                    <label for="alternate-true"><?php _e('True', 'ajax-load-more'); ?></label>
-                   </li>
-                   <li>
-                    <input class="alm_element" type="radio" name="alternate" value="false" id="alternate-false" checked="checked">
-                    <label for="alternate-false"><?php _e('False', 'ajax-load-more'); ?></label>
-                   </li>
-               </ul>
-            </div>
-         </div>
-         <div class="clear"></div>
-         
-         <div class="alternate_template_wrap">
-            
-   		   <hr/>
-   		   <div class="spacer"></div>
-   		   
-   		   <div class="section-title">	      	   
-   				<h4><?php _e('Template Sequencing', 'ajax-load-more'); ?></h4>
-   				<p><?php _e('A comma separated list of post position values. Posts in these positions will be replaced by the alternate template', 'ajax-load-more'); ?>.<br/><br/>
-   				<strong><?php _e('Pro-Tip', 'ajax-load-more'); ?></strong> - 
-   				<?php _e('Use sequence "even" to use an alternate template for every even result', 'ajax-load-more'); ?>.</p>
-   			</div>
-   			<div class="wrap">
-      			<div class="inner">                                                         
-                  <input type="text" placeholder="3, 4, 7, 8" id="alternate-sequence-max" class="alm_element sm" name="alternate-sequence">
-      			</div>
-   			</div>  
-   			
-   			<div class="clear"></div>
-   			<hr/>
-   			<div class="spacer"></div>
-   			
-   			<div class="section-title">	      	   
-   				<h4><?php _e('Sequence Loop', 'ajax-load-more'); ?></h4>
-   				<p>
-      				<?php _e('Select the maximum number of loops to repeat alternate template sequence.', 'ajax-load-more'); ?><br/><br/>
-      				<?php _e('0 = no maximum', 'ajax-load-more'); ?>
-   				</p>
-   			</div>
-   			<div class="wrap">
-      			<div class="inner">                     
-                     <input type="number" placeholder="0" id="alternate-sequence-max" class="alm_element sm numbers-only" name="alternate-sequence-max" value="0" step="1" min="0">
-                     
-               </div>
-   			</div>
-   			
-            <div class="clear"></div>   			
-            <hr/>
-            <div class="spacer"></div>
-            
-   			<div class="section-title">	      	   
-   				<h4><?php _e('Repeater Template', 'ajax-load-more'); ?></h4>
-   				<?php
-      				echo '<p>'.__('Select an alternate <a href="admin.php?page=ajax-load-more-repeaters" target="_parent">repeater template</a>.', 'ajax-load-more'). '</p>';
-      			?>
-   			</div>
-   			<div class="wrap">
-   				<div class="inner">
-   					<?php
-   						echo '<select name="alternate-repeater-select" class="alm_element">';
-   						echo '<option name="" value="" selected="selected">'.__('-- Select Repeater --', 'ajax-load-more').'</option>';	
-   						echo '<option name="default" value="default">Default</option>';		
-   						if (has_action('alm_get_custom_repeaters')) {
-   						  do_action('alm_get_custom_repeaters');
-   						}
-   						if (has_action('alm_get_unlimited_repeaters')) {
-   						  do_action('alm_get_unlimited_repeaters');
-   						}
-   						echo '</select>';						
-   					?>
-   				</div>
-   			</div>
-   			<?php 
-   			// Get Theme Repeaters
-   		   if (has_action('alm_theme_repeaters_selection')){
-   		      do_action('alm_theme_repeaters_selection');  
-   		   }     
-   		   ?>
-   		   
-         </div>
-         
-      </div>
-   </div>
-   <?php } ?>
+	?> 	
    
 	
 	<?php
@@ -722,7 +717,7 @@
 	   foreach( $types as $type ){
 	     $typeobj = get_post_type_object( $type );
 	     $name = $typeobj->name;
-	     if( $name != 'revision' && $name != 'attachment' && $name != 'nav_menu_item' && $name != 'acf'){
+	     if( $name != 'revision' && $name != 'nav_menu_item' && $name != 'acf'){
             echo '<li><input class="alm_element" type="checkbox" name="chk-'.$typeobj->name.'" id="chk-'.$typeobj->name.'" data-type="'.$typeobj->name.'"><label for="chk-'.$typeobj->name.'">'.$typeobj->labels->singular_name.'</label></li>';
 			}
 	    }
@@ -1051,7 +1046,7 @@
          <div class="clear"></div>
          <hr/>
          <div class="section-title">
-            <h4><?php _e('Post Status', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Post Status parameters are only available for logged in (admin) users. Non logged in users will only have access to view content in a \'publish\' state. ','ajax-load-more'); ?>"></a></h4>
+            <h4><?php _e('Post Status', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Post Status parameters are only available for logged in (admin) users. Non logged in users will only have access to view content in a \'publish\' or \'inherit\' state. ','ajax-load-more'); ?>"></a></h4>
    		 	<p><?php _e('Select status of the post.', 'ajax-load-more'); ?></p>
    		 </div>
          <div class="wrap">
@@ -1064,6 +1059,7 @@
                    <option value="pending">Pending</option>
                    <option value="private">Private</option>
                    <option value="trash">Trash</option>
+                   <option value="inherit">Inherit</option>
                </select>
             </div>
          </div>
@@ -1332,7 +1328,7 @@
       
    <!-- Button Text -->
    <div class="row input btn-label" id="alm-btn-label">
-      <h3 class="heading"><?php _e('Button Labels', 'ajax-load-more'); ?></h3>
+      <h3 class="heading"><?php _e('Button Options', 'ajax-load-more'); ?></h3>
       
       <div class="expand-wrap">
          
@@ -1357,7 +1353,7 @@
             <div class="inner">
                <input class="alm_element" name="button-loading-label" type="text" id="button-loading-label" value="" placeholder="<?php _e('Loading Posts...', 'ajax-load-more'); ?>">
             </div>
-         </div>         
+         </div>    
          
       </div>
    </div>
@@ -1389,8 +1385,10 @@
                </ul>
             </div>
          </div>
+         
          <div class="clear"></div>
          <hr/>
+         
          <div class="section-title">
 	         <h4><?php _e('Container Classes', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('You can define global container classes on the Ajax Load More settings screen','ajax-load-more'); ?>"></a></h4>
    		 	<p><?php _e('Add custom CSS classes to the Ajax Load More container. <br/><br/> e.g. portfolio-listing large-12 etc', 'ajax-load-more'); ?></p>

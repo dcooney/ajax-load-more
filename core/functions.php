@@ -16,10 +16,11 @@ function alm_get_current_repeater($repeater, $type) {
 		
 	// If is Custom Repeaters (Custom Repeaters v1)
 	if( $type == 'repeater' && has_action('alm_repeater_installed' )){ 
-		$include = ALM_REPEATER_PATH . 'repeaters/'. $template .'.php';      					
+		$include = ALM_REPEATER_PATH . 'repeaters/'. $template .'.php';    				
 		
-		if(!file_exists($include)) //confirm file exists        			
-		   alm_get_default_repeater(); 
+		if(!file_exists($include)){ //confirm file exists        			
+		   alm_get_default_repeater();
+		} 
 		
 	}
    // If is Unlimited Repeaters (Custom Repeaters v2)
@@ -33,13 +34,19 @@ function alm_get_current_repeater($repeater, $type) {
 			$include = ALM_UNLIMITED_PATH. 'repeaters/'.$template .'.php';		
 		}   		
 				
-		if(!file_exists($include)) //confirm file exists        			
+		if(!file_exists($include)){ //confirm file exists        			
 		   $include = alm_get_default_repeater(); 			
-	
+		}
 	}
 	// Default repeater
 	else{				
 		$include = alm_get_default_repeater();
+	}	
+	
+	// Security check
+	// check if $template contains relative path. So, set include to default
+	if ( false !== strpos( $template, './' ) ) {
+	   $include = alm_get_default_repeater();
 	}
 	
 	return $include;
@@ -57,6 +64,7 @@ function alm_get_current_repeater($repeater, $type) {
 */
 
 function alm_get_default_repeater() {
+   
 	global $wpdb;
 	$file = null;
 	$template_dir = 'alm_templates';	
@@ -295,11 +303,9 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 *  @since 2.5.0
 */
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
-   if(!empty($meta_key)){ 
-      
+   if(!empty($meta_key)){       
       $meta_values = alm_parse_meta_value($meta_value, $meta_compare); 
-      if(!empty($meta_values)){
-         
+      if(!empty($meta_values)){         
          $return = array(
             'key' => $meta_key,
             'value' => $meta_values,
@@ -312,14 +318,10 @@ function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
             'key' => $meta_key,
             'compare' => $meta_compare,
             'type' => $meta_type
-         ); 
-         
-      }
-      
-      return $return; 
-         
-   }
-		
+         );          
+      }      
+      return $return;         
+   }		
 }
 
 
@@ -358,6 +360,80 @@ function alm_get_repeater_type($repeater){
 	$type = preg_split('/(?=\d)/', $repeater, 2); // split $repeater value at number to determine type
    $type = $type[0]; // default | repeater | template_	
 	return $type;
+}
+
+
+
+/*
+*  alm_get_canonical_url
+*  Get current page base URL
+*  
+*  @return $canonicalURL;
+*  @since 2.12
+*/
+function alm_get_canonical_url(){
+	
+	$canonicalURL = '';
+	
+	// Date
+   if(is_date()){
+      // Is archive page
+      $archive_year = get_the_date('Y');
+      $archive_month = get_the_date('m');
+      $archive_day = get_the_date('d');            
+      if(is_year()){
+        $canonicalURL = get_year_link( $archive_year );
+      }
+      if(is_month()){
+        $canonicalURL = get_month_link( $archive_year, $archive_month );
+      }
+      if(is_day()){
+        $canonicalURL = get_month_link( $archive_year, $archive_month, $archive_day );
+      }            
+   }
+   // Frontpage
+   elseif(is_front_page()){	 
+	   if(function_exists('pll_home_url')){ // Polylang support
+		   $canonicalURL = pll_home_url();
+	   }else{
+      	$canonicalURL = get_home_url().'/';
+      }      
+   }
+   // Home (Blog Default)
+   elseif(is_home()){ 
+      $canonicalURL = get_permalink(get_option('page_for_posts'));
+   }
+   // Category
+   elseif(is_category()){
+      $cur_cat_id = get_cat_id( single_cat_title('',false) );
+      $canonicalURL = get_category_link($cur_cat_id);
+   }
+   // Tag
+   elseif(is_tag()){
+      $cur_tag_id = get_query_var('tag_id');
+      $canonicalURL = get_tag_link($cur_tag_id);
+   } 
+   // Author
+   elseif(is_author()){
+      $author_id = get_the_author_meta('ID');
+      $canonicalURL = get_author_posts_url($author_id);
+   } 
+   // Taxonomy
+   elseif(is_tax()){
+      $tax_term = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy' ));
+      $tax_id = $tax_term->term_id;
+      $canonicalURL = get_term_link($tax_id);
+   }
+   // post_type
+   elseif(is_post_type_archive()){
+      $post_type_archive = get_post_type();
+      $canonicalURL = get_post_type_archive_link($post_type_archive);            
+   }       
+   else{            
+      $canonicalURL = get_permalink();
+   } 
+   
+	return $canonicalURL;
 }
 
 
@@ -416,9 +492,6 @@ function alm_paging_no_script($alm_preload_query){
    }
       $content .= '</div>';
       $content .= '</noscript>';
-   }
-   
+   }   
    return $content;
 }
-
-

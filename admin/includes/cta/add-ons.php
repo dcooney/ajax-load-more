@@ -3,6 +3,7 @@
 	<p>Ajax Load More offers a variety of unique add-ons that will extend and enhance the core functionality of the plugin.</p>
 	<ul>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/cache/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Cache">Cache</a></li>
+		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/call-to-actions/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Call to Actions">Call to Actions</a></li>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/comments/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Comments">Comments</a></li>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/custom-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Custom%20Repeaters">Custom Repeaters</a></li>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Layouts">Layouts</a></li>

@@ -171,6 +171,38 @@ jQuery(document).ready(function($) {
             output += ' cache_id="'+cache_id+'"';  
       }else{
          $('.cache_id').slideUp(100, 'alm_easeInOutQuad')
+      }                 
+      
+      
+      // ---------------------------
+      // - Call to Actions      
+      // ---------------------------
+      
+      var cta_container = $('#alm-cta');
+      var cta = $('input[name=cta]:checked', cta_container).val(); 
+      var cta_position = $('input[name=cta-position]', cta_container).val(); 
+      var cta_before_after = $('select[name=cta-before-after]', cta_container).val();
+      var cta_repeater = $('select[name=cta-repeater-select]', cta_container).val(); 
+      var cta_theme_repeater = $('select[name=theme-repeater-select]', cta_container).val(); 
+      
+      if(cta !== 'false' && cta != undefined){         
+         $('.cta_template_wrap').slideDown(100, 'alm_easeInOutQuad');         
+         // Standard repeater
+         if(cta_repeater != '' && cta_repeater != undefined && cta_position != '' && cta_position != null){
+            output += ' cta="'+cta+'"'; 
+            output += ' cta_position="'+cta_before_after+':'+cta_position; 
+            output += ' cta_repeater="'+cta_repeater+'"'; 
+         }  
+         // Theme repeater
+         if(cta_theme_repeater != '' && cta_theme_repeater != undefined && cta_position != '' && cta_position != null){
+            output += ' cta="'+cta+'"'; 
+            output += ' cta_position="'+cta_before_after+':'+cta_position; 
+            output += ' cta_theme_repeater="'+cta_theme_repeater+'"'; 
+         }          
+         $('#sequence-update').text(cta_position); 
+         $('#sequence-update-before-after').text(cta_before_after);       
+      }else{         
+         $('.cta_template_wrap').slideUp(100, 'alm_easeInOutQuad');         
       } 
       
       
@@ -221,7 +253,7 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
-      // - PAGING      
+      // - Paging      
       // ---------------------------     
       
       var paging = $('#alm-paging input[name=paging]:checked').val();
@@ -320,8 +352,7 @@ jQuery(document).ready(function($) {
              
       }else{
          $('.restapi_options').slideUp(100, 'alm_easeInOutQuad')
-      } 
-      
+      }       
       
       
       // ---------------------------
@@ -334,63 +365,24 @@ jQuery(document).ready(function($) {
 	      
          output += ' seo="'+seo+'"';                   
       }
-      
-      
+            
       
       // ---------------------------
       // - Repeater
       // ---------------------------
       
-      var repeater = $('.repeater select[name=repeater-select]').val(),
-      	 theme_repeater = $('.select-theme-repeater select[name=theme-repeater-select]').val();
-      	 
+      var repeater = $('#alm-repeaters select[name=repeater-select]').val(),
+      	 theme_repeater = $('#alm-repeaters .select-theme-repeater select[name=theme-repeater-select]').val();
+      
       if(theme_repeater != 'null' && theme_repeater != '' && theme_repeater != undefined){
 	      output += ' theme_repeater="'+theme_repeater+'"';
       }else{
 	      if(repeater != '' && repeater != undefined && repeater != 'default'){
 		      output += ' repeater="'+repeater+'"';      
 	      }	      
-      }  
+      }         
       
-      
-      
-      // ---------------------------
-      // - Alternate Repeater      
-      // ---------------------------
-      
-      var alternate_container = $('#alm-alternate');
-      var alternate = $('input[name=alternate]:checked', alternate_container).val(); 
-      var alternate_sequence = $('input[name=alternate-sequence]', alternate_container).val(); 
-      var alternate_sequence_max = $('input[name=alternate-sequence-max]', alternate_container).val(); 
-      var alternate_repeater = $('select[name=alternate-repeater-select]', alternate_container).val(); 
-      var alternate_theme_repeater = $('select[name=theme-repeater-select]', alternate_container).val(); 
-      if(alternate !== 'false' && alternate != undefined){
-         
-         $('.alternate_template_wrap').slideDown(100, 'alm_easeInOutQuad');
-         
-         // Standard repeater
-         if(alternate_repeater != '' && alternate_repeater != undefined && alternate_sequence != '' && alternate_sequence != null){
-            output += ' alternate="'+alternate+'"'; 
-            output += ' alternate_repeater="'+alternate_repeater+'"'; 
-            output += ' alternate_sequence="'+alternate_sequence+'"'; 
-            output += ' alternate_sequence_max="'+alternate_sequence_max+'"'; 
-         }  
-         // Theme repeater
-         if(alternate_theme_repeater != '' && alternate_theme_repeater != undefined && alternate_sequence != '' && alternate_sequence != null){
-            output += ' alternate="'+alternate+'"'; 
-            output += ' alternate_theme_repeater="'+alternate_theme_repeater+'"'; 
-            output += ' alternate_sequence="'+alternate_sequence+'"'; 
-            output += ' alternate_sequence_max="'+alternate_sequence_max+'"'; 
-         }       
-         
-      }else{
-         
-         $('.alternate_template_wrap').slideUp(100, 'alm_easeInOutQuad');
-         
-      } 
-      
-      
-         
+          
       // ---------------------------
       // - Post Types
       // ---------------------------
@@ -413,8 +405,7 @@ jQuery(document).ready(function($) {
          if(post_type_count>0){ 
             output += '"';
          }           
-      }
-      
+      }      
       
         
       // ---------------------------
@@ -856,8 +847,7 @@ jQuery(document).ready(function($) {
          output += ' button_label="'+button_label+'"';  
       
       if(button_loading_label !== '')    
-         output += ' button_loading_label="'+button_loading_label+'"';  
-         
+         output += ' button_loading_label="'+button_loading_label+'"';       
       
       
       
