@@ -399,6 +399,7 @@ function alm_admin_menu() {
    add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_nonce' );
    add_action( 'load-' . $alm_examples_page, 'alm_load_admin_js' );
+   add_action( 'load-' . $alm_examples_page, 'alm_set_admin_nonce' );
    add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
