@@ -35,15 +35,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    		self::$counter++;   		
    		
    		// Define page slug
-   		$slug = '';
-   		if(!is_archive()){
-   			// If not an archive page, set the post slug
-   			if(is_front_page() || is_home()){
-   				$slug = 'home';
-   			}else{
-   			   $slug = $post->post_name;
-            }
-   		}
+   		$slug = alm_get_page_slug($post);   		
    		
    		// Custom CSS for Layouts - Only run this once.
    		if(has_action('alm_layouts_custom_css')){
@@ -125,9 +117,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'button_loading_label' => '',	
    			'container_type' => '',	
    			'css_classes' => '',	
+   			'id' => '',	
    			'primary' => false	
-   		), $atts));
-   
+   		), $atts));   		   
+   		
    		
    		// Enqueue core Ajax Load More JS   	     	
       	wp_enqueue_script( 'ajax-load-more' );	       			
@@ -249,11 +242,19 @@ if( !class_exists('ALM_SHORTCODE') ):
          $canonicalURL = alm_get_canonical_url(); // Build canonical URL          
          
          // ALM Wrapper 		
-         $id = 'ajax-load-more';
+         $div_id = 'ajax-load-more';
          if(self::$counter > 1){
-         	$id = 'ajax-load-more-'.self::$counter; // Update ID to include counter value
+         	$div_id = 'ajax-load-more-'.self::$counter; // Update ID to include counter value
          }
-   		$ajaxloadmore .= '<div id="'. $id .'" class="ajax-load-more-wrap'. $btn_color .''. $paging_color .''. $alm_layouts .'" data-id="" data-canonical-url="'. $canonicalURL .'" data-slug="'. $slug .'">';
+         
+         // Unique ID         
+         if(!empty($id)){
+	         $the_id = 'data-id="'.$id.'"';
+         }else{
+	         $the_id = '';
+         }
+         
+   		$ajaxloadmore .= '<div id="'. $div_id .'" class="ajax-load-more-wrap'. $btn_color .''. $paging_color .''. $alm_layouts .'" '.$the_id.' data-alm-id="" data-canonical-url="'. $canonicalURL .'" data-slug="'. $slug .'">';
    		
    		
    		// Previous Post Add-on
@@ -355,8 +356,39 @@ if( !class_exists('ALM_SHORTCODE') ):
             $type = alm_get_repeater_type($repeater); 	
             
             if(!$comments){
-               $args = apply_filters('alm_preload_args', $preloaded_arr); // Create preloaded $args            
-               $args = apply_filters('alm_modify_query_args', $args, $slug); // ALM Core Filter Hook
+	            
+	            
+	            /*
+			   	 *	alm_preload_args
+			   	 *
+			   	 * ALM Preloaded Filter Hook
+			   	 *
+			   	 * @return $args;
+			   	 */
+               $args = apply_filters('alm_preload_args', $preloaded_arr); // Create preloaded $args     
+					
+					
+					
+					/*
+			   	 *	alm_modify_query_args
+			   	 *
+			   	 * ALM Core Filter Hook
+			   	 *
+			   	 * @return $args;
+			   	 */
+               $args = apply_filters('alm_modify_query_args', $args, $slug);
+         
+         
+         
+         		/*
+      	   	 *	alm_query_args_[id]
+      	   	 *
+      	   	 * ALM Core Filter Hook
+      	   	 *
+      	   	 * @return $args;
+      	   	 */  
+               $args = apply_filters('alm_query_args_'.$id, $args); // ALM Core Filter Hook  
+               
                
       			$alm_preload_query = new WP_Query($args);
       			$alm_total_posts = $alm_preload_query->found_posts - $offset;

@@ -1,8 +1,9 @@
 <div class="admin ajax-load-more settings" id="alm-settings">
 	<div class="wrap">
 		<div class="header-wrap">
-         <h1><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span></h1>
-         <p><?php _e('A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more'); ?></p>
+         <h1><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span>
+         <em><?php _e('A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more'); ?></em>
+         </h1>
       </div>         
 		<?php if( isset($_GET['settings-updated']) ) { ?>
           <div id="message" class="updated inline">
@@ -11,15 +12,15 @@
       <?php } ?>
 	   <div class="cnkt-main">
    	   
-   	   <?php      	   
-         $alm_dismiss_sharing = get_transient( 'alm_dismiss_sharing');  
-         if(!isset($alm_dismiss_sharing)){
+   	   <?php
+         $alm_dismiss_sharing = get_transient( 'alm_dismiss_sharing');           
+         if(!isset($alm_dismiss_sharing) || empty($alm_dismiss_sharing)){
 	         // If transient has not been set - display this notice.
          ?>
 	   	<div class="group share-alm">
    	   	<div class="dotted">     
       	   	<h2 style="padding: 0; margin: 0 0 10px;"><?php _e('A small favor to ask', 'ajax-load-more'); ?>...</h2> 	 
-      	   	<p style="padding: 0 0 15px; margin: 0 0 20px; border-bottom: 1px dashed #ccc;">
+      	   	<p style="padding: 0 0 15px; margin: 0 0 20px; border-bottom: 1px dashed #ccc; font-size: 14px;">
          	   	<?php _e('If you\'re an Ajax Load More user, please consider helping <a href="https://twitter.com/KaptonKaos" target="_blank">me</a> spread the word by sharing with your networks and/or leaving a review on <a href="https://wordpress.org/support/view/plugin-reviews/ajax-load-more" target="_blank">wordpress.org</a> forums.', 'ajax-load-more'); ?></p>  
       	   	<div class="one_half sharing">
          	   	<?php include_once( ALM_PATH . 'admin/includes/cta/sharing.php'); ?>	

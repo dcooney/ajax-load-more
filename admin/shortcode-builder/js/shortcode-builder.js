@@ -21,13 +21,13 @@ jQuery(document).ready(function($) {
       
       // multiple
       $('.ajax-load-more .categories select.multiple').select2({
-         placeholder : '-- Select Categories --',
+         placeholder : '-- '+ alm_admin_localize.select_cats +' --',
       });     
       $('.ajax-load-more .tags select.multiple').select2({
-         placeholder : '-- Select Tags --'         
+         placeholder : '-- '+ alm_admin_localize.select_tags +' --'         
       });  
-      $('.ajax-load-more .alternate_template_wrap select.multiple').select2({
-         placeholder : '-- Select Sequence --'         
+      $('.ajax-load-more .authors select.multiple').select2({
+         placeholder : '-- '+ alm_admin_localize.select_authors +' --'         
       });
    };
    _alm.select2();
@@ -41,7 +41,8 @@ jQuery(document).ready(function($) {
       
       // multiple
       $('.ajax-load-more .categories select.multiple').select2();     
-      $('.ajax-load-more .tags select.multiple').select2();
+      $('.ajax-load-more .tags select.multiple').select2(); 
+      $('.ajax-load-more .authors select.multiple').select2();
    };   
             
      
@@ -153,7 +154,36 @@ jQuery(document).ready(function($) {
    */     
 
    _alm.buildShortcode = function(){
-      output = '[ajax_load_more';    
+      output = '[ajax_load_more';   
+                 
+      
+      // ---------------------------
+      // - ID      
+      // ---------------------------
+      
+      var unique_id = $('input#unique-id').val(); 
+      if(unique_id)
+         output += ' id="'+unique_id+'"';    
+      
+      
+      // ---------------------------
+      // - Container Type      
+      // ---------------------------
+      
+      var container_type = $('.container_type input[name=alm_container_type]:checked').val(); 
+      if(container_type)
+         output += ' container_type="'+container_type+'"';
+      
+      
+      // ---------------------------
+      // - Container Classes      
+      // ---------------------------
+      
+      var container_classes = $('.alm-instance-options input#container-classes').val();    
+      container_classes = $.trim(container_classes);       
+      if(container_classes !== '' && $('.alm-instance-options input#container-classes').hasClass('changed')) 
+         output += ' css_classes="'+container_classes+'"'; 
+               
       
       // ---------------------------
       // - Cache      
@@ -190,7 +220,7 @@ jQuery(document).ready(function($) {
          // Standard repeater
          if(cta_repeater != '' && cta_repeater != undefined && cta_position != '' && cta_position != null){
             output += ' cta="'+cta+'"'; 
-            output += ' cta_position="'+cta_before_after+':'+cta_position; 
+            output += ' cta_position="'+cta_before_after+':'+cta_position+'"'; 
             output += ' cta_repeater="'+cta_repeater+'"'; 
          }  
          // Theme repeater
@@ -368,7 +398,7 @@ jQuery(document).ready(function($) {
             
       
       // ---------------------------
-      // - Repeater
+      // - Repeater Templates
       // ---------------------------
       
       var repeater = $('#alm-repeaters select[name=repeater-select]').val(),
@@ -380,7 +410,7 @@ jQuery(document).ready(function($) {
 	      if(repeater != '' && repeater != undefined && repeater != 'default'){
 		      output += ' repeater="'+repeater+'"';      
 	      }	      
-      }         
+      }           
       
           
       // ---------------------------
@@ -405,8 +435,17 @@ jQuery(document).ready(function($) {
          if(post_type_count>0){ 
             output += '"';
          }           
-      }      
+      }
       
+      
+      // ---------------------------
+      // - Posts Per Page       
+      // ---------------------------
+      
+      var posts_per_page = $('.posts_per_page input').val();        
+      if(posts_per_page > 0 && posts_per_page != 5)
+         output += ' posts_per_page="'+posts_per_page+'"';  
+              
         
       // ---------------------------
       // - Post Format
@@ -677,7 +716,7 @@ jQuery(document).ready(function($) {
       // ---------------------------
       
       var author = $('.authors #author-select').val();              
-      if(author !== '' && author !== undefined) 
+      if(author !== '' && author !== undefined && author !== null) 
          output += ' author="'+author+'"';   
       
       
@@ -717,16 +756,6 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
-      // - Custom Arguments      
-      // ---------------------------
-      
-      var custom_args = $('.custom-arguments input').val();    
-      custom_args = $.trim(custom_args);       
-      if(custom_args !== '') 
-         output += ' custom_args="'+custom_args+'"'; 
-      
-      
-      // ---------------------------
       // - Ordering      
       // ---------------------------
       var order = $('select#post-order').val(),
@@ -755,14 +784,15 @@ jQuery(document).ready(function($) {
       
       
       // ---------------------------
-      // - Posts Per Page       
+      // - Custom Arguments      
       // ---------------------------
       
-      var posts_per_page = $('.posts_per_page input').val();        
-      if(posts_per_page > 0 && posts_per_page != 5)
-         output += ' posts_per_page="'+posts_per_page+'"';  
+      var custom_args = $('.custom-arguments input').val();    
+      custom_args = $.trim(custom_args);       
+      if(custom_args !== '') 
+         output += ' custom_args="'+custom_args+'"'; 
       
-      
+     
       // ---------------------------
       // - Pause Loading      
       // ---------------------------
@@ -771,8 +801,7 @@ jQuery(document).ready(function($) {
       if(pause_load === 't'){          
          output += ' pause="true"'; 
       }         
-            
-      
+                  
       
       // ---------------------------
       // - Scrolling      
@@ -791,7 +820,7 @@ jQuery(document).ready(function($) {
             output += ' scroll_distance="'+$('.scroll_distance input').val()+'"';   
             
          var max_pages = $('.max_pages input').val();   
-         if(max_pages != 5)           
+         if(max_pages != 0)           
             output += ' max_pages="'+$('.max_pages input').val()+'"';  
             
          var pause_override = $('.pause_override input[name=pause_override]:checked').val();  
@@ -828,7 +857,7 @@ jQuery(document).ready(function($) {
 
       
       // ---------------------------
-      // - disbale after       
+      // - Disable After       
       // ---------------------------
       
       var destroy_after = $('.destroy-after input[name=destroy-after]').val(); 
@@ -847,27 +876,7 @@ jQuery(document).ready(function($) {
          output += ' button_label="'+button_label+'"';  
       
       if(button_loading_label !== '')    
-         output += ' button_loading_label="'+button_loading_label+'"';       
-      
-      
-      
-      // ---------------------------
-      // - Container Type      
-      // ---------------------------
-      
-      var container_type = $('.container_type input[name=alm_container_type]:checked').val(); 
-      if(container_type)
-         output += ' container_type="'+container_type+'"';
-      
-      
-      // ---------------------------
-      // - Container Classes      
-      // ---------------------------
-      
-      var container_classes = $('.alm-classes input#container-classes').val();    
-      container_classes = $.trim(container_classes);       
-      if(container_classes !== '' && $('.alm-classes input#container-classes').hasClass('changed')) 
-         output += ' css_classes="'+container_classes+'"';        
+         output += ' button_loading_label="'+button_loading_label+'"';        
       
       
       output += ']';  //Close shortcode          
@@ -879,6 +888,8 @@ jQuery(document).ready(function($) {
       	$('.reset-shortcode-builder').hide();
    }  
    
+    
+    
     
    /*
    *  On change events
@@ -904,19 +915,7 @@ jQuery(document).ready(function($) {
 			if($('.select-theme-repeater select[name=theme-repeater-select]').val() !== 'null' && $('.select-theme-repeater select[name=theme-repeater-select]').val() !== ''){
 				$('.repeater select[name=repeater-select]').select2('val','default');
 			}
-		}	
-		 
-      
-      // reset alternate repeater templates 
-		if(el.attr('name') === 'alternate-repeater-select'){
-			$('#alm-alternate select[name=theme-repeater-select]').select2('val','');
-		}	
-		if(el.attr('name') === 'theme-repeater-select'){
-			if($('#alm-alternate select[name=theme-repeater-select]').val() !== 'null' && $('#alm-alternate select[name=theme-repeater-select]').val() !== ''){
-				$('select[name=alternate-repeater-select]').select2('val','');
-			}
-		}	
-		
+		}			
 		
 		if(el.attr('id') === 'comments_template'){
 			$('#comments_callback').val('');
@@ -955,28 +954,63 @@ jQuery(document).ready(function($) {
    
    
    
+   
    /*
-   *  Jump to section, Table of contents
+   *  Jump to section, Table of contents [Repeater Templates, Shortcode Builder]
    *
    *  @since 2.0.0
-   *  Updated v2.4
+   *  Updated v2.13.0
    */ 
    
-   var jumpOptions = '';
-   var toc = '';
-	$('.row').each(function(){
-	   if(!$(this).hasClass('no-brd')){ // Special case for back 2 top on shortcode builder landing
-   		var id = $(this).attr('id');
-   		var title = $(this).find('h3.heading').text();
-   		jumpOptions += '<option value="'+id+'">'+title+'</option>';
-		}
-	});
+	var jumpMenuOptions = '';
+	function almBuildJumpMenu(type){
+   	
+   	if(type === 'repeaters'){
+      	$('.row').each(function(){
+      	   if(!$(this).hasClass('no-brd')){ // Special case for back 2 top on shortcode builder landing
+         		var id = $(this).attr('id'),
+         		    title = $(this).find('h3.heading').text();
+         		jumpMenuOptions += '<option value="'+id+'">'+title+'</option>';
+      		}
+      	});
+   	}
+   	
+   	if(type === 'shortcode'){   	
+      	$('.shortcode-parameter-wrap').each(function(){
+            var el = $(this),
+                opttitle = el.find('h2').text();
+            jumpMenuOptions += '<optgroup label="'+opttitle+'">';
+            $('.row', el).each(function(){
+         	   if(!$(this).hasClass('no-brd')){ // Special case for back 2 top on shortcode builder landing
+            		var id = $(this).attr('id'),
+            		    title = $(this).find('h3.heading').text();
+            		jumpMenuOptions += '<option value="'+id+'">'+title+'</option>';
+         		}
+         	});
+         	jumpMenuOptions += '</optgroup>';   
+         });  
+      }    
+	}	
+	if($('.shortcode-builder .shortcode-parameter-wrap').length){
+   	almBuildJumpMenu('shortcode'); // shortcode builder
+	}
+	if($('#alm-repeaters .repeaters').length){
+   	if($('#unlmited-container').length){
+      	$('#unlmited-container .row').each(function(){
+         	var el = $(this),
+         	    id = el.find('.wrap').data('name');
+            el.attr('id', 'alm_'+id);
+      	});
+   	}
+   	almBuildJumpMenu('repeaters'); // repeater templates
+	}
+	
 	
 	
 	
 	/* Jump Menu */
 	
-	$('select.jump-menu').append(jumpOptions);
+	$('select.jump-menu').append(jumpMenuOptions);
 	$('select.jump-menu').change(function() {
 		var pos = $(this).val();
 		if(pos !== 'null'){
@@ -988,10 +1022,16 @@ jQuery(document).ready(function($) {
    
    
 	
+	
 	/* Table of Contents */
 	
-	$('.table-of-contents .toc').append('<option value="#">-- Jump to Option --</option>');
-	$('.table-of-contents .toc').append(jumpOptions).select2();	
+	if($('.table-of-contents').hasClass('repeaters-toc')){
+	   $('.table-of-contents .toc').append('<option value="#">-- '+ alm_admin_localize.jump_to_template +' --</option>');   	
+	} else {
+	   $('.table-of-contents .toc').append('<option value="#">-- '+ alm_admin_localize.jump_to_option +' --</option>');   	
+	}
+	
+	$('.table-of-contents .toc').append(jumpMenuOptions).select2();	
 	
 	$('.table-of-contents .toc').change(function() {
 	   var pos = $(this).val();
@@ -1129,21 +1169,24 @@ jQuery(document).ready(function($) {
    *  @since 2.6.0
    */  
    
-   _alm.generateUniqueID = function(length) {
+   _alm.generateUniqueID = function(length, el) {
        var id = Math.floor(Math.pow(10, length-1) + Math.random() * 9 * Math.pow(10, length-1));
-       $('#cache-id').val(id);     
+       $(el).val(id);    
+       //_alm.buildShortcode(); 
    }
    
    
    
    /*
-   *  Generate Unique Cache ID Click
+   *  Generate Unique/Cache ID
    *
    *  @since 2.6.0
    */    
    
-   $(document).on('click', '.generate-cache-id', function(){
-      _alm.generateUniqueID(10);
+   $(document).on('click', '.generate-id a', function(){
+	   var id = $(this).data('id'),
+	   	 el = $('#'+id);
+      _alm.generateUniqueID(10, el);
    }); 
    
 

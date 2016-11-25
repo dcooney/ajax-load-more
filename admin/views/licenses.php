@@ -1,8 +1,10 @@
 <div class="admin ajax-load-more" id="alm-licenses">	
 	<div class="wrap">
 		<div class="header-wrap">
-	   		<h1><?php echo ALM_TITLE; ?>: <strong><?php _e('Licenses', 'ajax-load-more'); ?></strong></h1>
-	   		<p><?php _e('Enter your license keys to enable automatic updates for <a href="admin.php?page=ajax-load-more-add-ons">ALM Add-ons</a>.', 'ajax-load-more'); ?></p>  
+	   		<h1>
+   	   		<?php echo ALM_TITLE; ?>: <strong><?php _e('Licenses', 'ajax-load-more'); ?></strong>
+	   		   <em><?php _e('Enter your license keys to enable automatic updates for <a href="admin.php?page=ajax-load-more-add-ons">ALM Add-ons</a>.', 'ajax-load-more'); ?></em>
+	   		</h1>
 		</div>
 		<div class="cnkt-main">
 		   <div class="group">
@@ -26,7 +28,7 @@
    		   
    		   <?php 
       		   // Check if any add ons are installed. 
-      		   if(has_action('alm_cache_installed') || has_action('alm_cta_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_rest_api_installed') || has_action('alm_seo_installed') || has_action('alm_theme_repeaters_installed')) : ?>			      
+      		   if(alm_has_addon()) : ?>	  
 		     		      
 		      
 		      <?php 
@@ -769,21 +771,22 @@
 	   </div>
 	   
 	   <div class="cnkt-sidebar">
-   	   <div class="cta">
+   	   <div class="cta padding-bottom">
             <h3><?php _e('About Licenses', 'ajax-load-more'); ?></h3>
             <div class="cta-wrap">
                <ul>
-               <li><?php _e('Add-on licenses will enable updates directly in your WP dashboard.', 'ajax-load-more');?></li>
-               <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after your successful purchase.', 'ajax-load-more');?></li>
-               <li><?php _e('If you cannot locate your key please use the <a href="https://connekthq.com/contact/">contact form</a> on our website and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
+                  <li><?php _e('Add-on licenses will enable updates directly in your WP dashboard.', 'ajax-load-more');?></li>
+                  <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after your successful purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more');?></li>
+                  <li><?php _e('If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">form</a> on our website and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
                </ul>
             </div>
+            <a class="visit" target="_blank" href="https://connekthq.com/account/"><i class="fa fa-chevron-circle-right"></i> Sign Into Your Account</a>
          </div> 
          <div class="cta">
             <h3><?php _e('Legacy Users', 'ajax-load-more'); ?></h3>
             <div class="cta-wrap">
                <ul>
-               <li>If you have made a purchase prior to <u>July 6, 2015</u> you will require a license after updating your add-ons. Please <a href="https://connekthq.com/contact/">email us</a> with a reference to the email address used when you completed the add-on purchase and we will send your license key.</li>
+               <li>If you have made a purchase prior to <u>July 6, 2015</u> you will require a license after updating your add-ons. Please <a href="https://connekthq.com/plugins/ajax-load-more/support/#contact-form" target="_blank">email us</a> with a reference to the email address used when you completed the add-on purchase and we will send your license key.</li>
                </ul>
             </div>
          </div>  	   

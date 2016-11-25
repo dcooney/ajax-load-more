@@ -1,8 +1,10 @@
 <div class="admin ajax-load-more" id="alm-add-ons">	
 	<div class="wrap">
 		<div class="header-wrap">
-	   		<h1><?php echo ALM_TITLE; ?>: <strong><?php _e('Add-ons', 'ajax-load-more'); ?></strong></h1>
-	   		<p><?php _e('Add-ons are available to extend and enhance the core functionality of Ajax Load More', 'ajax-load-more'); ?>.</p>  
+	   		<h1>
+   	   		<?php echo ALM_TITLE; ?>: <strong><?php _e('Add-ons', 'ajax-load-more'); ?></strong>
+               <em><?php _e('Add-ons are available to extend and enhance the core functionality of Ajax Load More', 'ajax-load-more'); ?>.</em>
+	   		</h1>
 		</div>
 		<div class="cnkt-main full">
 		

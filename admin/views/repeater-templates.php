@@ -1,8 +1,10 @@
 <div class="admin ajax-load-more" id="alm-repeaters">	
 	<div class="wrap">
 		<div class="header-wrap">
-			<h1><?php echo ALM_TITLE; ?>: <strong><?php _e('Repeater Templates', 'ajax-load-more'); ?></strong></h1>
-			<p><?php _e('The library of editable templates for use within your theme', 'ajax-load-more'); ?></p>  
+			<h1>
+   			<?php echo ALM_TITLE; ?>: <strong><?php _e('Repeater Templates', 'ajax-load-more'); ?></strong>
+            <em><?php _e('The library of editable templates for use within your theme', 'ajax-load-more'); ?></em>
+         </h1>
 		</div>
 		<div class="cnkt-main form-table repeaters">				
 		   <!-- Repeaters -->
@@ -19,10 +21,9 @@
             <?php } ?>
 						
 			   <!-- Default Template -->
-			   <div class="row template default-repeater">
+			   <div class="row template default-repeater" id="default-template">
    			   
-   			   <?php
-      			   
+   			   <?php      			   
       			   // Check for local repeater template
          			$local_template = false;
          			$readOnly = 'false';
@@ -86,10 +87,12 @@
 			   </div>
 			   
 			   <!-- End Default Template -->		
-			   	   
+			   
+			   <!-- Custom Repeaters -->	   
             <?php               
-				   // Custom Repeaters v2 - /cta/extend.php
-            	if (!has_action('alm_get_unlimited_repeaters') && !has_action('alm_get_custom_repeaters')){ // If Custom Repeaters is NOT installed
+               
+            	if (!has_action('alm_get_unlimited_repeaters') && !has_action('alm_get_custom_repeaters')){ 
+               	// If Custom Repeaters & Theme Repeaters is NOT installed
                   echo '<div class="row no-brd">';
                   include( ALM_PATH . 'admin/includes/cta/extend.php');
                   echo '</div>';                  
@@ -266,28 +269,33 @@
 				</script>
 				
 		   </div>
-		   <!-- End Repeaters -->		   
+		   <!-- End Repeaters -->	
+		   	   
 	   </div>
 	   
 	   <div class="cnkt-sidebar">
-   	   <div class="cta">
-				<h3><?php _e('Templating Help', 'ajax-load-more'); ?></h3>
-				<div class="item">
-					<p><strong><?php _e('What is a repeater template?', 'ajax-load-more'); ?></strong></p>
-					<p><?php _e('A repeater template is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>.</p>', 'ajax-load-more'); ?></p>
-				</div>
-				<div class="item">
-					<p><strong><?php _e('Can I include PHP in the repeater template?', 'ajax-load-more'); ?></strong></p>
-					<p><?php _e('Yes, PHP and core WordPress functions such as, <code>the_title()</code> and <code>the_permalink()</code> are required.</p>', 'ajax-load-more'); ?></p>
-				</div>
-				<div class="item">
-					<p><strong><?php _e('Tips and Tricks', 'ajax-load-more'); ?></strong></p>
-					<ul>
-						<li><?php _e('Always open and close your templates with an HTML element. In some rare cases data may not be displayed if not wrapped in HTML.<br/>e.g. <code>&lt;li> &lt;/li></code> or <code>&lt;div> &lt;/div></code>', 'ajax-load-more'); ?><br/> </li>
-					</ul>
-				</div>		
-	   	</div>
-	   	<?php include_once( ALM_PATH . 'admin/includes/cta/writeable.php'); ?>
+   	   <?php if (has_action('alm_unlimited_repeaters')){ 
+      	   // Add TOC if users has Custom Repeaters
+   	   ?>
+   	   <div class="table-of-contents repeaters-toc">
+   	   	<div class="cta">
+   	   	   <select class="toc"></select>
+   	   	</div>
+   	  <?php } ?>
+      	   <div class="cta padding-bottom">
+   				<h3><?php _e('Repeater Template Help', 'ajax-load-more'); ?></h3>
+   				<div class="item">
+   					<p><strong><?php _e('What is a repeater template?', 'ajax-load-more'); ?></strong></p>
+   					<p><?php _e('A <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">repeater template</a> is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>.</p>', 'ajax-load-more'); ?></p>
+   				</div>
+   				<a class="visit" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank"><i class="fa fa-chevron-circle-right"></i> <?php _e('More About Templating', 'ajax-load-more'); ?></a>		
+   	   	</div>
+            <?php include_once( ALM_PATH . 'admin/includes/cta/writeable.php'); ?>
+            
+         <?php if (has_action('alm_unlimited_repeaters')){ ?>
+   	   </div>
+   	   <?php } ?>
+   	   
 	   </div>	
 	   
 	</div>

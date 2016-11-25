@@ -1,6 +1,6 @@
 <div class="clear"></div>
 <div class="alm-drop-btn alm-layout-selection">
-   <a href="javascript:void(0);" class="target"><i class="fa fa-chevron-circle-down"></i> <?php _e('Apply Layout', 'ajax-load-more'); ?></a>
+   <a href="javascript:void(0);" class="target"><i class="fa fa-caret-down"></i> <?php _e('Apply Layout', 'ajax-load-more'); ?></a>
 	<div class="alm-dropdown">
 	   <div class="alm-drop-inner">
    	   <ul>

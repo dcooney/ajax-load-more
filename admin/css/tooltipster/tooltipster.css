@@ -10,8 +10,7 @@
 
 /* Use this next selector to style things like font-size and line-height: */
 .tooltipster-default .tooltipster-content {
-   font-family: 'Open Sans', sans-serif;
-	font-size: 13px;
+	font-size: 12px;
 	line-height: 20px;
 	padding: 12px 16px;
 	overflow: hidden;

@@ -439,6 +439,71 @@ function alm_get_canonical_url(){
 
 
 /*
+*  alm_get_page_slug
+*  Get current page slug
+*  
+*  @return slug;
+*  @since 2.13.0
+*/
+function alm_get_page_slug($post){
+	
+	if(!is_archive()){
+		// If not an archive page, set the post slug
+		if(is_front_page() || is_home()){
+			$slug = 'home';
+		}else{
+		   $slug = $post->post_name;
+      }
+	}else{	   		
+		// Tax
+		if(is_tax()){
+			$queried_object = get_queried_object();
+			$slug = $queried_object->slug;
+		}
+		// Category
+		elseif(is_category()){
+	      $cat = get_query_var('cat');
+			$category = get_category($cat);
+			$slug = $category->slug;
+	   }
+	   // Tag
+	   elseif(is_tag()){
+	      $slug = get_query_var('tag');
+	   } 
+		// Author
+		elseif(is_author()){
+	      $slug = get_the_author_meta('ID');
+	   }			   
+		// Post Tupe Archive
+		elseif(is_post_type_archive()){
+			$slug = get_post_type();
+		}
+		elseif(is_date()){
+			// Is archive page
+	      $archive_year = get_the_date('Y');
+	      $archive_month = get_the_date('m');
+	      $archive_day = get_the_date('d');            
+	      if(is_year()){
+	        $slug = $archive_year;
+	      }
+	      if(is_month()){
+	        $slug = $archive_year.'-'.$archive_month;
+	      }
+	      if(is_day()){
+	        $slug = $archive_year.'-'.$archive_month.'-'.$archive_day;
+	      } 
+		}
+		else{
+			$slug = '';
+		}
+	}
+   
+	return $slug;
+}
+
+
+
+/*
 *  alm_paging_no_script
 *  Create paging navigation
 *  

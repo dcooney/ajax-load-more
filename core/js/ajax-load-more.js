@@ -36,7 +36,7 @@
       alm.data;
       alm.el = el;
       alm.container = el;
-      alm.container.addClass('alm-'+e).attr('data-id', e); // Add unique classname and data id
+      alm.container.addClass('alm-'+e).attr('data-alm-id', e); // Add unique classname and data id
       alm.content = $('.alm-ajax', alm.container);
       alm.content_preloaded = $('.alm-listing.alm-preloaded', alm.container);
       alm.canonical_url = alm.el.attr('data-canonical-url');
@@ -269,7 +269,7 @@
 
       /* Max number of pages to load while scrolling */
       if (alm.max_pages === undefined){
-         alm.max_pages = 5;
+         alm.max_pages = 0;
       }         
       if (alm.max_pages === 0){
          alm.max_pages = 10000;
@@ -496,7 +496,8 @@
                   lang              : alm.lang,
                   preloaded         : alm.preloaded,
                   preloaded_amount  : alm.preloaded_amount,
-                  seo_start_page    : alm.start_page
+                  seo_start_page    : alm.start_page,
+   	            id						: el.attr('data-id')
                };           
             
             $.ajax({ 
@@ -592,7 +593,8 @@
                   previous_post_taxonomy: alm.previous_post_taxonomy,
                   lang                 : alm.lang,
    	            slug                 : alm.slug,
-   	            canonical_url        : alm.canonical_url
+   	            canonical_url        : alm.canonical_url,
+   	            id							: el.attr('data-id')
                },
                
                beforeSend: function () {
@@ -1113,6 +1115,11 @@
       
       
       
+      /*  Window Resize
+       * 
+       *  Add resize function for Paging add-on only.
+       *  @since 2.1.2
+       */
       if(alm.paging){
          alm.window.resize(function() {
             if ($.isFunction($.fn.almOnWindowResize)){
@@ -1175,23 +1182,27 @@
        *  Load posts as user scrolls the page
        *  @since 2.0
        */
-      if(!alm.paging && !alm.previous_post){
-         if(alm.disable_ajax){
-            alm.finished = true;
-            alm.button.addClass('done');
-         }else{
-            if (alm.pause === 'true') {
-               alm.button.text(alm.button_label); 
-               alm.loading = false;
-            } else {
-               alm.AjaxLoadMore.loadPosts();
-            }
-         }
+      alm.AjaxLoadMore.init = function(){
+	      if(!alm.paging && !alm.previous_post){
+	         if(alm.disable_ajax){
+	            alm.finished = true;
+	            alm.button.addClass('done');
+	            
+	         }else{
+	            if (alm.pause === 'true') {
+	               alm.button.text(alm.button_label); 
+	               alm.loading = false;
+	            } else {
+	               alm.AjaxLoadMore.loadPosts();
+	            }
+	         }
+	      }
+	      if(alm.previous_post){
+	         alm.AjaxLoadMore.getPreviousPost(); // Set next post on load
+	         alm.loading = false;
+	      }
       }
-      if(alm.previous_post){
-         alm.AjaxLoadMore.getPreviousPost(); // Set next post on load
-         alm.loading = false;
-      }
+      alm.AjaxLoadMore.init();
       
 
 

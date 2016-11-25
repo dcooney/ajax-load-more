@@ -1,4 +1,3 @@
-@import url(//fonts.googleapis.com/css?family=Open+Sans:400,700,600);
 
 /* Custom buttom/loading styles */
 .select2-results .select2-result.alm-color .select2-result-label{
@@ -87,7 +86,6 @@
    font-size: 14px;
    color:#666;
    position: relative;
-   font-family: 'Open Sans', sans-serif;
    max-width: 1250px;
 }
 #alm-help.ajax-load-more{
@@ -138,15 +136,15 @@
    color: #999;
    padding: 0 0 0 12px;
    border-left: 5px solid #ff5a58;
-   margin: 0 0 30px;
-   font-size: 13px;
+   margin: 0 0 24px;
+   font-size: 14px;
 }
 .ajax-load-more code{
 	background: #fcf3d0;
 }
 .ajax-load-more p{
 	display: block;
-	color:#666;
+	color:#777;
 	width: 100%;
 	display: block; 
 	clear: both;
@@ -199,7 +197,8 @@ a.layout-hover{
 }
 
 .ajax-load-more h1{
-	font-weight: 400;
+	font-weight: 600;
+	line-height: 28px;
 }
 .ajax-load-more h1,
 .ajax-load-more h3,
@@ -227,7 +226,7 @@ a.layout-hover{
 /* Expand Collapse Headings */
 .ajax-load-more h3.heading{
    font-weight: 700;
-   padding: 10px 10px 10px 35px !important;
+   padding: 15px 10px 15px 40px !important;
    line-height: normal !important;
    margin: 0 !important;
    color: #555;
@@ -252,8 +251,8 @@ a.layout-hover{
       color: #ccc;
       font-size: 18px;
       position: absolute;
-      left: 10px;
-      top: 13px;
+      left: 13px;
+      top: 17px;
       height: 20px;
       width: 20px;
    }
@@ -274,7 +273,7 @@ a.layout-hover{
 /* Expand/Collapse all rows */
 .ajax-load-more .toggle-all{
     position: absolute;
-    top:-13px;
+    top: -16px;
     right: 20px;
     width: auto;
     display: inline-block;
@@ -282,10 +281,10 @@ a.layout-hover{
     text-transform: uppercase;
     border-radius: 3px;
     padding: 0 12px 0 10px;
-    height: 25px;
-    line-height: 24px;
+    height: 31px;
+    line-height: 30px;
     background: #fff;
-    border:1px solid #ccc;
+    border:1px solid #e7e7e7;
     color: #777;
     cursor: pointer;
     z-index: 2;
@@ -325,7 +324,7 @@ a.layout-hover{
         font-size: 10px;
         position: absolute;
         left: 0;
-        top: -4px;
+        top: -5px;
     }
     .ajax-load-more .toggle-all.closed .inner-wrap:before{
         content:'\f067';
@@ -462,9 +461,9 @@ a.layout-hover{
       position: absolute;
       right: 0;
       top: 0;
-      width: 23px;
-      height: 23px;
-      line-height: 22px;
+      width: 30px;
+      height: 30px;
+      line-height: 28px;
       text-align: center;
       font-weight: 700;
       font-size: 20px;
@@ -677,7 +676,7 @@ a.layout-hover{
 .ajax-load-more input.disabled-input{
    opacity: 0.5;
    filter: alpha(opacity=50);
-   cursor: default;
+   cursor: not-allowed;
    background: #f7f7f7 !important;	
 	border-color: #ccc !important;
 	box-shadow: none !important;
@@ -710,7 +709,7 @@ a.layout-hover{
 
 .ajax-load-more .row{ 
    padding: 0 !important; 
-   margin: 15px 0 0;
+   margin: 10px 0 0;
    height: auto; 
    width: 100%;
    display: block;
@@ -732,11 +731,17 @@ a.layout-hover{
 	.admin.ajax-load-more .row{ 
 		border-color: #efefef;
 	}
+	.admin.ajax-load-more .repeaters .row:hover,
+	.admin.ajax-load-more.shortcode-builder .row:hover{
+   	border-color: #d9d9d9;
+   	-webkit-box-shadow: 0 0 0 3px #f7f7f7;
+   	-moz-box-shadow: 0 0 0 3px #f7f7f7;
+   	box-shadow: 0 0 0 3px #f7f7f7;
+	}
 	.admin.ajax-load-more .row:first-of-type{
 		margin: 0;
 		padding-top: 0;
-	}
-	
+	}	
    .ajax-load-more .intro{
 		height: auto;  
 		width: 100%;
@@ -755,32 +760,32 @@ a.layout-hover{
       float: right;
       width: 30%;
    }
+   .pop-up-jump .jump-menu-wrap .select2-container{
+		width: 100% !important;  
+		margin-bottom: 15px;
+		position: relative;
+		top: -5px;
+	}
    .pop-up-jump .intro-wrap{
       position: relative;
       float: left;
       width: 65%;
       padding-right: 5%;
+   }   
+   .admin.ajax-load-more .jump-menu{
+   	display: none;
    }
-   
-.admin.ajax-load-more .jump-menu{
-	display: none;
-}
 
 /* Table of Contents */
 .table-of-contents{}
-
 .table-of-contents.attached{
    position: fixed;
    width: auto;
    top: 70px;
 }
-
    .table-of-contents .select2-container{
       width: 100%;
    }
-
-
-
    .table-of-contents ul{
       margin: 0 !important;
    }
@@ -790,8 +795,7 @@ a.layout-hover{
          vertical-align: top;
          padding: 0;
          margin: 5px 5px 5px 0;
-      }
-      
+      }      
    
    
 .ajax-load-more .expand-wrap{
@@ -817,16 +821,20 @@ a.layout-hover{
    width: 100%;
    float: none;
 }
+	.ajax-load-more .section-title h4{
+      font-size: 15px;	
+      margin-bottom: 13px;
+   }
 	.ajax-load-more .section-title p{		
-		font-size: 13px !important;
-/* 		padding-left: 21px !important; */
+		font-size: 13px;
+		line-height: 20px;
 		color: #999;
 	}
 	.ajax-load-more .section-title p .fa.tooltip,
 	.form-table label .fa.tooltip{
 		margin: 0 2px;
 		display: inline-block;
-		font-size: 16px;
+		font-size: 15px;
 		opacity: 0.9;
 		top: 0;
 	}
@@ -851,7 +859,6 @@ a.layout-hover{
       color: #666;
    }
 	.ajax-load-more .section-title h4{
-/* 		padding-left: 21px !important; */
 		margin: 0 0 10px;   	
 	}
 	
@@ -867,7 +874,7 @@ a.layout-hover{
 		.ajax-load-more label.template-title{
    		padding: 10px 0;
    		margin: 0;
-   		font-size: 13px;
+   		font-size: 14px;
    		color: #888;
 		}
 		
@@ -1023,9 +1030,8 @@ a.layout-hover{
 	background: #fff !important;
 	color: #ca5252 !important;
 	border: none;
-	font-size: 13px !important;
+	font-size: 14px !important;
 	font-weight: 600;
-	font-family: 'Open Sans', sans-serif;
 	padding: 8px 13px;
 	display: inline-block;
 	text-align: center; 
@@ -1105,7 +1111,7 @@ a.layout-hover{
    	.form-table .template-tags li{
 	   	margin: 0 0 8px;	
 			padding:0;
-         font-size: 13px;
+         font-size: 14px;
 	   }
    	.form-table .template-tags li{	
          margin: 2px 0;
@@ -1207,7 +1213,8 @@ a.layout-hover{
 
 .header-wrap{
 	background: url(../img/alm-logo-48x48.png) no-repeat left 12px;
-	padding-left: 62px;
+	background: url(../img/alm-logo-48x48.svg) no-repeat left 12px;
+	padding-left: 60px;
 	min-height: 48px;
 	overflow: hidden;
 	padding-top: 11px;
@@ -1215,19 +1222,26 @@ a.layout-hover{
 	.ajax-load-more .header-wrap h1{
 		padding-top: 0;
 	}
-	.ajax-load-more .header-wrap h1 + p{
-		margin-top: -3px;
-		opacity: 0.8;
+	.ajax-load-more .header-wrap h1 em{
+   	display: block;
+   	position: relative;
+		margin-top: -4px;
+		font-size: 14px;
+		opacity: 0.7;
+		font-style: normal;
+		font-weight: 400;
 	}
 	
 .ajax-load-more h1 span{
 	color: #999;
+	font-weight: 300;
 	background: #fff;
-	padding: 0 5px;
+	padding: 5px 6px;
 	border-radius: 2px;
-	font-size: 0.9em;
+	font-size: 0.8em;
 	position: relative;
-	top: -1px;
+	top: -2px;
+	left: 5px;
 }
 .ajax-load-more h2.addon-title{   
    font-size: 19px !important;
@@ -1257,14 +1271,17 @@ a.layout-hover{
 }
 .ajax-load-more h3.add-on-title,
 .ajax-load-more .cnkt-sidebar h3{
-   padding: 0 0 10px;
+   padding: 0 0 10px; 
    margin: 0 0 20px;
    border-bottom: 1px solid #efefef;
 }
 .ajax-load-more p.desc,
 .ajax-load-more p.writeable-title{
-	font-size: 12px !important;
-	padding: 0 0 5px 28px;
+	padding: 0 0 2px 28px;
+}
+.ajax-load-more p.desc{
+   opacity: 0.85;
+   font-size: 13px !important;
 }
 .ajax-load-more p.writeable-title{
    position: relative;
@@ -1276,13 +1293,14 @@ a.layout-hover{
 }
 
 .ajax-load-more p.back2top{
-	font-size: 12px;
+	font-size: 14px;
 	margin:0;
-	padding: 5px 2px 5px 0;
-	text-align: right;
+	padding: 0;
+	text-align: center;
 }
 	.ajax-load-more p.back2top a{
 		text-decoration: none;
+		display: block;
 	}
    
 .saved-response,
@@ -1362,7 +1380,7 @@ table.highlight{
 
 /* Columns */
 .ajax-load-more .cnkt-main{
-   width: 67%;
+   width: 69%;
    float: left;
    margin-top: 10px;
    background: none !important;
@@ -1379,13 +1397,15 @@ table.highlight{
 .ajax-load-more .cnkt-main .group,
 .ajax-load-more .cnkt-sidebar .cta,
 .call-out.light{
-   border: 1px solid #ccc;
+   border: 1px solid #e7e7e7;
    -webkit-border-radius: 3px; 
    -moz-border-radius: 3px; 
    border-radius: 3px; 
+/*
    -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
    -moz-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+*/
 }
 .ajax-load-more .cnkt-main.full{
    width: 100%;
@@ -1410,8 +1430,9 @@ table.highlight{
    top: 0; 
    text-decoration: none;
    width: 40px;
-   height: 40px;
-   line-height: 40px;
+   height: auto;
+   line-height: 1;
+   padding: 10px;
    text-align: center;  
    background: #f7f7f7;
    color: #777;
@@ -1483,7 +1504,8 @@ table.highlight{
    padding: 8px 14px;
 }
 .ajax-load-more .cnkt-main .group.installed{ 
-   opacity: 0.7;
+   opacity: 0.85;
+   filter: grayscale(0.85);
 }
 .ajax-load-more .cnkt-main .group.installed p:before{
    display: none !important;
@@ -1506,17 +1528,18 @@ table.highlight{
 	   color: #444 !important;
 	}
 
+
 /* Add-on Callout! */
 .call-out{
    background: #5acfb2;
-   padding: 13px 100px 13px 12px;
+   padding: 18px 100px 18px 18px;
    border-radius: 3px;
    margin: 0;
    width: 100%;
    display: block;
    color: #fff;
-   font-size: 13px;
-   font-weight: 600;
+   font-size: 14px;
+   font-weight: 400;
    position: relative;
 }
    .call-out.light{
@@ -1534,8 +1557,7 @@ table.highlight{
    }
    .call-out.light p a:hover{
       text-decoration: underline;  
-   }
-   
+   }   
    #alm-builder .call-out,
    .forceColors .call-out{ /* Shortcode builder */
       width: 90%;
@@ -1543,21 +1565,22 @@ table.highlight{
       margin: 10px;
    }
    .call-out .cnkt-button{
-      padding: 5px 8px;
+      padding: 6px 8px;
       display: inline-block;
       background: #fff;
       border: 1px solid #5da592;
       border-radius: 3px;
       position: absolute;
-      right: 7px;
-      top:7px;
+      right: 11px;
+      top: 11px;
       color: #387061 !important;
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+      font-size: 13px;
    }
    .call-out a{
       color: #387061 !important;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 500;
    }
    .call-out a:hover{
       color: #222 !important;
@@ -1573,7 +1596,7 @@ table.highlight{
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
       text-decoration: none !important;
       color: #fff !important;
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 600;
    }
       a.cnkt-button:hover,
@@ -1666,7 +1689,7 @@ table.highlight{
       .license p,
       .license label{
          font-size: 400;
-         font-size: 13px;
+         font-size: 14px;
       }
       .license .cnkt-button{
          position: absolute;
@@ -1720,7 +1743,7 @@ table.highlight{
    	.license-btn-wrap .msg{
 	   	display: block;
 	   	padding: 10px 0 0;
-	   	font-size: 13px;
+	   	font-size: 14px;
 	   	line-height: 18px;	
 	   }
    	.license-btn-wrap .msg strong{
@@ -1782,7 +1805,7 @@ table.highlight{
          
    .ajax-load-more .alm-nav{
       font-size: 600;
-      font-size: 13px;
+      font-size: 14px;
       margin: 0 !important;
       padding: 5px 0 5px;
    }
@@ -1808,7 +1831,7 @@ table.highlight{
  *  @since 1.0
  */
 .ajax-load-more .cnkt-sidebar{
-   width: 30%;
+   width: 29.5%;
    float: right;
    margin-top: 10px;
 }
@@ -1848,9 +1871,9 @@ table.highlight{
 			margin-bottom: 5px;
 		}
 		.ajax-load-more .cnkt-sidebar p{
-			line-height: 20px;
+			line-height: 22px;
 			margin: 0 0 5px;
-			font-size: 13px;
+			font-size: 14px;
 		}
 		.ajax-load-more .cnkt-sidebar .cta.dyk p{
 			margin: 5px 0;
@@ -1858,11 +1881,12 @@ table.highlight{
 			overflow: hidden;
 		}
 		.ajax-load-more .cnkt-sidebar ul{
+   		padding: 5px 0 0;
 		   margin: 0 0 10px;
 		   overflow: hidden;
 		}
 		.ajax-load-more .cnkt-sidebar li{
-			font-size: 13px;
+			font-size: 14px;
 			margin: 0 0 10px;
 			line-height: 1.4;
 		}
@@ -1917,7 +1941,7 @@ table.highlight{
 	
 	.ajax-load-more .cnkt-sidebar a.visit{
 		background: #FF5A58;
-		padding: 12px 20px 16px;
+		padding: 20px 20px 20px 50px;
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -1926,13 +1950,16 @@ table.highlight{
 		color: #fff !important;
 		z-index: 2;
 		text-decoration: none;
+		line-height: 1;
 	}
 		.ajax-load-more .cnkt-sidebar a.visit i{
 			font-size: 24px;
 			opacity: 0.7;
 			margin: 0 5px 0 0;
-			position: relative;
-			top:3px;
+			position: absolute;
+			top: 14px;
+			left: 19px;
+			display: inline-block;
 		}
 		.ajax-load-more .cnkt-sidebar a.visit:hover{
 			background: #ec4745;
@@ -1942,6 +1969,31 @@ table.highlight{
 			box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
 		}
 		
+	.ajax-load-more .cnkt-sidebar .project-listing {
+      padding: 0;	
+   }
+	.ajax-load-more .cnkt-sidebar .project-listing li{
+      margin: 10px 0;
+      font-size: 13px;
+      min-height: 48px;
+      padding-left: 53px;
+      position: relative;
+	}
+	.ajax-load-more .cnkt-sidebar .project-listing li:first-of-type{
+      margin: 0;	
+   }
+	.ajax-load-more .cnkt-sidebar .project-listing img {
+      height: 40px;
+      left: 0;
+      position: absolute;
+      top: 2px;
+      width: 40px;
+   }
+	.ajax-load-more .cnkt-sidebar .project-listing li strong{
+      font-size: 14px;	
+      display: block;
+   }
+	
 		
 		
 /*
@@ -2019,7 +2071,8 @@ table.highlight{
       color: #009999 !important;
    }
    
-   
+
+
    
 /*
 * Delete Template (Unlimited Repeaters
@@ -2105,7 +2158,7 @@ table.highlight{
          border-radius: 2px;
          background: none;
          color: #c94141;    
-         font-size: 13px;
+         font-size: 14px;
          text-decoration: none;  
          display: block;
          padding: 5px 10px;
@@ -2199,8 +2252,6 @@ table.highlight{
       .alm-add-template a:active i{
          color: #fff;
       }
-		
-
 .spacer{ 
    height:10px;
    clear:both; 
@@ -2215,7 +2266,7 @@ table.highlight{
 */
 
 
-.generate-cache-id{
+.generate-id{
    margin: 10px 0 0 !important;
    font-size: 12px !important;
 }
@@ -2293,7 +2344,7 @@ table.highlight{
       position: absolute;
       right:8px;
       top:7px;
-      font-size: 13px;
+      font-size: 14px;
       text-decoration: none;
       padding: 5px 10px;
       border: 1px solid #efefef;
@@ -2331,7 +2382,7 @@ table.highlight{
          vertical-align: top;
          overflow: hidden;
          width: 47%;
-         font-size: 13px; 
+         font-size: 14px; 
          background: transparent url(../img/directory-list.gif) no-repeat left center;
       }
       .alm-dir-listing.theme-repeaters ul li{
@@ -2360,7 +2411,7 @@ table.highlight{
       }   
       
       .cache-page-title{ 
-         font-size: 13px; 
+         font-size: 14px; 
          display: block;
          width: 100%;
          padding: 0 0 10px 12px;
@@ -2489,41 +2540,41 @@ p.cache-stats{
    .ajax-load-more .form-table input[type=checkbox] + label,
    .shortcode-builder input[type=radio] + label,
    .ajax-load-more .form-table input[type=radio] + label{
-      background: #fff url(../img/bkg-chkbox_off.png) no-repeat left top;
+      background: #fff url('../img/bkg-chkbox_off.png') no-repeat left 1px;
       height: auto;
       min-height: 20px;
       width: 100%;
       display:inline-block;
       padding: 1px 0 0 30px;
       margin: 0 0 5px;
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.42;
       cursor: pointer !important;
    }
    .shortcode-builder input[type=radio] + label,
    .ajax-load-more .form-table input[type=radio] + label{
-      background: #fff url(../img/bkg-radio_off.png) no-repeat left top;
+      background: #fff url('../img/bkg-radio_off.png') no-repeat left 1px;
    }
       
       .shortcode-builder input[type=checkbox]:hover + label,
       .ajax-load-more .form-table input[type=checkbox]:hover + label{ /* hover */
-         background-image: url(../img/bkg-chkbox_on.png);
+         background-image: url('../img/bkg-chkbox_on.png');
       }   
       
       .shortcode-builder input[type=radio]:hover + label,
       .ajax-load-more .form-table input[type=radio]:hover + label{ /* hover */   
-         background-image: url(../img/bkg-radio_on.png);
+         background-image: url('../img/bkg-radio_on.png');
       }  
    
       .shortcode-builder input[type=checkbox]:checked + label,
       .ajax-load-more .form-table input[type=checkbox]:checked + label{ /* selected */   
-         background-image: url(../img/bkg-chkbox_selected.png);
+         background-image: url('../img/bkg-chkbox_selected.png');
          color: #000;
       } 
       
       .shortcode-builder input[type=radio]:checked + label,
       .ajax-load-more .form-table input[type=radio]:checked + label{ /* selected */  
-         background-image: url(../img/bkg-radio_selected.png);
+         background-image: url('../img/bkg-radio_selected.png');
          color: #000;
       }      
          
@@ -2533,7 +2584,47 @@ p.cache-stats{
          .ajax-load-more .form-table input[type=radio] + label:hover{
             color: #000;
          }
+    
          
+/*
+* Shortcode Builder
+*
+* @since 2.13.0
+*/  
+#alm-shortcode-builder-form{
+   position: relative;
+}
+#alm-shortcode-builder-form .shortcode-parameter-wrap{
+   padding: 0 20px 20px;
+   display: block;
+   background: #fff;
+   border: 1px solid #e7e7e7;
+   -webkit-border-radius: 3px; 
+   -moz-border-radius: 3px; 
+   border-radius: 3px; 
+   margin-bottom: 20px;
+}
+   #alm-shortcode-builder-form .shortcode-parameter-wrap h2{
+      padding: 20px 22px;
+      margin: 0 -20px 20px;
+      display: block;
+      font-size: 22px;
+      width: calc(100% + 40px);
+      border-bottom: 1px solid #efefef;
+      background-color: #f7f7f7;
+      -webkit-border-radius: 2px 2px 0 0; 
+      -moz-border-radius: 2px 2px 0 0; 
+      border-radius: 2px 2px 0 0; 
+      color: #23282d;
+   }
+   .forceColors #alm-shortcode-builder-form .shortcode-parameter-wrap h2{
+	   padding: 12px 22px;
+	   font-size: 20px;
+   }
+   #alm-shortcode-builder-form .shortcode-parameter-wrap:first-of-type{
+      margin-top: 0;
+   }
+   
     
 /*
 * Repeater Template options dropdown
@@ -2550,31 +2641,33 @@ p.cache-stats{
 	
 .alm-drop-btn.alm-repeater-options{
    position: absolute;
-   top: -38px;
-   right: 6px;
+   top: -43px;
+   right: 11px;
    z-index:99;
 }
-   .alm-repeater-options a.target,
-   .alm-drop-btn.alm-layout-selection a.target{
+   .alm-drop-btn a.target{      
+      font-weight: 500;  
+      position: relative;
       color: #999;
       text-decoration: none !important;
-      padding: 5px 11px;
+      padding: 8px 12px 8px 32px;
       border: 1px solid #e7e7e7;
       -webkit-border-radius: 3px;
       -moz-border-radius: 3px;
       border-radius: 3px;
       font-size: 13px;
+      line-height: 1.25;
       display: block;
       -webkit-box-shadow: 0 0 0 1px #fff;
       -moz-box-shadow: 0 0 0 1px #fff;
       box-shadow: 0 0 0 1px #fff;
    }
-      .alm-repeater-options a i.fa-cog{
+      .alm-drop-btn a.target > i{
          color: #999;
          font-size: 16px;
-         position: relative;
-         top:1px;
-         left: -2px;
+         position: absolute;
+         top:9px;
+         left: 10px;
       }
       .alm-repeater-options a.target:hover{
 			background-color: #fff;
@@ -2616,8 +2709,8 @@ p.cache-stats{
          text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
          opacity: 0.8;
       }
-      .alm-drop-btn.alm-layout-selection a i{
-         margin: 1px 2px 0 0;
+      .alm-drop-btn.alm-layout-selection > a > i{
+         left: 12px;
       }  
       
       .alm-drop-btn.alm-layout-selection li.type{
@@ -2701,7 +2794,7 @@ p.cache-stats{
          background-color: #5acfb2;
          border: none;
          color: #fff;
-         font-weight: 600;
+         font-weight: 300;
          text-overflow: inherit; 
          height: auto;
          white-space: normal;
@@ -2800,9 +2893,6 @@ p.cache-stats{
       position: relative;
       width: auto;
    }
-   .alm-drop-btn a.target{
-      font-weight: 600;  
-   }
    .alm-dropdown{
       display: none;
       position: absolute;
@@ -2873,7 +2963,7 @@ p.cache-stats{
       padding: 0;
       line-height: 1.2;
       border-top: 1px solid #efefef;
-      font-weight: 600;
+      font-weight: 400;
    }
    .alm-dropdown ul li:first-child{
       border: none;
@@ -3086,9 +3176,6 @@ p.cache-stats{
    background: #f7f7f7;
    padding: 20px;
 }
-.share-alm{
-/*    display: none !important; */
-}
    .share-alm .dotted{
       border: none;  
       background: none;
@@ -3218,8 +3305,6 @@ ul.share li.facebook a:hover{
 }   
 
 
-   
-   
    
 /*
 * Local templates Add-on

@@ -156,7 +156,12 @@ function alm_admin_vars() { ?>
         'inactive' => __('Inactive', 'ajax-load-more'),
         'applying_layout' => __('Applying layout', 'ajax-load-more'),
         'template_updated' => __('Template Updated', 'ajax-load-more'),
-        'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' )
+        'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' ),
+        'select_authors' => __('Select Author(s)', 'ajax-load-more'),
+        'select_cats' => __('Select Categories', 'ajax-load-more'),
+        'select_tags' => __('Select Tags', 'ajax-load-more'),
+        'jump_to_option' => __('Jump to Option', 'ajax-load-more'),
+        'jump_to_template' => __('Jump to Template', 'ajax-load-more')
     )); ?>
     /* ]]> */
     </script>
@@ -193,11 +198,12 @@ function alm_core_update() {
 	$alm_installed_ver = get_option( "alm_version" ); // Get value from WP Option tbl
 	if ( $alm_installed_ver != ALM_VERSION ) {
    	
-   	// Delete our ALM transients
-   	delete_transient( 'alm_dismiss_sharing' );
+   	// Delete ALM transients
+   	delete_transient('alm_dismiss_sharing');
 		
 		// Update repeaters
 		alm_run_update();	
+		
 	}  
 }
 
@@ -298,7 +304,7 @@ function alm_update_template_files(){
 add_action( 'admin_menu', 'alm_admin_menu' );
 function alm_admin_menu() {  
    $icon = 'dashicons-plus-alt';
-   $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.png";
+   $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.svg";
    
    $alm_page = add_menu_page( 
       'Ajax Load More', 
@@ -431,7 +437,7 @@ function alm_enqueue_admin_scripts(){
    wp_enqueue_style( 'alm-select2', ALM_ADMIN_URL. 'css/select2.css');
    wp_enqueue_style( 'alm-tooltipster', ALM_ADMIN_URL. 'css/tooltipster/tooltipster.css');
    wp_enqueue_style( 'alm-core', ALM_URL. '/core/css/ajax-load-more.css');
-   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css');
+   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css');
    
    //Load CodeMirror Syntax Highlighting if on Repater Template page 
    $screen = get_current_screen();
@@ -819,8 +825,8 @@ function alm_dismiss_sharing(){
 		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
 			die('Error - unable to verify nonce, please try again.');			
 		
-      set_transient( 'alm_dismiss_sharing', 'true', 365 * DAY_IN_SECONDS );
-      echo 'Success';
+      set_transient( 'alm_dismiss_sharing', 'true', YEAR_IN_SECONDS );
+      echo 'ALM sharing dismissed successfully.';
       
       die();
    }
@@ -841,7 +847,7 @@ function alm_filter_admin_footer_text( $text ) {
 		return;
 	}
 	
-	echo 'Ajax Load More is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
+	echo 'Ajax Load More is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://wordpress.org/support/plugin/ajax-load-more/reviews/" target="_blank" style="font-weight: 500;">Leave a Review</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
 }
 
 

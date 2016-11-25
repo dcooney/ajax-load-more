@@ -1,8 +1,10 @@
 <div class="admin ajax-load-more" id="alm-help">	
 	<div class="wrap">
 		<div class="header-wrap">
-   			<h1><?php echo ALM_TITLE; ?>: <strong><?php _e('Help', 'ajax-load-more'); ?></strong></h1>
-   			<p><?php _e('Get started with our four step guide to painless implementation!', 'ajax-load-more'); ?></p>  
+   			<h1>
+      			<?php echo ALM_TITLE; ?>: <strong><?php _e('Help', 'ajax-load-more'); ?></strong>
+               <em><?php _e('Get started with our four step guide to painless implementation!', 'ajax-load-more'); ?></em>
+   			</h1>
 		</div>
 		<div class="cnkt-main forceColors">
 		   <div class="group">		   	

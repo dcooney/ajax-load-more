@@ -1,6 +1,6 @@
-<div class="cta padding-bottom cta-add-on">
+<div class="cta cta-add-on">
 	<h3>Add-ons</h3>
-	<p>Ajax Load More offers a variety of unique add-ons that will extend and enhance the core functionality of the plugin.</p>
+	<p>Ajax Load More offers a variety of unique <a href="admin.php?page=ajax-load-more-add-ons">add-ons</a> that will extend and enhance the core functionality of the plugin.</p>
 	<ul>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/cache/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Cache">Cache</a></li>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/call-to-actions/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Call to Actions">Call to Actions</a></li>
@@ -14,5 +14,4 @@
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=SEO">Search Engine Optimization</a></li>
 		<li><a target="blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/?utm_source=WP%20Admin&utm_medium=ALM%20Settings&utm_campaign=Theme Repeaters">Theme Repeaters</a></li>
 	</ul>	
-	<a href="admin.php?page=ajax-load-more-add-ons" class="visit"><i class="fa fa-chevron-circle-right"></i> View All Add-Ons</a>
 </div>			

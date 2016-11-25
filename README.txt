@@ -3,8 +3,8 @@ Contributors: dcooney
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, pagination, ajax pagination, ajax, ajax posts, ajax load posts, search, tags, category, post types, taxonomy, meta_query, woocommerce
 Requires at least: 3.6
-Tested up to: 4.6
-Stable tag: 2.12.0
+Tested up to: 4.7
+Stable tag: 2.13.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,7 @@ Ajax Load More is a powerful solution for infinite scrolling and lazy loading po
 
 Build complex custom WordPress queries using the Ajax Load More shortcode builder then add the generated shortcode to your page via the content editor or directly into your template files. 
 
-Ajax Load More is fully compatible with popular ecommerce plugins such as WooCommerce and Easy Digital Downloads.
+Ajax Load More is fully compatible with popular eCommerce plugins such as WooCommerce and Easy Digital Downloads.
 
 **[Get More Information](https://connekthq.com/plugins/ajax-load-more/)**
 
@@ -70,14 +70,14 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **meta_compare** - Operator to compare meta_key and meta_value against. Default = ‘IN’
 *   **meta_type** - Custom field type. Default = ‘CHAR’
 *   **meta_relation** - Used with multiple custom field entries (AND/OR). Default = ‘AND’
-*   **author** - Query by author id. Default = null
+*   **author** - Comma separated list of authors by id. Default = null
 *   **post__in** - Comma separated list of post ID’s to include in query. Default = null 
 *   **post__not_in** - Comma separated list of post ID’s to exclude from query. Default = null 
 *   **search** - Query search term (‘s’). Default = null
 *   **custom_args** - A semicolon separated list of value:pair arguments. e.g. tag_slug__and:design,development; event_display:upcoming. Default = null
 *   **post_status** - Select status of the post. Default = 'publish' 
 *   **order** - Display posts in ASC(ascending) or DESC(descending) order. Default = ‘DESC’
-*   **orderby** - Order posts by date, title, name, menu order, random, author, post ID or comment count.  Default = ‘date’
+*   **orderby** - Order posts by date, title, name, menu order, author, post ID or comment count.  Default = ‘date’
 *   **offset** - Offset the initial query (number). Default = ’0′
 *   **posts_per_page** - Number of posts to load with each Ajax request. Default = ’5′
 *   **scroll** - Load more posts as the user scrolls the page (true/false). Default = ‘true’
@@ -94,6 +94,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **button_loading_label** - Update the text of the Load More button while content is loading. Default = null
 *   **container_type** - Override the global Container Type that was set on ALM Settings page. Default = null
 *   **css_classes** - Add custom CSS classes to the Ajax Load More container. Default = null
+*   **id** - A unique ID for the Ajax Load More instance.
 ***
 
 = Example Shortcode =
@@ -215,6 +216,11 @@ The following [functions](https://connekthq.com/plugins/ajax-load-more/docs/call
 
 ***
     
+= Filter Hooks =
+
+Ajax Load More has a variety of [filters](https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/) in place that enable users to hook into Ajax Load More to insert or modify data.
+
+    
 = Variables =
 
 Ajax Load More passes the following PHP [variables](https://connekthq.com/plugins/ajax-load-more/docs/variables/) to each repeater template - these template variables can help you style and transform your repeater templates.
@@ -231,9 +237,9 @@ Ajax Load More passes the following PHP [variables](https://connekthq.com/plugin
 * Firefox (Mac, PC)
 * Chrome (Mac, PC, iOS, Android)
 * Safari (Mac, iOS)
+* Opera
+* Android
 * IE8+
-* Android (Native)
-* BB10 (Native)
 
 ***
 
@@ -322,6 +328,26 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 2.13.0.1 - November 10, 2016 =
+
+* FIX - almEmpty() callback function not firing because of updated return value of empty query.
+* FIX - almdebug() filter causing 'Missing argument 2 for apply_filters()' error for some users.
+* FIX - Shortcode builder UI heading update.
+
+= 2.13.0 - November 6, 2016 =
+
+* NEW - ID shortcode parameter. Assigning a unique ID to an Ajax Load More instance will allow for filters to be run more easily.
+* NEW - Added a new filter alm_query_args_[id] that let's users create custom filters based on the ID of the Ajax Load More instance. Users can easily target a specific instance of Ajax Load More to modify query $args. See https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_query_args
+* NEW - Added a debug filter to view the return contents of the Ajax Load More query in the browser console (add_filter( 'alm_debug', '__return_true' )).
+* FIX - Issue with cta_position parameter for Call to Actions add-on in shortcode builder.
+* UPDATE - Updated Shortcode Builder UI to add groupings for parameter types [Add-ons, Display Settings, Query Parameters].
+* UPDATE - Removed limit of 3 Taxonomy queries. Tax queries now support an unlimited amount however the Shortcode Builder is still capped at 3.
+* UPDATE - Adjusted max_pages shortcode parameter to default to 0.
+* UPDATE - Reworked alm_get_page_slug ()function to get current page slug.
+* UPDATE - Remove support for author slugs in favor of multiple author support and selection from the Shortcode Builder
+* UPDATE - Various UI/UX updates, new logos added to admin panel.
+
 
 = 2.12.0 - September 5, 2016 =
 * NEW - Completed integration of new Call to Actions add-on.

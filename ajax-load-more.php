@@ -7,14 +7,15 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: http://connekthq.com
-Version: 2.12.0
+Version: 2.13.0.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
+
 */	  
 
    		
-define('ALM_VERSION', '2.12.0');
-define('ALM_RELEASE', 'September 5, 2016');
+define('ALM_VERSION', '2.13.0.1');
+define('ALM_RELEASE', 'November 10, 2016');
 define('ALM_STORE_URL', 'https://connekthq.com');	
 
 
@@ -315,6 +316,7 @@ if( !class_exists('AjaxLoadMore') ):
             }
          }     
    		
+   		$id = (isset($_GET['id'])) ? $_GET['id'] : '';
    		$slug = (isset($_GET['slug'])) ? $_GET['slug'] : '';
    		$canonical_url = (isset($_GET['canonical_url'])) ? $_GET['canonical_url'] : $_SERVER['HTTP_REFERER'];
    
@@ -362,18 +364,8 @@ if( !class_exists('AjaxLoadMore') ):
    		$s = (isset($_GET['search'])) ? $_GET['search'] : '';   		
    		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
    		
-   		// Author
-         $author = (isset($_GET['author'])) ? $_GET['author'] : '';
-         if(!is_numeric($author) && $author !== '') {
-            $author = get_user_by('slug', $author); // Allow access to authors via slug
-            if($author){
-               $author_id = (isset($author)) ? $author->ID : '';
-            }else{
-               $author_id = '';
-            }
-         } else {
-            $author_id = $author;
-         }
+   		// Author 
+         $author = (isset($_GET['author'])) ? $_GET['author'] : '';       
    		
    		// Ordering
    		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
@@ -386,7 +378,7 @@ if( !class_exists('AjaxLoadMore') ):
    		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
    		$post_status = $_GET['post_status'];
    		if($post_status == '') $post_status = 'publish';   		
-   		if($post_status != 'publish' || $post_status != 'inherit'){
+   		if($post_status != 'publish' && $post_status != 'inherit'){
       		// If not 'publish', OR 'inherit' confirm user has rights to view these old posts.
       		if (current_user_can( 'edit_theme_options' )){
          		$post_status = $post_status;
@@ -475,34 +467,16 @@ if( !class_exists('AjaxLoadMore') ):
       			            
             }else{
                
-               // Taxonomy and possibly Post Formats
-            
-      		   if($tax_query_total === 1){
-         			$args['tax_query'] = array(
-            			'relation' => $taxonomy_relation,
-         			   alm_get_post_format($post_format),
-         			   alm_get_taxonomy_query($taxonomy[0], $taxonomy_terms[0], $taxonomy_operator[0]),
-         			);
-      			}
-      			
-      			if($tax_query_total === 2){
-         			$args['tax_query'] = array(
-            			'relation' => $taxonomy_relation,
-         			   alm_get_post_format($post_format),
-         			   alm_get_taxonomy_query($taxonomy[0], $taxonomy_terms[0], $taxonomy_operator[0]),	
-         			   alm_get_taxonomy_query($taxonomy[1], $taxonomy_terms[1], $taxonomy_operator[1]),		
-         			);
-      			}
-      			
-      			if($tax_query_total === 3){
-         			$args['tax_query'] = array(
-            			'relation' => $taxonomy_relation,
-         			   alm_get_post_format($post_format),
-         			   alm_get_taxonomy_query($taxonomy[0], $taxonomy_terms[0], $taxonomy_operator[0]),	
-         			   alm_get_taxonomy_query($taxonomy[1], $taxonomy_terms[1], $taxonomy_operator[1]),	
-         			   alm_get_taxonomy_query($taxonomy[2], $taxonomy_terms[2], $taxonomy_operator[2]),		
-         			);
-      			}
+               // Post Formats            
+					$args['tax_query'] = array(
+						'relation' => $taxonomy_relation,
+						alm_get_post_format( $post_format )
+					);					
+					
+					// Loop Taxonomies					
+					for($tax_i = 0; $tax_i < $tax_query_total; $tax_i++){
+						$args['tax_query'][] = alm_get_taxonomy_query($taxonomy[$tax_i], $taxonomy_terms[$tax_i], $taxonomy_operator[$tax_i]);
+					}
    			}
    			
    	   }
@@ -591,8 +565,8 @@ if( !class_exists('AjaxLoadMore') ):
          } 
          
          // Author
-   		if(!empty($author_id)){
-   			$args['author'] = $author_id;
+   		if(!empty($author)){
+   			$args['author'] = $author;
    		}     
          
    		// Include posts
@@ -666,7 +640,18 @@ if( !class_exists('AjaxLoadMore') ):
 	   	 *
 	   	 * @return $args;
 	   	 */
-         $args = apply_filters('alm_modify_query_args', $args, $slug); // ALM Core Filter Hook              
+         $args = apply_filters('alm_modify_query_args', $args, $slug); // ALM Core Filter Hook
+         
+         
+         
+   		/*
+	   	 *	alm_query_args_[id]
+	   	 *
+	   	 * ALM Core Filter Hook
+	   	 *
+	   	 * @return $args;
+	   	 */  
+         $args = apply_filters('alm_query_args_'.$id, $args); // ALM Core Filter Hook              
    		
    		
    		/*
@@ -738,7 +723,7 @@ if( !class_exists('AjaxLoadMore') ):
 	   				if($theme_repeater != 'null' && has_action('alm_get_theme_repeater')){  // Theme Repeater
 		   				do_action('alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current);
 						}else{
-							include(alm_get_current_repeater( $repeater, $type )); //Include repeater template
+							include(alm_get_current_repeater( $repeater, $type )); // Repeater
 						}
 						// End Repeater Template		 
 	   	         
@@ -749,7 +734,7 @@ if( !class_exists('AjaxLoadMore') ):
       	   	   	$alm_has_cta = true;
       			   } 
       			   
-	   					   					
+	   					   					  
 	            endwhile; wp_reset_query();
 	            
 	            // End ALM Loop	            
@@ -761,12 +746,25 @@ if( !class_exists('AjaxLoadMore') ):
    	         if(!empty($cache_id) && has_action('alm_cache_installed') && $seo_start_page <= 1){ 
    	            apply_filters('alm_cache_file', $cache_id, $page, $data);
    	         }   	         
+   	         
+   	         
+   	         
+   	         /*
+			   	 *	alm_debug
+			   	 *
+			   	 * ALM Core Filter Hook
+			   	 *
+			   	 * @return $alm_query/false;
+			   	 */
+   	         $debug = (apply_filters('alm_debug', false)) ? $alm_query : false;
+   	         
    	                  
-   	         $return = array(
+   	         $return = array( 
                   'html' => $data,
-                  'meta'  => array(
-                     'postcount' => $alm_post_count,
-                     'totalposts' => $alm_found_posts
+                  'meta' => array(
+                     'postcount'  => $alm_post_count,
+                     'totalposts' => $alm_found_posts,
+                     'debug' 		 => $debug
                   )
                );                             
                wp_send_json($return);
@@ -775,9 +773,10 @@ if( !class_exists('AjaxLoadMore') ):
 	   		   
 	   		   $return = array(
                   'html' => null,
-                  'meta'  => array(
-                     'postcount' => null,
-                     'totalposts' => null
+                  'meta' => array(
+                     'postcount'  => 0,
+                     'totalposts' => 0,
+                     'debug'		 => null
                   )
                );               
                wp_send_json($return);

@@ -23,7 +23,7 @@
         title: 'Insert Ajax load More',
         cmd: 'alm_mcebutton',
         classes: 'widget btn ajax-load-more-btn',
-        image: url + '/../../img/add.png'
+        image: url + '/../../img/alm-logo-16x16.svg'
       });
 
     }
