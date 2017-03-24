@@ -41,8 +41,8 @@ if( !class_exists('ALM_SHORTCODE') ):
    		if(has_action('alm_layouts_custom_css')){
       		do_action('alm_layouts_custom_css', self::$counter);   		
          }
-   		
-   		extract(shortcode_atts(array(
+
+   		extract(shortcode_atts(apply_filters('alm_shortcode_defaults', array(
    			'restapi' => false,
    			'restapi_base' => '/wp-json',
    			'restapi_namespace' => 'ajaxloadmore',
@@ -66,7 +66,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'paging_show_at_most' => '7',
    			'paging_classes' => '',
    			'preloaded' => 'false',
-   			'preloaded_amount' => get_option('posts_per_page', 10),
+   			'preloaded_amount' => 5,
    			'seo' => 'false',
    			'repeater' => 'default',
    			'theme_repeater' => 'null',
@@ -102,7 +102,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'post__not_in' => '',
    			'exclude' => '',
    			'offset' => '0',
-   			'posts_per_page' => get_option('posts_per_page', 10),
+   			'posts_per_page' => 5,
    			'scroll' => 'true',
    			'scroll_distance' => '150',
    			'max_pages' => '5',
@@ -119,7 +119,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    			'css_classes' => '',	
    			'id' => '',	
    			'primary' => false	
-   		), $atts));   		   
+   		)), $atts));   		   
    		
    		
    		// Enqueue core Ajax Load More JS   	     	
