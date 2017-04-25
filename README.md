@@ -1,4 +1,4 @@
-#WordPress Ajax Load More
+# WordPress Ajax Load More
 
 Ajax Load More is the ultimate solution for infinite scrolling and lazy loading posts, custom post types and pages with Ajax powered queries.
 
@@ -6,11 +6,11 @@ Build complex WordPress queries using the Ajax Load More custom shortcode builde
 
 **[Get More Information](http://connekthq.com/plugins/ajax-load-more/)**
 
-##Download Instructions
+## Download Instructions
 Ajax Load More is available as an installed plugin on [wordpress.org](https://wordpress.org/plugins/ajax-load-more/). 
 Please download the latest stable version from your WordPress plugins dashboard by searching for Ajax Load More or visiting https://wordpress.org/plugins/ajax-load-more/.
 
-##Features
+## Features
 * Shortcode Builder - Easily create your own Ajax Load More shortcode by adjusting the various WordPress query parameters in our easy-to-use shortcode builder.(see Shortcode Parameters).
 * Query Parameters - Ajax Load More allows you to query WordPress by many different content types. Query by Post Type, Post Format, Date, Category, Tags, Custom Taxonomies, Search Term, Authors and more!!
 * Customizable Repeater Templates - Edit and extend the functionality of Ajax Load More by creating your own repeater template to match the look and feel of your website (see screenshots).
@@ -19,7 +19,7 @@ Please download the latest stable version from your WordPress plugins dashboard 
 
 Check out the **[demo site](http://connekthq.com/plugins/ajax-load-more/)** for more information!
 
-##Shortcode Parameters
+## Shortcode Parameters
 
 Ajax Load More accepts a number of parameters that are passed to the WordPress query. These parameters are transferred via shortcode - don't worry, creating your shortcode is simple with our intuitive Shortcode Builder.
  
@@ -75,12 +75,12 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *   **paging_show_at_most** - Maximum amount of pages to show at a time. 0 = no maximum. Default = ‘0’
 
 
-##Example Shortcode
+## Example Shortcode
 
     [ajax_load_more post_type="post, portfolio" repeater="default" posts_per_page="5" transition="fade" button_label="Older Posts"]
 
 
-##Demos
+## Demos
 * **[Default](http://connekthq.com/plugins/ajax-load-more/)** - Out of the box functionality and styling
 * **[Destroy After](http://connekthq.com/plugins/ajax-load-more/examples/destroy-after/)** - Remove Ajax Load More functionality after 'n' number of pages
 * **[Fade Transition](http://connekthq.com/plugins/ajax-load-more/examples/fade-transition/)** - Elements fade in as posts are loaded
@@ -97,7 +97,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 *The [Custom Repeater Add-On](http://connekthq.com/plugins/ajax-load-more/custom-repeaters/) has been installed for use on each of our product demos*
 
 
-#Add-ons
+# Add-ons
  The following Add-ons are available to increase the functionality of Ajax Load More.
 
 #### Custom Repeaters
@@ -129,7 +129,7 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 > [Get More Information](http://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)
 
 
-##Tested Browsers
+## Tested Browsers
 
 * Firefox (Mac, PC)
 * Chrome (Mac, PC, iOS, Android)
@@ -139,5 +139,5 @@ Ajax Load More accepts a number of parameters that are passed to the WordPress q
 * BB10 (Native)
 
 
-##Website =
+## Website =
 http://connekthq.com/ajax-load-more/
