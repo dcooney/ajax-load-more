@@ -323,6 +323,7 @@ if( !class_exists('ALM_SHORTCODE') ):
          		'post_type'          => $post_type,
          		'post_format'        => $post_format,
          		'category'           => $category,
+         		'category_name'      => $category,
          		'category__not_in'   => $category__not_in,
          		'tag'                => $tag,
          		'tag__not_in'        => $tag__not_in,
