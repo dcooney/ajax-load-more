@@ -1,0 +1,31 @@
+{
+  "name": "ajax-load-more",
+  "version": "",
+  "description": "Ajax Load More WordPress Plugin",
+  "main": "",
+  "author": "connekt",
+  "private": true,
+  "repository": {
+    "private": true
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "latest",
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-babel": "latest",
+    "gulp-clean-css": "latest",
+    "gulp-concat": "latest",
+    "gulp-jshint": "latest",
+    "gulp-notify": "latest",
+    "gulp-rename": "latest",
+    "gulp-sass": "latest",
+    "gulp-sequence": "latest",
+    "gulp-uglify": "latest",
+    "gulp-util": "latest",
+    "gulp-watch": "latest",
+    "jshint": "latest"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
+  }
+}

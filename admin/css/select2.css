@@ -23,12 +23,12 @@
 .select2-container a.select2-choice {
     display: block;
     height: 40px;
+    line-height: 38px;
     padding: 0 10px;
     overflow: hidden;
     position: relative;
     border: 1px solid #e7e7e7;
     white-space: nowrap;
-    line-height: 40px;
     color: #333;
     text-decoration: none;
     background: #fff;
@@ -212,7 +212,7 @@
 
 /* results UL */
 .select2-results {
-    max-height: 200px;
+    max-height: 311px;
     padding: 0 0 0 0;
     margin: 0 0 0 0;
     position: relative;
@@ -345,4 +345,5 @@ disabled look for disabled choices in the results dropdown
     padding: 0;
     position: absolute;
     width: 1px;
+    left: 0;
 }

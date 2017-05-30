@@ -1,103 +1,97 @@
 <div class="admin ajax-load-more settings" id="alm-settings">
 	<div class="wrap">
+
 		<div class="header-wrap">
          <h1><?php echo ALM_TITLE; ?> <span><?php echo ALM_VERSION; ?></span>
          <em><?php _e('A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more'); ?></em>
          </h1>
-      </div>         
-		<?php if( isset($_GET['settings-updated']) ) { ?>
-          <div id="message" class="updated inline">
-              <p><strong><?php _e('Ajax Load More settings have been saved.') ?></strong></p>
-          </div>
-      <?php } ?>
+      </div>
+
 	   <div class="cnkt-main">
-   	   
+
    	   <?php
-         $alm_dismiss_sharing = get_transient( 'alm_dismiss_sharing');           
-         if(!isset($alm_dismiss_sharing) || empty($alm_dismiss_sharing)){
+         $alm_share_notification = get_transient( 'alm_dismiss_sharing');
+         if(!isset($alm_share_notification) || empty($alm_share_notification)){
 	         // If transient has not been set - display this notice.
          ?>
-	   	<div class="group share-alm">
-   	   	<div class="dotted">     
-      	   	<h2 style="padding: 0; margin: 0 0 10px;"><?php _e('A small favor to ask', 'ajax-load-more'); ?>...</h2> 	 
-      	   	<p style="padding: 0 0 15px; margin: 0 0 20px; border-bottom: 1px dashed #ccc; font-size: 14px;">
-         	   	<?php _e('If you\'re an Ajax Load More user, please consider helping <a href="https://twitter.com/KaptonKaos" target="_blank">me</a> spread the word by sharing with your networks and/or leaving a review on <a href="https://wordpress.org/support/view/plugin-reviews/ajax-load-more" target="_blank">wordpress.org</a> forums.', 'ajax-load-more'); ?></p>  
-      	   	<div class="one_half sharing">
-         	   	<?php include_once( ALM_PATH . 'admin/includes/cta/sharing.php'); ?>	
-      	   	</div>
-      	   	
-      	   	<div class="one_half mailing">
-         	   	<?php include_once( ALM_PATH . 'admin/includes/cta/reviews.php'); ?>	
-      	   	</div>
-   	   	</div>
+	   	<div class="group share-alm" style="display: none !important;">
+				<div class="dotted">
+      	   	<h2 style="padding: 0; margin: 0 0 20px;">
+	      	   	👋 &nbsp;<?php _e('Thanks for installing Ajax Load More 3.0!', 'ajax-load-more'); ?>
+	      	   </h2>
+	      	   <p>Version 3 is a big step forward for Ajax Load More and I really hope you like the changes and new features - be sure to check out the new <a href="admin.php?page=ajax-load-more-extensions">Extensions</a> section for 1-click installs of all currently available extensions for Ajax Load More.</p>
+				</div>
+   	   	<p>Please consider helping <a href="https://twitter.com/KaptonKaos" target="_blank">me</a> widen the reach of Ajax Load More by sharing with your networks.</p>
+
+				<ul class="share">
+					<li class="twitter">
+						<a target="blank" title="Share on Twitter" href="//twitter.com/home?status=I'm infinite scrolling with Ajax Load More for %23WordPress - https://connekthq.com/plugins/ajax-load-more/" class="share-twitter"><i class="fa fa-twitter"></i> Twitter</a>
+					</li>
+					<li class="facebook">
+						<a target="blank" title="Share on Facebook" href="//facebook.com/share.php?u=https://connekthq.com/plugins/ajax-load-more/" class="share-facebook"><i class="fa fa-facebook"></i> Facebook</a>
+					</li>
+				</ul>
+
             <div class="clear"></div>
+
             <a href="javascript: void(0);" class="dismiss" id="alm_dismiss_sharing" title="<?php _e('Don\'t show me this again!', 'ajax-load-more');?>">&times;</a>
+
 	   	</div>
 	   	<?php } ?>
-	   	
-	   	
+
+
 	   	<div class="group">
    	   	<?php
-      	   	if(has_action('alm_cache_settings') || has_action('alm_layouts_installed') || has_action('alm_next_post_settings')  || has_action('alm_paging_settings') || has_action('alm_seo_settings') || has_action('alm_theme_repeaters_settings')) {
+      	   	if(has_action('alm_cache_settings') || has_action('alm_layouts_installed') || has_action('alm_prev_post_settings')  || has_action('alm_paging_settings') || has_action('alm_seo_settings') || has_action('alm_theme_repeaters_settings')) {
        	   ?>
        	   <div class="admin-select">
-          	   <label fo"alm-settings-nav" class="offscreen">
+          	   <label for="alm-settings-nav" class="offscreen">
              	   <?php _e('Jump to Setting', 'ajax-load-more'); ?>
           	   </label>
           	   <select id="alm-settings-nav">
              	   <option value="#">-- <?php _e('Jump to Setting', 'ajax-load-more'); ?> --</option>
              	   <option value="0"><?php _e('Global Settings', 'ajax-load-more'); ?></option>
-             	   <option value="1"><?php _e('Admin', 'ajax-load-more'); ?></option>      	   
-      	   	<?php 
-         	   	if(has_action('alm_cache_settings')) 
+             	   <option value="1"><?php _e('Admin', 'ajax-load-more'); ?></option>
+      	   	<?php
+         	   	if(has_action('alm_cache_settings'))
                      echo '<option value="2">'.__('Cache', 'ajax-load-more').'</option>';
-         	   	if(has_action('alm_layouts_installed')) 
+         	   	if(has_action('alm_layouts_installed'))
                      echo '<option value="3">'.__('Layouts', 'ajax-load-more').'</options>';
-         	   	if(has_action('alm_paging_settings')) 
+         	   	if(has_action('alm_paging_settings'))
                      echo '<option value="4">'.__('Paging', 'ajax-load-more').'</option>';
-         	   	if(has_action('alm_prev_post_settings')) 
+         	   	if(has_action('alm_prev_post_settings'))
                      echo '<option value="5">'.__('Previous Post', 'ajax-load-more').'</option>';
-                  if(has_action('alm_rest_api_settings')) 
-                     echo '<option value="6">'.__('REST API', 'ajax-load-more').'</option>';  
-                  if(has_action('alm_seo_settings')) 
+                  if(has_action('alm_rest_api_settings'))
+                     echo '<option value="6">'.__('REST API', 'ajax-load-more').'</option>';
+                  if(has_action('alm_seo_settings'))
                      echo '<option value="7">'.__('SEO', 'ajax-load-more').'</option>';
-                  if(has_action('alm_theme_repeaters_settings')) 
-                     echo '<option value="8">'.__('Theme Repeaters', 'ajax-load-more').'</option>';         	   	 
+                  if(has_action('alm_theme_repeaters_settings'))
+                     echo '<option value="8">'.__('Theme Repeaters', 'ajax-load-more').'</option>';
          	   ?>
    	   	   </select>
        	   </div>
    	   	<?php
       	   	}
       	   ?>
+      	   <?php settings_errors(); ?>
    			<form action="options.php" method="post" id="alm_OptionsForm">
-   				<?php 
+   				<?php
    					settings_fields( 'alm-setting-group' );
-   					do_settings_sections( 'ajax-load-more' );	
+   					do_settings_sections( 'ajax-load-more' );
    					//get the older values, wont work the first time
-   					$options = get_option( '_alm_settings' ); ?>	
-   					<div class="row no-brd alm-save-settings">	       
+   					$options = get_option( '_alm_settings' ); ?>
+   					<div class="row no-brd alm-save-settings">
    		            <?php submit_button('Save Settings'); ?>
-                     <div class="spinner"></div>	
-   					</div>	        
+                     <div class="spinner"></div>
+   					</div>
    			</form>
    			<script type="text/javascript">
             jQuery(document).ready(function() {
-               jQuery('#alm_OptionsForm').submit(function() { 
+               jQuery('#alm_OptionsForm').submit(function() {
                   jQuery('.alm-save-settings .spinner').fadeIn();
-                  jQuery(this).ajaxSubmit({
-                     success: function(){
-                        jQuery('.alm-save-settings .spinner').fadeOut(250, function(){
-                           window.location.reload();
-                        });
-                     },
-                     error: function(){
-                        alert("<?php _e('Sorry, settings could not be saved.', 'ajax-load-more'); ?>");
-                     }
-                  }); 
-                  return false; 
                });
             });
-            </script> 	
+            </script>
 	   	</div>
 	   </div>
 	   <div class="cnkt-sidebar">
@@ -106,6 +100,6 @@
 			<?php include_once( ALM_PATH . 'admin/includes/cta/dyk.php');	?>
 			<?php include_once( ALM_PATH . 'admin/includes/cta/add-ons.php');	?>
 			<?php include_once( ALM_PATH . 'admin/includes/cta/about.php'); ?>
-	   </div>		   	
+	   </div>
 	</div>
 </div>

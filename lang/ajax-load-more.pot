@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Ajax Load More\n"
-"POT-Creation-Date: 2016-11-06 17:42-0500\n"
-"PO-Revision-Date: 2016-11-06 17:42-0500\n"
+"POT-Creation-Date: 2017-05-30 15:48-0500\n"
+"PO-Revision-Date: 2017-05-30 15:48-0500\n"
 "Last-Translator: Darren Cooney <dcooney@ecentricarts.com>\n"
 "Language-Team: \n"
 "Language: en_CA\n"
@@ -15,202 +15,232 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../admin/admin.php:94 ../admin/admin.php:125 ../admin/admin.php:689
-#: ../admin/admin.php:733 ../admin/admin.php:783
+#: ../admin/admin.php:94 ../admin/admin.php:153 ../admin/admin.php:740
+#: ../admin/admin.php:784 ../admin/admin.php:834
 msgid "You don't belong here."
 msgstr ""
 
-#: ../admin/admin.php:155 ../admin/editor/editor-build.php:72
-#: ../admin/views/licenses.php:65 ../admin/views/licenses.php:130
-#: ../admin/views/licenses.php:195 ../admin/views/licenses.php:261
+#: ../admin/admin.php:182 ../admin/editor/editor-build.php:72
+#: ../admin/views/licenses.php:66 ../admin/views/licenses.php:132
+#: ../admin/views/licenses.php:197 ../admin/views/licenses.php:262
 #: ../admin/views/licenses.php:328 ../admin/views/licenses.php:395
-#: ../admin/views/licenses.php:460 ../admin/views/licenses.php:524
-#: ../admin/views/licenses.php:590 ../admin/views/licenses.php:656
-#: ../admin/views/licenses.php:724
+#: ../admin/views/licenses.php:461 ../admin/views/licenses.php:528
+#: ../admin/views/licenses.php:593 ../admin/views/licenses.php:657
+#: ../admin/views/licenses.php:723 ../admin/views/licenses.php:791
 msgid "Active"
 msgstr ""
 
-#: ../admin/admin.php:156 ../admin/editor/editor-build.php:73
-#: ../admin/views/licenses.php:69 ../admin/views/licenses.php:134
-#: ../admin/views/licenses.php:199 ../admin/views/licenses.php:265
+#: ../admin/admin.php:183 ../admin/editor/editor-build.php:73
+#: ../admin/views/licenses.php:70 ../admin/views/licenses.php:136
+#: ../admin/views/licenses.php:201 ../admin/views/licenses.php:266
 #: ../admin/views/licenses.php:332 ../admin/views/licenses.php:399
-#: ../admin/views/licenses.php:464 ../admin/views/licenses.php:528
-#: ../admin/views/licenses.php:594 ../admin/views/licenses.php:660
-#: ../admin/views/licenses.php:728
+#: ../admin/views/licenses.php:465 ../admin/views/licenses.php:532
+#: ../admin/views/licenses.php:597 ../admin/views/licenses.php:661
+#: ../admin/views/licenses.php:727 ../admin/views/licenses.php:795
 msgid "Inactive"
 msgstr ""
 
-#: ../admin/admin.php:157
+#: ../admin/admin.php:184 ../admin/editor/editor-build.php:74
 msgid "Applying layout"
 msgstr ""
 
-#: ../admin/admin.php:158 ../admin/views/repeater-templates.php:246
+#: ../admin/admin.php:185 ../admin/editor/editor-build.php:75
+#: ../admin/views/repeater-templates.php:372
 msgid "Template Updated"
 msgstr ""
 
-#: ../admin/admin.php:160
+#: ../admin/admin.php:187 ../admin/editor/editor-build.php:77
 msgid "Select Author(s)"
 msgstr ""
 
-#: ../admin/admin.php:161
+#: ../admin/admin.php:188 ../admin/editor/editor-build.php:78
 msgid "Select Categories"
 msgstr ""
 
-#: ../admin/admin.php:162
+#: ../admin/admin.php:189 ../admin/editor/editor-build.php:79
 msgid "Select Tags"
 msgstr ""
 
-#: ../admin/admin.php:163 ../admin/editor/editor-build.php:44
+#: ../admin/admin.php:190 ../admin/editor/editor-build.php:44
+#: ../admin/editor/editor-build.php:80
 msgid "Jump to Option"
 msgstr ""
 
-#: ../admin/admin.php:164
+#: ../admin/admin.php:191 ../admin/editor/editor-build.php:81
 msgid "Jump to Template"
 msgstr ""
 
-#: ../admin/admin.php:274
+#: ../admin/admin.php:192
+msgid "Are you sure you want to install this Ajax Load More extension?"
+msgstr ""
+
+#: ../admin/admin.php:193
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:51
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:379
+msgid "Install Now"
+msgstr ""
+
+#: ../admin/admin.php:194
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:90
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:380
+msgid "Activate"
+msgstr ""
+
+#: ../admin/admin.php:195
+msgid "Installed"
+msgstr ""
+
+#: ../admin/admin.php:305
 msgid ""
 "[Ajax Load More] Error opening default repeater template - Please check your "
 "file path and ensure your server is configured to allow Ajax Load More to "
 "read and write files within the /ajax-load-more/core/repeater directory"
 msgstr ""
 
-#: ../admin/admin.php:278
+#: ../admin/admin.php:309
 msgid ""
 "[Ajax Load More] Error updating default repeater template - Please check "
 "your file path and ensure your server is configured to allow Ajax Load More "
 "to read and write files within the /ajax-load-more/core/repeater directory."
 msgstr ""
 
-#: ../admin/admin.php:647
+#: ../admin/admin.php:698
 msgid "[Ajax Load More] Unable to open repeater template - "
 msgstr ""
 
-#: ../admin/admin.php:651
+#: ../admin/admin.php:702
 msgid "[Ajax Load More] Error saving repeater template - "
 msgstr ""
 
-#: ../admin/admin.php:684
+#: ../admin/admin.php:735
 msgid "Error Writing File"
 msgstr ""
 
-#: ../admin/admin.php:887 ../admin/shortcode-builder/shortcode-builder.php:730
+#: ../admin/admin.php:938 ../admin/shortcode-builder/shortcode-builder.php:935
 msgid "Container Type"
 msgstr ""
 
-#: ../admin/admin.php:895 ../admin/shortcode-builder/shortcode-builder.php:760
+#: ../admin/admin.php:946 ../admin/shortcode-builder/shortcode-builder.php:966
 msgid "Container Classes"
 msgstr ""
 
-#: ../admin/admin.php:903
+#: ../admin/admin.php:954
 msgid "Disable CSS"
 msgstr ""
 
-#: ../admin/admin.php:911
+#: ../admin/admin.php:962
 msgid "Button/Loading Style"
 msgstr ""
 
-#: ../admin/admin.php:919
+#: ../admin/admin.php:970
 msgid "Button Classes"
 msgstr ""
 
-#: ../admin/admin.php:927
+#: ../admin/admin.php:978
 msgid "Ajax Security"
 msgstr ""
 
-#: ../admin/admin.php:935
+#: ../admin/admin.php:986
 msgid "Top of Page"
 msgstr ""
 
-#: ../admin/admin.php:943
+#: ../admin/admin.php:994
 msgid "Dynamic Content"
 msgstr ""
 
-#: ../admin/admin.php:951
+#: ../admin/admin.php:1002
 msgid "Editor Button"
 msgstr ""
 
-#: ../admin/admin.php:959
+#: ../admin/admin.php:1010
 msgid "Error Notices"
 msgstr ""
 
-#: ../admin/admin.php:1030
+#: ../admin/admin.php:1081
 msgid ""
 "Customize the user experience of Ajax Load More by updating the fields below."
 msgstr ""
 
-#: ../admin/admin.php:1043
+#: ../admin/admin.php:1094
 msgid "The following settings affect the WordPress admin area only."
 msgstr ""
 
-#: ../admin/admin.php:1074
+#: ../admin/admin.php:1125
 msgid "I want to use my own CSS styles."
 msgstr ""
 
-#: ../admin/admin.php:1074
+#: ../admin/admin.php:1125
 msgid "View Ajax Load More CSS"
 msgstr ""
 
-#: ../admin/admin.php:1094
+#: ../admin/admin.php:1145
 msgid "Hide shortcode button in WYSIWYG editor."
 msgstr ""
 
-#: ../admin/admin.php:1115
+#: ../admin/admin.php:1166
 msgid ""
 "Display error messaging regarding repeater template updates in the browser "
 "console."
 msgstr ""
 
-#: ../admin/admin.php:1136
+#: ../admin/admin.php:1187
 msgid ""
 "Disable dynamic population of categories, tags and authors in the Shortcode "
 "Builder.<span style=\"display:block\">Recommended if you have an "
 "extraordinary number of categories, tags and/or authors."
 msgstr ""
 
-#: ../admin/admin.php:1157 ../admin/admin.php:1160
+#: ../admin/admin.php:1208 ../admin/admin.php:1211
 msgid "Ajax Posts Here"
 msgstr ""
 
-#: ../admin/admin.php:1162
+#: ../admin/admin.php:1213
 msgid "You can modify the container type when building a shortcode."
 msgstr ""
 
-#: ../admin/admin.php:1179
+#: ../admin/admin.php:1230
 msgid ""
 "Add classes to Ajax Load More container - classes are applied globally and "
 "will appear with every instance of Ajax Load More. <span style=\"display:"
 "block\">You can also add classes when building a shortcode.</span>"
 msgstr ""
 
-#: ../admin/admin.php:1241
+#: ../admin/admin.php:1292
 msgid ""
-"Select an Ajax loading style - you can choose between a <strong>button</"
-"strong> or <strong>infinite scroll</strong>"
+"Select an Ajax loading style - you can choose between a <strong>Button</"
+"strong> or <strong>Infinite Scroll</strong>"
 msgstr ""
 
-#: ../admin/admin.php:1262
+#: ../admin/admin.php:1297
+msgid "Button"
+msgstr ""
+
+#: ../admin/admin.php:1305
+msgid "Infinite Scroll (No Button)"
+msgstr ""
+
+#: ../admin/admin.php:1316
 msgid "Preview"
 msgstr ""
 
-#: ../admin/admin.php:1262
-#: ../admin/shortcode-builder/shortcode-builder.php:785
-#: ../core/classes/class.alm-shortcode.php:116
+#: ../admin/admin.php:1316
+#: ../admin/shortcode-builder/shortcode-builder.php:990
+#: ../core/classes/class.alm-shortcode.php:135
 msgid "Older Posts"
 msgstr ""
 
-#: ../admin/admin.php:1281
+#: ../admin/admin.php:1335
 msgid "Add classes to your <strong>Load More</strong> button"
 msgstr ""
 
-#: ../admin/admin.php:1324
+#: ../admin/admin.php:1378
 msgid ""
 "On initial page load, move the user's browser window to the top of the "
 "screen.<span style=\"display:block\">This <u>may</u> help prevent the "
 "loading of unnecessary posts.</span>"
 msgstr ""
 
-#: ../admin/admin.php:1345
+#: ../admin/admin.php:1399
 msgid ""
 "Enable <a href=\"https://codex.wordpress.org/WordPress_Nonces\" target="
 "\"_blank\">WP nonce</a> verification to help protect URLs against certain "
@@ -226,7 +256,7 @@ msgstr ""
 msgid "Insert Shortcode"
 msgstr ""
 
-#: ../admin/editor/editor-build.php:59 ../admin/views/shortcode-builder.php:25
+#: ../admin/editor/editor-build.php:59 ../admin/views/shortcode-builder.php:28
 msgid "Copy"
 msgstr ""
 
@@ -234,21 +264,83 @@ msgstr ""
 msgid "You are not allowed to be here"
 msgstr ""
 
+#: ../admin/includes/components/example-list.php:2
+#: ../admin/shortcode-builder/shortcode-builder.php:3
+#: ../admin/views/repeater-templates.php:104
+#: ../admin/views/repeater-templates.php:134
+msgid "Collapse All"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:2
+#: ../admin/shortcode-builder/shortcode-builder.php:4
+#: ../admin/views/repeater-templates.php:105
+#: ../admin/views/repeater-templates.php:135
+msgid "Expand All"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:5
+msgid "Archive.php"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:7
+msgid "Shortcode for use on generic archive page."
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:15
+msgid "Author.php"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:17
+msgid "Shortcode for use on author archive pages."
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:24
+msgid "Category.php"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:26
+msgid "Shortcode for use on category archive pages."
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:33
+msgid "Date Archives"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:35
+msgid "Shortcode for use for archiving by date."
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:42
+msgid "Excluding Posts"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:44
+msgid "Shortcode for excluding an array of posts."
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:50
+msgid "Tag.php"
+msgstr ""
+
+#: ../admin/includes/components/example-list.php:52
+msgid "Shortcode for use on tag archive pages."
+msgstr ""
+
 #: ../admin/includes/components/layout-list.php:3
 msgid "Apply Layout"
 msgstr ""
 
-#: ../admin/includes/components/layout-list.php:13
+#: ../admin/includes/components/layout-list.php:16
 msgid "Default Layout"
 msgstr ""
 
-#: ../admin/includes/components/layout-list.php:19
+#: ../admin/includes/components/layout-list.php:25
 msgid ""
 "Unlock additional layout templates with the <strong>Layouts add-on</strong>"
 msgstr ""
 
 #: ../admin/includes/components/repeater-options.php:2
-#: ../admin/shortcode-builder/shortcode-builder.php:710
+#: ../admin/shortcode-builder/shortcode-builder.php:913
 msgid "Options"
 msgstr ""
 
@@ -288,57 +380,41 @@ msgstr ""
 msgid "More Info"
 msgstr ""
 
-#: ../admin/includes/cta/mailinglist.php:3
-msgid "Join our mailing list"
-msgstr ""
-
-#: ../admin/includes/cta/mailinglist.php:4
-msgid "Get product updates delivered directly to your inbox."
-msgstr ""
-
-#: ../admin/includes/cta/mailinglist.php:10
-msgid "Email Address"
-msgstr ""
-
-#: ../admin/includes/cta/mailinglist.php:11
-msgid "Enter email address"
-msgstr ""
-
-#: ../admin/includes/cta/mailinglist.php:12
-msgid "Subscribe"
-msgstr ""
-
 #: ../admin/includes/cta/resources.php:2
 msgid "Resources"
 msgstr ""
 
-#: ../admin/includes/cta/resources.php:4
+#: ../admin/includes/cta/resources.php:5
 msgid "Ajax Load More Demo Site"
 msgstr ""
 
-#: ../admin/includes/cta/resources.php:5
+#: ../admin/includes/cta/resources.php:6
+msgid "Documentation"
+msgstr ""
+
+#: ../admin/includes/cta/resources.php:7
 msgid "Plugin Support and Issues"
 msgstr ""
 
-#: ../admin/includes/cta/resources.php:6
+#: ../admin/includes/cta/resources.php:8
+msgid "Reviews"
+msgstr ""
+
+#: ../admin/includes/cta/resources.php:9
 #, fuzzy
 msgid "Twitter"
 msgstr "Partager sur Twitter"
 
-#: ../admin/includes/cta/resources.php:7
-msgid "Reviews"
-msgstr ""
-
-#: ../admin/includes/cta/resources.php:8
+#: ../admin/includes/cta/resources.php:10
 #, fuzzy
 msgid "Facebook"
 msgstr "Partager sur Facebook"
 
-#: ../admin/includes/cta/resources.php:9
+#: ../admin/includes/cta/resources.php:11
 msgid "Github"
 msgstr ""
 
-#: ../admin/includes/cta/resources.php:11
+#: ../admin/includes/cta/resources.php:14
 msgid "WordPress Repository"
 msgstr ""
 
@@ -348,7 +424,7 @@ msgstr ""
 
 #: ../admin/includes/cta/reviews.php:2
 msgid ""
-"Good <em>or</em> bad - all reviews will help the plugin push forward and "
+"Good <em>or</em> bad - all reviews will help Ajax Load More push forward and "
 "grow."
 msgstr ""
 
@@ -361,21 +437,24 @@ msgid "Share Ajax Load More"
 msgstr ""
 
 #: ../admin/includes/cta/sharing.php:2
-msgid "Use the links below to share with your friends on Twitter and Facebook."
+msgid ""
+"Help <a href=\"https://twitter.com/KaptonKaos\" target=\"_blank\">me</a> "
+"spread the word by sharing with your friends and colleagues on Twitter and "
+"Facebook."
 msgstr ""
 
 #: ../admin/includes/cta/writeable.php:2
 msgid "Read/Write Access"
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:10
+#: ../admin/includes/cta/writeable.php:11
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-check\"></i><strong>Ajax Load "
 "More</strong></p><p class=\"desc\">Yay! Read/Write access is enabled within "
 "the /ajax-load-more/ directory."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:12
+#: ../admin/includes/cta/writeable.php:13
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>Ajax "
 "Load More</strong></p>Access Denied! You must enable read and write access "
@@ -384,21 +463,21 @@ msgid ""
 "or site administrator for more information."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:14
+#: ../admin/includes/cta/writeable.php:15
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>Ajax "
 "Load More</strong></p><p class=\"desc\">Unable to locate configuration file. "
 "Directory access may not be granted."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:25
+#: ../admin/includes/cta/writeable.php:26
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-check\"></i><strong>ALM - "
 "Custom Repeaters</strong></p><p class=\"desc\">Nice! Read/Write access is "
 "enabled within the /ajax-load-more-repeaters/repeaters/ directory."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:27
+#: ../admin/includes/cta/writeable.php:28
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>ALM "
 "Custom Repeaters</strong></p><p class=\"desc\">Access Denied! You must "
@@ -408,21 +487,21 @@ msgid ""
 "more information."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:29
+#: ../admin/includes/cta/writeable.php:30
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>ALM "
 "Custom Repeaters</strong></p><p class=\"desc\">Unable to locate "
 "configuration file. Directory access may not be granted."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:41
+#: ../admin/includes/cta/writeable.php:42
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-check\"></i><strong>ALM - "
 "Custom Repeaters v2</strong></p><p class=\"desc\">Oh Ya! Read/Write access "
 "is enabled within the /ajax-load-more-repeaters-v2/repeaters/ directory."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:43
+#: ../admin/includes/cta/writeable.php:44
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>ALM "
 "- Custom Repeaters v2</strong></p><p class=\"desc\">Access Denied! You must "
@@ -432,7 +511,7 @@ msgid ""
 "more information."
 msgstr ""
 
-#: ../admin/includes/cta/writeable.php:45
+#: ../admin/includes/cta/writeable.php:46
 msgid ""
 "<p class=\"writeable-title\"><i class=\"fa fa-exclamation\"></i><strong>ALM "
 "Unlimited</strong></p><p class=\"desc\">Unable to locate configuration file. "
@@ -472,7 +551,7 @@ msgstr ""
 #: ../admin/shortcode-builder/includes/tax-query-options.php:5
 #: ../admin/shortcode-builder/includes/tax-query-options.php:50
 #: ../admin/shortcode-builder/includes/tax-query-options.php:81
-#: ../admin/shortcode-builder/shortcode-builder.php:478
+#: ../admin/shortcode-builder/shortcode-builder.php:681
 msgid "Select Taxonomy"
 msgstr ""
 
@@ -489,7 +568,7 @@ msgid "Taxonomy Operator:"
 msgstr ""
 
 #: ../admin/shortcode-builder/includes/tax-query-options.php:36
-#: ../admin/shortcode-builder/shortcode-builder.php:1276
+#: ../admin/shortcode-builder/shortcode-builder.php:1586
 msgid "Relation:"
 msgstr ""
 
@@ -498,248 +577,303 @@ msgid ""
 "The logical relationship between each taxonomy when there is more than one."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1
-#: ../admin/views/examples.php:11 ../admin/views/repeater-templates.php:17
-msgid "Collapse All"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:1
-#: ../admin/views/examples.php:11 ../admin/views/repeater-templates.php:18
-msgid "Expand All"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:16
-#: ../admin/views/add-ons.php:5
-msgid "Add-ons"
-msgstr ""
-
 #: ../admin/shortcode-builder/shortcode-builder.php:21
-#: ../admin/views/add-ons.php:20 ../admin/views/licenses.php:44
-#: ../admin/views/settings.php:53
-msgid "Cache"
+msgid "Add-ons & Extensions"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:24
-msgid "Turn on content caching."
+#: ../admin/shortcode-builder/shortcode-builder.php:26
+#: ../admin/views/licenses.php:45
+msgid "Advanced Custom Fields"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:31
-#: ../admin/shortcode-builder/shortcode-builder.php:75
-#: ../admin/shortcode-builder/shortcode-builder.php:169
-#: ../admin/shortcode-builder/shortcode-builder.php:319
-#: ../admin/shortcode-builder/shortcode-builder.php:342
-#: ../admin/shortcode-builder/shortcode-builder.php:396
-#: ../admin/shortcode-builder/shortcode-builder.php:437
-#: ../admin/shortcode-builder/shortcode-builder.php:530
-#: ../admin/shortcode-builder/shortcode-builder.php:610
-#: ../admin/shortcode-builder/shortcode-builder.php:644
-#: ../admin/shortcode-builder/shortcode-builder.php:820
-#: ../admin/shortcode-builder/shortcode-builder.php:845
-#: ../admin/shortcode-builder/shortcode-builder.php:871
-#: ../admin/shortcode-builder/shortcode-builder.php:918
+#: ../admin/shortcode-builder/shortcode-builder.php:29
+msgid "Enable compatibility with Advanced Custom Fields."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:36
+#: ../admin/shortcode-builder/shortcode-builder.php:116
+#: ../admin/shortcode-builder/shortcode-builder.php:160
+#: ../admin/shortcode-builder/shortcode-builder.php:254
+#: ../admin/shortcode-builder/shortcode-builder.php:405
+#: ../admin/shortcode-builder/shortcode-builder.php:522
+#: ../admin/shortcode-builder/shortcode-builder.php:545
+#: ../admin/shortcode-builder/shortcode-builder.php:599
+#: ../admin/shortcode-builder/shortcode-builder.php:640
+#: ../admin/shortcode-builder/shortcode-builder.php:733
+#: ../admin/shortcode-builder/shortcode-builder.php:813
+#: ../admin/shortcode-builder/shortcode-builder.php:847
+#: ../admin/shortcode-builder/shortcode-builder.php:1024
+#: ../admin/shortcode-builder/shortcode-builder.php:1071
+#: ../admin/shortcode-builder/shortcode-builder.php:1176
+#: ../admin/shortcode-builder/shortcode-builder.php:1204
+#: ../admin/shortcode-builder/shortcode-builder.php:1251
 msgid "True"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:35
-#: ../admin/shortcode-builder/shortcode-builder.php:79
-#: ../admin/shortcode-builder/shortcode-builder.php:173
-#: ../admin/shortcode-builder/shortcode-builder.php:323
-#: ../admin/shortcode-builder/shortcode-builder.php:346
-#: ../admin/shortcode-builder/shortcode-builder.php:400
-#: ../admin/shortcode-builder/shortcode-builder.php:441
-#: ../admin/shortcode-builder/shortcode-builder.php:534
-#: ../admin/shortcode-builder/shortcode-builder.php:614
-#: ../admin/shortcode-builder/shortcode-builder.php:648
-#: ../admin/shortcode-builder/shortcode-builder.php:824
-#: ../admin/shortcode-builder/shortcode-builder.php:849
-#: ../admin/shortcode-builder/shortcode-builder.php:875
-#: ../admin/shortcode-builder/shortcode-builder.php:922
+#: ../admin/shortcode-builder/shortcode-builder.php:40
+#: ../admin/shortcode-builder/shortcode-builder.php:120
+#: ../admin/shortcode-builder/shortcode-builder.php:164
+#: ../admin/shortcode-builder/shortcode-builder.php:258
+#: ../admin/shortcode-builder/shortcode-builder.php:409
+#: ../admin/shortcode-builder/shortcode-builder.php:526
+#: ../admin/shortcode-builder/shortcode-builder.php:549
+#: ../admin/shortcode-builder/shortcode-builder.php:603
+#: ../admin/shortcode-builder/shortcode-builder.php:644
+#: ../admin/shortcode-builder/shortcode-builder.php:737
+#: ../admin/shortcode-builder/shortcode-builder.php:817
+#: ../admin/shortcode-builder/shortcode-builder.php:851
+#: ../admin/shortcode-builder/shortcode-builder.php:1028
+#: ../admin/shortcode-builder/shortcode-builder.php:1075
+#: ../admin/shortcode-builder/shortcode-builder.php:1180
+#: ../admin/shortcode-builder/shortcode-builder.php:1208
+#: ../admin/shortcode-builder/shortcode-builder.php:1255
 msgid "False"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:45
+#: ../admin/shortcode-builder/shortcode-builder.php:52
+#: ../admin/shortcode-builder/shortcode-builder.php:269
+#: ../admin/shortcode-builder/shortcode-builder.php:422
+#: ../admin/shortcode-builder/shortcode-builder.php:654
+msgid "Post ID"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:52
+msgid ""
+"Leave this field blank and Ajax Load More will get the ID from the global "
+"$post object"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:53
+#: ../admin/shortcode-builder/shortcode-builder.php:423
+msgid "The ID of the current page/post."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:66
+#: ../admin/shortcode-builder/shortcode-builder.php:71
+#: ../admin/shortcode-builder/shortcode-builder.php:92
+msgid "Field Type"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:67
+msgid "Select the type of ACF field"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:73
+msgid "Select Field Type"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:74
+msgid "Flexible Content"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:75
+msgid "Gallery"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:76
+msgid "Relationship"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:77
+msgid "Repeater"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:87
+msgid "Field Name"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:88
+msgid "Enter the name of the ACF field"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:106
+#: ../admin/views/add-ons.php:21 ../admin/views/licenses.php:111
+#: ../admin/views/settings.php:57
+msgid "Cache"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:109
+msgid "Turn on content caching."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:130
 msgid "Cache ID"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:46
+#: ../admin/shortcode-builder/shortcode-builder.php:131
 msgid ""
 "You <u>must</u> generate a unique ID for this cached query - this unique ID "
 "will be used as a content identifier."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:52
+#: ../admin/shortcode-builder/shortcode-builder.php:137
 msgid "Generate Cache ID"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:64
-#: ../admin/views/add-ons.php:47 ../admin/views/licenses.php:109
+#: ../admin/shortcode-builder/shortcode-builder.php:149
+#: ../admin/views/add-ons.php:48 ../admin/views/licenses.php:176
 msgid "Call to Actions"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:68
+#: ../admin/shortcode-builder/shortcode-builder.php:153
 msgid "Insert call to action block."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:92
+#: ../admin/shortcode-builder/shortcode-builder.php:177
 msgid "CTA Positioning"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:93
+#: ../admin/shortcode-builder/shortcode-builder.php:178
 msgid ""
 "Insert call to action <strong><em id=\"sequence-update-before-after"
 "\">before</em></strong> post #<strong><em id=\"sequence-update\">1</em></"
 "strong>"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:98
+#: ../admin/shortcode-builder/shortcode-builder.php:183
 msgid "Before / After"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:100
+#: ../admin/shortcode-builder/shortcode-builder.php:185
 msgid "Before"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:101
+#: ../admin/shortcode-builder/shortcode-builder.php:186
 msgid "After"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:105
+#: ../admin/shortcode-builder/shortcode-builder.php:190
 msgid "Post #"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:116
-#: ../admin/shortcode-builder/shortcode-builder.php:670
+#: ../admin/shortcode-builder/shortcode-builder.php:201
+#: ../admin/shortcode-builder/shortcode-builder.php:873
 msgid "Template"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:118
+#: ../admin/shortcode-builder/shortcode-builder.php:203
 msgid ""
 "Select the <a href=\"admin.php?page=ajax-load-more-repeaters\" target="
 "\"_parent\">repeater template</a> that will display your call to action."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:125
+#: ../admin/shortcode-builder/shortcode-builder.php:210
 #, fuzzy
 msgid "-- Select Repeater --"
 msgstr "Sélectionnez province"
 
-#: ../admin/shortcode-builder/shortcode-builder.php:145
+#: ../admin/shortcode-builder/shortcode-builder.php:230
 msgid ""
 "Call to actions do NOT count as a post within an Ajax Load More loop.<br/>\n"
 "                  For example, if you set <strong>posts_per_page=\"5\"</"
 "strong> in your shortcode, 6 items will be displayed."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:159
-#: ../admin/views/add-ons.php:74 ../admin/views/licenses.php:174
+#: ../admin/shortcode-builder/shortcode-builder.php:244
+#: ../admin/views/add-ons.php:75 ../admin/views/licenses.php:241
 msgid "Comments"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:162
+#: ../admin/shortcode-builder/shortcode-builder.php:247
 msgid "Enable Ajax Load More to display blog comments."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:184
-#: ../admin/shortcode-builder/shortcode-builder.php:451
-msgid "Post ID"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:185
-#: ../admin/shortcode-builder/shortcode-builder.php:452
+#: ../admin/shortcode-builder/shortcode-builder.php:270
+#: ../admin/shortcode-builder/shortcode-builder.php:655
 msgid "The ID of the current single post."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:196
+#: ../admin/shortcode-builder/shortcode-builder.php:281
 msgid "Comments Per Page"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:197
+#: ../admin/shortcode-builder/shortcode-builder.php:282
 msgid "The number of top level items to show for each page of comments."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:205
+#: ../admin/shortcode-builder/shortcode-builder.php:290
 msgid ""
 "<strong>Note</strong>: The amount selected does NOT include comment replies."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:211
+#: ../admin/shortcode-builder/shortcode-builder.php:296
 msgid "Comment Type"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:212
+#: ../admin/shortcode-builder/shortcode-builder.php:297
 msgid "The type of comment(s) to display."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:217
+#: ../admin/shortcode-builder/shortcode-builder.php:302
 msgid "Comment"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:218
+#: ../admin/shortcode-builder/shortcode-builder.php:303
 msgid "All"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:219
+#: ../admin/shortcode-builder/shortcode-builder.php:304
 msgid "Trackback"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:220
+#: ../admin/shortcode-builder/shortcode-builder.php:305
 msgid "Pingback"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:221
+#: ../admin/shortcode-builder/shortcode-builder.php:306
 msgid "Pings"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:229
+#: ../admin/shortcode-builder/shortcode-builder.php:314
 msgid "Comment Style"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:230
+#: ../admin/shortcode-builder/shortcode-builder.php:315
 msgid "Select the HTML container style for your comments."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:255
+#: ../admin/shortcode-builder/shortcode-builder.php:340
 msgid "Comment Template"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:256
+#: ../admin/shortcode-builder/shortcode-builder.php:341
 msgid "Select a repeater template that will display comment data."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:262
-#: ../admin/shortcode-builder/shortcode-builder.php:952
+#: ../admin/shortcode-builder/shortcode-builder.php:347
+#: ../admin/shortcode-builder/shortcode-builder.php:1098
 msgid "None"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:263
+#: ../admin/shortcode-builder/shortcode-builder.php:348
 msgid "Default"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:275
+#: ../admin/shortcode-builder/shortcode-builder.php:360
 msgid ""
 "<strong>Note</strong>: <span>None</span> will use the default WordPress "
 "comment layout."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:284
+#: ../admin/shortcode-builder/shortcode-builder.php:369
 msgid "Callback Function"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:285
+#: ../admin/shortcode-builder/shortcode-builder.php:370
 msgid ""
 "A custom <a href=\"https://codex.wordpress.org/Function_Reference/"
 "wp_list_comments#Arguments\" target=\"_blank\">callback</a> function that "
 "will display each comment."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:293
+#: ../admin/shortcode-builder/shortcode-builder.php:378
 msgid ""
 "<strong>Note</strong>: The majority of premium themes have a custom callback "
 "function for displaying comments. Please see comments.php or functions.php "
 "within your theme directory to locate the callback function for your theme."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:298
+#: ../admin/shortcode-builder/shortcode-builder.php:383
 msgid ""
 "You must add the comments shortcode directly to your single template file "
 "using the <a href=\"https://developer.wordpress.org/reference/functions/"
@@ -748,94 +882,177 @@ msgid ""
 "\"_blank\">View documentation</a>"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:310
-#: ../admin/views/add-ons.php:153 ../admin/views/licenses.php:374
-#: ../admin/views/settings.php:57
+#: ../admin/shortcode-builder/shortcode-builder.php:395
+#: ../admin/views/add-ons.php:154 ../admin/views/licenses.php:440
+#, fuzzy
+msgid "Next Page"
+msgstr "Imprimer cette page"
+
+#: ../admin/shortcode-builder/shortcode-builder.php:398
+msgid "Enable the infinite scrolling of multipage WordPress content using the"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:398
+msgid "Quicktag"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:435
+msgid "URL Rewrite"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:436
+msgid "Update the browser address bar as pages come into view"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:443
+msgid "Yes, update the URL"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:455
+msgid "Google Analytics"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:456
+msgid ""
+"You must have a reference to your Google Analytics tracking code already on "
+"the page"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:458
+msgid "Each time a page is loaded it will count as a pageview"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:465
+msgid "Yes, send pageviews to Google Analytics"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:476
+msgid "Scroll to Page"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:477
+msgid "Set Scroll Speed to 0 to disable scrolling to page"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:480
+msgid "Scroll users automatically to the next page on 'Load More' button click"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:486
+msgid "Scroll Speed"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:487
+msgid "Scrolling speed in milliseconds (e.g. 1 second = 1000)"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:493
+msgid "Scroll Top"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:494
+msgid ""
+"The scrolltop position of the window (used with scrolling and fwd/back "
+"browser buttons)"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:501
+msgid ""
+"You must add the Next Page shortcode directly to your single template file "
+"using the <a href=\"https://developer.wordpress.org/reference/functions/"
+"do_shortcode/\" target=\"_blank\">do_shortcode</a> method. &raquo; <a href="
+"\"https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/\" target="
+"\"_blank\">View documentation</a>"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:513
+#: ../admin/views/add-ons.php:180 ../admin/views/licenses.php:507
+#: ../admin/views/settings.php:61
 msgid "Paging"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:312
+#: ../admin/shortcode-builder/shortcode-builder.php:515
 msgid "Replace infinite scrolling with a paged ajax navigation system."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:334
+#: ../admin/shortcode-builder/shortcode-builder.php:537
 msgid "Paging Controls"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:335
+#: ../admin/shortcode-builder/shortcode-builder.php:538
 msgid "Show (&laquo;)previous and next(&raquo;) buttons."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:355
+#: ../admin/shortcode-builder/shortcode-builder.php:558
 msgid "Paging Navigation Classes"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:356
+#: ../admin/shortcode-builder/shortcode-builder.php:559
 msgid "Add custom CSS classes to the paging navigation menu."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:367
+#: ../admin/shortcode-builder/shortcode-builder.php:570
 msgid "Show at Most"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:368
+#: ../admin/shortcode-builder/shortcode-builder.php:571
 msgid ""
 "The maximum amount of page menu items to show at a time. <br/.>0 = no maximum"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:386
-#: ../admin/views/add-ons.php:180 ../admin/views/licenses.php:439
+#: ../admin/shortcode-builder/shortcode-builder.php:589
+#: ../admin/views/add-ons.php:207 ../admin/views/licenses.php:572
 msgid "Preloaded"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:389
+#: ../admin/shortcode-builder/shortcode-builder.php:592
 msgid "Preload posts prior to making Ajax requests."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:410
+#: ../admin/shortcode-builder/shortcode-builder.php:613
 msgid "Preload Amount"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:411
+#: ../admin/shortcode-builder/shortcode-builder.php:614
 msgid "Enter the number of posts to preload."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:427
-#: ../admin/views/add-ons.php:206 ../admin/views/licenses.php:503
-#: ../admin/views/settings.php:59
+#: ../admin/shortcode-builder/shortcode-builder.php:630
+#: ../admin/views/add-ons.php:233 ../admin/views/licenses.php:636
+#: ../admin/views/settings.php:63
 msgid "Previous Post"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:430
+#: ../admin/shortcode-builder/shortcode-builder.php:633
 msgid "Enable the infinite scrolling of single posts."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:464
-#: ../admin/shortcode-builder/shortcode-builder.php:1216
+#: ../admin/shortcode-builder/shortcode-builder.php:667
+#: ../admin/shortcode-builder/shortcode-builder.php:1526
 msgid "Taxonomy"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:464
+#: ../admin/shortcode-builder/shortcode-builder.php:667
 msgid ""
 "Selecting a taxonomy means only previous posts from the same taxonomy will "
 "be returned"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:465
+#: ../admin/shortcode-builder/shortcode-builder.php:668
 msgid "Query previous posts from the same taxonomy."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:479
-#: ../admin/shortcode-builder/shortcode-builder.php:1097
+#: ../admin/shortcode-builder/shortcode-builder.php:682
+#: ../admin/shortcode-builder/shortcode-builder.php:1407
 msgid "Category"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:480
-#: ../admin/shortcode-builder/shortcode-builder.php:1157
+#: ../admin/shortcode-builder/shortcode-builder.php:683
+#: ../admin/shortcode-builder/shortcode-builder.php:1467
 msgid "Tag"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:494
+#: ../admin/shortcode-builder/shortcode-builder.php:697
 msgid ""
 "You must add the Previous Post shortcode directly to your single template "
 "file using the <a href=\"https://developer.wordpress.org/reference/functions/"
@@ -844,85 +1061,85 @@ msgid ""
 "target=\"_blank\">View documentation</a>"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:520
-#: ../admin/views/add-ons.php:232 ../admin/views/licenses.php:569
-#: ../admin/views/settings.php:61
+#: ../admin/shortcode-builder/shortcode-builder.php:723
+#: ../admin/views/settings.php:65
 msgid "REST API"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:523
+#: ../admin/shortcode-builder/shortcode-builder.php:726
 msgid "Enable the WordPress REST API."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:547
+#: ../admin/shortcode-builder/shortcode-builder.php:750
 msgid "Base URL"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:548
+#: ../admin/shortcode-builder/shortcode-builder.php:751
 msgid "Set a default Base URL in the Ajax Load More settings panel"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:549
+#: ../admin/shortcode-builder/shortcode-builder.php:752
 msgid "Enter the base URL to your installation of the REST API."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:561
+#: ../admin/shortcode-builder/shortcode-builder.php:764
 msgid "Namespace"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:562
+#: ../admin/shortcode-builder/shortcode-builder.php:765
 msgid "Set a default Namespace in the Ajax Load More settings panel"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:563
+#: ../admin/shortcode-builder/shortcode-builder.php:766
 msgid "Enter the custom namespace for this Ajax Load More query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:575
+#: ../admin/shortcode-builder/shortcode-builder.php:778
 msgid "Endpoint"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:576
+#: ../admin/shortcode-builder/shortcode-builder.php:779
 msgid "Set a default Endpoint in the Ajax Load More settings panel"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:577
+#: ../admin/shortcode-builder/shortcode-builder.php:780
 msgid "Enter your custom endpoint for this Ajax Load More query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:589
+#: ../admin/shortcode-builder/shortcode-builder.php:792
 msgid "Template ID"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:589
+#: ../admin/shortcode-builder/shortcode-builder.php:792
 msgid ""
 "Ajax Load More references this ID while looping and displaying your data. "
 "You must still select a repeater template for this instance of Ajax Load More"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:590
+#: ../admin/shortcode-builder/shortcode-builder.php:793
 msgid ""
 "Enter the ID of your javascript template.<br/><br/>e.g. <em>tmpl-alm-"
 "template</em> = <em>alm-template</em>"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:590
-#: ../admin/shortcode-builder/shortcode-builder.php:1102
-#: ../admin/shortcode-builder/shortcode-builder.php:1161
-#: ../admin/shortcode-builder/shortcode-builder.php:1361
+#: ../admin/shortcode-builder/shortcode-builder.php:793
+#: ../admin/shortcode-builder/shortcode-builder.php:1195
+#: ../admin/shortcode-builder/shortcode-builder.php:1412
+#: ../admin/shortcode-builder/shortcode-builder.php:1471
+#: ../admin/shortcode-builder/shortcode-builder.php:1671
 msgid "View Example"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:602
+#: ../admin/shortcode-builder/shortcode-builder.php:805
 msgid "Debug Mode"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:603
+#: ../admin/shortcode-builder/shortcode-builder.php:806
 msgid ""
 "Enable debugging (console.log) of REST API responses in the browser console. "
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:621
+#: ../admin/shortcode-builder/shortcode-builder.php:824
 msgid ""
 "Visit <a href=\"http://v2.wp-api.org/\" target=\"_blank\">http://v2.wp-api."
 "org</a> for documentation on creating custom <a href=\"http://v2.wp-api.org/"
@@ -930,646 +1147,696 @@ msgid ""
 "More."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:634
+#: ../admin/shortcode-builder/shortcode-builder.php:837
 msgid "SEO (Search Engine Optimization)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:637
+#: ../admin/shortcode-builder/shortcode-builder.php:840
 msgid ""
 "Enable address bar URL rewrites as users page through ajax loaded content."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:665
+#: ../admin/shortcode-builder/shortcode-builder.php:868
 msgid "Display Settings"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:674
+#: ../admin/shortcode-builder/shortcode-builder.php:877
 msgid "Repeater Template"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:676
+#: ../admin/shortcode-builder/shortcode-builder.php:879
 msgid ""
 "Select which <a href=\"admin.php?page=ajax-load-more-repeaters\" target="
 "\"_parent\">repeater template</a> you would like to use."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:714
+#: ../admin/shortcode-builder/shortcode-builder.php:918
 msgid "ID"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:714
+#: ../admin/shortcode-builder/shortcode-builder.php:918
 msgid ""
 "Adding a unique ID will allow you target this specific Ajax Load More "
 "instance with the alm_query_args_id() filter."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:715
+#: ../admin/shortcode-builder/shortcode-builder.php:919
 msgid "Set a unique ID for this Ajax Load More instance."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:722
+#: ../admin/shortcode-builder/shortcode-builder.php:926
 msgid "Generate Unique ID"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:730
+#: ../admin/shortcode-builder/shortcode-builder.php:935
 msgid ""
 "You can define a global container type on the Ajax Load More settings screen"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:731
+#: ../admin/shortcode-builder/shortcode-builder.php:936
 msgid ""
-"Override the global Container Type that was set on <a href=\"admin.php?"
-"page=ajax-load-more\">ALM Settings page</a>."
+"Override the global Container Type  set on the <a href=\"admin.php?page=ajax-"
+"load-more\">ALM Settings page</a>."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:760
+#: ../admin/shortcode-builder/shortcode-builder.php:966
 msgid ""
 "You can define global container classes on the Ajax Load More settings screen"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:761
+#: ../admin/shortcode-builder/shortcode-builder.php:967
 msgid ""
 "Add custom CSS classes to the Ajax Load More container. <br/><br/> e.g. "
 "portfolio-listing large-12 etc"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:775
+#: ../admin/shortcode-builder/shortcode-builder.php:980
 msgid "Button Labels"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:780
+#: ../admin/shortcode-builder/shortcode-builder.php:985
 msgid "Label"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:781
+#: ../admin/shortcode-builder/shortcode-builder.php:986
 msgid "Customize the text of the <em>Load More</em> button."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:793
+#: ../admin/shortcode-builder/shortcode-builder.php:998
 msgid "Loading Label"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:793
+#: ../admin/shortcode-builder/shortcode-builder.php:998
 msgid "Leave field empty to not update text while loading content"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:794
+#: ../admin/shortcode-builder/shortcode-builder.php:999
 msgid ""
 "Update the text of the <em>Load More</em> button while content is loading."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:798
+#: ../admin/shortcode-builder/shortcode-builder.php:1003
 msgid "Loading Posts..."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:808
-msgid "Images Loaded"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:811
-msgid "Wait for all images to load before displaying ajax loaded content"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:812
-msgid "Background images are currently not supported"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:835
-msgid "Pause"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:838
-msgid ""
-"Do <u>NOT</u> load any posts until user the clicks <em>Load More</em> button."
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:860
+#: ../admin/shortcode-builder/shortcode-builder.php:1013
 msgid "Scrolling"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:863
+#: ../admin/shortcode-builder/shortcode-builder.php:1016
 msgid "Enable Scrolling"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:864
+#: ../admin/shortcode-builder/shortcode-builder.php:1017
 msgid "Load more posts as the user scrolls the page."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:885
+#: ../admin/shortcode-builder/shortcode-builder.php:1038
 msgid "Scroll Distance"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:885
+#: ../admin/shortcode-builder/shortcode-builder.php:1038
 msgid ""
 "Distance is based on the position of the loading button from the bottom of "
 "the screen"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:886
+#: ../admin/shortcode-builder/shortcode-builder.php:1039
 msgid ""
 "The distance from the bottom of the screen to trigger loading of posts. "
 "(Default = 150)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:898
+#: ../admin/shortcode-builder/shortcode-builder.php:1051
 msgid "Maximum Pages"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:898
+#: ../admin/shortcode-builder/shortcode-builder.php:1051
 msgid "If using an Infinite Scroll button style you should set this to 0"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:899
+#: ../admin/shortcode-builder/shortcode-builder.php:1052
 msgid "Maximum number of pages to load while scrolling. (0 = unlimited)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:911
+#: ../admin/shortcode-builder/shortcode-builder.php:1064
 msgid "Pause Override"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:912
+#: ../admin/shortcode-builder/shortcode-builder.php:1065
 msgid ""
 "Allow scrolling to override the Pause parameter and trigger the loading of "
 "posts on scroll."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:933
+#: ../admin/shortcode-builder/shortcode-builder.php:1086
 msgid "Transition"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:936
-msgid "Transition Type"
+#: ../admin/shortcode-builder/shortcode-builder.php:1089
+msgid "Type"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:937
+#: ../admin/shortcode-builder/shortcode-builder.php:1090
 msgid "Select a loading transition style."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:944
+#: ../admin/shortcode-builder/shortcode-builder.php:1095
 msgid "Slide"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:948
+#: ../admin/shortcode-builder/shortcode-builder.php:1096
 msgid "Fade"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:962
-msgid "Transition Speed"
+#: ../admin/shortcode-builder/shortcode-builder.php:1097
+msgid "Masonry"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:962
+#: ../admin/shortcode-builder/shortcode-builder.php:1111
+msgid "Masonry Item Selector"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1111
+msgid ""
+"Item Selector is required for Masonry to target each element loaded with Ajax"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1112
+msgid "Enter the target classname of each masonry item"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1131
+msgid "Speed"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1131
 msgid "0.5 seconds = 500, 1 second = 1000 etc."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:963
+#: ../admin/shortcode-builder/shortcode-builder.php:1132
 msgid "The speed of the loading transition in milliseconds"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:975
-msgid "Transition Container"
+#: ../admin/shortcode-builder/shortcode-builder.php:1144
+msgid "Container"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:975
+#: ../admin/shortcode-builder/shortcode-builder.php:1144
 msgid ""
 "Removing the transition container may have undesired results and is not "
 "recommended."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:976
-msgid "Remove the Ajax Load More (.alm-reveal) loading container."
+#: ../admin/shortcode-builder/shortcode-builder.php:1145
+msgid ""
+"Remove the <span>.alm-reveal</span> loading container from Ajax Load More"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:994
+#: ../admin/shortcode-builder/shortcode-builder.php:1152
+msgid "Remove Container"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1166
+msgid "Pause"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1169
+msgid ""
+"Do <u>NOT</u> load any posts until user clicks the <em>Load More</em> button."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1191
+msgid "Progress Bar"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1194
+msgid ""
+"Display progress bar indicator at the top of the window while loading Ajax "
+"content"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1223
+msgid "Color"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1224
+msgid "Enter the hex color of the progress bar"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1241
+msgid "Images Loaded"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1244
+msgid "Wait for all images to load before displaying ajax loaded content"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1244
+msgid "Background images are not supported"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1266
 msgid "Destroy After"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:997
+#: ../admin/shortcode-builder/shortcode-builder.php:1271
 msgid ""
-"Remove ajax load more functionality after '<em>n</em>' number of pages have "
+"Remove Ajax Load More functionality after '<em>n</em>' number of pages have "
 "been loaded."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1015
+#: ../admin/shortcode-builder/shortcode-builder.php:1291
 msgid "Query Parameters"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1019
+#: ../admin/shortcode-builder/shortcode-builder.php:1295
 msgid "Posts Per Page"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1022
+#: ../admin/shortcode-builder/shortcode-builder.php:1298
 msgid "Select the number of posts to load with each request."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1041
+#: ../admin/shortcode-builder/shortcode-builder.php:1317
 msgid "Post Type"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1044
-msgid "Select Post Types to query."
+#: ../admin/shortcode-builder/shortcode-builder.php:1322
+msgid "Select the Post Types to include in this Ajax Load More query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1068
+#: ../admin/shortcode-builder/shortcode-builder.php:1336
+msgid "Any"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1348
+msgid "Sticky Posts"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1348
+msgid "Sticky posts are only available for Posts."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1349
+msgid ""
+"Preserve the ordering of sticky posts by having them appear first in the "
+"Ajax listing."
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1356
+msgid "Enable Sticky Posts"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1378
 msgid "Post Format"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1071
+#: ../admin/shortcode-builder/shortcode-builder.php:1381
 msgid ""
 "Select a <a href=\"http://codex.wordpress.org/Post_Formats\" target=\"_blank"
 "\">Post Format</a> to query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1074
+#: ../admin/shortcode-builder/shortcode-builder.php:1384
 msgid "Select Post Format"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1075
+#: ../admin/shortcode-builder/shortcode-builder.php:1385
 msgid "Standard"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1101
+#: ../admin/shortcode-builder/shortcode-builder.php:1411
 msgid ""
 "A comma separated list of categories to include by slug. (design, research "
 "etc...)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1124
-#: ../admin/shortcode-builder/shortcode-builder.php:1182
-#: ../admin/shortcode-builder/shortcode-builder.php:1360
+#: ../admin/shortcode-builder/shortcode-builder.php:1434
+#: ../admin/shortcode-builder/shortcode-builder.php:1492
+#: ../admin/shortcode-builder/shortcode-builder.php:1670
 msgid "Exclude"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1125
+#: ../admin/shortcode-builder/shortcode-builder.php:1435
 msgid ""
 "A comma separated list of categories to exclude by ID. (3, 12, 35 etc..)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1160
-#: ../admin/shortcode-builder/shortcode-builder.php:1349
+#: ../admin/shortcode-builder/shortcode-builder.php:1470
+#: ../admin/shortcode-builder/shortcode-builder.php:1659
 msgid "Include"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1161
+#: ../admin/shortcode-builder/shortcode-builder.php:1471
 msgid ""
 "A comma separated list of tags to include by slug. (toronto, canada etc...)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1183
+#: ../admin/shortcode-builder/shortcode-builder.php:1493
 msgid "A comma separated list of tags to exclude by ID. (30, 12, 99 etc..)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1219
+#: ../admin/shortcode-builder/shortcode-builder.php:1529
 msgid "Select a taxonomy then select the terms and an operator."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1234
+#: ../admin/shortcode-builder/shortcode-builder.php:1534
+#: ../admin/shortcode-builder/shortcode-builder.php:1600
+msgid "Add Another"
+msgstr ""
+
+#: ../admin/shortcode-builder/shortcode-builder.php:1544
 msgid "Date"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1237
+#: ../admin/shortcode-builder/shortcode-builder.php:1547
 msgid ""
 "Enter a year, month(number) and day to query by date archive.<br/>&raquo; <a "
 "href=\"admin.php?page=ajax-load-more-examples#example-date\">View Example</a>"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1243
+#: ../admin/shortcode-builder/shortcode-builder.php:1553
 msgid "Year:"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1247
+#: ../admin/shortcode-builder/shortcode-builder.php:1557
 msgid "Month:"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1251
+#: ../admin/shortcode-builder/shortcode-builder.php:1561
 msgid "Day:"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1262
+#: ../admin/shortcode-builder/shortcode-builder.php:1572
 msgid "Custom Fields (Meta_Query)"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1265
+#: ../admin/shortcode-builder/shortcode-builder.php:1575
 msgid ""
 "Query for <a href=\"http://codex.wordpress.org/Class_Reference/WP_Meta_Query"
 "\" target=\"_blank\">custom field</a> by entering a custom field key, value "
 "and operator."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1276
+#: ../admin/shortcode-builder/shortcode-builder.php:1586
 msgid ""
 "The logical relationship between each custom field when there is more than "
 "one."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1290
-msgid "Add Another"
-msgstr ""
-
-#: ../admin/shortcode-builder/shortcode-builder.php:1306
+#: ../admin/shortcode-builder/shortcode-builder.php:1616
 msgid "Author"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1309
+#: ../admin/shortcode-builder/shortcode-builder.php:1619
 msgid "Select an Author to query(by ID)."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1330
+#: ../admin/shortcode-builder/shortcode-builder.php:1640
 msgid "Search Term"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1333
+#: ../admin/shortcode-builder/shortcode-builder.php:1643
 msgid "Enter a search term to query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1337
+#: ../admin/shortcode-builder/shortcode-builder.php:1647
 msgid "Enter search term"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1346
+#: ../admin/shortcode-builder/shortcode-builder.php:1656
 msgid "Post Parameters"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1350
+#: ../admin/shortcode-builder/shortcode-builder.php:1660
 msgid "A comma separated list of post ID's to query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1354
+#: ../admin/shortcode-builder/shortcode-builder.php:1664
 msgid "225, 340, 818, etc..."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1361
+#: ../admin/shortcode-builder/shortcode-builder.php:1671
 msgid "A comma separated list of post ID's to exclude from query."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1371
+#: ../admin/shortcode-builder/shortcode-builder.php:1681
 msgid "Post Status"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1371
+#: ../admin/shortcode-builder/shortcode-builder.php:1681
 msgid ""
 "Post Status parameters are only available for logged in (admin) users. Non "
 "logged in users will only have access to view content in a 'publish' or "
 "'inherit' state. "
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1372
+#: ../admin/shortcode-builder/shortcode-builder.php:1682
 msgid "Select status of the post."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1377
+#: ../admin/shortcode-builder/shortcode-builder.php:1687
 msgid "Published"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1394
+#: ../admin/shortcode-builder/shortcode-builder.php:1704
 msgid "Ordering"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1397
+#: ../admin/shortcode-builder/shortcode-builder.php:1707
 msgid "Sort posts by Order and Orderby parameters."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1401
+#: ../admin/shortcode-builder/shortcode-builder.php:1711
 msgid "Order"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1408
+#: ../admin/shortcode-builder/shortcode-builder.php:1718
 msgid "Order By"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1428
+#: ../admin/shortcode-builder/shortcode-builder.php:1739
 msgid "Offset"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1431
+#: ../admin/shortcode-builder/shortcode-builder.php:1742
 msgid "Offset the initial query by <em>'n'</em> number of posts"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1444
+#: ../admin/shortcode-builder/shortcode-builder.php:1755
 msgid "Custom Arguments"
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1447
+#: ../admin/shortcode-builder/shortcode-builder.php:1758
 msgid "A semicolon separated list of custom value:pair arguments."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1447
+#: ../admin/shortcode-builder/shortcode-builder.php:1758
 msgid ""
 "Custom Arguments can be used to query by parameters not available in the "
 "Shortcode Builder."
 msgstr ""
 
-#: ../admin/shortcode-builder/shortcode-builder.php:1451
+#: ../admin/shortcode-builder/shortcode-builder.php:1762
 msgid "event_display:upcoming"
 msgstr ""
 
 #: ../admin/views/add-ons.php:6
+msgid "Add-ons"
+msgstr ""
+
+#: ../admin/views/add-ons.php:7
 msgid ""
 "Add-ons are available to extend and enhance the core functionality of Ajax "
 "Load More"
 msgstr ""
 
-#: ../admin/views/add-ons.php:21
+#: ../admin/views/add-ons.php:22
 msgid "Improve performance with the Ajax Load More caching engine."
 msgstr ""
 
-#: ../admin/views/add-ons.php:22
+#: ../admin/views/add-ons.php:23
 msgid ""
 "The Cache add-on creates static HTML files of Ajax Load More requests then "
 "delivers those static files to your visitors."
 msgstr ""
 
-#: ../admin/views/add-ons.php:48
+#: ../admin/views/add-ons.php:49
 msgid ""
 "Ajax Load More extension for displaying advertisements and call to actions."
 msgstr ""
 
-#: ../admin/views/add-ons.php:49
+#: ../admin/views/add-ons.php:50
 msgid ""
 "The Call to Actions add-on will provide the ability to inject a custom CTA "
 "template within each Ajax Load More loop."
 msgstr ""
 
-#: ../admin/views/add-ons.php:75
+#: ../admin/views/add-ons.php:76
 msgid "Load blog comments on demand with Ajax Load More."
 msgstr ""
 
-#: ../admin/views/add-ons.php:76
+#: ../admin/views/add-ons.php:77
 msgid ""
 "The Comments add-on will display your blog comments with Ajax Load More's "
 "infinite scroll functionality."
 msgstr ""
 
-#: ../admin/views/add-ons.php:99 ../admin/views/licenses.php:240
+#: ../admin/views/add-ons.php:100 ../admin/views/licenses.php:307
 msgid "Custom Repeaters"
 msgstr ""
 
-#: ../admin/views/add-ons.php:100
+#: ../admin/views/add-ons.php:101
 msgid "Extend Ajax Load More with unlimited repeater templates."
 msgstr ""
 
-#: ../admin/views/add-ons.php:101
+#: ../admin/views/add-ons.php:102
 msgid ""
 "Create, delete and modify repeater templates as you need them with "
 "absolutely zero restrictions."
 msgstr ""
 
-#: ../admin/views/add-ons.php:127 ../admin/views/licenses.php:307
-#: ../admin/views/settings.php:55
+#: ../admin/views/add-ons.php:128 ../admin/views/licenses.php:374
+#: ../admin/views/settings.php:59
 msgid "Layouts"
 msgstr ""
 
-#: ../admin/views/add-ons.php:128
+#: ../admin/views/add-ons.php:129
 msgid "Predefined layouts for your repeater templates."
 msgstr ""
 
-#: ../admin/views/add-ons.php:129
+#: ../admin/views/add-ons.php:130
 msgid ""
 "The Layouts add-on provides a collection of unique, well designed and fully "
 "responsive templates."
 msgstr ""
 
-#: ../admin/views/add-ons.php:154
+#: ../admin/views/add-ons.php:155
+msgid "Load and display multipage WordPress content."
+msgstr ""
+
+#: ../admin/views/add-ons.php:156
+msgid ""
+"The Next Page add-on will provide functionality for infinite scrolling "
+"paginated posts and pages."
+msgstr ""
+
+#: ../admin/views/add-ons.php:181
 msgid "Extend Ajax Load More with a numbered navigation."
 msgstr ""
 
-#: ../admin/views/add-ons.php:155
+#: ../admin/views/add-ons.php:182
 msgid ""
 "The Paging add-on will transform the default infinite scroll functionality "
 "into a robust ajax powered navigation system."
 msgstr ""
 
-#: ../admin/views/add-ons.php:181
+#: ../admin/views/add-ons.php:208
 msgid "Load an initial set of posts before making Ajax requests to the server."
 msgstr ""
 
-#: ../admin/views/add-ons.php:182
+#: ../admin/views/add-ons.php:209
 msgid ""
 "The Preloaded add-on will display content quicker and allow caching of the "
 "initial query which can reduce stress on your server."
 msgstr ""
 
-#: ../admin/views/add-ons.php:207
+#: ../admin/views/add-ons.php:234
 msgid "An extension to enable infinite scrolling of single posts."
 msgstr ""
 
-#: ../admin/views/add-ons.php:208
+#: ../admin/views/add-ons.php:235
 msgid ""
 "The Previous Post add-on will load single posts as you scroll and update the "
 "browser URL to the current post."
 msgstr ""
 
-#: ../admin/views/add-ons.php:233
-msgid "Infinite scroll with the WP REST API and Ajax Load More plugins."
-msgstr ""
-
-#: ../admin/views/add-ons.php:234
-msgid ""
-"The REST API add-on will enable compatibility between Ajax Load More and the "
-"WP REST API plugins.</p>"
-msgstr ""
-
-#: ../admin/views/add-ons.php:260 ../admin/views/licenses.php:635
+#: ../admin/views/add-ons.php:259 ../admin/views/licenses.php:702
 msgid "Search Engine Optimization"
 msgstr ""
 
-#: ../admin/views/add-ons.php:261
+#: ../admin/views/add-ons.php:260
 msgid "Generate unique paging URLs with every Ajax Load More query."
 msgstr ""
 
-#: ../admin/views/add-ons.php:262
+#: ../admin/views/add-ons.php:261
 msgid ""
 "The SEO add-on will optimize your ajax loaded content for search engines by "
 "generating unique URLs with every query.</p>"
 msgstr ""
 
-#: ../admin/views/add-ons.php:286 ../admin/views/licenses.php:703
-#: ../admin/views/settings.php:65
+#: ../admin/views/add-ons.php:285 ../admin/views/licenses.php:770
+#: ../admin/views/repeater-templates.php:28 ../admin/views/settings.php:69
 msgid "Theme Repeaters"
 msgstr ""
 
-#: ../admin/views/add-ons.php:287
+#: ../admin/views/add-ons.php:286
 msgid "Manage repeater templates within your current theme directory."
 msgstr ""
 
-#: ../admin/views/add-ons.php:288
+#: ../admin/views/add-ons.php:287
 msgid ""
 "The Theme Repeater add-on will allow you load, edit and maintain templates "
 "from your current theme directory.</p>"
 msgstr ""
 
-#: ../admin/views/add-ons.php:307
+#: ../admin/views/add-ons.php:306
 msgid ""
 "All add-ons are installed as stand alone plugins and with a valid license "
 "key will receive plugin update notifications directly within the <a href="
 "\"plugins.php\">WordPress plugin dashboard</a>."
 msgstr ""
 
-#: ../admin/views/examples.php:5
-msgid "Examples"
+#: ../admin/views/extensions.php:5
+msgid "Extensions"
 msgstr ""
 
-#: ../admin/views/examples.php:6
+#: ../admin/views/extensions.php:6
+msgid ""
+"Free extensions that provide compatibility with popular plugins and core "
+"WordPress functionality"
+msgstr ""
+
+#: ../admin/views/extensions.php:39
+msgid ""
+"Extensions are installed as stand alone plugins and receive update "
+"notifications in the <a href=\"plugins.php\">plugin dashboard</a>."
+msgstr ""
+
+#: ../admin/views/help.php:4
+msgid "Get started with our four step guide to painless implementation!"
+msgstr ""
+
+#: ../admin/views/help.php:9
 msgid "A collection of everyday shortcode usages and implementation examples"
 msgstr ""
 
-#: ../admin/views/examples.php:14
-msgid "Archive.php"
-msgstr ""
-
-#: ../admin/views/examples.php:16
-msgid "Shortcode for use on generic archive page."
-msgstr ""
-
-#: ../admin/views/examples.php:24
-msgid "Author.php"
-msgstr ""
-
-#: ../admin/views/examples.php:26
-msgid "Shortcode for use on author archive pages."
-msgstr ""
-
-#: ../admin/views/examples.php:33
-msgid "Category.php"
-msgstr ""
-
-#: ../admin/views/examples.php:35
-msgid "Shortcode for use on category archive pages."
-msgstr ""
-
-#: ../admin/views/examples.php:42
-msgid "Date Archives"
-msgstr ""
-
-#: ../admin/views/examples.php:44
-msgid "Shortcode for use for archiving by date."
-msgstr ""
-
-#: ../admin/views/examples.php:51
-msgid "Excluding Posts"
-msgstr ""
-
-#: ../admin/views/examples.php:53
-msgid "Shortcode for excluding an array of posts."
-msgstr ""
-
-#: ../admin/views/examples.php:59
-msgid "Tag.php"
-msgstr ""
-
-#: ../admin/views/examples.php:61
-msgid "Shortcode for use on tag archive pages."
-msgstr ""
-
-#: ../admin/views/examples.php:69 ../admin/views/shortcode-builder.php:13
-msgid "Back to Top"
-msgstr ""
-
-#: ../admin/views/help.php:5
+#: ../admin/views/help.php:18
 msgid "Help"
 msgstr ""
 
-#: ../admin/views/help.php:6
-msgid "Get started with our four step guide to painless implementation!"
+#: ../admin/views/help.php:27
+msgid "Implementation Guide"
+msgstr ""
+
+#: ../admin/views/help.php:32
+msgid "Examples"
+msgstr ""
+
+#: ../admin/views/help.php:65
+msgid "Example Library"
+msgstr ""
+
+#: ../admin/views/help.php:67
+msgid ""
+"We have a collection of over 20 real world Ajax Load More <a href=\"https://"
+"connekthq.com/plugins/ajax-load-more/examples/\" target=\"_blank\">examples</"
+"a> available on the plugin website"
+msgstr ""
+
+#: ../admin/views/help.php:69
+msgid "View All Examples"
 msgstr ""
 
 #: ../admin/views/licenses.php:5
@@ -1593,122 +1860,143 @@ msgid ""
 "href=\"plugins.php\">WP Plugins dashboard</a>."
 msgstr ""
 
-#: ../admin/views/licenses.php:53 ../admin/views/licenses.php:118
-#: ../admin/views/licenses.php:183 ../admin/views/licenses.php:249
+#: ../admin/views/licenses.php:54 ../admin/views/licenses.php:120
+#: ../admin/views/licenses.php:185 ../admin/views/licenses.php:250
 #: ../admin/views/licenses.php:316 ../admin/views/licenses.php:383
-#: ../admin/views/licenses.php:448 ../admin/views/licenses.php:512
-#: ../admin/views/licenses.php:578 ../admin/views/licenses.php:644
-#: ../admin/views/licenses.php:712
+#: ../admin/views/licenses.php:449 ../admin/views/licenses.php:516
+#: ../admin/views/licenses.php:581 ../admin/views/licenses.php:645
+#: ../admin/views/licenses.php:711 ../admin/views/licenses.php:779
 msgid "Don't have a license?"
 msgstr ""
 
-#: ../admin/views/licenses.php:54 ../admin/views/licenses.php:119
-#: ../admin/views/licenses.php:184 ../admin/views/licenses.php:250
+#: ../admin/views/licenses.php:55 ../admin/views/licenses.php:121
+#: ../admin/views/licenses.php:186 ../admin/views/licenses.php:251
 #: ../admin/views/licenses.php:317 ../admin/views/licenses.php:384
-#: ../admin/views/licenses.php:449 ../admin/views/licenses.php:513
-#: ../admin/views/licenses.php:579 ../admin/views/licenses.php:645
-#: ../admin/views/licenses.php:713
+#: ../admin/views/licenses.php:450 ../admin/views/licenses.php:517
+#: ../admin/views/licenses.php:582 ../admin/views/licenses.php:646
+#: ../admin/views/licenses.php:712 ../admin/views/licenses.php:780
 msgid ""
 "A valid license is required to activate and receive plugin updates directly "
 "in your WordPress dashboard"
 msgstr ""
 
-#: ../admin/views/licenses.php:54 ../admin/views/licenses.php:119
-#: ../admin/views/licenses.php:184 ../admin/views/licenses.php:250
+#: ../admin/views/licenses.php:55 ../admin/views/licenses.php:121
+#: ../admin/views/licenses.php:186 ../admin/views/licenses.php:251
 #: ../admin/views/licenses.php:317 ../admin/views/licenses.php:384
-#: ../admin/views/licenses.php:449 ../admin/views/licenses.php:513
-#: ../admin/views/licenses.php:579 ../admin/views/licenses.php:645
-#: ../admin/views/licenses.php:713
+#: ../admin/views/licenses.php:450 ../admin/views/licenses.php:517
+#: ../admin/views/licenses.php:582 ../admin/views/licenses.php:646
+#: ../admin/views/licenses.php:712 ../admin/views/licenses.php:780
 msgid "Purchase Now"
 msgstr ""
 
-#: ../admin/views/licenses.php:60 ../admin/views/licenses.php:62
-#: ../admin/views/licenses.php:125 ../admin/views/licenses.php:127
-#: ../admin/views/licenses.php:190 ../admin/views/licenses.php:192
-#: ../admin/views/licenses.php:256 ../admin/views/licenses.php:258
+#: ../admin/views/licenses.php:61 ../admin/views/licenses.php:63
+#: ../admin/views/licenses.php:127 ../admin/views/licenses.php:129
+#: ../admin/views/licenses.php:192 ../admin/views/licenses.php:194
+#: ../admin/views/licenses.php:257 ../admin/views/licenses.php:259
 #: ../admin/views/licenses.php:323 ../admin/views/licenses.php:325
 #: ../admin/views/licenses.php:390 ../admin/views/licenses.php:392
-#: ../admin/views/licenses.php:455 ../admin/views/licenses.php:457
-#: ../admin/views/licenses.php:519 ../admin/views/licenses.php:521
-#: ../admin/views/licenses.php:585 ../admin/views/licenses.php:587
-#: ../admin/views/licenses.php:651 ../admin/views/licenses.php:653
-#: ../admin/views/licenses.php:719 ../admin/views/licenses.php:721
+#: ../admin/views/licenses.php:456 ../admin/views/licenses.php:458
+#: ../admin/views/licenses.php:523 ../admin/views/licenses.php:525
+#: ../admin/views/licenses.php:588 ../admin/views/licenses.php:590
+#: ../admin/views/licenses.php:652 ../admin/views/licenses.php:654
+#: ../admin/views/licenses.php:718 ../admin/views/licenses.php:720
+#: ../admin/views/licenses.php:786 ../admin/views/licenses.php:788
 msgid "Enter License Key"
 msgstr ""
 
-#: ../admin/views/licenses.php:82 ../admin/views/licenses.php:147
-#: ../admin/views/licenses.php:212 ../admin/views/licenses.php:278
+#: ../admin/views/licenses.php:83 ../admin/views/licenses.php:149
+#: ../admin/views/licenses.php:214 ../admin/views/licenses.php:279
 #: ../admin/views/licenses.php:345 ../admin/views/licenses.php:412
-#: ../admin/views/licenses.php:476 ../admin/views/licenses.php:541
-#: ../admin/views/licenses.php:607 ../admin/views/licenses.php:673
-#: ../admin/views/licenses.php:742
+#: ../admin/views/licenses.php:478 ../admin/views/licenses.php:545
+#: ../admin/views/licenses.php:609 ../admin/views/licenses.php:674
+#: ../admin/views/licenses.php:740 ../admin/views/licenses.php:809
 msgid "Activate License"
 msgstr ""
 
-#: ../admin/views/licenses.php:86 ../admin/views/licenses.php:151
-#: ../admin/views/licenses.php:216 ../admin/views/licenses.php:282
+#: ../admin/views/licenses.php:87 ../admin/views/licenses.php:153
+#: ../admin/views/licenses.php:218 ../admin/views/licenses.php:283
 #: ../admin/views/licenses.php:349 ../admin/views/licenses.php:416
-#: ../admin/views/licenses.php:480 ../admin/views/licenses.php:545
-#: ../admin/views/licenses.php:611 ../admin/views/licenses.php:677
-#: ../admin/views/licenses.php:746
+#: ../admin/views/licenses.php:482 ../admin/views/licenses.php:549
+#: ../admin/views/licenses.php:613 ../admin/views/licenses.php:678
+#: ../admin/views/licenses.php:744 ../admin/views/licenses.php:813
 msgid "Deactivate License"
 msgstr ""
 
-#: ../admin/views/licenses.php:764
+#: ../admin/views/licenses.php:831
 msgid "You do not have any Ajax Load More add-ons installed"
 msgstr ""
 
-#: ../admin/views/licenses.php:764
+#: ../admin/views/licenses.php:831
 msgid "Browse Add-ons"
 msgstr ""
 
-#: ../admin/views/licenses.php:775
+#: ../admin/views/licenses.php:842
 msgid "About Licenses"
 msgstr ""
 
-#: ../admin/views/licenses.php:778
+#: ../admin/views/licenses.php:845
 msgid "Add-on licenses will enable updates directly in your WP dashboard."
 msgstr ""
 
-#: ../admin/views/licenses.php:779
+#: ../admin/views/licenses.php:846
 msgid ""
 "License keys are found in the purchase receipt email that was sent "
 "immediately after your successful purchase and in the <a target=\"_blank\" "
 "href=\"https://connekthq.com/account/\">Account</a> section on our website"
 msgstr ""
 
-#: ../admin/views/licenses.php:780
+#: ../admin/views/licenses.php:847
 msgid ""
 "If you cannot locate your key please open a support ticket by filling out "
 "the <a href=\"https://connekthq.com/contact/\">form</a> on our website and "
 "reference the email address used when you completed the purchase."
 msgstr ""
 
-#: ../admin/views/licenses.php:786
+#: ../admin/views/licenses.php:853
 msgid "Legacy Users"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:5
+#: ../admin/views/repeater-templates.php:18
+#: ../admin/views/repeater-templates.php:27
 msgid "Repeater Templates"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:6
+#: ../admin/views/repeater-templates.php:19
 msgid "The library of editable templates for use within your theme"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:55
+#: ../admin/views/repeater-templates.php:91
+msgid "File Location"
+msgstr ""
+
+#: ../admin/views/repeater-templates.php:113
+msgid "Templates Not Found"
+msgstr ""
+
+#: ../admin/views/repeater-templates.php:115
+msgid ""
+"Oh no - looks like you haven't added any Theme Repeater templates - you need "
+"to create and upload templates to your theme directory before you can access "
+"them in Ajax Load More"
+msgstr ""
+
+#: ../admin/views/repeater-templates.php:118
+msgid "Learn More About Theme Repeaters"
+msgstr ""
+
+#: ../admin/views/repeater-templates.php:172
 msgid "Default Template"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:59
+#: ../admin/views/repeater-templates.php:180
 msgid "Enter the HTML and PHP code for the default template"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:79
+#: ../admin/views/repeater-templates.php:202
 msgid "Save Template"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:83
+#: ../admin/views/repeater-templates.php:208
 msgid ""
 "It appears you are loading the <a href=\"https://connekthq.com/plugins/ajax-"
 "load-more/docs/repeater-templates/#default-template\" target=\"_blank"
@@ -1717,90 +2005,64 @@ msgid ""
 "your server."
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:154
+#: ../admin/views/repeater-templates.php:280
 msgid "Saving template..."
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:187
+#: ../admin/views/repeater-templates.php:313
 msgid "Something went wrong and the data could not be saved."
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:225
+#: ../admin/views/repeater-templates.php:351
 msgid "Updating template..."
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:286
-msgid "Templating Help"
+#: ../admin/views/repeater-templates.php:417
+msgid "Repeater Template Help"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:288
+#: ../admin/views/repeater-templates.php:419
 msgid "What is a repeater template?"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:289
+#: ../admin/views/repeater-templates.php:420
 msgid ""
-"A repeater template is a snippet of code that will execute over and over "
-"within a <a href=\"http://codex.wordpress.org/The_Loop\" target=\"_blank"
-"\">WordPress loop</a>.</p>"
+"A <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/repeater-"
+"templates/\" target=\"_blank\">repeater template</a> is a snippet of code "
+"that will execute over and over within a <a href=\"http://codex.wordpress."
+"org/The_Loop\" target=\"_blank\">WordPress loop</a>"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:292
-msgid "Can I include PHP in the repeater template?"
+#: ../admin/views/repeater-templates.php:422
+msgid "More About Templating"
 msgstr ""
 
-#: ../admin/views/repeater-templates.php:293
-msgid ""
-"Yes, PHP and core WordPress functions such as, <code>the_title()</code> and "
-"<code>the_permalink()</code> are required.</p>"
-msgstr ""
-
-#: ../admin/views/repeater-templates.php:295
-msgid "Learn More"
-msgstr ""
-
-#: ../admin/views/settings.php:5
+#: ../admin/views/settings.php:6
 msgid "A powerful plugin to add infinite scroll functionality to your website."
 msgstr ""
 
-#: ../admin/views/settings.php:10
-msgid "Ajax Load More settings have been saved."
+#: ../admin/views/settings.php:20
+msgid "Thanks for installing Ajax Load More 3.0!"
 msgstr ""
 
-#: ../admin/views/settings.php:22
-msgid "A small favor to ask"
-msgstr ""
-
-#: ../admin/views/settings.php:24
-msgid ""
-"If you're an Ajax Load More user, please consider helping <a href=\"https://"
-"twitter.com/KaptonKaos\" target=\"_blank\">me</a> spread the word by sharing "
-"with your networks and/or leaving a review on <a href=\"https://wordpress."
-"org/support/view/plugin-reviews/ajax-load-more\" target=\"_blank\">wordpress."
-"org</a> forums."
-msgstr ""
-
-#: ../admin/views/settings.php:34
+#: ../admin/views/settings.php:37
 msgid "Don't show me this again!"
 msgstr ""
 
-#: ../admin/views/settings.php:45 ../admin/views/settings.php:48
+#: ../admin/views/settings.php:49 ../admin/views/settings.php:52
 msgid "Jump to Setting"
 msgstr ""
 
-#: ../admin/views/settings.php:49
+#: ../admin/views/settings.php:53
 msgid "Global Settings"
 msgstr ""
 
-#: ../admin/views/settings.php:50
+#: ../admin/views/settings.php:54
 msgid "Admin"
 msgstr ""
 
-#: ../admin/views/settings.php:63
+#: ../admin/views/settings.php:67
 msgid "SEO"
-msgstr ""
-
-#: ../admin/views/settings.php:94
-msgid "Sorry, settings could not be saved."
 msgstr ""
 
 #: ../admin/views/shortcode-builder.php:5
@@ -1813,26 +2075,60 @@ msgid ""
 "shortcodes/\" target=\"_blank\">shortcode</a> by adjusting the values below"
 msgstr ""
 
-#: ../admin/views/shortcode-builder.php:21
+#: ../admin/views/shortcode-builder.php:13
+msgid "Back to Top"
+msgstr ""
+
+#: ../admin/views/shortcode-builder.php:23
 msgid "Shortcode Output"
 msgstr ""
 
-#: ../admin/views/shortcode-builder.php:22
+#: ../admin/views/shortcode-builder.php:25
 msgid ""
 "Place the following shortcode into the content editor or widget area of your "
 "theme."
 msgstr ""
 
-#: ../admin/views/shortcode-builder.php:27
+#: ../admin/views/shortcode-builder.php:30
 msgid "Reset Shortcode Builder"
 msgstr ""
 
-#: ../ajax-load-more.php:197
+#: ../ajax-load-more.php:195
 msgid "Settings"
 msgstr ""
 
-#: ../core/functions.php:542
+#: ../core/functions.php:706
 msgid "Pages:"
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:86
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:381
+msgid "Activated"
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:128
+msgid "By"
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:141
+msgid "More Details"
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:163
+msgid "Sorry, you are not allowed to install plugins on this site."
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:170
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:241
+msgid "Error - unable to verify nonce, please try again."
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:234
+msgid "Sorry, you are not allowed to activate plugins on this site."
+msgstr ""
+
+#: ../vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:378
+msgid "Are you sure you want to install this plugin?"
 msgstr ""
 
 #~ msgid "404 Error"
@@ -1871,9 +2167,6 @@ msgstr ""
 
 #~ msgid "Share via Email"
 #~ msgstr "Partager par courriel"
-
-#~ msgid "Print Page"
-#~ msgstr "Imprimer cette page"
 
 #~ msgid "Your search returned <strong>%s</strong> result%s"
 #~ msgstr "Votre recherche a généré <strong>%s</strong>  résultat%s "

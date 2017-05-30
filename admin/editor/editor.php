@@ -31,13 +31,13 @@ function alm_shortcode_buttons() {
 	// Don't bother doing this stuff if the current user lacks permissions
 	if ( ! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
 		return;
-		
-	// Check options for hiding shortcode builder	
+
+	// Check options for hiding shortcode builder
    $options = get_option( 'alm_settings' );
-   
+
    if(!isset($options['_alm_hide_btn'])) // Check if '_alm_hide_btn isset
 	   $options['_alm_hide_btn'] = '0';
-   
+
 	if($options['_alm_hide_btn'] != '1'){
    	// Add only in Rich Editor mode
    	if ( get_user_option('rich_editing') == 'true') {
@@ -59,7 +59,7 @@ function alm_friendly_buttons($buttons) {
 
 
 // add the button to the tinyMCE bar
-function alm_tinymce_plugin($plugin_array) {	
+function alm_tinymce_plugin($plugin_array) {
 	$plugin_array['alm_shortcode_button'] = plugins_url( '/js/editor-btn.js' , __FILE__ );
 	return $plugin_array;
 }
