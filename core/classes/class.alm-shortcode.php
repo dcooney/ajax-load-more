@@ -36,10 +36,10 @@ if( !class_exists('ALM_SHORTCODE') ):
    		self::$counter++;
 
    		// Define page slug
-   		$slug = alm_get_page_slug($post);
+   		$slug = apply_filters('alm_page_slug', alm_get_page_slug($post));
 
    		// Define Post ID
-   		$post_id = alm_get_page_id($post);
+   		$post_id = apply_filters('alm_page_id', alm_get_page_id($post));
 
    		// Custom CSS for Layouts - Only run this once.
    		if(has_action('alm_layouts_custom_css')){
@@ -302,7 +302,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   	 */
          $ajaxloadmore .= apply_filters('alm_before_container', '');
 
-         $canonicalURL = alm_get_canonical_url(); // Build Canonical URL
+         $canonicalURL = apply_filters('alm_canonical_url', alm_get_canonical_url()); // Build Canonical URL
 
 			// Generate ALM ID
          $div_id = (self::$counter > 1) ? 'ajax-load-more-'.self::$counter : 'ajax-load-more';
