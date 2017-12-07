@@ -1,0 +1,66 @@
+/* Custom buttom/loading styles */
+.select2-results .select2-result.alm-color .select2-result-label{
+   position: relative;
+}
+.select2-results .select2-result.alm-color .select2-result-label:after{
+   width: 10px;
+   height: 10px; 
+   border-radius: 100%;
+   content: '';
+   display: block;
+   position: absolute;
+   right: 20px;
+   top: 50%;
+   margin-top: -5px; 
+   z-index: 1;
+}
+.select2-results .select2-result.alm-color.default .select2-result-label:after{
+   background-color: #ed7070;
+}
+.select2-results .select2-result.alm-color.blue .select2-result-label:after{
+   background-color: #0081bf;
+}
+.select2-results .select2-result.alm-color.green .select2-result-label:after{
+   background-color: #6fca68;
+}
+.select2-results .select2-result.alm-color.purple .select2-result-label:after{
+   background-color: #a86bb9;
+}
+.select2-results .select2-result.alm-color.grey .select2-result-label:after{
+   background-color: #888;
+}
+.select2-results .select2-result.infinite .select2-result-label:after{
+   display: none;
+}
+.select2-results .select2-result.infinite .select2-result-label{
+   -webkit-background-size: 20px 20px;
+   -moz-background-size: 20px 20px;
+   background-size: 20px 20px;
+   background-repeat: no-repeat;
+   background-position: 93% center;
+}
+.select2-results .select2-result.classic .select2-result-label{
+   background-image: url("../../../core/img/spinner.gif");
+}
+.select2-results .select2-result.skype .select2-result-label{
+   background-image: url("../../../core/img/spinner-skype.gif");
+}
+.select2-results .select2-result.ring .select2-result-label{
+   background-image: url("../../../core/img/spinner-ring.gif");
+}
+.select2-results .select2-result.chasing-arrows .select2-result-label{
+   background-image: url("../../../core/img/spinner-chasing-arrows.gif");
+}
+.select2-results .select2-result.fading-blocks .select2-result-label{
+   background-image: url("../../../core/img/loader-fading-blocks.gif");
+   -webkit-background-size: 20px 16px;
+   -moz-background-size: 20px 16px;
+   background-size: 20px 16px;
+}
+.select2-results .select2-result.fading-circles .select2-result-label{
+   background-image: url("../../../core/img/loader-fading-circles.gif");
+   -webkit-background-size: 30px 10px;
+   -moz-background-size: 30px 10px;
+   background-size: 30px 10px;
+   background-position: 95% center;
+}

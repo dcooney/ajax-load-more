@@ -1,0 +1,23 @@
+.ajax-load-more .cnkt-sidebar{
+	width: 33%;
+   float: right;
+   background: #efefef;
+   padding: $gutter;
+   position: absolute;
+   right: 0;
+   top: 0;
+   height: 100%;
+	h3{
+		
+	}
+	.major-publishing-actions{
+		padding: 15px;
+		clear: both;
+		border-top: 1px solid #e1e1e1;
+		background: #f7f7f7;
+		i{
+			opacity: 0.4;
+			margin: 0 2px 0 0;
+		}
+	}
+}

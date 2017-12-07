@@ -72,6 +72,47 @@ add_filter('alm_progress_css', 'alm_progress_css', 10, 3);
 
 
 /*
+*  alm_css_disabled
+*  Has core ALM CSS disabled?
+*
+*  @param $setting name of the setting field
+*  @return boolean
+*  @since 3.3.1
+*/
+
+function alm_css_disabled($setting) {
+	$options = get_option( 'alm_settings' );
+	$disabled = true;
+	if(!isset($options[$setting]) || $options[$setting] != '1'){
+		$disabled = false;
+	}	
+	return $disabled;	
+}
+
+
+
+/*
+*  alm_do_inline_css
+*  Load ALM CSS inline
+*
+*
+*  @param $setting name of the setting field
+*  @return boolean
+*  @since 3.3.1
+*/
+
+function alm_do_inline_css($setting) {
+	$options = get_option( 'alm_settings' );
+	$inline = false;
+	if(!isset($options[$setting]) || $options[$setting] === '1'){
+		$inline = true;
+	}	
+	return $inline;	
+}
+
+
+
+/*
 *  alm_get_current_repeater
 *  Get the current repeater template file
 *

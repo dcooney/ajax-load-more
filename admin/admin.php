@@ -1,5 +1,4 @@
 <?php
-
 add_action( 'plugins_loaded', 'alm_core_update' ); // Core Update
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
@@ -11,7 +10,44 @@ add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection
 add_action( 'wp_ajax_alm_get_layout', 'alm_get_layout' ); // Get layout
 add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing
 add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu text
+add_action( 'admin_notices', 'alm_admin_notice_errors' ); // License notice
 
+
+
+/*
+*  alm_admin_notice_errors
+*  Invalid license notifications
+*
+*  @since 3.3.0
+*/
+function alm_admin_notice_errors() {
+   $screen = get_current_screen();
+   $alm_is_admin_screen = alm_is_admin_screen();
+   // Exit if screen is not dashboard, plugins or ALM admin.
+	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins'){
+		return;
+	}
+   $class = 'notice error alm-err-notice';
+   $message = '';
+   $count = 0;   
+   $addons = alm_get_addons();   
+    // Loop each addon
+   foreach($addons as $addon){
+      $action = $addon['action']; // Get action    
+      if (has_action($action)){         
+         $key = $addon['key']; // Option key  
+         $status = $addon['status']; // license status
+         $addon_status = get_option( $status );
+         if( !isset($addon_status) || empty($addon_status) || $addon_status !== 'valid' ) {
+            $count++;
+         }        
+      }
+   }      
+	if( $count > 0 ) {
+		$message = __( 'You have invalid <a href="admin.php?page=ajax-load-more"><b>Ajax Load More</b></a> license keys - please visit the <a href="admin.php?page=ajax-load-more-licenses">Licenses</a> section and input your license keys.', 'ajax-load-more' );	
+		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message ); 
+	}
+}
 
 
 /*
@@ -52,9 +88,7 @@ function alm_license_activation(){
 			'url'       => home_url()
 		);
 
-		// Call the custom API.
-		//$response = wp_remote_get( add_query_arg( $api_params, $url ), array( 'timeout' => 15, 'sslverify' => false ) );
-
+		// Call API
 		// Updated 2.8.7
 		$response = wp_remote_post( ALM_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
 
@@ -62,11 +96,8 @@ function alm_license_activation(){
 		if ( is_wp_error( $response ) )
 			return false;
 
-
 		$license_data = $response['body'];
 		$license_data = json_decode($license_data); // decode the license data
-
-
 		$return["success"] = $license_data->success;
 
 		$msg = '';
@@ -91,7 +122,7 @@ function alm_license_activation(){
 		die();
 
 	} else {
-      echo __('You don\'t belong here.', ALM_NAME);
+      echo __('You don\'t belong here.', 'ajax-load-more');
    }
 }
 
@@ -150,7 +181,7 @@ function alm_get_layout(){
       $return["value"] = $content;
       echo json_encode($return);
    }else {
-         echo __('You don\'t belong here.', ALM_NAME);
+         echo __('You don\'t belong here.', 'ajax-load-more');
    }
    die();
 }
@@ -179,6 +210,7 @@ function alm_admin_vars() { ?>
 	 /* <![CDATA[ */
     var alm_admin_localize = <?php echo json_encode( array(
         'ajax_admin_url' => admin_url( 'admin-ajax.php' ),
+        'ajax_load_more' => __('Ajax Load More', 'ajax-load-more'),
         'active' => __('Active', 'ajax-load-more'),
         'inactive' => __('Inactive', 'ajax-load-more'),
         'applying_layout' => __('Applying layout', 'ajax-load-more'),
@@ -192,7 +224,9 @@ function alm_admin_vars() { ?>
         'install_now' => __('Are you sure you want to install this Ajax Load More extension?', 'ajax-load-more'),
         'install_btn' => __('Install Now', 'ajax-load-more'),
         'activate_btn' => __('Activate', 'ajax-load-more'),
-        'installed_btn' => __('Installed', 'ajax-load-more')
+        'settings_saving' => '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' . __('Saving Settings', 'ajax-load-more'),
+        'settings_saved' => '<i class="fa fa-check" aria-hidden="true"></i> ' . __('Settings Saved Successfully', 'ajax-load-more'),
+        'settings_error' => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __('Error Saving Settings', 'ajax-load-more')
     )); ?>
     /* ]]> */
     </script>
@@ -587,11 +621,8 @@ function alm_load_cache_admin_js(){
 function alm_enqueue_admin_scripts(){
 
    // Admin CSS
-   wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL. 'css/admin.css');
-   wp_enqueue_style( 'alm-select2', ALM_ADMIN_URL. 'css/select2.css');
-   wp_enqueue_style( 'alm-tooltipster', ALM_ADMIN_URL. 'css/tooltipster/tooltipster.css');
-   wp_enqueue_style( 'alm-core', ALM_URL. '/core/dist/css/ajax-load-more.css');
-   wp_enqueue_style( 'alm-font-awesome', '//netdna.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css');
+   wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL. 'dist/css/admin.css', '', ALM_VERSION);
+   wp_enqueue_style( 'alm-core', ALM_URL. '/core/dist/css/ajax-load-more.css', '', ALM_VERSION);
 
 	// disable ACF select2 on ALM pages
    wp_dequeue_style( 'acf-input' ); 
@@ -613,15 +644,12 @@ function alm_enqueue_admin_scripts(){
       wp_enqueue_script( 'alm-codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
       wp_enqueue_script( 'alm-codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
 
-   }
+   } 
 
    // Admin JS
    wp_enqueue_script( 'jquery-form' );
-   wp_enqueue_script( 'alm-select2', ALM_ADMIN_URL. 'js/libs/select2.min.js', array( 'jquery' ));
-   wp_enqueue_script( 'alm-drops', ALM_ADMIN_URL. 'js/libs/jquery.drops.js', array( 'jquery' ));
-   wp_enqueue_script( 'alm-tipster', ALM_ADMIN_URL. 'js/libs/jquery.tooltipster.min.js', array( 'jquery' ));
-   wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'js/admin.js', array( 'jquery' ));
-   wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ));
+   wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'dist/js/admin.js', array( 'jquery' ), ALM_VERSION);
+   wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ), ALM_VERSION);
    
 }
 
@@ -965,6 +993,14 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	add_settings_field(  // Inline CSS
+		'_alm_inline_css',
+		__('Load CSS Inline', 'ajax-load-more' ),
+		'alm_inline_css_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
 	add_settings_field(  // Button classes
 		'_alm_btn_classname',
 		__('Button Classes', 'ajax-load-more' ),
@@ -972,7 +1008,9 @@ function alm_admin_init(){
 		'ajax-load-more',
 		'alm_general_settings'
 	);
-
+   
+   /*
+   Removed in 3.2.1   
 	add_settings_field(  // Nonce security
 		'_alm_nonce_security',
 		__('Ajax Security', 'ajax-load-more' ),
@@ -980,6 +1018,7 @@ function alm_admin_init(){
 		'ajax-load-more',
 		'alm_general_settings'
 	);
+	*/
 
 	add_settings_field(  // Scroll to top on load
 		'_alm_scroll_top',
@@ -1122,7 +1161,7 @@ function alm_disable_css_callback(){
 
 	$html = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
 	$html .= '<input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"'. (($options['_alm_disable_css']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles.', 'ajax-load-more').'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', 'ajax-load-more').'</a></span></label>';
+	$html .= '<label for="alm_disable_css_input">'.__('I want to use my own CSS styles.', 'ajax-load-more').'<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="'.ALM_URL.'/core/dist/css/ajax-load-more.css" target="blank">'.__('View Ajax Load More CSS', 'ajax-load-more').'</a></span></label>';
 
 	echo $html;
 }
@@ -1184,7 +1223,7 @@ function alm_disable_dynamic_callback(){
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_disable_dynamic]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_disable_dynamic]" id="_alm_disable_dynamic" value="1"'. (($options['_alm_disable_dynamic']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="_alm_disable_dynamic">'.__('Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style="display:block">Recommended if you have an extraordinary number of categories, tags and/or authors.', 'ajax-load-more').'</label>';
+	$html .= '<label for="_alm_disable_dynamic">'.__('Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style="display:block">Recommended if you have a large number of categories, tags and/or authors.', 'ajax-load-more').'</label>';
 
 	echo $html;
 }
@@ -1227,7 +1266,7 @@ function alm_container_type_callback() {
 function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 
-	$html = '<label for="alm_settings[_alm_classname]">'.__('Add classes to Ajax Load More container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more').'</label><br/>';
+	$html = '<label for="alm_settings[_alm_classname]">'.__('Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more').'</label><br/>';
 	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';
 
 	echo $html;
@@ -1313,8 +1352,32 @@ function alm_btn_color_callback() {
 
     $html .= '</select>';
 
-    $html .= '<div class="clear"></div><div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button></div>';
+    $html .= '<div class="clear"></div>';
+	 $html .= '<div class="alm-btn-wrap">';
+	 $html .= '<div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button></div>';
+	 $html .= '</div>';
+	    	
     echo $html;
+}
+
+
+
+/*
+*  alm_inline_css_callback
+*  Load CSS Inline vs the head
+*
+*  @since 3.3.1
+*/
+function alm_inline_css_callback(){
+	$options = get_option( 'alm_settings' );
+	if(!isset($options['_alm_inline_css']))
+	   $options['_alm_inline_css'] = '1';
+
+	$html =  '<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_inline_css]" id="alm_inline_css" value="1"'. (($options['_alm_inline_css']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="alm_inline_css">'.__('Improve site performance by loading Ajax Load More CSS inline', 'ajax-load-more').'.</label>';
+
+	echo $html;
 }
 
 
@@ -1342,16 +1405,16 @@ function alm_btn_class_callback(){
 		// Check if Disable CSS  === true
 		if(jQuery('input#alm_disable_css_input').is(":checked")){
 	      jQuery('select#alm_settings_btn_color').parent().parent().hide(); // Hide button color
-         //jQuery('input.btn-classes').parent().parent().hide(); // Hide Button Classes
+	      jQuery('input#alm_inline_css').parent().parent().hide(); // Hide inline css
     	}
     	jQuery('input#alm_disable_css_input').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
 	      	el.parent().parent('tr').next('tr').hide(); // Hide button color
-	      	//el.parent().parent('tr').next('tr').next('tr').hide(); // Hide Button Classes
+	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide inline css
 	      }else{
 	      	el.parent().parent('tr').next('tr').show(); // show button color
-	      	//el.parent().parent('tr').next('tr').next('tr').show(); // show Button Classes
+	      	el.parent().parent('tr').next('tr').next('tr').show(); // show inline css
 	      }
 	   });
 

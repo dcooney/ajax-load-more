@@ -1,0 +1,38 @@
+.ajax-load-more .header-wrap{
+	overflow: hidden;
+	padding: $gutter $gutter $gutter/2;
+	background: #f7f7f7;
+	border-bottom: 1px solid #e1e1e1;
+	h1{
+		padding: 0 0 0 58px;
+		min-height: 48px;
+		padding-top: 0;
+		background: url('../../img/alm-logo-48x48.png') no-repeat 0 0;
+		background: url('../../img/alm-logo-48x48.svg') no-repeat 0 0;
+		em{
+	   	display: block;
+	   	position: relative;
+			margin-top: 1px;
+			font-size: 14px;
+			opacity: 0.7;
+			font-style: normal;
+			font-weight: 400;
+			line-height: 1.35;
+			margin: 1px 0 $gutter/2;
+		}		
+		strong{
+         font-weight: 700;
+      }
+      span{
+         color: #999;
+         font-weight: 300;
+         background: #fff;
+         padding: 5px 6px;
+         border-radius: 2px;
+         font-size: 0.8em;
+         position: relative;
+         top: -2px;
+         left: 5px;
+      }
+   }
+}

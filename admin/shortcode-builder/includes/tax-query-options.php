@@ -32,7 +32,7 @@
 
 <div id="tax-query-relation">
    <div class="inner border-top highlighted">
-      <div class="wrap-30 wrap-50">
+      <div class="wrap-50">
          <label for="tax-relation" class="full"><?php _e('Relation:', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('The logical relationship between each taxonomy when there is more than one.','ajax-load-more'); ?>"></a></label>
          <select class="alm_element tax-relation" name="tax-relation">
             <option value="AND" selected="selected">AND</option>

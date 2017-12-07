@@ -2,11 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Ajax Load More: Shortcode Builder</title>
-<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" src="<?php echo includes_url(); ?>js/tinymce/themes/advanced/skins/wp_theme/dialog.css"></link>
-<link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/admin.css" />
-<link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/select2.css" />
-<link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>css/tooltipster/tooltipster.css" />
+<link rel="stylesheet" href="<?php echo ALM_ADMIN_URL; ?>dist/css/admin.css" />
 <link rel="stylesheet" href="<?php echo includes_url(); ?>css/buttons.css" />
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.js"></script>
 <script type="text/javascript" src="<?php echo includes_url('/js/tinymce/tiny_mce_popup.js'); ?>"></script>
@@ -62,9 +59,9 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
 
 	   </div>
    </div>
-   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/libs/select2.min.js"></script>
+   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>src/js/libs/select2.min.js"></script>
    <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>shortcode-builder/js/shortcode-builder.js"></script>
-   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/libs/jquery.tooltipster.min.js"></script>
+   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>src/js/libs/jquery.tooltipster.min.js"></script>
 	<script type='text/javascript'>
 	/* <![CDATA[ */
    var alm_admin_localize = <?php echo json_encode( array(
@@ -82,7 +79,6 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
    )); ?>
 	/* ]]> */
    </script>
-   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/libs/jquery.tooltipster.min.js"></script>
-   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>js/admin.js"></script>
+   <script type="text/javascript" src="<?php echo ALM_ADMIN_URL; ?>dist/js/admin.js"></script>
 </body>
 </html>

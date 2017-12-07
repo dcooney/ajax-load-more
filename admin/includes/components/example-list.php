@@ -1,4 +1,4 @@
-<div class="group">
+<div class="group no-shadow">
    <span class="toggle-all"><span class="inner-wrap"><em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em><em class="expand"><?php _e('Expand All', 'ajax-load-more'); ?></em></span></span>
 
    <div class="row gist" id="example-archive">

@@ -2,6 +2,92 @@ var _alm = _alm || {};
 
 jQuery(document).ready(function($) {
 	"use strict";
+	
+
+
+   /*
+	*  _alm.saveSettings
+	*  Setting panel save actions
+	*
+	*  @since 3.2.0
+	*/
+	
+	let almSettings = $('#alm_OptionsForm'), 
+	    savingSettings = false,
+	    settingsForm = document.querySelector('#alm_OptionsForm'),
+	    settingsTarget = document.querySelector('.alm-settings-feedback');
+	    
+   if(settingsForm){
+      document.body.appendChild(settingsTarget);
+   }
+	    
+   _alm.saveSettings = function(){
+      
+      if(savingSettings)
+   	   return false;
+   	   
+   	savingSettings = true;  	
+   	settingsForm.classList.add('--saving');
+   	settingsTarget.classList.add('--saving');
+   	settingsTarget.innerHTML = alm_admin_localize.settings_saving;
+   	  
+      almSettings.ajaxSubmit({   
+         
+         // Success      
+         success: function(){            
+            
+            // Delay for effect
+            setTimeout(function(){
+               settingsTarget.classList.remove('--saving');
+               settingsTarget.classList.add('--saved');
+               settingsTarget.innerHTML = alm_admin_localize.settings_saved;
+               settingsForm.classList.remove('--saving');
+               console.log(alm_admin_localize.ajax_load_more +' - '+ alm_admin_localize.settings_saved);
+               savingSettings = false;
+               
+               setTimeout(function(){
+                  settingsTarget.classList.remove('--saved');                  
+               }, 2500);
+               
+            }, 1000);
+            
+         },
+         
+         // Error
+         error: function(){            
+            
+            // Delay for effect
+            setTimeout(function(){
+               settingsTarget.classList.remove('--saving');
+               settingsTarget.classList.add('--error');
+               settingsTarget.innerHTML = alm_admin_localize.settings_error;
+               settingsForm.classList.remove('--saving');
+               console.log(alm_admin_localize.ajax_load_more +' - '+ alm_admin_localize.settings_error);
+               savingSettings = false;
+               
+               setTimeout(function(){
+                  settingsTarget.classList.remove('--error');                  
+               }, 2500);
+               
+            }, 1000);
+         }
+      });
+      return false;
+      
+   };  
+	    
+   // On Change, save the settings
+   let settingsTimer;
+	$(document).on('change', '#alm_OptionsForm input, #alm_OptionsForm textarea, #alm_OptionsForm select', function(){   	
+   	// Set a timer to avoid updating settings to frequently
+   	if(settingsTimer) clearTimeout(settingsTimer);
+   	settingsTimer = setTimeout(function(){
+   	   _alm.saveSettings();
+   	}, 500);
+   	
+   });
+
+
 
 
 	/*
@@ -69,7 +155,7 @@ jQuery(document).ready(function($) {
 
    	if(!el.hasClass('active')){
       	el.parent().addClass('active').siblings().removeClass('active');
-      	$('.alm-template-toggle', parent).hide()
+      	$('.alm-template-toggle', parent).hide();
       	$('.alm-template-toggle', parent).eq(index).show();
    	}
    });
@@ -85,10 +171,10 @@ jQuery(document).ready(function($) {
 
 	_alm.copyToClipboard = function(text) {
 		window.prompt ("Copy link to your clipboard: Press Ctrl + C then hit Enter to copy.", text);
-	}
+	};
 
 	// Copy link on shortcode builder
-	$('.output-wrap .copy').click(function(){
+	$('.shortcode-builder .copy').click(function(){
 		var c = $('#shortcode_output').html();
 		_alm.copyToClipboard(c);
 	});
@@ -186,11 +272,11 @@ jQuery(document).ready(function($) {
 
 		   		//console.log(data);
 
-		   		if(data['msg']){
-			   		$('.license-btn-wrap', parent).append('<div class="msg">'+data['msg']+'</div>');
+		   		if(data.msg){
+			   		$('.license-btn-wrap', parent).append('<div class="msg">'+data.msg+'</div>');
 		   		}
 
-		   		if(data['license'] === 'valid'){
+		   		if(data.license === 'valid'){
 			   		$('.license-key-field .status', parent).addClass('active').removeClass('inactive').text(alm_admin_localize.active);
 			   		$('.license-title .status', parent).addClass('valid').removeClass('invalid');
 			   		$('.activate.license-btn', parent).addClass('hide');
@@ -228,7 +314,7 @@ jQuery(document).ready(function($) {
    */
    $(document).on('click', '.alm-layout-selection li a.layout', function(e){
       e.preventDefault();
-      var el = $(this),
+      var el = $(this), 
           type = el.data('type'),
           custom = (el.hasClass('custom')) ? 'true' : 'false',
           textarea = el.closest('.repeater-wrap').find('.CodeMirror'),
@@ -240,12 +326,14 @@ jQuery(document).ready(function($) {
          el.addClass('updating').text(alm_admin_localize.applying_layout+"...");
          textarea.addClass('loading');
 
-         // Get editor ID
+         // Get Codemirror Editor ID
          var eid = '';
-         if(name === 'default'){ // Default Template
-            eid = window['editorDefault'];
-   	   }else{ // Repeater Templates
-            eid = window['editor_'+name]; // Set editor ID
+         if(name === 'default'){ 
+            // Default Template
+            eid = window.editorDefault;
+   	   }else{ 
+      	   // Repeater Templates
+            eid = window['editor_'+name];
    	   }
 
    	   // Get value from Ajax
@@ -325,14 +413,13 @@ jQuery(document).ready(function($) {
 	$(document).on('change', '#alm-settings-nav', function(e){
 		e.preventDefault();
 		var el = $(this),
-			 index = el.val();
-
+			 index = $('option:selected', el).index();			 
 		if(index !== '#'){
+			index = index - 1;
 			$('html, body').animate({
 				scrollTop: $("#alm_OptionsForm h2").eq(index).offset().top - 40
 			}, 500);
 		}
-
 	});
 
 
@@ -346,14 +433,14 @@ jQuery(document).ready(function($) {
    function equalheight(container){
 
       var currentTallest = 0,
-           currentRowStart = 0,
-           rowDivs = new Array(),
-           $el,
-           topPosition = 0;
+          currentRowStart = 0,
+          rowDivs = [],
+          $el,
+          topPosition = 0;
+          
        $(container).each(function() {
-
          $el = $(this);
-         $($el).height('auto')
+         $($el).height('auto');
          topPosition = $el.position().top;
 
          if (currentRowStart != topPosition) {
@@ -368,8 +455,8 @@ jQuery(document).ready(function($) {
            rowDivs.push($el);
            currentTallest = (currentTallest < $el.height()) ? ($el.height()) : (currentTallest);
         }
-         for (currentDiv = 0 ; currentDiv < rowDivs.length ; currentDiv++) {
-           rowDivs[currentDiv].height(currentTallest);
+         for (var currentDivs = 0 ; currentDivs < rowDivs.length ; currentDivs++) {
+           rowDivs[currentDivs].height(currentTallest);
          }
        });
    }

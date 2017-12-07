@@ -1,0 +1,238 @@
+/*
+ * Ajax Load More
+ * http://wordpress.org/plugins/ajax-load-more/
+ *
+ * Copyright 2015-2017 Connekt Media - https://connekthq.com
+ * Free to use under the GPLv2 license.
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * Author: Darren Cooney
+ * Twitter: @KaptonKaos
+*/
+
+.alm-btn-wrap{
+   .alm-load-more-btn{
+      font-size:15px;
+      font-weight: 600;
+      width:auto;
+      height: 42px;
+      line-height: 42px;
+      background: #ed7070;
+      color:#fff;
+      border: none;
+      -webkit-border-radius:3px;
+      -moz-border-radius:3px;
+      border-radius:3px;
+      margin: 0 0 4px;
+      padding:0 20px;
+      display: inline-block;
+      position: relative;
+      transition: padding 0.25s ease-in-out, width 0.25s ease-in-out;
+      text-align: center;
+      text-decoration: none;
+      appearance: none;
+      user-select: none;
+      cursor: pointer;
+   	&:hover{
+   		background-color: #e06464;
+   		color: #fff;
+   		text-decoration: none;
+   	}
+   	&:active{
+   		box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+   		text-decoration: none;
+   	}
+   	&:focus,
+   	&:active{
+   		outline: none;
+   	}
+   
+   	/* Loading */
+      &.loading{
+       	padding-left: 44px;
+      }
+   
+      /* Loaded / Done */
+   	&.done{
+   		cursor: default;
+   		opacity: 0.2;
+   		background-color: #ed7070;
+   		outline: none !important;
+   		box-shadow: none !important;
+      }
+   
+      /* Loading Icon */
+   	&:before,
+   	&.done:before{
+   		background: none;
+   		width: 0;
+   	}
+   
+   	/* Loading :before */
+   	&.loading:before {
+         background: #fff url("../../img/ajax-loader.gif") no-repeat center center;
+         width: 30px;
+         height: 30px;
+         margin: 6px;
+         border-radius:2px;
+         display: inline-block;
+         z-index: 0;
+         content: '';
+         position: absolute;
+         left: 0;
+         top: 0;
+         overflow: hidden;
+         transition: width 0.5s ease-in-out;
+   	}
+   }
+}
+
+.alm-masonry,
+.alm-btn-wrap{
+	display: block;
+	overflow: hidden;
+	clear: both;
+}
+.alm-btn-wrap{
+	text-align: center;
+	padding: 10px 0 25px;
+}
+
+/* Blue */
+.ajax-load-more-wrap.blue .alm-load-more-btn{
+	background-color: #0081bf;
+	&:hover,
+	&.done{
+		background-color: #0073aa;
+	}
+}
+
+/* green */
+.ajax-load-more-wrap.green .alm-load-more-btn{
+	background-color: #6fca68;
+	&:hover,
+	&.done{
+		background-color: #64b95e;
+	}
+}
+/* red */
+.ajax-load-more-wrap.red .alm-load-more-btn{
+	background-color: #ca4b4b;
+	&:hover,
+	&.done{
+		background-color: #b13b3b;
+	}
+}
+
+/* purple */
+.ajax-load-more-wrap.purple .alm-load-more-btn{
+	background-color: #a86bb9;
+	&:hover,
+	&.done{
+		background-color: #9963a8;
+	}
+}
+
+/* grey */
+.ajax-load-more-wrap.grey .alm-load-more-btn{
+	background-color: #888;
+	&:hover,
+	&.done{
+		background-color: #777;
+	}
+}
+
+/* white */
+.ajax-load-more-wrap.white .alm-load-more-btn{
+	background-color: #fff;
+	color: #666;
+	border: 1px solid #efefef;
+	&:hover,
+	&.done{
+		background-color: #efefef;
+		color: #333;
+	}
+	&.done{
+		border-color: #fff;
+	}
+}
+
+/* Infinite */
+.ajax-load-more-wrap.infinite{
+	.alm-load-more-btn {
+		width: 100%;
+		background-color: transparent !important;
+		background-position: center center;
+		background-repeat: no-repeat;
+		background-image: url("../../img/spinner.gif");
+		border: none !important;
+		opacity: 0;
+		transition: opacity 0.25s ease;
+		box-shadow: none !important;
+		overflow: hidden;
+		text-indent: -9999px;
+		cursor: default !important;
+		outline: none !important;
+		&:before {
+			display: none !important;
+		}
+		&:active{
+			box-shadow: none;
+		}
+		&.done {
+			opacity: 0;
+		}
+		&.loading {
+			opacity: 1;
+		}
+	}
+	&.skype .alm-load-more-btn {
+		background-image: url("../../img/spinner-skype.gif");
+	}
+	&.ring .alm-load-more-btn {
+		background-image: url("../../img/spinner-ring.gif");
+	}
+	&.fading-blocks .alm-load-more-btn {
+		background-image: url("../../img/loader-fading-blocks.gif");
+	}
+	&.fading-circles .alm-load-more-btn {
+		background-image: url("../../img/loader-fading-circles.gif");
+	}
+	&.chasing-arrows .alm-load-more-btn {
+		background-image: url("../../img/spinner-chasing-arrows.gif");
+	}
+}
+
+
+/*
+*  Generic alm-listing styles
+*  @since 1.0.0
+*/
+
+.alm-listing{
+	margin: 0;
+	padding: 0;
+	li{
+		background: none;
+		margin: 0 0 30px;
+		padding: 0 0 0 170px;
+		overflow: hidden;
+		position: relative;
+		list-style: none;
+		&.no-img{
+			padding: 0;
+		}
+		p{
+			margin: 0;
+		}
+		h3{
+			margin: 0 0 10px;
+		}
+		img{
+			position: absolute;
+			left: 0;
+			top: 0;
+			border-radius: 2px;
+		}
+	}
+}
