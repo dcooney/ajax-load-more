@@ -33,6 +33,11 @@ if( !class_exists('ALM_SHORTCODE') ):
          global $post;
 
    		$options = get_option( 'alm_settings' );
+			
+			if (has_filter('alm_settings')) {
+            $options = apply_filters('alm_settings', $options);
+         }
+			
    		self::$counter++;
 
    		// Define page slug
