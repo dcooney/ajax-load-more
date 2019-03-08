@@ -208,22 +208,24 @@
 *  Generic alm-listing styles
 *  @since 1.0.0
 */
-
+ 
 .alm-listing{
 	margin: 0;
 	padding: 0;
-	li{
+	.alm-reveal > li,
+	.alm-paging-content > li,
+	> li{
 		background: none;
-		margin: 0 0 30px;
+		margin: 0 0 30px; 
 		padding: 0 0 0 170px;
 		overflow: hidden;
 		position: relative;
 		list-style: none;
-		&.no-img{
+		&.no-img{ 
 			padding: 0;
 		}
 		p{
-			margin: 0;
+			margin: 0; 
 		}
 		h3{
 			margin: 0 0 10px;
@@ -234,5 +236,5 @@
 			top: 0;
 			border-radius: 2px;
 		}
-	}
+	}	
 }

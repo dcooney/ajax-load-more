@@ -1,5 +1,250 @@
 <?php
 
+/*
+*  alm_get_pro_addon
+*  An array of pro addon parameters
+*
+*  @return array
+*  @since 3.6
+*/
+
+function alm_get_pro_addon(){
+	$path_prefix = 'ajax-load-more-';
+	$url_prefix = 'https://connekthq.com/plugins/ajax-load-more/pro/';
+
+   $addons = array(
+      array(
+         'name' => __('Ajax Load More Pro', 'ajax-load-more'),
+         'intro' => __('Get instant access to all premium add-ons in a single installation.', 'ajax-load-more'),
+         'desc' => __('The Pro bundle is installed as a single product with one license key and contains immediate access all premium add-ons.', 'ajax-load-more'),
+         'action' => 'alm_pro_installed',
+         'key' => 'alm_pro_license_key',
+         'status' => 'alm_pro_license_status',
+         'settings_field' => 'alm_pro_license',
+         'img' => 'img/add-ons/pro-bundle-add-on.png',
+         'url' => $url_prefix,
+         'item_id' => ALM_PRO_ITEM_NAME,
+         'version' => 'ALM_PRO_VERSION',
+	   	'path' => $path_prefix .'pro',
+	   	'slug' => 'pro'
+      )
+   );
+   return $addons;
+}
+
+
+/*
+*  alm_get_addons
+*  An array of add-on parameters
+*
+*  @return array
+*  @since 3.3.0
+*/
+
+function alm_get_addons(){
+	$path_prefix = 'ajax-load-more-';
+	$url_prefix = 'https://connekthq.com/plugins/ajax-load-more/add-ons/';
+
+   $addons = array(
+      array(
+         'name' => __('Cache', 'ajax-load-more'),
+         'intro' => __('Improve performance with the Ajax Load More caching engine.', 'ajax-load-more'),
+         'desc' => __('The Cache add-on creates static HTML files of Ajax Load More requests then delivers those static files to your visitors.', 'ajax-load-more'),
+         'action' => 'alm_cache_installed',
+         'key' => 'alm_cache_license_key',
+         'status' => 'alm_cache_license_status',
+         'settings_field' => 'alm_cache_license',
+         'img' => 'img/add-ons/cache-add-on.jpg',
+         'url' => $url_prefix .'cache/',
+         'item_id' => ALM_CACHE_ITEM_NAME,
+         'version' => 'ALM_CACHE_VERSION',
+	   	'path' => $path_prefix .'cache',
+	   	'slug' => 'cache'
+      ),
+      array(
+         'name' => __('Call to Actions', 'ajax-load-more'),
+         'intro' => __('Ajax Load More extension for displaying advertisements and call to actions.', 'ajax-load-more'),
+         'desc' => __('The Call to Actions add-on provides the ability to inject a custom CTA template within each Ajax Load More loop.', 'ajax-load-more'),
+         'action' => 'alm_cta_installed',
+         'key' => 'alm_cta_license_key',
+         'status' => 'alm_cta_license_status',
+         'settings_field' => 'alm_cta_license',
+         'img' => 'img/add-ons/cta-add-on.jpg',
+         'url' => $url_prefix .'/call-to-actions/',
+         'item_id' => ALM_CTA_ITEM_NAME,
+         'version' => 'ALM_CTA_VERSION',
+	   	'path' => $path_prefix .'call-to-actions',
+	   	'slug' => 'call-to-actions'
+      ),
+      array(
+         'name' => __('Comments', 'ajax-load-more'),
+         'intro' => __('Load blog comments on demand with Ajax Load More.', 'ajax-load-more'),
+         'desc' => __('The Comments add-on will display your blog comments with Ajax Load More\'s infinite scroll functionality.', 'ajax-load-more'),
+         'action' => 'alm_comments_installed',
+         'key' => 'alm_comments_license_key',
+         'status' => 'alm_comments_license_status',
+         'settings_field' => 'alm_comments_license',
+         'img' => 'img/add-ons/comments-add-on.jpg',
+         'url' => $url_prefix .'comments/',
+         'item_id' => ALM_COMMENTS_ITEM_NAME,
+         'version' => 'ALM_COMMENTS_VERSION',
+	   	'path' => $path_prefix .'comments',
+	   	'slug' => 'comments'
+      ),
+      array(
+         'name' => __('Custom Repeaters', 'ajax-load-more'),
+         'intro' => __('Extend Ajax Load More with unlimited repeater templates.', 'ajax-load-more'),
+         'desc' => __('Create, delete and modify repeater templates as you need them with absolutely zero restrictions.', 'ajax-load-more'),
+         'action' => 'alm_unlimited_installed',
+         'key' => 'alm_unlimited_license_key',
+         'status' => 'alm_unlimited_license_status',
+         'settings_field' => 'alm_unlimited_license',
+         'img' => 'img/add-ons/unlimited-add-ons.jpg',
+         'url' => $url_prefix .'custom-repeaters/',
+         'item_id' => ALM_UNLIMITED_ITEM_NAME,
+         'version' => 'ALM_UNLIMITED_VERSION',
+	   	'path' => $path_prefix .'repeaters-v2',
+	   	'slug' => 'repeaters-v2'
+      ),
+      array(
+         'name' => __('Filters', 'ajax-load-more'),
+         'intro' => __('Create custom Ajax Load More filters in seconds.', 'ajax-load-more'),
+         'desc' => __('The Filters add-on provides front-end and admin functionality for building and managing Ajax filters.', 'ajax-load-more'),
+         'action' => 'alm_filters_installed',
+         'key' => 'alm_filters_license_key',
+         'status' => 'alm_filters_license_status',
+         'settings_field' => 'alm_filters_license',
+         'img' => 'img/add-ons/filters-add-on.jpg',
+         'url' => $url_prefix .'filters/',
+         'item_id' => ALM_FILTERS_ITEM_NAME,
+         'version' => 'ALM_FILTERS_VERSION',
+	   	'path' => $path_prefix .'filters',
+	   	'slug' => 'filters'
+      ),
+      array(
+         'name' => __('Layouts', 'ajax-load-more'),
+         'intro' => __('Predefined layouts for repeater templates.', 'ajax-load-more'),
+         'desc' => __('The Layouts add-on provides a collection of unique, well designed and fully responsive templates.', 'ajax-load-more'),
+         'action' => 'alm_layouts_installed',
+         'key' => 'alm_layouts_license_key',
+         'status' => 'alm_layouts_license_status',
+         'settings_field' => 'alm_layouts_license',
+         'img' => 'img/add-ons/layouts-add-on.jpg',
+         'url' => $url_prefix .'layouts/',
+         'item_id' => ALM_LAYOUTS_ITEM_NAME,
+         'version' => 'ALM_LAYOUTS_VERSION',
+	   	'path' => $path_prefix .'layouts',
+	   	'slug' => 'layouts'
+      ),
+      array(
+         'name' => __('Next Page', 'ajax-load-more'),
+         'intro' => __('Load and display multipage WordPress content.', 'ajax-load-more'),
+         'desc' => __('The Next Page add-on provides functionality for infinite scrolling paginated posts and pages.', 'ajax-load-more'),
+         'action' => 'alm_nextpage_installed',
+         'key' => 'alm_nextpage_license_key',
+         'status' => 'alm_nextpage_license_status',
+         'settings_field' => 'alm_nextpage_license',
+         'img' => 'img/add-ons/next-page-add-on.jpg',
+         'url' => $url_prefix .'nextpage/',
+         'item_id' => ALM_NEXTPAGE_ITEM_NAME,
+         'version' => 'ALM_NEXTPAGE_VERSION',
+	   	'path' => $path_prefix .'next-page',
+	   	'slug' => 'next-page'
+      ),
+      array(
+         'name' => __('Paging', 'ajax-load-more'),
+         'intro' => __('Extend Ajax Load More with a numbered navigation.', 'ajax-load-more'),
+         'desc' => __('The Paging add-on will transform the default infinite scroll functionality into a robust ajax powered navigation system.', 'ajax-load-more'),
+         'action' => 'alm_paging_installed',
+         'key' => 'alm_paging_license_key',
+         'status' => 'alm_paging_license_status',
+         'settings_field' => 'alm_paging_license',
+         'img' => 'img/add-ons/paging-add-ons.jpg',
+         'url' => $url_prefix .'paging/',
+         'item_id' => ALM_PAGING_ITEM_NAME,
+         'version' => 'ALM_PAGING_VERSION',
+	   	'path' => $path_prefix .'paging',
+	   	'slug' => 'paging'
+      ),
+      array(
+         'name' => __('Preloaded', 'ajax-load-more'),
+         'intro' => __('Load an initial set of posts before making Ajax requests to the server.', 'ajax-load-more'),
+         'desc' => __('The Preloaded add-on will display content quicker and allow caching of the initial query which can reduce stress on your server.', 'ajax-load-more'),
+         'action' => 'alm_preload_installed',
+         'key' => 'alm_preloaded_license_key',
+         'status' => 'alm_preloaded_license_status',
+         'settings_field' => 'alm_preloaded_license',
+         'img' => 'img/add-ons/preloaded-add-ons.jpg',
+         'url' => $url_prefix .'preloaded/',
+         'item_id' => ALM_PRELOADED_ITEM_NAME,
+         'version' => 'ALM_PRELOADED_VERSION',
+	   	'path' => $path_prefix .'preloaded',
+	   	'slug' => 'preloaded'
+      ),
+      array(
+         'name' => __('Search Engine Optimization', 'ajax-load-more'),
+         'intro' => __('Generate unique paging URLs with every Ajax Load More query.', 'ajax-load-more'),
+         'desc' => __('The SEO add-on will optimize your ajax loaded content for search engines by generating unique URLs with every query.', 'ajax-load-more'),
+         'action' => 'alm_seo_installed',
+         'key' => 'alm_seo_license_key',
+         'status' => 'alm_seo_license_status',
+         'settings_field' => 'alm_seo_license',
+         'img' => 'img/add-ons/seo-add-ons.jpg',
+         'url' => $url_prefix .'search-engine-optimization/',
+         'item_id' => ALM_SEO_ITEM_NAME,
+         'version' => 'ALM_SEO_VERSION',
+	   	'path' => $path_prefix .'seo',
+	   	'slug' => 'seo'
+      ),
+      array(
+         'name' => __('Single Posts', 'ajax-load-more'),
+         'intro' => __('An add-on to enable infinite scrolling of single posts.', 'ajax-load-more'),
+         'desc' => __('The Single Posts add-on will load full posts as you scroll and update the browser URL to the current post.', 'ajax-load-more'),
+         'action' => 'alm_prev_post_installed',
+         'key' => 'alm_prev_post_license_key',
+         'status' => 'alm_prev_post_license_status',
+         'settings_field' => 'alm_prev_post_license',
+         'img' => 'img/add-ons/prev-post-add-on.jpg',
+         'url' => $url_prefix .'single-post/',
+         'item_id' => ALM_PREV_POST_ITEM_NAME,
+         'version' => 'ALM_PREV_POST_VERSION',
+	   	'path' => $path_prefix .'previous-post',
+	   	'slug' => 'previous-post'
+      ),
+      array(
+         'name' => __('Theme Repeaters', 'ajax-load-more'),
+         'intro' => __('Manage repeater templates within your current theme directory.', 'ajax-load-more'),
+         'desc' => __('The Theme Repeater add-on will allow you load, edit and maintain templates from your current theme directory.', 'ajax-load-more'),
+         'action' => 'alm_theme_repeaters_installed',
+         'key' => 'alm_theme_repeaters_license_key',
+         'status' => 'alm_theme_repeaters_license_status',
+         'settings_field' => 'alm_theme_repeaters_license',
+         'img' => 'img/add-ons/theme-repeater-add-on.jpg',
+         'url' => $url_prefix .'theme-repeaters/',
+         'item_id' => ALM_THEME_REPEATERS_ITEM_NAME,
+         'version' => 'ALM_THEME_REPEATERS_VERSION',
+	   	'path' => $path_prefix .'theme-repeaters',
+	   	'slug' => 'theme-repeaters'
+      ),
+      array(
+         'name' => __('Users', 'ajax-load-more'),
+         'intro' => __('Enable infinite scrolling of WordPress users.', 'ajax-load-more'),
+         'desc' => __('The Users add-on will allow lazy loading of users by role using a WP_User_Query.', 'ajax-load-more'),
+         'action' => 'alm_users_installed',
+         'key' => 'alm_users_license_key',
+         'status' => 'alm_users_license_status',
+         'settings_field' => 'alm_users_license',
+         'img' => 'img/add-ons/users-add-on.jpg',
+         'url' => $url_prefix .'users/',
+         'item_id' => ALM_USERS_ITEM_NAME,
+         'version' => 'ALM_USERS_VERSION',
+	   	'path' => $path_prefix .'users',
+	   	'slug' => 'users'
+      )
+   );
+   return $addons;
+}
+
 
 /*
 *  alm_masonry_after
@@ -9,7 +254,7 @@
 *  @since 3.1.0
 */
 function alm_masonry_before($transition){
-	return ($transition === 'masonry') ? '<div class="alm-masonry">' : '';
+	return ($transition === 'masonry') ? '<div class="alm-masonry" style="opacity: 0;">' : '';
 }
 add_filter('alm_masonry_before', 'alm_masonry_before');
 
@@ -42,27 +287,9 @@ function alm_progress_css($counter, $progress_bar, $progress_bar_color){
 	if($counter == 1 && $progress_bar === 'true'){
 		$style = '
 <style>
-.pace {
-	-webkit-pointer-events: none;
-	pointer-events: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	user-select: none;
-}
-.pace-inactive {
-	display: none;
-}
-.pace .pace-progress {
-	background: #'. $progress_bar_color .';
-	position: fixed;
-	z-index: 2000;
-	top: 0;
-	right: 100%;
-	width: 100%;
-	height: 5px;
-	-webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3);
-	box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
-}
+.pace { -webkit-pointer-events: none; pointer-events: none; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
+.pace-inactive { display: none; }
+.pace .pace-progress { background: #'. $progress_bar_color .'; position: fixed; z-index: 2000; top: 0; right: 100%; width: 100%; height: 5px; -webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
 </style>';
 		return $style;
 	}
@@ -85,8 +312,8 @@ function alm_css_disabled($setting) {
 	$disabled = true;
 	if(!isset($options[$setting]) || $options[$setting] != '1'){
 		$disabled = false;
-	}	
-	return $disabled;	
+	}
+	return $disabled;
 }
 
 
@@ -102,12 +329,46 @@ function alm_css_disabled($setting) {
 */
 
 function alm_do_inline_css($setting) {
+
+	// Exit if this is a REST API request
+	if(defined('REST_REQUEST')){
+		if(REST_REQUEST) return false;
+	}
+
 	$options = get_option( 'alm_settings' );
 	$inline = false;
 	if(!isset($options[$setting]) || $options[$setting] === '1'){
 		$inline = true;
-	}	
-	return $inline;	
+	}
+	return $inline;
+}
+
+/*
+* alm_loop
+* This function will return HTML of a looped item
+*
+* @param $repeater        string
+* @param $type            string
+* @param $theme_repeater  string
+* @return                 html
+* @since 3.7
+*/
+function alm_loop($repeater, $type, $theme_repeater, $alm_found_posts = '', $alm_page = '', $alm_item = '', $alm_current = ''){
+   ob_start();
+   
+   // Theme Repeater
+	if($theme_repeater !== 'null' && has_filter('alm_get_theme_repeater')){
+		do_action('alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current); // Returns an include file
+	}
+	// Standard Repeater Templates
+	else {
+		$file = alm_get_current_repeater($repeater, $type);
+      include($file);
+	}
+
+	$return = ob_get_contents();
+	ob_end_clean();
+	return $return;
 }
 
 
@@ -116,8 +377,12 @@ function alm_do_inline_css($setting) {
 *  alm_get_current_repeater
 *  Get the current repeater template file
 *
+*  @param string $repeater current repater name
+*  @param string $type Type of template
+*
 *  @return $include (file path)
 *  @since 2.5.0
+*  @updated 3.5.1
 */
 
 function alm_get_current_repeater($repeater, $type) {
@@ -125,7 +390,7 @@ function alm_get_current_repeater($repeater, $type) {
 	$template = $repeater;
 	$include = '';
 
-	// If is Custom Repeaters (Custom Repeaters v1)
+	// Custom Repeaters v1
 	if( $type == 'repeater' && has_action('alm_repeater_installed' )){
 		$include = ALM_REPEATER_PATH . 'repeaters/'. $template .'.php';
 
@@ -134,34 +399,44 @@ function alm_get_current_repeater($repeater, $type) {
 		}
 
 	}
-   // If is Unlimited Repeaters (Custom Repeaters v2)
-	elseif( $type == 'template_' && has_action('alm_unlimited_installed' )){
-		global $wpdb;
-		$blog_id = $wpdb->blogid;
 
-		if($blog_id > 1){
-			$include = ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id .'/'.$template .'.php';
-		}else{
-			$include = ALM_UNLIMITED_PATH. 'repeaters/'.$template .'.php';
+   // Custom Repeaters v2
+	elseif( $type == 'template_' && has_action('alm_unlimited_installed' )){
+
+
+   	// Custom Repeaters 2.5+
+   	if(ALM_UNLIMITED_VERSION >= '2.5'){
+
+      	// Get path to repeater (alm_templates)
+			$base_dir = AjaxLoadMore::alm_get_repeater_path();
+			$include = $base_dir .'/'. $template .'.php';
+
+   	} else {
+
+   		global $wpdb;
+   		$blog_id = $wpdb->blogid;
+
+   		$include = ($blog_id > 1) ? ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id .'/'. $template .'.php' : ALM_UNLIMITED_PATH. 'repeaters/'. $template .'.php';
+
 		}
 
 		if(!file_exists($include)){ //confirm file exists
 		   $include = alm_get_default_repeater();
 		}
 	}
+
 	// Default repeater
 	else{
 		$include = alm_get_default_repeater();
 	}
 
 	// Security check
-	// check if $template contains relative path. So, set include to default
+	// Confirm $template does NOT contains relative path
 	if ( false !== strpos( $template, './' ) ) {
 	   $include = alm_get_default_repeater();
 	}
 
 	return $include;
-
 }
 
 
@@ -178,7 +453,7 @@ function alm_get_default_repeater() {
 
 	global $wpdb;
 	$file = null;
-	$template_dir = 'alm_templates';
+	$template_dir = apply_filters( 'alm_template_path', 'alm_templates' );
 
 	// Allow user to load template from theme directory
 	// Since 2.8.5
@@ -200,14 +475,9 @@ function alm_get_default_repeater() {
 	}
 
 	// Since 2.0
-	// otherwise use pre-defined plug-in templates
+	// Updated 3.5
 	if($file == null){
-		$blog_id = $wpdb->blogid;
-		if($blog_id > 1){
-			$file = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php'; // File
-		}else{
-			$file = ALM_PATH. 'core/repeater/default.php';
-		}
+   	$file = AjaxLoadMore::alm_get_repeater_path() .'/default.php';
 	}
 
 	return $file;
@@ -516,13 +786,13 @@ function alm_get_canonical_url(){
    }
    // Category
    elseif(is_category()){
-      $cur_cat_id = get_cat_id( single_cat_title('',false) );
-      $canonicalURL = get_category_link($cur_cat_id);
+      $cat_id = get_query_var( 'cat' );
+      $canonicalURL = get_category_link($cat_id);
    }
    // Tag
    elseif(is_tag()){
-      $cur_tag_id = get_query_var('tag_id');
-      $canonicalURL = get_tag_link($cur_tag_id);
+      $tag_id = get_query_var('tag_id');
+      $canonicalURL = get_tag_link($tag_id);
    }
    // Author
    elseif(is_author()){
@@ -562,8 +832,11 @@ function alm_get_canonical_url(){
 */
 function alm_get_page_slug($post){
 
+   // Exit if admin
+   if(is_admin()) return false;
+
 	if(!is_archive()){
-		// If not an archive page, set the post slug
+   	// If not archive, set the post slug
 		if(is_front_page() || is_home()){
 			$slug = 'home';
 		}else{
@@ -635,6 +908,9 @@ function alm_get_page_slug($post){
 *  @since 3.0.1
 */
 function alm_get_page_id($post){
+
+   // Exit if admin
+   if(is_admin()) return false;
 
    $post_id = '';
 
@@ -708,60 +984,58 @@ function alm_get_startpage(){
 
 
 
+
 /*
-*  alm_paging_no_script
-*  Create paging navigation
+*  alm_pretty_print
+*  Debug helper for printing variables to screen
 *
-*  @return html;
-*  @since 2.8.3
+*  @since 3.7
 */
-function alm_paging_no_script($alm_preload_query){
-   $numposts = $alm_preload_query->found_posts;
-   $max_page = $alm_preload_query->max_num_pages;
-   if(empty($paged) || $paged == 0) {
-      $paged = 1;
-   }
-   $pages_to_show = 8;
-   $pages_to_show_minus_1 = $pages_to_show-1;
-   $half_page_start = floor($pages_to_show_minus_1/2);
-   $half_page_end = ceil($pages_to_show_minus_1/2);
-   $start_page = $paged - $half_page_start;
-   if($start_page <= 0) {
-      $start_page = 1;
-   }
-   $end_page = $paged + $half_page_end;
-   if(($end_page - $start_page) != $pages_to_show_minus_1) {
-      $end_page = $start_page + $pages_to_show_minus_1;
-   }
-   if($end_page > $max_page) {
-      $start_page = $max_page - $pages_to_show_minus_1;
-      $end_page = $max_page;
-   }
-   if($start_page <= 0) {
-      $start_page = 1;
-   }
-   $content = '';
-   if ($max_page > 1) {
-      $content .= '<noscript>';
-      $content .= '<div>';
-      $content .= '<span>'.__('Pages:', 'ajax-load-more').'  </span>';
-      if ($start_page >= 2 && $pages_to_show < $max_page) {
-         $first_page_text = "&laquo;";
-         $content .= '<span class="page"><a href="'.get_pagenum_link().'">'.$first_page_text.'</a></span>';
+function alm_pretty_print($query){
+	if($query){
+		echo '<pre>';
+		print_r($query);
+		echo '</pre>';
+	}
+}
+
+
+
+/*
+*  alm_convert_dashes_to_underscore
+*  Convert dashes to underscores
+*
+*  @param $string string
+*  @return string
+*  @since 3.7
+*/
+function alm_convert_dashes_to_underscore($string = ''){
+	return str_replace('-', '_', $string);
+}
+
+
+
+/*
+*  alm_sticky_post__not_in
+*  Remove posts if post__not_in is set in the ALM shortcode
+*
+*  @param $ids    array
+*  @param $not_in array
+*  @return array
+*  @since 3.7
+*/
+function alm_sticky_post__not_in($ids = '', $not_in = ''){
+
+   if(!empty($not_in)){
+      $new_array = array();
+      foreach($ids as $id){
+         if(!in_array($id, $not_in)){
+            array_push($new_array, $id);
+         }
       }
-      for($i = $start_page; $i  <= $end_page; $i++) {
-      if($i == $paged) {
-         $content .= ' <span class="page current">'.$i.'</span> ';
-      } else {
-         $content .= ' <span class="page"><a href="'.get_pagenum_link($i).'">'.$i.'</a></span>';
-      }
+      $ids = $new_array;
+
    }
-   if ($end_page < $max_page) {
-      $last_page_text = "&raquo;";
-      $content .= '<span><a href="'.get_pagenum_link($max_page).'" title="'.$last_page_text.'">'.$last_page_text.'</a></span>';
-   }
-      $content .= '</div>';
-      $content .= '</noscript>';
-   }
-   return $content;
+
+   return $ids;
 }

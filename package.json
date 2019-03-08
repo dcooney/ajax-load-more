@@ -1,33 +1,57 @@
 {
-  "name": "ajax-load-more",
-  "version": "",
-  "description": "Ajax Load More WordPress Plugin",
-  "main": "",
-  "author": "connekt",
-  "private": true,
-  "repository": {
-    "private": true
-  },
-  "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-loader": "^7.1.2",
-    "babel-preset-es2015": "latest",
-    "gulp": "latest",
-    "gulp-autoprefixer": "latest",
-    "gulp-babel": "latest",
-    "gulp-clean-css": "latest",
-    "gulp-concat": "latest",
-    "gulp-jshint": "latest",
-    "gulp-notify": "latest",
-    "gulp-rename": "latest",
-    "gulp-sass": "latest",
-    "gulp-sequence": "latest",
-    "gulp-uglify": "latest",
-    "gulp-util": "latest",
-    "gulp-watch": "latest",
-    "jshint": "latest"
-  },
-  "dependencies": {
-    "lodash": "^4.17.4"
-  }
+	"name": "ajax-load-more",
+	"version": "5.0.0",
+	"description": "Ajax Load More WordPress Plugin",
+	"main": "core/src/js/ajax-load-more.js",
+	"scripts": {
+		"start": "webpack -w --mode development --config=webpack/dev.config.js",
+		"build": "webpack -p --mode production --config=webpack/prod.config.js"
+	},
+	"author": "connekt",
+	"private": true,
+	"repository": {
+		"private": true
+	},
+	"dependencies": {
+		"@babel/polyfill": "^7.2.5",
+		"es6-promise": "^4.1.1",
+		"lodash": "^4.17.4",
+		"smoothscroll-polyfill": "^0.4.3"
+	},
+	"devDependencies": {
+		"autoprefixer": "^7.1.4",
+		"babel-core": "^6.25.0",
+		"babel-loader": "^7.1.1",
+		"babel-polyfill": "^6.26.0",
+		"babel-preset-env": "^1.6.0",
+		"babel-preset-es2015": "^6.24.1",
+		"babel-preset-react": "^6.24.1",
+		"copy-webpack-plugin": "^4.5.0",
+		"css-loader": "^0.28.7",
+		"extract-text-webpack-plugin": "4.0.0-alpha.0",
+		"file-loader": "^2.0.0",
+		"gulp": "3.9.1",
+		"gulp-autoprefixer": "latest",
+		"gulp-babel": "^7.0.1",
+		"gulp-clean-css": "latest",
+		"gulp-concat": "latest",
+		"gulp-jshint": "latest",
+		"gulp-notify": "latest",
+		"gulp-rename": "latest",
+		"gulp-sass": "latest",
+		"gulp-sequence": "latest",
+		"gulp-uglify": "latest",
+		"gulp-util": "latest",
+		"gulp-watch": "latest",
+		"jquery": "^2.2.4",
+		"jshint": "latest",
+		"node-sass": "^4.5.3",
+		"postcss-import": "^10.0.0",
+		"postcss-loader": "^2.0.6",
+		"sass-loader": "^6.0.6",
+		"style-loader": "^0.18.2",
+		"url-loader": "^1.1.2",
+		"webpack": "^4.23.1",
+		"webpack-cli": "^3.1.2"
+	}
 }

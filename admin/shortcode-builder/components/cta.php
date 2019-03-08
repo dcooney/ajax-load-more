@@ -1,6 +1,6 @@
 <?php if(has_action('alm_cta_installed')){ ?>
 <div class="row cta add-on" id="alm-cta">
-   <h3 class="heading"><?php _e('Call to Actions', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Call to Actions', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
 
       <div class="section-title">
@@ -79,10 +79,12 @@
 		      do_action('alm_theme_repeaters_selection');
 		   }
 		   ?>
-
+		   
+         <div class="clear"></div>
+         <hr>
          <p class="warning-callout">
-            <?php _e('Call to actions do NOT count as a post within an Ajax Load More loop.<br/>
-               For example, if you set <strong>posts_per_page="5"</strong> in your shortcode, 6 items will be displayed.', 'ajax-load-more'); ?>
+            <?php _e('Call to actions do NOT count as a post within an Ajax Load More loop.', 'ajax-load-more'); ?><br/>
+            <?php _e('For example, if you set <strong>posts_per_page="5"</strong> in your shortcode, 6 items will be displayed.', 'ajax-load-more'); ?>
          </p>
 
       </div>

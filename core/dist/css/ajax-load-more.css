@@ -177,20 +177,30 @@
 .alm-listing {
   margin: 0;
   padding: 0; }
-  .alm-listing li {
+  .alm-listing .alm-reveal > li,
+  .alm-listing .alm-paging-content > li,
+  .alm-listing > li {
     background: none;
     margin: 0 0 30px;
     padding: 0 0 0 170px;
     overflow: hidden;
     position: relative;
     list-style: none; }
-    .alm-listing li.no-img {
+    .alm-listing .alm-reveal > li.no-img,
+    .alm-listing .alm-paging-content > li.no-img,
+    .alm-listing > li.no-img {
       padding: 0; }
-    .alm-listing li p {
+    .alm-listing .alm-reveal > li p,
+    .alm-listing .alm-paging-content > li p,
+    .alm-listing > li p {
       margin: 0; }
-    .alm-listing li h3 {
+    .alm-listing .alm-reveal > li h3,
+    .alm-listing .alm-paging-content > li h3,
+    .alm-listing > li h3 {
       margin: 0 0 10px; }
-    .alm-listing li img {
+    .alm-listing .alm-reveal > li img,
+    .alm-listing .alm-paging-content > li img,
+    .alm-listing > li img {
       position: absolute;
       left: 0;
       top: 0;

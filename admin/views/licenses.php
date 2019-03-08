@@ -1,22 +1,42 @@
+<?php
+	$pg_title = (has_action('alm_pro_installed')) ? __('Pro License', 'ajax-load-more') : __('Licenses', 'ajax-load-more');
+	$pg_desc = (has_action('alm_pro_installed')) ? __('Enter your Pro license key to enable updates from the plugins dashboard', 'ajax-load-more') : __('Enter your license keys below to enable <a href="admin.php?page=ajax-load-more-add-ons">add-on</a> updates from the plugins dashboard', 'ajax-load-more');
+?>
 <div class="admin ajax-load-more" id="alm-licenses">
 	<div class="wrap main-cnkt-wrap">
       <header class="header-wrap">
          <h1>
-            <?php echo ALM_TITLE; ?>: <strong><?php _e('Licenses', 'ajax-load-more'); ?></strong>
-            <em><?php _e('Enter your license keys to enable automatic <a href="admin.php?page=ajax-load-more-add-ons">add-on</a> updates', 'ajax-load-more'); ?>.</em>
+            <?php echo ALM_TITLE; ?>: <strong><?php echo $pg_title; ?></strong>
+            <em><?php echo $pg_desc; ?>.</em>
          </h1>
+         <?php alm_render_transient_notification(); ?>  
       </header>
       
       <div class="ajax-load-more-inner-wrapper">
 		
    		<div class="cnkt-main">
    		
-		      <h3><?php _e('License Keys', 'ajax-load-more'); ?></h3>
+		      <h3><?php    		      
+   		      if(has_action('alm_pro_installed')){
+   		         _e('License Key', 'ajax-load-more');       		      
+   		      } else {
+   		         _e('License Keys', 'ajax-load-more'); 
+   		      }
+   		      ?></h3>
 
-		      <p><?php _e('Manage your Ajax Load More license key\'s below - enter a key for each of your add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); ?></p>            
+		      <p>
+   		      <?php 
+      		      if(has_action('alm_pro_installed')){
+      		         _e('Enter your Ajax Load More Pro license key to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); 
+      		      } else {
+         		      _e('Enter a key for each of your Ajax Load More add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); 
+      		      }
+      		      ?>
+   		   </p>            
             
             <?php 
-               $addons = alm_get_addons();
+	            
+			      $addons = (has_action('alm_pro_installed')) ? alm_get_pro_addon() : alm_get_addons();		         
                $addon_count = 0;
                               
                foreach($addons as $addon){ 
@@ -93,7 +113,7 @@
    			      <div class="loading"></div>
                </div>            
                <?php } ?>          
-            <?php } ?>
+            <?php } unset($addons); ?>
             
             
             <?php   		     
@@ -102,7 +122,7 @@
             ?>
             <div class="spacer"></div>
             <div class="license-no-addons">
-               <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?>. &raquo; <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a></p>
+               <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e('Go Pro', 'ajax-load-more'); ?></strong></a></p>
             </div>
             <?php endif; ?>   
    
@@ -115,8 +135,8 @@
 	                  <h3><?php _e('About Licenses', 'ajax-load-more'); ?></h3>
 	                  <div class="cta-inner">
 	                     <ul>
-	                        <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after your successful purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more');?></li>
-	                        <li><?php _e('If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">form</a> on our website and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
+	                        <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more');?></li>
+	                        <li><?php _e('If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
 	                     </ul>
 	                  </div>
 	                  <div class="major-publishing-actions">

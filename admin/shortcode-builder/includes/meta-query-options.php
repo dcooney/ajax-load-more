@@ -6,8 +6,8 @@
 </div>             
 <?php // Meta Value ?>
 <div class="wrap-30 wrap-50">
-   <label for="meta-value" class="full"><?php _e('Value:', 'ajax-load-more'); ?></label>
-   <input class="alm_element sm meta-value" name="meta-value" type="text" value="" placeholder="<?php _e('Enter custom field value', 'ajax-load-more'); ?>">
+   <label for="meta-value" class="full"><?php _e('Value:', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Query multiple values by splitting each value with a comma - e.g. value, value2, value3 etc.','ajax-load-more'); ?>."></a></label>
+   <input class="alm_element sm meta-value" name="meta-value" type="text" value="" placeholder="<?php _e('Enter custom field value(s)', 'ajax-load-more'); ?>">
 </div>    
 <div class="clear"></div>
 <?php // Meta Compare ?>           

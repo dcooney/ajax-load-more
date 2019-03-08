@@ -1,6 +1,6 @@
 <?php if(has_action('alm_acf_installed')){ ?>
 <div class="row input cache add-on" id="alm-acf">
-   <h3 class="heading"><?php _e('Advanced Custom Fields', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Advanced Custom Fields', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Enable compatibility with Advanced Custom Fields.', 'ajax-load-more'); ?></p>
@@ -31,13 +31,12 @@
    		 </div>
          <div class="wrap">
             <div class="inner">
-               <input type="text" value="" id="acf_post_id"  class="alm_element">
+               <input type="text" value="" id="acf_post_id"  class="alm_element numbers-only">
             </div>
          </div>
 
          <div class="clear"></div>
          <hr/>
-         <div class="spacer"></div>
 
 		   <div class="section-title">
 				<h4><?php _e('Field Type', 'ajax-load-more'); ?></h4>
@@ -58,7 +57,6 @@
 
          <div class="clear"></div>
          <hr/>
-         <div class="spacer"></div>
 
 		   <div class="section-title">
 				<h4><?php _e('Field Name', 'ajax-load-more'); ?></h4>

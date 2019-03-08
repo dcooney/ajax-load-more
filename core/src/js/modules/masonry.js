@@ -1,22 +1,31 @@
+import almFadeIn from './fadeIn';
+import almAppendChildren from '../helpers/almAppendChildren';
+import almDomParser from '../helpers/almDomParser';
+let imagesLoaded = require('imagesloaded');
+
 /*
 	almMasonry
-
 	Function to trigger built-in Ajax Load More Masonry
 
-   @param container  object
-   @param items      object
-   @param selector   string
-   @param animation  string
-   @param speed      int
-   @param init       boolean
-   @param filtering  boolean   
+   @param {object} alm
+   @param {boolean} init
+   @param {boolean} filtering 
+   
    @since 3.1
-   @updated 3.2
+   @updated 4.3
 */
-
-let almMasonryInit = true; // flag
-
-let almMasonry = (container, items, selector, animation, horizontalOrder, speed, init, filtering) => {	
+let msnry = '';
+let almMasonry = (alm, init, filtering) => {	
+	
+	let container = alm.listing;
+	let html = alm.html;
+	
+	let selector = alm.masonry_selector;
+	let columnWidth = alm.masonry_columnwidth;
+	let animation = alm.masonry_animation;
+	let horizontalOrder = alm.masonry_horizontalorder;
+	let speed = alm.speed;	
+	let masonry_init = alm.masonry_init;
       
    let duration = (speed+100)/1000 +'s'; // Add 100 for some delay
    let hidden = 'scale(0.5)';
@@ -35,25 +44,36 @@ let almMasonry = (container, items, selector, animation, horizontalOrder, speed,
    if(animation === 'slide-down'){
       hidden = 'translateY(-50px)';
       visible = 'translateY(0)';
-   } 
+   }  
     
    if(animation === 'none'){
-      hidden = 'translateY(0)'; 
+      hidden = 'translateY(0)';  
       visible = 'translateY(0)';
    }
    
-   horizontalOrder = (horizontalOrder === 'true') ? true : false;
+   // columnWidth
+   if(columnWidth){
+	   if(!isNaN(columnWidth)){// Check if number
+		   columnWidth = parseInt(columnWidth);
+		}
+   } else { // No columnWidth, use the selector
+	   columnWidth = selector;
+   }
    
+   // horizontalOrder
+   horizontalOrder = (horizontalOrder === 'true') ? true : false;
+      
 	if(!filtering){
+   	
 		// First Run
-		if(almMasonryInit && init){
-			almMasonryInit = false;
-			container.imagesLoaded( () => {
-				items.fadeIn(speed);				
-				container.masonry({
+		if(masonry_init && init){
+			
+			imagesLoaded( container, function() {
+				
+				let defaults = {
 					itemSelector: selector,
 					transitionDuration: duration,
-					columnWidth: selector,
+					columnWidth: columnWidth,
 					horizontalOrder: horizontalOrder,
                hiddenStyle: {
                   transform: hidden,
@@ -62,26 +82,58 @@ let almMasonry = (container, items, selector, animation, horizontalOrder, speed,
                visibleStyle: {
                   transform: visible,
                   opacity: 1
-               }
-				});
-				container.masonry('reloadItems');
+               } 
+            }
+            
+            // Get custom Masonry options (https://masonry.desandro.com/options.html)
+            let alm_masonry_vars = window.alm_masonry_vars;
+            if(alm_masonry_vars){ 
+		         Object.keys(alm_masonry_vars).forEach(function(key) {	// Loop object	to create key:prop			
+						defaults[key] = alm_masonry_vars[key];					
+					});
+				}				
+            
+            // Init Masonry
+            msnry = new Masonry( container, defaults );
+				
+				// Fade In
+				almFadeIn(container.parentNode, speed); 
+				
 			});
 		}
-		// Standard
-		else{
-			container.append( items ); // Append new items
-			container.imagesLoaded( () => {
-				items.show();
-				container.masonry( 'appended', items );
-			});
+		
+		// Standard / Append content
+		else{						
+						
+			// Loop all items and create new array
+			let data = almDomParser(html, 'text/html');
+			
+			if(data){
+   			
+   			// Loop elements to set opacity 0
+   			for(let i = 0; i < data.length; i++){
+      			data[i].style.opacity = 0;
+   			}   			
+   			
+   			// Append elements listing
+   			almAppendChildren(alm.listing, data);
+   			
+   			// Confirm imagesLoaded & append
+   			imagesLoaded( container, function() {
+					msnry.appended( data );				
+				});
+			}
 		}
 
 	} else{
-		// Filtering Reset
-		container.masonry('destroy'); // destroy masonry
-		almMasonryInit = true; // reset almMasonryInit
-		container.append( items );
-		almMasonry(container, items, selector, animation, horizontalOrder, speed, true, false);
+   	
+		// Reset
+		msnry.destroy(); // destroy masonry
+		container.parentNode.style.opacity = 0;
+		almMasonry(alm, true, false);
+		
 	}
 
 };
+
+export default almMasonry;

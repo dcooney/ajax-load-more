@@ -1,3 +1,25 @@
+// Prevent native browser scrolling on popstate
+// https://developer.mozilla.org/en-US/docs/Web/API/History#Browser_compatibility
+if ('scrollRestoration' in history) {
+   history.scrollRestoration = 'manual';
+}
+
+
+// Object.entries
+if (!Object.entries){
+  Object.entries = function( obj ){
+    var ownProps = Object.keys( obj ),
+        i = ownProps.length,
+        resArray = new Array(i); // preallocate the Array
+    while (i--)
+      resArray[i] = [ownProps[i], obj[ownProps[i]]];
+
+    return resArray;
+  };
+}
+  
+
+// Array.from
 if (!Array.from) {
   Array.from = (function () {
     var toStr = Object.prototype.toString;
@@ -75,3 +97,33 @@ if (!Array.from) {
     };
   }());
 }
+
+
+// Nodelist
+if (window.NodeList && !NodeList.prototype.forEach) {
+	NodeList.prototype.forEach = function (callback, thisArg) {
+		 thisArg = thisArg || window;
+		 for (var i = 0; i < this.length; i++) {
+			  callback.call(thisArg, this[i], i, this);
+		 }
+	};
+}
+
+
+// from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+(function (arr) {
+	arr.forEach(function (item) {
+	  if (item.hasOwnProperty('remove')) {
+		 return;
+	  }
+	  Object.defineProperty(item, 'remove', {
+		 configurable: true,
+		 enumerable: true,
+		 writable: true,
+		 value: function remove() {
+			if (this.parentNode !== null)
+			  this.parentNode.removeChild(this);
+		 }
+	  });
+	});
+})([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
