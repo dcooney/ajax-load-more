@@ -43,7 +43,6 @@
 		"gulp-uglify": "latest",
 		"gulp-util": "latest",
 		"gulp-watch": "latest",
-		"jquery": "^2.2.4",
 		"jshint": "latest",
 		"node-sass": "^4.5.3",
 		"postcss-import": "^10.0.0",
