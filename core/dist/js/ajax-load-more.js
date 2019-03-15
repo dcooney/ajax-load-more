@@ -140,6 +140,10 @@ var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/
 
 var resultsText = _interopRequireWildcard(_resultsText);
 
+var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
+
+var _insertScript2 = _interopRequireDefault(_insertScript);
+
 var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
 var _masonry2 = _interopRequireDefault(_masonry);
@@ -253,6 +257,8 @@ var alm_is_filtering = false;
       // Main ALM Containers
       alm.main = el; // Top level DOM element
       alm.listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+      alm.content = alm.listing;
+      alm.el = alm.content;
       alm.ajax = el.querySelector('.alm-ajax');
       alm.container_type = alm.listing.dataset.containerType;
 
@@ -562,6 +568,7 @@ var alm_is_filtering = false;
          alm.masonry_horizontalorder = alm.listing.dataset.masonryHorizontalorder;
          alm.masonry_horizontalorder = alm.masonry_horizontalorder === undefined ? 'true' : alm.masonry_horizontalorder;
          alm.transition_container = false;
+         alm.images_loaded = false;
          alm.is_masonry_preloaded = alm.addons.preloaded === 'true' ? true : alm.is_masonry_preloaded;
       }
 
@@ -904,6 +911,7 @@ var alm_is_filtering = false;
 
          // Create `.alm-reveal` div                   
          var reveal = document.createElement('div');
+         alm.el = reveal;
          reveal.style.opacity = 0;
          reveal.style.height = 0;
 
@@ -1013,6 +1021,7 @@ var alm_is_filtering = false;
                   if (!alm.transition_container) {
                      // No transition container
 
+                     alm.el = alm.html;
                      reveal = alm.container_type === 'table' ? (0, _almTableWrap2.default)(alm.html) : (0, _almDomParser2.default)(alm.html, 'text/html');
                   } else {
                      // Standard container
@@ -1111,6 +1120,7 @@ var alm_is_filtering = false;
                         (0, _almAppendChildren2.default)(alm.listing, container_array);
 
                         reveal = alm.listing;
+                        alm.el = reveal;
                      }
                      // End Init & SEO
 
@@ -1198,6 +1208,7 @@ var alm_is_filtering = false;
 
                // Masonry
                if (alm.transition === 'masonry') {
+                  alm.el = alm.listing;
                   (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
                   alm.masonry_init = false;
                   alm.AjaxLoadMore.transitionEnd();
@@ -1268,13 +1279,15 @@ var alm_is_filtering = false;
             // ALM Complete / Nested
             if (alm.images_loaded === 'true') {
                imagesLoaded(reveal, function () {
-                  alm.AjaxLoadMore.nested(reveal);
+                  alm.AjaxLoadMore.nested(reveal); // Nested						
+                  _insertScript2.default.init(alm.el); // Run script inserter
                   if (typeof almComplete === 'function') {
                      window.almComplete(alm);
                   }
                });
             } else {
-               alm.AjaxLoadMore.nested(reveal);
+               alm.AjaxLoadMore.nested(reveal); // Nested
+               _insertScript2.default.init(alm.el); // Run script inserter
                if (typeof almComplete === 'function') {
                   window.almComplete(alm);
                }
@@ -2130,6 +2143,53 @@ exports.getOffset = getOffset;
 
 /***/ }),
 
+/***/ "./core/src/js/helpers/almAppendChild.js":
+/*!***********************************************!*\
+  !*** ./core/src/js/helpers/almAppendChild.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Append a child element to a container
+ *
+ * @param {*} target | Target element to append items
+ * @param {*} element | The element to append
+ * @param {*} transition | The transiton
+ * @since 5.0
+ */
+
+var nodeNameArray = ['#text'];
+
+var almAppendChild = function almAppendChild() {
+	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
+
+	if (!target || !element) {
+		return false;
+	}
+
+	// Do not append elements that are not actual element nodes (i.e. #text node)
+	// Add item if not in exclude array
+	if (nodeNameArray.indexOf(element.nodeName.toLowerCase()) === -1) {
+		if (transition === 'masonry') {
+			// If Masonry, opacity = zero
+			element.style.opacity = 0;
+		}
+		target.appendChild(element);
+	}
+};
+exports.default = almAppendChild;
+
+/***/ }),
+
 /***/ "./core/src/js/helpers/almAppendChildren.js":
 /*!**************************************************!*\
   !*** ./core/src/js/helpers/almAppendChildren.js ***!
@@ -2143,22 +2203,37 @@ exports.getOffset = getOffset;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _almAppendChild = __webpack_require__(/*! ./almAppendChild */ "./core/src/js/helpers/almAppendChild.js");
+
+var _almAppendChild2 = _interopRequireDefault(_almAppendChild);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 /**
  * Loop array of elements and append to target
  *
- * @param {*} el | Target element to append items
+ * @param {*} target | Target element to append items
  * @param {*} array | An array of elements
+ * @param {*} transition | The transiton
  * @since 5.0
  */
+
+var nodeNameArray = ['#text'];
+
 var almAppendChildren = function almAppendChildren() {
   var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
   var array = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
 
   if (!target || !array) {
     return false;
   }
   for (var i = 0; i < array.length; i++) {
-    target.appendChild(array[i]);
+    var element = array[i];
+    (0, _almAppendChild2.default)(target, element, transition);
   }
 };
 exports.default = almAppendChildren;
@@ -3242,6 +3317,86 @@ var almSetFilters = function almSetFilters() {
 
 /***/ }),
 
+/***/ "./core/src/js/modules/insertScript.js":
+/*!*********************************************!*\
+  !*** ./core/src/js/modules/insertScript.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _almDomParser = __webpack_require__(/*! ../helpers/almDomParser */ "./core/src/js/helpers/almDomParser.js");
+
+var _almDomParser2 = _interopRequireDefault(_almDomParser);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+/**
+ * Search nodes for <script/> tags and run scripts.
+ * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
+ */
+var insertScript = {
+
+	init: function init(node) {
+		if (this.isScript(node) === true) {
+			node.parentNode.replaceChild(this.clone(node), node);
+		} else {
+			var i = 0;
+			var children = node.childNodes;
+
+			if (children === undefined) {
+				var parser = new DOMParser();
+				var data = parser.parseFromString(node, 'text/html');
+				if (data) {
+					children = data.body.childNodes;
+				}
+			}
+			while (i < children.length) {
+				this.replace(children[i++]);
+			}
+		}
+		return node;
+	},
+
+	replace: function replace(node) {
+		if (this.isScript(node) === true) {
+			node.parentNode.replaceChild(this.clone(node), node);
+		} else {
+			var i = 0;
+			var children = node.childNodes;
+			while (i < children.length) {
+				this.replace(children[i++]);
+			}
+		}
+		return node;
+	},
+
+	isScript: function isScript(node) {
+		return node.tagName === 'SCRIPT';
+	},
+
+	clone: function clone(node) {
+		var script = document.createElement("script");
+		script.text = node.innerHTML;
+		for (var i = node.attributes.length - 1; i >= 0; i--) {
+			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
+		}
+		return script;
+	}
+
+};
+exports.default = insertScript;
+
+/***/ }),
+
 /***/ "./core/src/js/modules/masonry.js":
 /*!****************************************!*\
   !*** ./core/src/js/modules/masonry.js ***!
@@ -3365,29 +3520,25 @@ var almMasonry = function almMasonry(alm, init, filtering) {
           });
         }
 
-        // Init Masonry
-        msnry = new Masonry(container, defaults);
-
-        // Fade In
-        (0, _fadeIn2.default)(container.parentNode, speed);
+        // Init Masonry, delay to allow time for items to be added to the page
+        setTimeout(function () {
+          msnry = new Masonry(container, defaults);
+          // Fade In
+          (0, _fadeIn2.default)(container.parentNode, speed);
+        }, 100);
       });
     }
 
     // Standard / Append content
     else {
 
-        // Loop all items and create new array
+        // Loop all items and create array of node elements
         var data = (0, _almDomParser2.default)(html, 'text/html');
 
         if (data) {
 
-          // Loop elements to set opacity 0
-          for (var i = 0; i < data.length; i++) {
-            data[i].style.opacity = 0;
-          }
-
           // Append elements listing
-          (0, _almAppendChildren2.default)(alm.listing, data);
+          (0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
           // Confirm imagesLoaded & append
           imagesLoaded(container, function () {

@@ -93,11 +93,13 @@ let almMasonry = (alm, init, filtering) => {
 					});
 				}				
             
-            // Init Masonry
-            msnry = new Masonry( container, defaults );
+            // Init Masonry, delay to allow time for items to be added to the page
+            setTimeout(function(){
+            	msnry = new Masonry( container, defaults );
+            	// Fade In
+					almFadeIn(container.parentNode, speed); 
+            }, 100 );				
 				
-				// Fade In
-				almFadeIn(container.parentNode, speed); 
 				
 			});
 		}
@@ -105,23 +107,19 @@ let almMasonry = (alm, init, filtering) => {
 		// Standard / Append content
 		else{						
 						
-			// Loop all items and create new array
+			// Loop all items and create array of node elements
 			let data = almDomParser(html, 'text/html');
 			
-			if(data){
-   			
-   			// Loop elements to set opacity 0
-   			for(let i = 0; i < data.length; i++){
-      			data[i].style.opacity = 0;
-   			}   			
-   			
+			if(data){   	
+				
    			// Append elements listing
-   			almAppendChildren(alm.listing, data);
+   			almAppendChildren(alm.listing, data, 'masonry');
    			
    			// Confirm imagesLoaded & append
    			imagesLoaded( container, function() {
 					msnry.appended( data );				
 				});
+				
 			}
 		}
 

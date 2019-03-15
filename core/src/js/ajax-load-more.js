@@ -29,6 +29,7 @@ import almGetCacheUrl from './helpers/almGetCacheUrl';
 import almDomParser from './helpers/almDomParser';
 import * as queryParams from './helpers/queryParams';
 import * as resultsText from './modules/resultsText';
+import insertScript from './modules/insertScript';
 import almMasonry from './modules/masonry';
 import almFadeIn from './modules/fadeIn';
 import almFadeOut from './modules/fadeOut';
@@ -87,6 +88,8 @@ let alm_is_filtering = false;
       // Main ALM Containers
       alm.main = el; // Top level DOM element
       alm.listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+      alm.content = alm.listing;
+      alm.el = alm.content;
       alm.ajax = el.querySelector('.alm-ajax');
       alm.container_type = alm.listing.dataset.containerType;
 
@@ -403,6 +406,7 @@ let alm_is_filtering = false;
          alm.masonry_horizontalorder = alm.listing.dataset.masonryHorizontalorder;
          alm.masonry_horizontalorder = (alm.masonry_horizontalorder === undefined) ? 'true' : alm.masonry_horizontalorder;
          alm.transition_container = false;
+         alm.images_loaded = false;
          alm.is_masonry_preloaded = (alm.addons.preloaded === 'true') ? true : alm.is_masonry_preloaded;
       }
 
@@ -771,6 +775,7 @@ let alm_is_filtering = false;
 			         
          // Create `.alm-reveal` div                   
          let reveal = document.createElement('div');
+         alm.el = reveal;
          reveal.style.opacity = 0;
          reveal.style.height = 0;
          
@@ -780,6 +785,7 @@ let alm_is_filtering = false;
          if (is_cache) {
             // If content is cached don't look for json data - we won't be querying the DB.
             html = data;
+            
          } else {
             // Standard ALM query results
             html = data.html;
@@ -883,7 +889,8 @@ let alm_is_filtering = false;
                } else {
 
                   if (!alm.transition_container) { // No transition container
-                     
+	                 
+	                 	alm.el = alm.html;                     
                      reveal = (alm.container_type === 'table') ? almTableWrap(alm.html) : almDomParser(alm.html, 'text/html');
 
                   } else { // Standard container
@@ -991,6 +998,7 @@ let alm_is_filtering = false;
                         almAppendChildren(alm.listing, container_array);
                         
                         reveal = alm.listing;
+                        alm.el = reveal;
 
                      }
                      // End Init & SEO
@@ -1054,7 +1062,7 @@ let alm_is_filtering = false;
                            }
 
                         }
-
+								
 								reveal.innerHTML = alm.html;
                         
                      }
@@ -1095,6 +1103,7 @@ let alm_is_filtering = false;
 
                // Masonry
                if (alm.transition === 'masonry') {
+                  alm.el = alm.listing;
                   almMasonry(alm, alm.init, alm_is_filtering);
                   alm.masonry_init = false;
                   alm.AjaxLoadMore.transitionEnd();
@@ -1165,25 +1174,30 @@ let alm_is_filtering = false;
 
             }
             
+            
 				// almFiltersOnload [Filters Add-on hook]
 				if(typeof almFiltersOnload === 'function' && alm.init){
 					window.almFiltersOnload(alm);
-				}
-
-
+				}						
+				
+            
             // ALM Complete / Nested
             if (alm.images_loaded === 'true') {
                imagesLoaded( reveal, function() {
-                  alm.AjaxLoadMore.nested(reveal);
+                  alm.AjaxLoadMore.nested(reveal); // Nested						
+						insertScript.init(alm.el); // Run script inserter
                   if (typeof almComplete === 'function') {
                   	window.almComplete(alm);
                   }
                });
+               
             } else {
-               alm.AjaxLoadMore.nested(reveal);
+               alm.AjaxLoadMore.nested(reveal); // Nested
+					insertScript.init(alm.el); // Run script inserter
                if (typeof almComplete === 'function') {
                	window.almComplete(alm);
                }
+               
             }
             // End ALM Complete / Nested
 
@@ -1232,7 +1246,7 @@ let alm_is_filtering = false;
 
       };
 
-
+		
 
       /**
 	    * pagingPreloadedInit

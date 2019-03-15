@@ -1,16 +1,22 @@
+import almAppendChild from './almAppendChild';
 /**
  * Loop array of elements and append to target
  *
- * @param {*} el | Target element to append items
+ * @param {*} target | Target element to append items
  * @param {*} array | An array of elements
+ * @param {*} transition | The transiton
  * @since 5.0
  */
-let almAppendChildren = function( target = null, array = null ) {
+ 
+let nodeNameArray = ['#text'];
+
+let almAppendChildren = function( target = null, array = null, transition = 'fade' ) {
 	if(!target || !array){
 		return false;
 	}	
-	for (var i = 0; i < array.length; i++) {
-		target.appendChild(array[i]);
+	for (var i = 0; i < array.length; i++) {	
+		let element = array[i];		
+		almAppendChild(target, element, transition);		
 	}
 };
 export default almAppendChildren;

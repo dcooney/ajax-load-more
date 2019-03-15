@@ -194,6 +194,11 @@
     .alm-listing .alm-paging-content > li p,
     .alm-listing > li p {
       margin: 0; }
+      .alm-listing .alm-reveal > li p.entry-meta,
+      .alm-listing .alm-paging-content > li p.entry-meta,
+      .alm-listing > li p.entry-meta {
+        margin: 0 0 5px;
+        opacity: 0.75; }
     .alm-listing .alm-reveal > li h3,
     .alm-listing .alm-paging-content > li h3,
     .alm-listing > li h3 {
