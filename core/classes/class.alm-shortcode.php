@@ -32,13 +32,22 @@ if( !class_exists('ALM_SHORTCODE') ):
          
 
 			// Get global $post obj
-         global $post;
+      global $post;
 
 			// Get ALM options
    		$options = get_option( 'alm_settings' );
+        
+      /*
+	   	 *	alm_settings
+	   	 * Override default ALM Settings
+	   	 *
+	   	 * ALM Core Filter Hook
+	   	 *
+	   	 * @return $options;
+	   	 */
+   		$options = (has_filter('alm_settings')) ? apply_filters('alm_settings', $options) : $options;
    		
-   		// Add count
-   		self::$counter++;
+      self::$counter++;
 
    		// Define page slug
    		$slug = apply_filters('alm_page_slug', alm_get_page_slug($post));
@@ -48,8 +57,8 @@ if( !class_exists('ALM_SHORTCODE') ):
 
    		// Custom CSS for Layouts - Only run this once.
    		if(has_action('alm_layouts_custom_css')){
-      		do_action('alm_layouts_custom_css', self::$counter);
-         }
+        do_action('alm_layouts_custom_css', self::$counter);
+      }
 
    		extract(shortcode_atts(array(
 	   		'nested' => false,
