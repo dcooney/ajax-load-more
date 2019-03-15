@@ -6,6 +6,7 @@
    			<?php echo ALM_TITLE; ?>: <strong><?php _e('Shortcode Builder', 'ajax-load-more'); ?></strong>
             <em><?php _e('Create your own Ajax Load More <a href="http://en.support.wordpress.com/shortcodes/" target="_blank">shortcode</a> by adjusting the values below', 'ajax-load-more'); ?></em>
 			</h1>
+			<?php alm_render_transient_notification(); ?>  
 		</header>
 		
 		<div class="ajax-load-more-inner-wrapper">
@@ -31,11 +32,11 @@
 	         				<p><?php _e('Place the following shortcode into the content editor or widget area of your theme.', 'ajax-load-more'); ?></p>
 	         				<div class="output-wrap">
 	         					<div id="shortcode_output"></div>
-	         				</div>
-	         				<p class="small reset-shortcode-builder"><a href="javascript:void(0);"><i class="fa fa-refresh"></i> <?php _e('Reset', 'ajax-load-more'); ?></a></p>
+	         				</div>	         				
 	      				</div>
 	      				<div class="major-publishing-actions">
-	   	   				<a class="button button-primary copy"><?php _e('Copy Shortcode', 'ajax-load-more'); ?></a>
+	   	   				<a class="button button-primary copy copy-to-clipboard"><?php _e('Copy Shortcode', 'ajax-load-more'); ?></a>
+	   	   				<p class="small reset-shortcode-builder"><a href="javascript:void(0);"><i class="fa fa-refresh"></i> <?php _e('Reset', 'ajax-load-more'); ?></a></p>
 	      				</div>
 	      	   	</div>
 		   	   </div>

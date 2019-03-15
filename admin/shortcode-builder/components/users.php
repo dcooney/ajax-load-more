@@ -1,6 +1,6 @@
 <?php if(has_action('alm_users_installed')){ ?>
 <div class="row input users add-on" id="alm-users">
-   <h3 class="heading"><?php _e('Users', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Users', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
          <p><?php _e('Infinite scroll WordPress users', 'ajax-load-more'); ?>.</p>
@@ -30,8 +30,7 @@
          </div>
          <div class="wrap">
             <div class="inner">
-					<select class="alm_element" id="users-role" name="users-role">
-						<option value="" selected="selected">-- <?php _e('Select Role', 'ajax-load-more'); ?> --</option>
+					<select class="alm_element multiple" id="users-role" name="users-role" multiple="multiple">
 						<option value="all"><?php _e('All Roles', 'ajax-load-more'); ?></option>
 						<?php 
 							if(function_exists('alm_role_encrypt')) :

@@ -1,6 +1,6 @@
 <?php if(has_action('alm_preload_installed')){ ?>
 <div class="row input preload add-on" id="alm-preload">
-   <h3 class="heading"><?php _e('Preloaded', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Preloaded', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Preload posts prior to making Ajax requests.', 'ajax-load-more'); ?></p>

@@ -1,6 +1,6 @@
 <?php if(has_action('alm_cache_installed')){ ?>
 <div class="row input cache add-on" id="alm-cache">
-   <h3 class="heading"><?php _e('Cache', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Cache', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Turn on content caching.', 'ajax-load-more'); ?></p>

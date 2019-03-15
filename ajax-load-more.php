@@ -6,36 +6,30 @@ Description: The ultimate solution to add infinite scroll functionality to your 
 Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
-Author URI: https://connekthq.com
-Version: 3.3.1
+Author URI: https://connekthq.com 
+Version: 5.0.1
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-
-define('ALM_VERSION', '3.3.1');
-define('ALM_RELEASE', 'December 7, 2017');
+define('ALM_VERSION', '5.0.1');
+define('ALM_RELEASE', 'March 13, 2019');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
 
 /*
 *  alm_install
-*
-*  Activation hook
-*  Create table for storing repeater
+*  Activation hook - Create table & repeater
 *
 *  @since 2.0.0
 */
 
 function alm_install($network_wide) {
-
    global $wpdb;
 	add_option( "alm_version", ALM_VERSION ); // Add to WP Option tbl
-
    if ( is_multisite() && $network_wide ) {
-
       // Get all blogs in the network and activate plugin on each one
       $blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
       foreach ( $blog_ids as $blog_id ) {
@@ -46,7 +40,6 @@ function alm_install($network_wide) {
    } else {
       alm_create_table();
    }
-
 }
 register_activation_hook( __FILE__, 'alm_install' );
 add_action( 'wpmu_new_blog', 'alm_install' );
@@ -55,10 +48,10 @@ add_action( 'wpmu_new_blog', 'alm_install' );
 
 /*
 *  alm_create_table
-*
 *  Create new table and repeater template
 *
 *  @since 2.0.0
+*  @updated 3.5
 */
 function alm_create_table(){
 
@@ -66,29 +59,21 @@ function alm_create_table(){
 	$table_name = $wpdb->prefix . "alm";
 	$blog_id = $wpdb->blogid;
 
-	$defaultRepeater = '<li <?php if (!has_post_thumbnail()) { ?> class="no-img"<?php } ?>><?php if ( has_post_thumbnail() ) { the_post_thumbnail(\'alm-thumbnail\');}?><h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3><p class="entry-meta"><?php the_time("F d, Y"); ?></p><?php the_excerpt(); ?></li>';
+	$defaultRepeater = '<li <?php if (!has_post_thumbnail()) { ?> class="no-img"<?php } ?>>'. PHP_EOL .'   <?php if ( has_post_thumbnail() ) { the_post_thumbnail(\'alm-thumbnail\'); }?>'. PHP_EOL .'   <h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3>'. PHP_EOL .'   <p class="entry-meta"><?php the_time("F d, Y"); ?></p>'. PHP_EOL .'   <?php the_excerpt(); ?>'. PHP_EOL .'</li>';
 
-	/* MULTISITE */
-   /* if this is a multisite blog and it's not id = 1, create default template */
-   if($blog_id > 1){
+   // Create Base Repeater Directory
+   $base_dir = AjaxLoadMore::alm_get_repeater_path();
+   AjaxLoadMore::alm_mkdir($base_dir);
 
-	   $dir = ALM_PATH. 'core/repeater/'. $blog_id;
-	   if( !is_dir($dir) ){
-	      mkdir($dir);
-	   }
-
-	   $file = ALM_PATH. 'core/repeater/'. $blog_id .'/default.php';
-   	if( !file_exists($file) ){
-         $tmp = fopen($file, 'w');
-			$w = fwrite($tmp, $defaultRepeater);
-			fclose($tmp);
-   	}
-
+   $file = $base_dir .'/default.php';
+	if( !file_exists($file) ){
+      $tmp = fopen($file, 'w+');
+		$w = fwrite($tmp, $defaultRepeater);
+		fclose($tmp);
 	}
 
-	//Create table, if it doesn't already exist.
+	//C reate table, if it doesn't already exist.
 	if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-
 		$sql = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			name text NOT NULL,
@@ -99,18 +84,30 @@ function alm_create_table(){
 		);";
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
-
-		//Insert the default data in created table
+		// Insert the default data in created table
 		$wpdb->insert($table_name , array('name' => 'default', 'repeaterDefault' => $defaultRepeater, 'repeaterType' => 'default', 'pluginVersion' => ALM_VERSION));
-
 	}
+}
 
+
+
+/*
+*  alm_render
+*  Render Ajax Load More public function
+*
+*  @param {array} $args
+*  @since 4.2.0
+*/
+function alm_render($args){
+	echo AjaxLoadMore::alm_shortcode($args);
 }
 
 
 if( !class_exists('AjaxLoadMore') ):
 
 	class AjaxLoadMore {
+
+		static $shortcode_atts = null;
 
    	function __construct(){
 
@@ -123,6 +120,8 @@ if( !class_exists('AjaxLoadMore') ):
    		add_action( 'wp_ajax_nopriv_alm_query_total', array(&$this, 'alm_query_total') );
    		add_action( 'wp_enqueue_scripts', array(&$this, 'alm_enqueue_scripts') );
    		add_action( 'after_setup_theme',  array(&$this, 'alm_image_sizes') );
+   		add_filter( 'alm_noscript', array(&$this, 'alm_noscript'), 10, 5 );
+   		add_filter( 'alm_noscript_pagination', array(&$this, 'alm_noscript_pagination'), 10, 2 );
    		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'alm_action_links') );
    		add_filter( 'plugin_row_meta', array(&$this, 'alm_plugin_meta_links'), 10, 2 );
    		add_shortcode( 'ajax_load_more', array(&$this, 'alm_shortcode') );
@@ -153,17 +152,98 @@ if( !class_exists('AjaxLoadMore') ):
          if (!defined('ALM_CTA_ITEM_NAME')) define('ALM_CTA_ITEM_NAME', '14456');
          if (!defined('ALM_COMMENTS_ITEM_NAME')) define('ALM_COMMENTS_ITEM_NAME', '12172');
          if (!defined('ALM_UNLIMITED_ITEM_NAME')) define('ALM_UNLIMITED_ITEM_NAME', '3118');
+         if (!defined('ALM_FILTERS_ITEM_NAME')) define('ALM_FILTERS_ITEM_NAME', '35992');
          if (!defined('ALM_LAYOUTS_ITEM_NAME')) define('ALM_LAYOUTS_ITEM_NAME', '11398');
          if (!defined('ALM_NEXTPAGE_ITEM_NAME')) define('ALM_NEXTPAGE_ITEM_NAME', '24540');
          if (!defined('ALM_PAGING_ITEM_NAME')) define('ALM_PAGING_ITEM_NAME', '6898');
          if (!defined('ALM_PRELOADED_ITEM_NAME')) define('ALM_PRELOADED_ITEM_NAME', '4293');
          if (!defined('ALM_PREV_POST_ITEM_NAME')) define('ALM_PREV_POST_ITEM_NAME', '9686');
-         if (!defined('ALM_RESTAPI_ITEM_NAME')) define('ALM_RESTAPI_ITEM_NAME', '17105');
+         if (!defined('ALM_RESTAPI_ITEM_NAME')) define('ALM_RESTAPI_ITEM_NAME', '17105'); // Deprecated
          if (!defined('ALM_SEO_ITEM_NAME')) define('ALM_SEO_ITEM_NAME', '3482');
          if (!defined('ALM_THEME_REPEATERS_ITEM_NAME')) define('ALM_THEME_REPEATERS_ITEM_NAME', '8860');
          if (!defined('ALM_USERS_ITEM_NAME')) define('ALM_USERS_ITEM_NAME', '32311');
+         if (!defined('ALM_PRO_ITEM_NAME')) define('ALM_PRO_ITEM_NAME', '42166');
 
       }
+
+
+
+   	/*
+   	*  alm_noscript
+   	*  This function will build an query for users without JS enabled
+   	*
+   	*  @return $return string
+   	*  @since 3.7
+   	*/
+   	function alm_noscript($args, $container_element, $css_classes = '', $transition_container_classes = ''){
+      	if(is_admin()){
+         	return false;
+         }
+         $return = '';
+         include_once( ALM_PATH . 'core/classes/class.alm-noscript.php'); // Load Noscript Class
+      	$return = ALM_NOSCRIPT::alm_get_noscript($args, $container_element, $css_classes, $transition_container_classes);
+
+         return $return;
+   	}
+
+
+
+   	/*
+   	*  alm_noscript_pagination
+   	*  This function will build an pagination for users without JS enabled
+   	*
+   	*  @return $return string
+   	*  @since 3.7
+   	*/
+   	function alm_noscript_pagination($query){
+      	if(is_admin()){
+         	return false;
+         }
+         $return = '';
+         include_once( ALM_PATH . 'core/classes/class.alm-noscript.php'); // Load Noscript Class
+      	$return = ALM_NOSCRIPT::build_noscript_paging($query);
+
+      	return '<noscript>'. $return .'</noscript>';
+   	}
+
+
+
+   	/*
+      *  alm_get_repeater_base_path
+      *  Get absolute path to repeater directory base
+      *
+      *  Multisite installs directories will be `uploads/sites/{id}/alm_templates`
+      *
+      *  @return $path;
+      *  @since 3.5
+      */
+      public static function alm_get_repeater_path(){
+         $upload_dir = wp_upload_dir();
+         $path = apply_filters( 'alm_repeater_path', $upload_dir['basedir']. '/alm_templates' );
+         return $path;
+      }
+
+
+
+      /*
+      *  alm_mkdir
+      *  Create repeater template directory
+      *
+      *  @since 3.5
+      */
+      public static function alm_mkdir($dir){
+
+	      // Does $dir exist?
+	      if( !is_dir($dir) ) {
+		      wp_mkdir_p($dir);
+
+	      	// Check again after creating it (permission checker)
+		      if( !is_dir($dir) ) {
+			      echo __('Error creating repeater template directory', 'ajax-load-more') . ' - '. $dir;
+			   }
+	      }
+      }
+
 
 
    	/*
@@ -174,9 +254,11 @@ if( !class_exists('AjaxLoadMore') ):
    	*/
 
    	public function alm_includes(){
-      	include_once( ALM_PATH . 'core/functions.php'); // Core Functions
-      	include_once( ALM_PATH . 'core/classes/class.alm-shortcode.php'); // Shortcode Class
-      	include_once( ALM_PATH . 'core/classes/class.alm-enqueue.php'); // Enqueue Class
+      	include_once( ALM_PATH . 'core/functions.php'); // Load Core Functions
+      	include_once( ALM_PATH . 'core/classes/class.alm-shortcode.php'); // Load Shortcode Class
+      	include_once( ALM_PATH . 'core/classes/class.alm-enqueue.php'); // Load Enqueue Class
+      	include_once( ALM_PATH . 'core/classes/class.alm-queryargs.php'); // Load Query Args Class
+      	include_once( ALM_PATH . 'core/classes/class.alm-localize.php'); // Load Localize Class
 
    		if( is_admin() ){
    			include_once('admin/editor/editor.php');
@@ -187,6 +269,19 @@ if( !class_exists('AjaxLoadMore') ):
                include( dirname( __FILE__ ) . '/vendor/EDD_SL_Plugin_Updater.php' );
             }
    		}
+      }
+
+
+
+      /*
+   	*  alm_return_addons
+   	*  Returns add-on data (admin/admin-functions.php)
+   	*
+   	*  @since 2.0.0
+   	*/
+
+      public function alm_return_addons(){
+	      return alm_get_addons();
       }
 
 
@@ -240,7 +335,7 @@ if( !class_exists('AjaxLoadMore') ):
 
    	/*
    	*  alm_enqueue_scripts
-   	*  Enqueue our scripts and create our localize variables
+   	*  Enqueue scripts and create localized variables
    	*
    	*  @since 2.0.0
    	*/
@@ -258,29 +353,33 @@ if( !class_exists('AjaxLoadMore') ):
 	   	 *
 	   	 * @return Boolean
 	   	 */
-			$dependencies = apply_filters( 'alm_js_dependencies', array('jquery') );
+			$dependencies = apply_filters( 'alm_js_dependencies', '' );
 
 
    		// Core ALM JS
-   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more.min.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
+         $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
+   		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'.$suffix.'.js', __FILE__ ), $dependencies,  ALM_VERSION, true );
 
    		// Progress Bar JS
-   		wp_register_script( 'ajax-load-more-progress', plugins_url( '/core/src/js/vendor/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
+   		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
 
-   		// Load Core CSS
+   		// Masonry JS
+   		wp_register_script( 'ajax-load-more-masonry', plugins_url( '/vendor/js/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more',  '4.2.1', true );
+
+   		// Callback Helpers
+   		wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/vendor/js/alm/legacy-callbacks.js', __FILE__ ), 'jquery', '', false);
+   		
+
+   		// Core CSS
    		if( !alm_do_inline_css('_alm_inline_css') && !alm_css_disabled('_alm_disable_css')){ // Not inline or disabled
 	         $file = plugins_url('/core/dist/css/'. ALM_SLUG .'.min.css', __FILE__ );
 	         ALM_ENQUEUE::alm_enqueue_css(ALM_SLUG, $file);
    		}
 
    		// Prevent loading of unnessasry posts - move user to top of page
-   		$scrolltop = 'false';
-   		if(!isset($options['_alm_scroll_top']) || $options['_alm_scroll_top'] != '1'){ // if unset or false
-   			$scrolltop = 'false';
-   		}else{ // if checked
-      		$scrolltop = 'true';
-   		}
-
+   		// if unset or false
+   		$scrolltop = (!isset($options['_alm_scroll_top']) || $options['_alm_scroll_top'] != '1') ? 'false' : 'true';
+   		
    		wp_localize_script(
    			'ajax-load-more',
    			'alm_localize',
@@ -289,10 +388,10 @@ if( !class_exists('AjaxLoadMore') ):
    				'alm_nonce' => wp_create_nonce( "ajax_load_more_nonce" ),
    				'pluginurl' => ALM_URL,
    				'scrolltop' => $scrolltop,
+   				'display_results' => apply_filters('alm_display_results', __('Showing {num} of {total} results', 'ajax-load-more')),
    				'ajax_object' => array('is_single' => true, 'is_singular' => true )
    			)
    		);
-
    	}
 
 
@@ -302,10 +401,23 @@ if( !class_exists('AjaxLoadMore') ):
    	*  The AjaxLoadMore shortcode
    	*
    	*  @since 2.0.0
+   	*  @updated 3.2.0
    	*/
-
    	public function alm_shortcode($atts) {
+	   	self::$shortcode_atts = $atts;
       	return ALM_SHORTCODE::alm_render_shortcode($atts);
+   	}
+
+
+
+   	/*
+   	*  alm_return_shortcode_atts
+   	*  Return the ALM shortcode atts
+   	*
+   	*  @since 3.2.0
+   	*/
+   	public static function alm_return_shortcode_atts(){
+	   	return self::$shortcode_atts;
    	}
 
 
@@ -319,86 +431,38 @@ if( !class_exists('AjaxLoadMore') ):
 
    	public function alm_query_posts() {
 
-   		$options = get_option( 'alm_settings' );
+   		// WPML fix for category/tag/taxonomy archives
+			if ( (isset( $_GET['category'] ) && $_GET['category']) || (isset($_GET['taxonomy']) && $_GET['taxonomy']) ) {
+				unset($_REQUEST['post_id']);
+			}
 
    		$id = (isset($_GET['id'])) ? $_GET['id'] : '';
    		$post_id = (isset($_GET['post_id'])) ? $_GET['post_id'] : '';
    		$slug = (isset($_GET['slug'])) ? $_GET['slug'] : '';
    		$canonical_url = (isset($_GET['canonical_url'])) ? $_GET['canonical_url'] : $_SERVER['HTTP_REFERER'];
 
+			// Ajax Query Type
    		$queryType = (isset($_GET['query_type'])) ? $_GET['query_type'] : 'standard';	// 'standard' or 'totalposts'; totalposts returns $alm_found_posts
 
+
+			// Cache
    		$cache_id = (isset($_GET['cache_id'])) ? $_GET['cache_id'] : '';
    		$cache_logged_in = (isset($_GET['cache_logged_in'])) ? $_GET['cache_logged_in'] : false;
-   		$do_create_cache = true;
-   		if($cache_logged_in === 'true' && is_user_logged_in()){
-      		$do_create_cache = false;
-   		}
+   		$do_create_cache = ($cache_logged_in === 'true' && is_user_logged_in()) ? false : true;
 
+
+   		// Offset
+   		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
+
+
+			// Repeater Templates
    		$repeater = (isset($_GET['repeater'])) ? $_GET['repeater'] : 'default';
    		$type = alm_get_repeater_type($repeater);
    		$theme_repeater = (isset($_GET['theme_repeater'])) ? $_GET['theme_repeater'] : 'null';
 
+
+			// Post Type
    		$postType = (isset($_GET['post_type'])) ? $_GET['post_type'] : 'post';
-   		$post_format = (isset($_GET['post_format'])) ? $_GET['post_format'] : '';
-
-   		$category = (isset($_GET['category'])) ? $_GET['category'] : '';
-   		$category__not_in = (isset($_GET['category__not_in'])) ? $_GET['category__not_in'] : '';
-   		$tag = (isset($_GET['tag'])) ? $_GET['tag'] : '';
-   		$tag__not_in = (isset($_GET['tag__not_in'])) ? $_GET['tag__not_in'] : '';
-
-   		// Taxonomy
-   		$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
-   		$taxonomy_terms = (isset($_GET['taxonomy_terms'])) ? $_GET['taxonomy_terms'] : '';
-   		$taxonomy_operator = $_GET['taxonomy_operator'];
-   		if(empty($taxonomy_operator)) $taxonomy_operator = 'IN';
-   		$taxonomy_relation = (isset($_GET['taxonomy_relation'])) ? $_GET['taxonomy_relation'] : 'AND';
-   		if($taxonomy_relation == '') $taxonomy_relation = 'AND';
-
-   		// Date
-   		$year = (isset($_GET['year'])) ? $_GET['year'] : '';
-   		$month = (isset($_GET['month'])) ? $_GET['month'] : '';
-   		$day = (isset($_GET['day'])) ? $_GET['day'] : '';
-
-   		// Custom Fields
-   		$meta_key = (isset($_GET['meta_key'])) ? $_GET['meta_key'] : '';
-   		$meta_value = (isset($_GET['meta_value'])) ? $_GET['meta_value'] : '';
-   		$meta_compare = $_GET['meta_compare'];
-   		if($meta_compare == '') $meta_compare = 'IN';
-   		if($meta_compare === 'lessthan') $meta_compare = '<'; // do_shortcode fix (shortcode was rendering as HTML)
-   		if($meta_compare === 'lessthanequalto') $meta_compare = '<='; // do_shortcode fix (shortcode was rendering as HTML)
-   		$meta_relation = $_GET['meta_relation'];
-   		if($meta_relation == '') $meta_relation = 'AND';
-   		$meta_type = $_GET['meta_type'];
-   		if($meta_type == '') $meta_type = 'CHAR';
-
-   		$s = (isset($_GET['search'])) ? $_GET['search'] : '';
-   		$custom_args = (isset($_GET['custom_args'])) ? $_GET['custom_args'] : '';
-
-   		// Author
-         $author = (isset($_GET['author'])) ? $_GET['author'] : '';
-
-   		// Ordering
-   		$order = (isset($_GET['order'])) ? $_GET['order'] : 'DESC';
-   		$orderby = (isset($_GET['orderby'])) ? $_GET['orderby'] : 'date';
-
-   		// Sticky, Include, Exclude, Offset, Status
-   		$sticky = (isset($_GET['sticky_posts'])) ? $_GET['sticky_posts'] : '';
-   		$sticky = ($sticky === 'true') ? true : false;
-   		$post__in = (isset($_GET['post__in'])) ? $_GET['post__in'] : '';
-   		$post__not_in = (isset($_GET['post__not_in'])) ? $_GET['post__not_in'] : '';
-   		$exclude = (isset($_GET['exclude'])) ? $_GET['exclude'] : '';
-   		$offset = (isset($_GET['offset'])) ? $_GET['offset'] : 0;
-   		$post_status = $_GET['post_status'];
-   		if($post_status == '') $post_status = 'publish';
-   		if($post_status != 'publish' && $post_status != 'inherit'){
-      		// If not 'publish', OR 'inherit' confirm user has rights to view these old posts.
-      		if (current_user_can( 'edit_theme_options' )){
-         		$post_status = $post_status;
-            } else {
-               $post_status = 'publish';
-            }
-         }
 
 
    		// Page Parameters
@@ -414,6 +478,10 @@ if( !class_exists('AjaxLoadMore') ):
             $acf_field_type = (isset($acfData['field_type'])) ? $acfData['field_type'] : ''; // ACF Field Type
             $acf_field_name = (isset($acfData['field_name'])) ? $acfData['field_name'] : ''; // ACF Field Type
          }
+
+
+   		// Paging Add-on
+   		$paging = (isset($_GET['paging'])) ? $_GET['paging'] : 'false';
 
 
    		// Preload Add-on
@@ -443,236 +511,39 @@ if( !class_exists('AjaxLoadMore') ):
          }
 
 
-         // Previous Post Add-on
-         $previous_post = false;
-   		$pp_data = (isset($_GET['previous_post'])) ? $_GET['previous_post'] : false;
-   		if($pp_data){
-      		$previous_post = true;
-      		$previous_post_id = (isset($pp_data['id'])) ? $pp_data['id'] : '';
-      		$previous_post_slug = (isset($pp_data['slug'])) ? $pp_data['slug'] : '';
+         // Single Post Add-on
+         $single_post = false;
+   		$single_post_data = (isset($_GET['single_post'])) ? $_GET['single_post'] : false;
+   		if($single_post_data){
+      		$single_post = true;
+      		$single_post_id = (isset($single_post_data['id'])) ? $single_post_data['id'] : '';
+      		$single_post_slug = (isset($single_post_data['slug'])) ? $single_post_data['slug'] : '';
          }
-
-
-         // Paging Add-on
-         $paging = (isset($_GET['paging'])) ? $_GET['paging'] : false;
 
 
          // SEO Add-on
    		$seo_start_page = (isset($_GET['seo_start_page'])) ? $_GET['seo_start_page'] : 1;
 
 
-   		// Language (Is this required?)
-   		$lang = (isset($_GET['lang'])) ? $_GET['lang'] : '';
-
-   		// Set up initial query arguments
-         $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
-   		$args = array(
-   			'post_type'                => $postType,
-   			'posts_per_page'           => $posts_per_page,
-   			'offset'                   => $offset + ($posts_per_page*$page),
-   			'order'                    => $order,
-   			'orderby'                  => $orderby,
-   			'post_status'              => $post_status,
-   			'ignore_sticky_posts'      => true,
-   			'paged'                    => $paged,
-   		);
-
-
-   		// Paging
-   		// If !paging, turn off pagination information to improve wp_query performance
-   		if(!$paging){
-   			$args['no_found_rows'] = true;
-   		}
-
-   	   // Post Format & Taxonomy
-   	   // - Both use tax_query, so we combine these queries
-   		if(!empty($post_format) || !empty($taxonomy)){
-
-            $tax_query_total = count(explode(":", $taxonomy)); // Total $taxonomy objects
-            $taxonomy = explode(":", $taxonomy); // convert to array
-            $taxonomy_terms = explode(":", $taxonomy_terms); // convert to array
-            $taxonomy_operator = explode(":", $taxonomy_operator); // convert to array
-
-            if(empty($taxonomy)){
-
-               // Post Format only
-               $args['tax_query'] = array(
-      			   alm_get_post_format($post_format),
-      			);
-
-            }else{
-
-               // Post Formats
-					$args['tax_query'] = array(
-						'relation' => $taxonomy_relation,
-						alm_get_post_format( $post_format )
-					);
-
-					// Loop Taxonomies
-					for($tax_i = 0; $tax_i < $tax_query_total; $tax_i++){
-						$args['tax_query'][] = alm_get_taxonomy_query($taxonomy[$tax_i], $taxonomy_terms[$tax_i], $taxonomy_operator[$tax_i]);
-					}
-   			}
-
-   	   }
-
-         // Category
-   		if(!empty($category)){
-   			$args['category_name'] = $category;
-   		}
-
-         // Category Not In
-   		if(!empty($category__not_in)){
-   		   $exclude_cats = explode(",",$category__not_in);
-   			$args['category__not_in'] = $exclude_cats;
-   		}
-
-         // Tag
-   		if(!empty($tag)){
-   			$args['tag'] = $tag;
-   		}
-
-         // Tag Not In
-   		if(!empty($tag__not_in)){
-   		   $exclude_tags = explode(",",$tag__not_in);
-   			$args['tag__not_in'] = $exclude_tags;
-   		}
-
-   	   // Date (not using date_query as there was issue with year/month archives)
-   		if(!empty($year)){
-      		$args['year'] = $year;
-   	   }
-   	   if(!empty($month)){
-      		$args['monthnum'] = $month;
-   	   }
-   	   if(!empty($day)){
-      		$args['day'] = $day;
-   	   }
-
-   	   // Meta Query
-   		if(!empty($meta_key) && !empty($meta_value) || !empty($meta_key) && $meta_compare !== "IN"){
-
-      		// Parse multiple meta query
-            $meta_query_total = count(explode(":", $meta_key)); // Total meta_query objects
-            $meta_keys = explode(":", $meta_key); // convert to array
-            $meta_value = explode(":", $meta_value); // convert to array
-            $meta_compare = explode(":", $meta_compare); // convert to array
-            $meta_type = explode(":", $meta_type); // convert to array
-
-            // Loop Meta Query
-            $args['meta_query'] = array(
-				   'relation' => $meta_relation
-            );
-				for($mq_i = 0; $mq_i < $meta_query_total; $mq_i++){
-					$args['meta_query'][] = alm_get_meta_query($meta_keys[$mq_i], $meta_value[$mq_i], $meta_compare[$mq_i], $meta_type[$mq_i]);
-				}
-
-   	   }
-
-         // Meta_key
-         if(!empty($meta_key)){ // ordering by meta value
-	         if (strpos($orderby, 'meta_value') !== false) { // Only order by meta_key, if $orderby is set to meta_value{_num}
-	            $meta_key_single = explode(":", $meta_key);
-               $args['meta_key'] = $meta_key_single[0];
-            }
-         }
-
-         // Author
-   		if(!empty($author)){
-   			$args['author'] = $author;
-   		}
-
-   		// Include Posts
-   		if(!empty($post__in)){
-   			$post__in = explode(",",$post__in);
-   			$args['post__in'] = $post__in;
-   		}
-
-   		// Exclude Posts
-   		if(!empty($post__not_in)){
-   			$post__not_in = explode(",",$post__not_in);
-   			$args['post__not_in'] = $post__not_in;
-   		}
-   		if(!empty($exclude)){ // Deprecate this soon - 2.8.5 */
-   			$exclude = explode(",",$exclude);
-   			$args['post__not_in'] = $exclude;
-   		}
-
-         // Search Term
-   		if(!empty($s)){
-   			$args['s'] = $s;
-   		}
-
-         // Custom Args
-   		if(!empty($custom_args)){
-   			$custom_args_array = explode(";",$custom_args); // Split the $custom_args at ','
-   			foreach($custom_args_array as $argument){ // Loop each $argument
-
-      			$argument = preg_replace('/\s+/', '', $argument); // Remove all whitespace
-   			   $argument = explode(":",$argument);  // Split the $argument at ':'
-   			   $argument_arr = explode(",", $argument[1]);  // explode $argument[1] at ','
-   			   if(sizeof($argument_arr) > 1){
-   			      $args[$argument[0]] = $argument_arr;
-   			   }else{
-   			      $args[$argument[0]] = $argument[1];
-   			   }
-   			}
-   		}
-
-         // Language
-   		if(!empty($lang)){
-   			$args['lang'] = $lang;
-   		}
-
-         // Sticky Posts
-         if($sticky){
-            $sticky_posts = get_option( 'sticky_posts' ); // Get all sticky post ids
-
-            $sticky_query_args = $args;
-            $sticky_query_args['post__not_in'] = $sticky_posts;
-            $sticky_query_args['posts_per_page'] = -1;
-            $sticky_query_args['fields'] = 'ids';
-
-            $sticky_query = new WP_Query($sticky_query_args); // Query all non sticky posts
-
-            // If has sticky and regular posts
-            if($sticky_posts && $sticky_query->posts){
-               $standard_posts = $sticky_query->posts;
-               if($standard_posts){
-                  $sticky_ids = array_merge($sticky_posts, $standard_posts); // merge regular posts with sticky
-                  $args['post__in'] = $sticky_ids;
-                  $args['orderby'] = 'post__in'; // set orderby to order by post__in.
-               }
-            }
-         }
-
-   		// Advanced Custom Fields
-   		if(!empty($acf) && !empty($acf_post_id) && !empty($acf_field_type) && !empty($acf_field_name)){
-      		if($acf_field_type === 'relationship'){ // Relationship Field
-               $acf_post_ids = get_field($acf_field_name, $acf_post_id); // Get field value from ACF
-               if($acf_post_ids){
-                  $args['post__in'] = $acf_post_ids;
-               }
-            }
-         }
+         // Set up initial WP_Query $args
+         $args = ALM_QUERY_ARGS::alm_build_queryargs($_GET, true);
+   		$args['paged'] = (get_query_var('paged')) ? get_query_var('paged') : 1;
+   		$args['offset'] = $offset + ($posts_per_page*$page);
 
 
    		// Get current page number for determining item number
    		$alm_page_count = ($page == 0) ? 1 : $page + 1;
 
 
-
    		/*
-	   	 *	alm_prev_post_args
+	   	 *	alm_single_post_args
 	   	 *
-	   	 * Previous Post Add-on hook
-	   	 * Hijack $args and and return previous post only $args
+	   	 * Single Post Add-on hook
+	   	 * Hijack $args and and return single post only $args
 	   	 *
 	   	 * @return $args;
 	   	 */
-   		if($previous_post && has_action('alm_prev_post_installed')){
-      		$args = apply_filters('alm_prev_post_args', $previous_post_id, $postType);
-         }
+   		$args = ($single_post && has_action('alm_single_post_installed')) ? apply_filters('alm_single_post_args', $single_post_id, $postType) : $args;
 
 
 
@@ -750,20 +621,19 @@ if( !class_exists('AjaxLoadMore') ):
 
                $cta_array = Array();
 	            if($cta && has_action('alm_cta_pos_array')){ // Build CTA Position Array
-		            $cta_array = apply_filters('alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $cta_repeat);
+		            $cta_array = apply_filters('alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging);
 	            }
 
 	            ob_start();
 
 	            // ALM Loop
-
 	   			while ($alm_query->have_posts()): $alm_query->the_post();
 
 	   				$alm_loop_count++;
 	   				$alm_current++; // Current item in loop
 	   	         $alm_page = $alm_page_count; // Get page number
 	   	         $alm_item = ($alm_page_count * $posts_per_page) - $posts_per_page + $alm_loop_count; // Get current item
-
+                  
 
       			   // Call to Action [Before]
 	   				if($cta && has_action('alm_cta_inc') && $cta_pos === 'before' && in_array($alm_current, $cta_array)){
@@ -789,7 +659,6 @@ if( !class_exists('AjaxLoadMore') ):
 
 
 	            endwhile; wp_reset_query();
-
 	            // End ALM Loop
 
 	            $data = ob_get_clean();
@@ -808,9 +677,9 @@ if( !class_exists('AjaxLoadMore') ):
       	   	 * @return null
       	   	 */
    	         if(!empty($cache_id) && has_action('alm_cache_installed') && $do_create_cache){
-      	         if($previous_post){
-         	         // Previous Post Cache
-   	               apply_filters('alm_previous_post_cache_file', $cache_id, $previous_post_id, $data);
+      	         if($single_post){
+         	         // Single Post Cache
+   	               apply_filters('alm_previous_post_cache_file', $cache_id, $single_post_id, $data);
       	         }else{
          	         // Standard Cache
    	               apply_filters('alm_cache_file', $cache_id, $page, $seo_start_page, $data, $preloaded);
@@ -875,13 +744,12 @@ if( !class_exists('AjaxLoadMore') ):
 
    function AjaxLoadMore(){
    	global $ajax_load_more;
-
-   	if( !isset($ajax_load_more))
+   	if( !isset($ajax_load_more) ){
    		$ajax_load_more = new AjaxLoadMore();
-
+      }
    	return $ajax_load_more;
    }
-   AjaxLoadMore(); // initialize
-
+   // initialize
+   AjaxLoadMore();
 
 endif; // class_exists check

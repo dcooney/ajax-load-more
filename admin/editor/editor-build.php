@@ -53,7 +53,7 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
 	   	    <a href="javascript:AjaxLoadMoreModal.insert(AjaxLoadMoreModal.local_ed)" id="insert" class="insert_alm"><i class="fa fa-chevron-circle-right"></i> <?php _e('Insert Shortcode', 'ajax-load-more'); ?></a>
 	   	   <div class="shortcode-display">
 	   		   <div id="shortcode_output"></div>
-	   		   <span class="copy"><?php _e('Copy', 'ajax-load-more'); ?></span>
+	   		   <span class="copy copy-to-clipboard"><?php _e('Copy', 'ajax-load-more'); ?></span>
 	   	   </div>
 	   	</div>
 

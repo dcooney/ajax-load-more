@@ -1,6 +1,6 @@
 <?php if(has_action('alm_nextpage_installed')){ ?>
 <div class="row input next-page add-on" id="alm-next-page">
-   <h3 class="heading"><?php _e('Next Page', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Next Page', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Enable the infinite scrolling of multipage WordPress content using the', 'ajax-load-more'); ?> <span>< !--nextpage-- ></span> <?php _e('Quicktag', 'ajax-load-more'); ?>.</p>
@@ -80,21 +80,18 @@
          <div class="clear"></div>
          <hr>
          <div class="section-title">
-            <h4>
-               <?php _e('Scroll to Page', 'ajax-load-more'); ?>
-               <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Set Scroll Speed to 0 to disable scrolling to page','ajax-load-more'); ?>."></a>
-            </h4>
+            <h4><?php _e('Scroll to Page', 'ajax-load-more'); ?></h4>
    		 	<p>
-      		 	<?php _e('Scroll users automatically to the next page on \'Load More\' button click', 'ajax-load-more'); ?>.
+      		 	<?php _e('Scroll users automatically to the next page on \'Load More\' action', 'ajax-load-more'); ?>.
    		 	</p>
    		 </div>
          <div class="wrap">
             <div class="inner half">
-               <label for="next-page-scroll-speed" class="full">
-                  <?php _e('Scroll Speed', 'ajax-load-more'); ?>
-                  <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Scrolling speed in milliseconds (e.g. 1 second = 1000)','ajax-load-more'); ?>."></a>
-               </label>
-               <input id="next-page-scroll-speed" name="next-page-scroll-speed" class="alm_element sm" type="number" min="0" max="5000" step="25" value="250" placeholder="250">
+               <label for="next-page-scroll" class="full"><?php _e('Enable Scrolling', 'ajax-load-more'); ?></label>               
+               <select class="alm_element" name="next-page-scroll" id="next-page-scroll">
+                   <option value="true" selected="selected"><?php _e('True', 'ajax-load-more'); ?></option>
+                   <option value="false"><?php _e('False', 'ajax-load-more'); ?></option>
+               </select>
             </div>
             <div class="inner half">
                <label for="next-page-scroll-top" class="full">
@@ -103,10 +100,14 @@
                </label>
                <input id="next-page-scroll-top" name="next-page-scroll-top" class="alm_element sm" type="number" min="0" max="1000" step="1" value="30" placeholder="30">
             </div>
-         </div>
-
+         </div>                  
+		   
+         <div class="clear"></div>
+         
+         <hr/>
+         
          <p class="warning-callout">
-            <?php _e('You must add the Next Page shortcode directly to your single template file using the <a href="https://developer.wordpress.org/reference/functions/do_shortcode/" target="_blank">do_shortcode</a> method. &raquo; <a href="https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/" target="_blank">View documentation</a>', 'ajax-load-more'); ?>
+            <?php _e('You must add the Next Page shortcode directly to your single template file using the <a href="https://developer.wordpress.org/reference/functions/do_shortcode/" target="_blank">do_shortcode</a> method.', 'ajax-load-more'); ?> <a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a>
          </p>
 
       </div>

@@ -1,6 +1,6 @@
 <?php if(has_action('alm_paging_installed')){ ?>
 <div class="row input paging add-on" id="alm-paging">
-   <h3 class="heading"><?php _e('Paging', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Paging', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">		 	<p><?php _e('Replace infinite scrolling with a paged ajax navigation system.', 'ajax-load-more'); ?></p>
 		 </div>

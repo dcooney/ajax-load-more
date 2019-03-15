@@ -15,7 +15,7 @@
 
 ?>
 <div class="row input rest add-on" id="alm-rest">
-   <h3 class="heading"><?php _e('REST API', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('REST API', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
       <div class="section-title">
 		 	<p><?php _e('Enable the WordPress REST API.', 'ajax-load-more'); ?></p>
@@ -114,7 +114,9 @@
                </ul>
    			</div>
          </div>
-
+         
+         <div class="clear"></div>
+         <hr>
          <p class="warning-callout">
             <?php _e('Visit <a href="http://v2.wp-api.org/" target="_blank">http://v2.wp-api.org</a> for documentation on creating custom <a href="http://v2.wp-api.org/extending/adding/" target="_blank">Endpoints</a> for use with Ajax Load More.', 'ajax-load-more'); ?>
          </p>
