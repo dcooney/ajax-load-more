@@ -67,6 +67,7 @@
    	   <aside class="cnkt-sidebar">
    			<?php //include_once( ALM_PATH . 'admin/includes/cta/pro.php');	?>
    			<?php //include_once( ALM_PATH . 'admin/includes/cta/sharing.php'); ?>
+   			<?php include_once( ALM_PATH . 'admin/includes/cta/test.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/resources.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/dyk.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/about.php'); ?>

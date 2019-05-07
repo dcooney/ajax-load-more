@@ -13,7 +13,7 @@ if(!has_action('alm_pro_installed')){
 		$img = $pro['img'];
 ?>
 <div class="group no-shadow highlighted">
-   <a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo $name; ?>" <?php echo $target; ?>>
+   <a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo $name; ?>" target="_blank">
       <div class="pro-img">
          <img src="<?php echo ALM_ADMIN_URL; ?><?php echo $img; ?>" alt="">
       </div>

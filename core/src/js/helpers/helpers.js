@@ -4,6 +4,12 @@ if ('scrollRestoration' in history) {
    history.scrollRestoration = 'manual';
 }
 
+// isArray
+if (typeof Array.isArray === 'undefined') {
+  Array.isArray = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  }
+};
 
 // Object.entries
 if (!Object.entries){
@@ -16,8 +22,7 @@ if (!Object.entries){
 
     return resArray;
   };
-}
-  
+}  
 
 // Array.from
 if (!Array.from) {
@@ -98,7 +103,6 @@ if (!Array.from) {
   }());
 }
 
-
 // Nodelist
 if (window.NodeList && !NodeList.prototype.forEach) {
 	NodeList.prototype.forEach = function (callback, thisArg) {
@@ -108,7 +112,6 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 		 }
 	};
 }
-
 
 // from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
 (function (arr) {

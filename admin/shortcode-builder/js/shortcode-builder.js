@@ -1085,6 +1085,15 @@ jQuery(document).ready(function($) {
 
 
       // ---------------------------
+      // - Destroy After
+      // ---------------------------
+
+      var destroy_after = $('.alm-destroy-after input[name=destroy-after]').val();
+      if(destroy_after !== '' && destroy_after !== undefined && destroy_after !== '0')
+         output += ' destroy_after="'+destroy_after+'"';
+
+
+      // ---------------------------
       // - Scrolling
       // ---------------------------
 
@@ -1200,15 +1209,6 @@ jQuery(document).ready(function($) {
       var images_loaded = $('.alm-images-loaded input[name=images_loaded]:checked').val();
       if(images_loaded === 't')
       	output += ' images_loaded="true"';
-
-
-      // ---------------------------
-      // - Destroy After
-      // ---------------------------
-
-      var destroy_after = $('.alm-destroy-after input[name=destroy-after]').val();
-      if(destroy_after !== '' && destroy_after !== undefined && destroy_after !== '0')
-         output += ' destroy_after="'+destroy_after+'"';
 
 
       // ---------------------------

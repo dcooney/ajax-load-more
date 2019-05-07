@@ -7,11 +7,11 @@
  * @since 5.0
  */
  
-let nodeNameArray = ['#text'];
+let nodeNameArray = ['#text', '#comment'];
 
 let almAppendChild = function( target = null, element = null, transition = 'fade' ) {
 	if(!target || !element){
-		return false;
+		return false; 
 	}	
 	
 	// Do not append elements that are not actual element nodes (i.e. #text node)

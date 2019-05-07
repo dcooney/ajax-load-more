@@ -1,24 +1,21 @@
-/*
-	almGetAjaxParams
-	Build the data object to send with the Ajax request
-
-   @param alm            object
-   @param action         string
-   @param queryType      string  
-   
-   @since 3.6
-*/
+/**
+ * almGetAjaxParams
+ * Build the data object to send with the Ajax request
+ * 
+ * @param alm            object
+ * @param action         string
+ * @param queryType      string  
+ * @since 3.6
+ */
 
 export function almGetAjaxParams(alm, action, queryType){
+	
 	// Defaults
 	let data = {
-      action               : action,
-      nonce						: alm_localize.alm_nonce,
-      query_type           : queryType,
       id							: alm.id,
       post_id					: alm.post_id,
       slug                 : alm.slug,
-      canonical_url        : alm.canonical_url,
+      canonical_url        : encodeURIComponent(alm.canonical_url),
       posts_per_page       : alm.posts_per_page,
       page           		: alm.page,
       offset               : alm.offset,
@@ -158,20 +155,22 @@ export function almGetAjaxParams(alm, action, queryType){
       data.custom_args = alm.listing.dataset.customArgs;
    }
    
+   data.action = action;
+   data.query_type = queryType;
+   
    return data;
    
 }
 
 
 
-/*
-	almGetRestParams
-	Build the REST API data object to send with REST API request
-
-   @param alm            object
-   
-   @since 3.6
-*/
+/**
+ * almGetRestParams
+ * Build the REST API data object to send with REST API request
+ * 
+ * @param alm            object
+ * @since 3.6
+ */
 export function almGetRestParams(alm){
 	let data = {
 		id						: alm.id,
@@ -180,7 +179,7 @@ export function almGetRestParams(alm){
 	   page              : alm.page,
 	   offset            : alm.offset,
 	   slug              : alm.slug,
-	   canonical_url     : alm.canonical_url,
+	   canonical_url     : encodeURIComponent(alm.canonical_url),
 	   post_type         : alm.post_type,
 	   post_format       : alm.listing.dataset.postFormat,
 	   category          : alm.listing.dataset.category,

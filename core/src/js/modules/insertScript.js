@@ -1,8 +1,11 @@
 import almDomParser from '../helpers/almDomParser';
 
 /**
+ * insertScript
  * Search nodes for <script/> tags and run scripts.
  * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
+ * 
+ * @since 5.0
  */  
 let insertScript = {
 	

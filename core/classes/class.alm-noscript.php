@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * ALM_NOSCRIPT
  * Class that generates a wp_query for injection into <noscript />.
  *
@@ -18,7 +18,7 @@ if(!class_exists('ALM_NOSCRIPT')):
 	   static $element = 'noscript';
       
       
-      /*
+      /**
 	    * alm_get_noscript
 	    * This function will return a generated query for the noscript.
    	 *
@@ -30,7 +30,6 @@ if(!class_exists('ALM_NOSCRIPT')):
       public static function alm_get_noscript($q, $container = 'ul', $css_classes = '', $transition_container_classes = ''){
          
          $paged = ($q['paged']) ? $q['paged'] : 1;
-         
          
          // Comments
          if($q['comments']){          
@@ -58,6 +57,7 @@ if(!class_exists('ALM_NOSCRIPT')):
                
                return ALM_NOSCRIPT::render($output['data'], $container, '', $css_classes, $transition_container_classes);
             }
+            
          }        
          
 
@@ -137,14 +137,14 @@ if(!class_exists('ALM_NOSCRIPT')):
 
 
 
-		/*
-		*  alm_paging_no_script
-		*  Create paging navigation
-		*
-		*  @return html;
-		*  @updated 3.7
-		*  @since 2.8.3
-		*/
+		/**
+		 * alm_paging_no_script
+		 * Create paging navigation
+		 *
+		 * @return html;
+		 * @updated 3.7
+		 * @since 2.8.3
+		 */
 		public static function build_noscript_paging($query){	
 			$paged = get_query_var('paged');
 			if(empty(get_query_var('paged')) || get_query_var('paged') == 0) {
@@ -180,7 +180,7 @@ if(!class_exists('ALM_NOSCRIPT')):
 		         $content .= '<span class="page"><a href="'.get_pagenum_link().'">'.$first_page_text.'</a></span>';
 		      }
 		      // Loop pages
-		      for($i = $start_page; $i  <= $end_page; $i++) {
+		      for($i = $start_page; $i <= $end_page; $i++) {
 		         $content .= ' <span class="page"><a href="'.get_pagenum_link($i).'">'.$i.'</a></span>';
 		   	}
 		   	
@@ -192,11 +192,12 @@ if(!class_exists('ALM_NOSCRIPT')):
 		   }
 		   
 		   return $content;
+		   
 		}
       
       
       
-      /*
+      /**
 	    * render
 	    * This function will return the HTML output of the <noscript/>
    	 *
@@ -212,7 +213,7 @@ if(!class_exists('ALM_NOSCRIPT')):
       
       
       
-      /*
+      /**
 	    * set_offset
 	    * This function will set the offset of the noscript query
    	 *

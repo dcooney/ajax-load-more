@@ -8,8 +8,6 @@ import almAppendChild from './almAppendChild';
  * @since 5.0
  */
  
-let nodeNameArray = ['#text'];
-
 let almAppendChildren = function( target = null, array = null, transition = 'fade' ) {
 	if(!target || !array){
 		return false;

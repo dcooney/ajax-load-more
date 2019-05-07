@@ -71,6 +71,7 @@ tinyMCEPopup.onInit.add(AjaxLoadMoreModal.init, AjaxLoadMoreModal);
         'applying_layout' => __('Applying layout', 'ajax-load-more'),
         'template_updated' => __('Template Updated', 'ajax-load-more'),
         'alm_admin_nonce' => wp_create_nonce( 'alm_repeater_nonce' ),
+        'select' => __('Select', 'ajax-load-more'),
         'select_authors' => __('Select Author(s)', 'ajax-load-more'),
         'select_cats' => __('Select Categories', 'ajax-load-more'),
         'select_tags' => __('Select Tags', 'ajax-load-more'),

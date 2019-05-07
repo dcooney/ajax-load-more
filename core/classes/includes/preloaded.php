@@ -222,8 +222,7 @@ else {
 	 * @return $args;
 	 */
    $args = apply_filters('alm_query_args_'.$id, $args, $post_id);
-
-
+				
 	$alm_preload_query = new WP_Query($args);
 	
 	$alm_total_posts = $alm_preload_query->found_posts - $offset;	
@@ -275,7 +274,6 @@ else {
 
 
 	// Add total_posts to localized ALM JS variables
-	ALM_LOCALIZE::add_localized_var('viewing', $alm_preload_query->post_count, $div_id);
 	ALM_LOCALIZE::add_localized_var('total_posts', $alm_total_posts, $div_id);
 	
 	

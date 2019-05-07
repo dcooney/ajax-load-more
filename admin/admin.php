@@ -319,6 +319,10 @@ function alm_admin_vars() { ?>
 	 /* <![CDATA[ */
     var alm_admin_localize = <?php echo json_encode( array(
         'ajax_admin_url' => admin_url( 'admin-ajax.php' ),
+        'restapi' => array(
+				'url' => function_exists('get_rest_url') ? get_rest_url() : '',
+				'namespace' => ALM_REST_NAMESPACE
+			),
         'ajax_load_more' => __('Ajax Load More', 'ajax-load-more'),
         'active' => __('Active', 'ajax-load-more'),
         'inactive' => __('Inactive', 'ajax-load-more'),
@@ -346,7 +350,7 @@ function alm_admin_vars() { ?>
 
 /*
 *  alm_set_admin_nonce
-*  Create admin nonce on Repeater Template page only
+*  Create admin nonce on ALM pages only
 *
 *  @since 2.8.2
 */
@@ -1234,18 +1238,26 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
-	add_settings_field(  // Scroll to top on load
-		'_alm_scroll_top',
-		__('Top of Page', 'ajax-load-more' ),
-		'_alm_scroll_top_callback',
+	add_settings_field(  // Disable REST API
+		'_alm_use_rest_api',
+		__('REST API', 'ajax-load-more' ),
+		'_alm_use_rest_api_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
+	add_settings_field(  // Legacy Callbacks
+		'_alm_legacy_callbacks',
+		__('Legacy Callbacks', 'ajax-load-more' ),
+		'_alm_legacy_callbacks_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
 
 	add_settings_field(  // Scroll to top on load
-		'_alm_legacy_callbacks',
-		__('Legacy Callbacks', 'ajax-load-more' ),
-		'_alm_legacy_callbacks_callback',
+		'_alm_scroll_top',
+		__('Top of Page', 'ajax-load-more' ),
+		'_alm_scroll_top_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
@@ -1480,10 +1492,10 @@ function alm_container_type_callback() {
 	   $options['_alm_container_type'] = '1';
 
     $html = '<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1"' . checked( 1, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span>&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/ul&gt;</label><br/>';
+    $html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span style="padding-top: 2px;">&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/ul&gt;</label><br/>';
 
     $html .= '<input type="radio" id="_alm_container_type_two" name="alm_settings[_alm_container_type]" value="2"' . checked( 2, $options['_alm_container_type'], false ) . '/>';
-    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span>&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/div&gt;</label>';
+    $html .= '<label for="_alm_container_type_two">&lt;div&gt; <span style="padding-top: 2px;">&lt;!-- '.__('Ajax Posts Here', 'ajax-load-more').' --&gt;</span> &lt;/div&gt;</label>';
 
     $html .= '<label style="cursor: default !important"><span style="display:block">'.__('You can modify the container type when building a shortcode.', 'ajax-load-more').'</span></label>';
 
@@ -1611,7 +1623,7 @@ function alm_inline_css_callback(){
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_inline_css]" id="alm_inline_css" value="1"'. (($options['_alm_inline_css']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="alm_inline_css">'.__('Improve site performance by loading Ajax Load More CSS inline', 'ajax-load-more').'.</label>';
+	$html .= '<label for="alm_inline_css">'.__('Improve site performance by loading Ajax Load More CSS inline.', 'ajax-load-more').'</label>';
 
 	echo $html;
 }
@@ -1687,6 +1699,30 @@ function _alm_scroll_top_callback(){
 
 
 /*
+*  _alm_use_rest_api
+*  Disable REST API in favor of admin-ajax.php
+*
+*  @since 5.1
+*/
+
+function _alm_use_rest_api_callback(){
+	$options = get_option( 'alm_settings' );
+	if(!isset($options['_alm_use_rest_api']))
+	   $options['_alm_use_rest_api'] = '0';
+
+	$html =  '<input type="hidden" name="alm_settings[_alm_use_rest_api]" value="0" />';
+	$html .= '<input type="checkbox" name="alm_settings[_alm_use_rest_api]" id="_alm_use_rest_api" value="1"'. (($options['_alm_use_rest_api']) ? ' checked="checked"' : '') .' />';
+	$html .= '<label for="_alm_use_rest_api">';
+	   $html .= __('Disable REST API.', 'ajax-load-more');
+	   $html .= '<span style="display:block">'. __('Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax requests.', 'ajax-load-more') .'</span>';
+	$html .= '</label>';
+
+	echo $html;
+}
+
+
+
+/*
 *  _alm_legacy_callbacks_callback
 *  Load legacy callback actions
 *
@@ -1728,27 +1764,6 @@ function _alm_uninstall_callback(){
 	$html .= '<label for="_alm_uninstall">'.__('Check this box if Ajax Load More should remove all of its data* when the plugin is deleted.', 'ajax-load-more');
 	$html .= '<span style="display:block">'. __('* Database Tables, Options and Repeater Templates', 'ajax-load-more') .'</span>';
 	$html .= '</label>';
-
-	echo $html;
-}
-
-
-
-/*
-*  _alm_nonce_security_callback
-*  Move window to top of screen on page load
-*
-*  @since 2.6.3
-*/
-
-function _alm_nonce_security_callback(){
-	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_nonce_security']))
-	   $options['_alm_nonce_security'] = '0';
-
-	$html =  '<input type="hidden" name="alm_settings[_alm_nonce_security]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_nonce_security]" id="_alm_nonce_security" value="1"'. (($options['_alm_nonce_security']) ? ' checked="checked"' : '') .' />';
-	$html .= '<label for="_alm_nonce_security">'.__('Enable <a href="https://codex.wordpress.org/WordPress_Nonces" target="_blank">WP nonce</a> verification to help protect URLs against certain types of misuse, malicious or otherwise on each Ajax Load More query.', 'ajax-load-more').'</label>';
 
 	echo $html;
 }

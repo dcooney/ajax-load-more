@@ -1,19 +1,20 @@
 import almFadeIn from './fadeIn';
 import almAppendChildren from '../helpers/almAppendChildren';
 import almDomParser from '../helpers/almDomParser';
+import srcsetPolyfill from '../helpers/srcsetPolyfill';
 let imagesLoaded = require('imagesloaded');
 
-/*
-	almMasonry
-	Function to trigger built-in Ajax Load More Masonry
-
-   @param {object} alm
-   @param {boolean} init
-   @param {boolean} filtering 
-   
-   @since 3.1
-   @updated 4.3
+/**
+ * almMasonry
+ * Function to trigger built-in Ajax Load More Masonry
+ * 
+ * @param {object} alm
+ * @param {boolean} init
+ * @param {boolean} filtering 
+ * @since 3.1
+ * @updated 5.0.2
 */
+
 let msnry = '';
 let almMasonry = (alm, init, filtering) => {	
 	
@@ -66,7 +67,9 @@ let almMasonry = (alm, init, filtering) => {
 	if(!filtering){
    	
 		// First Run
-		if(masonry_init && init){
+		if(masonry_init && init){			
+			
+			srcsetPolyfill(container, alm.ua); // Run srcSet polyfill			
 			
 			imagesLoaded( container, function() {
 				
@@ -115,6 +118,9 @@ let almMasonry = (alm, init, filtering) => {
    			// Append elements listing
    			almAppendChildren(alm.listing, data, 'masonry');
    			
+   			// Run srcSet polyfill
+   			srcsetPolyfill(container, alm.ua);
+   			
    			// Confirm imagesLoaded & append
    			imagesLoaded( container, function() {
 					msnry.appended( data );				
@@ -135,3 +141,6 @@ let almMasonry = (alm, init, filtering) => {
 };
 
 export default almMasonry;
+
+
+

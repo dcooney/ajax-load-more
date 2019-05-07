@@ -4,7 +4,7 @@ const config = require('../webpack.config.js');
 config.watch = false;
 config.entry = {
 	'ajax-load-more.min': './core/src/js/ajax-load-more.js'
-},
+};
 
 config.plugins.push(
 	new webpack.DefinePlugin({

@@ -109,7 +109,7 @@ let almSetFilters = function(speed = 250, data, el){
    // Update data attributes
 	for (let [key, value] of Object.entries(data)) {
 		// Convert camelCase data atts back to dashes (-).
-      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2'); 
+      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase(); 
 		listing.setAttribute('data-'+ key, value);
 	}
 	

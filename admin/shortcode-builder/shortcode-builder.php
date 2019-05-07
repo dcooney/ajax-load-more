@@ -115,6 +115,20 @@
 	
 	         <div class="clear"></div>
 	         <hr/>
+	         
+	         <!-- Destroy After -->
+	         <div class="section-title">
+	            <h4><?php _e('Destroy After', 'ajax-load-more'); ?></h4>
+	   		 	<p><?php _e('Remove Ajax Load More functionality after {<em>n</em>} number of pages have been loaded.', 'ajax-load-more'); ?></p>
+	   		 </div>
+	         <div class="wrap alm-destroy-after">
+	            <div class="inner">
+	               <input type="number" class="alm_element numbers-only" placeholder="0" name="destroy-after" id="disable-after" step="1" min="0" value="">
+	            </div>
+	         </div>
+	
+	         <div class="clear"></div>
+	         <hr/>
 	
 	         <!-- Nested ALM -->
 	         
@@ -329,13 +343,13 @@
 		         <hr>
 		         <div class="section-title full" style="padding-bottom: 10px;">
 		         	<h4><?php _e('Masonry Options', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Ajax Load More does not support all available Masonry options','ajax-load-more'); ?>."></a></h4>
-		         	<p><?php _e('The following Masonry <a href="https://masonry.desandro.com/options.html" target="_blank">options</a> are supported by Ajax Load More', 'ajax-load-more'); ?>.</p>
+		         	<p><?php _e('The following Masonry <a href="https://masonry.desandro.com/options.html" target="_blank">options</a> are supported by Ajax Load More.', 'ajax-load-more'); ?></p>
 		         </div>
 		         <div class="clear"></div>
 	
 		         <div class="section-title">
-		            <h4><?php _e('Item Selector', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Item Selector is required for Masonry to target each element loaded with Ajax','ajax-load-more'); ?>."></a></h4>
-		   		 	<p><?php _e('Enter the target classname of each masonry item', 'ajax-load-more'); ?>.<br/>
+		            <h4><?php _e('Item Selector', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Item Selector is required for Masonry to target each element loaded with Ajax.','ajax-load-more'); ?>"></a></h4>
+		   		 	<p><?php _e('Enter the target classname of each masonry item.', 'ajax-load-more'); ?><br/>
 		   		 	e.g <span>.grid-item</span>
 		   		 	</p>
 		   		 </div>
@@ -349,8 +363,8 @@
 		         <hr class="indented" />
 	
 		         <div class="section-title">
-		            <h4><?php _e('Column Width', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('If columnWidth is not set, Masonry will use the outer width of the first Item Selector','ajax-load-more'); ?>."></a></h4>
-		   		 	<p><?php _e('Enter the <a href="https://masonry.desandro.com/options.html#columnwidth" target="_blank">columnWidth</a> of the masonry items', 'ajax-load-more'); ?>.<br/>
+		            <h4><?php _e('Column Width', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('If columnWidth is not set, Masonry will use the outer width of the first Item Selector.','ajax-load-more'); ?>"></a></h4>
+		   		 	<p><?php _e('Enter the <a href="https://masonry.desandro.com/options.html#columnwidth" target="_blank">columnWidth</a> of the masonry items.', 'ajax-load-more'); ?><br/>
 		   		 	e.g <span>80</span>
 		   		 	</p>
 		   		 </div>
@@ -364,8 +378,8 @@
 		         <hr class="indented" />
 	
 		         <div class="section-title">
-		            <h4><?php _e('Animation Type', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('All Masonry animations include a fade-in effect as items are loaded','ajax-load-more'); ?>."></a></h4>
-		   		 	<p><?php _e('Select a loading transition for Masonry items', 'ajax-load-more'); ?>.</p>
+		            <h4><?php _e('Animation Type', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('All Masonry animations include a fade-in effect as items are loaded.','ajax-load-more'); ?>"></a></h4>
+		   		 	<p><?php _e('Select a loading transition for Masonry items.', 'ajax-load-more'); ?></p>
 		   		</div>
 		   		<div class="wrap">
 		            <div class="inner">
@@ -374,14 +388,14 @@
 	                        <input class="alm_element" type="radio" name="masonry-animation" value="default" id="masonry-animation-default" checked="checked">
 	                        <label for="masonry-animation-default">
 	                           <?php _e('Default (Zoom)', 'ajax-load-more'); ?> 
-	                           <span class="description"><?php _e('Items scale up from 50% to 100% size on load','ajax-load-more'); ?>.</span>
+	                           <span class="description"><?php _e('Items scale up from 50% to 100% size on load.','ajax-load-more'); ?></span>
 	                        </label>
 	                     </li>
 	                     <li style="width:100%;">
 	                        <input class="alm_element" type="radio" name="masonry-animation" value="zoom-out" id="masonry-animation-zoom-out">
 	                        <label for="masonry-animation-zoom-out">
 	                           <?php _e('Zoom Out', 'ajax-load-more'); ?>  
-	                           <span class="description"><?php _e('Items scale down from 125% to 100% size on load','ajax-load-more'); ?>.</span>
+	                           <span class="description"><?php _e('Items scale down from 125% to 100% size on load.','ajax-load-more'); ?></span>
 	                        </label>
 	                     </li>
 	                     <li style="width:100%;">
@@ -413,7 +427,7 @@
 	
 		         <div class="section-title">
 		            <h4><?php _e('Horizontal Order', 'ajax-load-more'); ?></h4>
-		   		 	<p><?php _e('Lays out items to maintain left-to-right order', 'ajax-load-more'); ?>.
+		   		 	<p><?php _e('Lays out items to maintain left-to-right order.', 'ajax-load-more'); ?>
 		   		 	</p>
 		   		 </div>
 		   		 <div class="wrap">
@@ -430,6 +444,11 @@
 							</ul>
 		            </div>
 		         </div>
+		         
+					<p class="warning-callout">
+						<?php _e('Don\'t see your favorite Masonry option listed? You can always add your own!', 'ajax-load-more'); ?>
+						<a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/masonry/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a>
+					</p>
 	
 	         </div>
 	
@@ -574,23 +593,6 @@
 	      </div>
 	   </div>
 	   <!-- End Images Loaded -->
-	
-	   <!-- Destroy After -->
-	   <div class="row input alm-destroy-after" id="alm-destroy-after">
-	      <h3 class="heading" tabindex="0"><?php _e('Destroy After', 'ajax-load-more'); ?></h3>
-	      <!-- Destroy After -->
-	      <div class="expand-wrap">
-	         <div class="section-title">
-	   		 	<p><?php _e('Remove Ajax Load More functionality after {<em>n</em>} number of pages have been loaded.', 'ajax-load-more'); ?></p>
-	   		</div>
-	         <div class="wrap">
-	            <div class="inner">
-	               <input type="number" class="alm_element numbers-only" placeholder="0" name="destroy-after" id="disable-after" step="1" min="0" value="">
-	            </div>
-	         </div>
-	      </div>
-	   </div>
-	   <!-- End Destroy After -->
 	   
    </div>
 </div>

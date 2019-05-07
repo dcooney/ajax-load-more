@@ -1078,8 +1078,7 @@ body.ajax-load-more_page_ajax-load-more-pro {
   border-bottom: none;
   padding: 20px 20px 6px;
   margin: 20px 0 0;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
   border-radius: 2px 2px 0 0; }
   #alm-settings form h2:first-of-type {
     margin: 0; }
@@ -1214,7 +1213,7 @@ a.layout-hover:hover img {
 
 /* Expand Collapse Headings */
 .ajax-load-more h3.heading {
-  font-weight: 600;
+  font-weight: 700;
   padding: 15px 10px 15px 38px !important;
   line-height: normal !important;
   margin: 0 !important;
@@ -2217,7 +2216,7 @@ hr.indented {
 .ajax-load-more h2.addon-title {
   font-size: 19px !important;
   line-height: 24px;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
   color: #444 !important;
   padding: 0;
   margin: 0 0 10px; }
@@ -2899,6 +2898,7 @@ span.cnkt-button.installed i,
   margin: 0;
   display: block;
   font-size: 15px;
+  font-weight: 700;
   text-transform: none;
   border-radius: 2px 2px 0 0; }
 
@@ -3482,7 +3482,7 @@ p.theme-title {
 .alm-dir-listing.theme-repeaters ul li {
   display: block;
   width: 100%;
-  padding-top: 12px; }
+  padding-top: 10px; }
 
 .alm-dir-listing.theme-repeaters ul li label {
   display: block;
@@ -3610,7 +3610,7 @@ p.theme-title {
     background-color: #f7f7f7;
     border-radius: 2px 2px 0 0;
     color: #555;
-    font-weight: 600;
+    font-weight: 700;
     position: relative;
     cursor: pointer; }
     #alm-shortcode-builder-form .shortcode-parameter-wrap h2:focus, #alm-shortcode-builder-form .shortcode-parameter-wrap h2:hover {

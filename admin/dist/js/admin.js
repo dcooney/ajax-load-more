@@ -1280,6 +1280,28 @@ jQuery(document).ready(function ($) {
   };
 
   /*
+  *  Test REST API access
+  *
+  *  @since 5.1.1
+  */
+  if ($('.restapi-access').length) {
+    $.ajax({
+      type: 'GET',
+      url: alm_admin_localize.restapi.url + alm_admin_localize.restapi.namespace + '/test/',
+      dataType: 'json',
+      success: function success(data) {
+        if (data.success) {
+          console.log('Ajax Load More successfully connected to the WordPress REST API.');
+        }
+      },
+      error: function error(xhr, status, _error) {
+        console.log(status);
+        $('.restapi-access').fadeIn();
+      }
+    });
+  }
+
+  /*
   *  _alm.saveSettings
   *  Setting panel save actions
   *
@@ -1591,7 +1613,7 @@ jQuery(document).ready(function ($) {
           $('.loading', parent).delay(250).fadeOut(300);
           almActivating = false;
         },
-        error: function error(xhr, status, _error) {
+        error: function error(xhr, status, _error2) {
           console.log(status);
           $('.loading', parent).delay(250).fadeOut(300);
           almActivating = false;
@@ -1653,7 +1675,7 @@ jQuery(document).ready(function ($) {
             }, 400);
           }, 400);
         },
-        error: function error(xhr, status, _error2) {
+        error: function error(xhr, status, _error3) {
           console.log(status);
           textarea.removeClass('loading');
         }
@@ -1680,7 +1702,7 @@ jQuery(document).ready(function ($) {
       success: function success(data) {
         container.fadeOut();
       },
-      error: function error(xhr, status, _error3) {
+      error: function error(xhr, status, _error4) {
         console.log(status);
       }
     });
@@ -1710,7 +1732,7 @@ jQuery(document).ready(function ($) {
       success: function success(data) {
         container.fadeOut();
       },
-      error: function error(xhr, status, _error4) {
+      error: function error(xhr, status, _error5) {
         console.log(status);
       }
     });

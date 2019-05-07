@@ -112,6 +112,10 @@ var _smoothscrollPolyfill2 = _interopRequireDefault(_smoothscrollPolyfill);
 
 __webpack_require__(/*! ./helpers/helpers */ "./core/src/js/helpers/helpers.js");
 
+var _commentReplyFix = __webpack_require__(/*! ./helpers/commentReplyFix */ "./core/src/js/helpers/commentReplyFix.js");
+
+var _commentReplyFix2 = _interopRequireDefault(_commentReplyFix);
+
 var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName */ "./core/src/js/helpers/getParameterByName.js");
 
 var _getParameterByName2 = _interopRequireDefault(_getParameterByName);
@@ -136,13 +140,25 @@ var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/
 
 var queryParams = _interopRequireWildcard(_queryParams);
 
+var _restAPI = __webpack_require__(/*! ./helpers/restAPI */ "./core/src/js/helpers/restAPI.js");
+
+var restAPI_Opts = _interopRequireWildcard(_restAPI);
+
 var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/js/modules/resultsText.js");
 
 var resultsText = _interopRequireWildcard(_resultsText);
 
+var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ "./core/src/js/modules/setLocalizedVars.js");
+
+var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
+
 var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
 
 var _insertScript2 = _interopRequireDefault(_insertScript);
+
+var _setFocus = __webpack_require__(/*! ./modules/setFocus */ "./core/src/js/modules/setFocus.js");
+
+var _setFocus2 = _interopRequireDefault(_setFocus);
 
 var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
@@ -159,6 +175,10 @@ var _fadeOut2 = _interopRequireDefault(_fadeOut);
 var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/modules/filtering.js");
 
 var _filtering2 = _interopRequireDefault(_filtering);
+
+var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
+
+var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
 function _interopRequireWildcard(obj) {
    if (obj && obj.__esModule) {
@@ -243,8 +263,10 @@ var alm_is_filtering = false;
       alm.init = true;
       alm.loading = true;
       alm.finished = false;
+      alm.timer = null;
+      alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // User agent
       alm.main = el;
-      alm.master_id = el.id; // the div#id of the instance 
+      alm.master_id = el.id; // The div#id of the ALM instance 
       el.classList.add('alm-' + e); // Add unique classname
       el.setAttribute('data-alm-id', e); // Add unique data id
 
@@ -293,7 +315,7 @@ var alm_is_filtering = false;
       alm.transition = alm.listing.dataset.transition; // Transition
       alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
       alm.tcc = alm.listing.dataset.transitionContainerClasses; // Transition Container Classes
-      alm.speed = 250;
+      alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 250;
       alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
       alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
       alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
@@ -608,13 +630,16 @@ var alm_is_filtering = false;
          } else {
             alm.button = container.querySelector('.alm-btn-wrap .alm-load-more-btn');
          }
+
+         // Reset button state
+         alm.button.disabled = false;
       }
 
       // Results Text
       // Render "Showing x of y results" text.
       alm.resultsText = document.querySelector('.alm-results-text');
       if (alm.resultsText) {
-         alm.resultsText.innerHTML = alm_localize.display_results;
+         alm.resultsText.setAttribute('aria-live', 'polite');
       } else {
          alm.resultsText = false;
       }
@@ -671,15 +696,15 @@ var alm_is_filtering = false;
 
       alm.AjaxLoadMore.ajax = function (queryType) {
 
-         // Default action
-         var action = 'alm_query_posts';
+         // Default ALM action
+         var action = 'get_posts';
 
          // ACF Params
          alm.acf_array = '';
          if (alm.extensions.acf) {
             // Custom query for the Repeater / Gallery / Flexible Content field types
             if (alm.extensions.acf_field_type !== 'relationship') {
-               action = 'alm_acf_query';
+               action = 'acf';
             }
             alm.acf_array = {
                'acf': 'true',
@@ -692,7 +717,7 @@ var alm_is_filtering = false;
          // Nextpage Params
          alm.nextpage_array = '';
          if (alm.addons.nextpage) {
-            action = 'alm_nextpage_query';
+            action = 'nextpage';
             alm.nextpage_array = {
                'nextpage': 'true',
                'urls': alm.addons.nextpage_urls,
@@ -716,7 +741,7 @@ var alm_is_filtering = false;
          // Comment Params
          alm.comments_array = '';
          if (alm.addons.comments === 'true') {
-            action = 'alm_comments_query';
+            action = 'comments';
             alm.posts_per_page = alm.addons.comments_per_page;
             alm.comments_array = {
                'comments': 'true',
@@ -732,7 +757,7 @@ var alm_is_filtering = false;
          // Users Params
          alm.users_array = '';
          if (alm.addons.users) {
-            action = 'alm_users_query';
+            action = 'users';
             alm.users_array = {
                'users': 'true',
                'role': alm.listing.dataset.usersRole,
@@ -781,9 +806,6 @@ var alm_is_filtering = false;
             alm.button.classList.add('loading');
          }
 
-         // Get data params
-         var params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js       
-
          // Axios Interceptor for nested data objects
          _axios2.default.interceptors.request.use(function (config) {
             config.paramsSerializer = function (params) {
@@ -796,8 +818,17 @@ var alm_is_filtering = false;
             return config;
          });
 
-         // Send Ajax request
-         _axios2.default.get(alm_localize.ajaxurl, { params: params }).then(function (response) {
+         // Get REST API || admin-ajax URL        
+         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
+
+         // Get the action value
+         var action_name = restAPI_Opts.almGetAjaxAction(action);
+
+         // Get data params
+         var params = queryParams.almGetAjaxParams(alm, action_name, queryType); // [./helpers/queryParams.js
+
+         // Send HTTP request via Axios
+         _axios2.default.get(ajaxURL, { params: params }).then(function (response) {
             // Success            
             var data = response.data; // Get data from response
 
@@ -807,12 +838,12 @@ var alm_is_filtering = false;
             } else if (queryType === 'totalpages' && alm.addons.paging && alm.addons.nextpage) {
                // Next Page and Paging
                if (typeof almBuildPagination === 'function') {
-                  window.almBuildPagination(data, alm);
+                  window.almBuildPagination(data.totalpages, alm);
                }
             } else if (queryType === 'totalposts' && alm.addons.paging) {
                // Paging
                if (typeof almBuildPagination === 'function') {
-                  window.almBuildPagination(data, alm);
+                  window.almBuildPagination(data.totalposts, alm);
                }
             }
          }).catch(function (error) {
@@ -914,11 +945,15 @@ var alm_is_filtering = false;
          alm.el = reveal;
          reveal.style.opacity = 0;
          reveal.style.height = 0;
+         reveal.style.outline = 'none';
+
+         // Paging container
+         var pagingContent = alm.listing.querySelector('.alm-paging-content');
 
          var html, meta, total;
 
          if (is_cache) {
-            // If content is cached don't look for json data - we won't be querying the DB.
+            // If cached don't look for json data - we won't be querying the DB.
             html = data;
          } else {
             // Standard ALM query results
@@ -927,18 +962,8 @@ var alm_is_filtering = false;
             alm.posts = alm.addons.paging ? meta.postcount : alm.posts + meta.postcount;
             total = meta.postcount;
             alm.totalposts = meta.totalposts;
-
-            if (alm.addons.preloaded === 'true') {
-               alm.totalposts = alm.totalposts - alm.addons.preloaded_amount;
-            }
+            alm.totalposts = alm.addons.preloaded === 'true' ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
          }
-
-         // Set localized vars for totalposts
-         alm.AjaxLoadMore.setLocalizedVars('viewing', alm.posts);
-         alm.AjaxLoadMore.setLocalizedVars('total_posts', alm.totalposts);
-
-         // Set Results Text
-         resultsText.almResultsText(alm);
 
          // Set alm.html as plain text return
          alm.html = html;
@@ -946,24 +971,17 @@ var alm_is_filtering = false;
          // If cache, get the length of the html object
          total = is_cache ? (0, _almDomParser2.default)(html).length : total;
 
-         // First Run
+         // First Run Only
          if (alm.init) {
+            // Set Meta		         
             if (meta) {
-               if (meta.totalposts) {
-                  alm.main.dataset.totalPosts = meta.totalposts;
-               }
+               alm.main.dataset.totalPosts = meta.totalposts ? meta.totalposts : 0;
             }
-            if (!alm.addons.paging) {
-               // Not Paging
-               alm.button.innerHTML = alm.button_label;
-            } else {
-               // Paging
-               if (total > 0) {
-                  // Add paging containers and content
-                  alm.AjaxLoadMore.pagingInit(html, 'alm-reveal');
-               }
+            // Paging	            
+            if (alm.addons.paging && total > 0) {
+               // Add paging containers and content
+               alm.AjaxLoadMore.pagingInit(html, 'alm-reveal');
             }
-
             // ALM Empty
             if (total === 0) {
                if (alm.addons.paging) {
@@ -978,27 +996,29 @@ var alm_is_filtering = false;
 
             // isPaged
             if (alm.isPaged) {
-
                // Reset the posts_per_page parameter
                alm.posts_per_page = alm.users ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage;
-
                // SEO add-on
                alm.page = alm.start_page ? alm.start_page - 1 : alm.page; // Set new page #
-
                // Filters add-on               
                if (alm.addons.filters) {
-
                   if (alm.addons.filters_startpage > 0) {
-
-                     // Set new page #
-                     alm.page = alm.addons.filters_startpage - 1;
-
-                     // Reset filters-startpage data after the first run
-                     alm.posts_per_page = alm.listing.dataset.postsPerPage;
+                     alm.page = alm.addons.filters_startpage - 1; // Set new page #                     
+                     alm.posts_per_page = alm.listing.dataset.postsPerPage; // Reset `filters-startpage` data after the first run
                   }
                }
             }
          }
+
+         /*
+          *  Set localized variables
+          */
+
+         (0, _setLocalizedVars2.default)(alm);
+
+         /*
+          *  Render results
+          */
 
          if (total > 0) {
 
@@ -1183,16 +1203,20 @@ var alm_is_filtering = false;
                // Append `reveal` div to ALM Listing container
                // Do not append when transtion == masonry OR init and !preloaded
                if (alm.transition !== 'masonry' || alm.init && !alm.is_masonry_preloaded) {
-                  if (!isPaged) {
 
+                  if (!isPaged) {
                      if (!alm.transition_container) {
                         // No transition container      	               
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
                               (0, _almAppendChildren2.default)(alm.listing, reveal);
+                              // Run srcSet polyfill
+                              (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                            });
                         } else {
                            (0, _almAppendChildren2.default)(alm.listing, reveal);
+                           // Run srcSet polyfill
+                           (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                         }
                      } else {
                         // Standard container
@@ -1248,8 +1272,8 @@ var alm_is_filtering = false;
                // Paging               
                if (!alm.init) {
 
-                  var pagingContent = alm.listing.querySelector('.alm-paging-content');
                   if (pagingContent) {
+                     pagingContent.style.outline = 'none';
                      pagingContent.innerHTML = alm.html;
                      imagesLoaded(pagingContent, function () {
                         // Paging addon
@@ -1308,20 +1332,24 @@ var alm_is_filtering = false;
                }
             }
             // End ALM Done
-         } else {
-            // No Results!	         
-
-            if (!alm.addons.paging) {
-               // Add .done class, reset btn text
-               setTimeout(function () {
-                  alm.button.classList.remove('loading');
-                  alm.button.classList.add('done');
-               }, alm.speed);
-               alm.AjaxLoadMore.resetBtnText();
-            }
-
-            alm.AjaxLoadMore.triggerDone(); // ALM Done
          }
+
+         /*
+          * No results from Ajax
+          */
+         else {
+
+               if (!alm.addons.paging) {
+                  // Add .done class, reset btn text
+                  setTimeout(function () {
+                     alm.button.classList.remove('loading');
+                     alm.button.classList.add('done');
+                  }, alm.speed);
+                  alm.AjaxLoadMore.resetBtnText();
+               }
+
+               alm.AjaxLoadMore.triggerDone(); // ALM Done
+            }
 
          // Destroy After
          if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
@@ -1332,8 +1360,22 @@ var alm_is_filtering = false;
                alm.AjaxLoadMore.destroyed();
             }
          }
-         // End Destroy After
 
+         // Set focus
+         if (alm.transition_container) {
+            if (alm.addons.paging) {
+               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, pagingContent);
+            } else {
+               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, reveal);
+            }
+         }
+
+         // Comment Reply Fix
+         if (alm.addons.comments === 'true') {
+            (0, _commentReplyFix2.default)(alm.listing);
+         }
+
+         // Set flags
          alm_is_filtering = alm.init = false;
       };
 
@@ -1472,25 +1514,34 @@ var alm_is_filtering = false;
 
       alm.AjaxLoadMore.getSinglePost = function () {
 
+         var action = 'get_single';
+
          if (alm.fetchingPreviousPost) {
             return false;
          }
 
          alm.fetchingPreviousPost = true;
 
+         // Get REST API || admin-ajax URL        
+         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
+
+         // Get the action value
+         var action_name = restAPI_Opts.almGetAjaxAction(action);
+
+         // Get data params       
          var params = {
-            action: 'alm_query_single_post',
-            init: alm.addons.single_post_init,
             id: alm.addons.single_post_id,
             initial_id: alm.addons.single_post_init_id,
             order: alm.addons.single_post_order,
             taxonomy: alm.addons.single_post_taxonomy,
             excluded_terms: alm.addons.single_post_excluded_terms,
-            post_type: alm.post_type
+            post_type: alm.post_type,
+            init: alm.addons.single_post_init,
+            action: action_name
          };
 
-         // Send Ajax request
-         _axios2.default.get(alm_localize.ajaxurl, { params: params }).then(function (response) {
+         // Send HTTP request via Axios
+         _axios2.default.get(ajaxURL, { params: params }).then(function (response) {
             // Success
 
             var data = response.data; // Get data from response
@@ -1547,6 +1598,7 @@ var alm_is_filtering = false;
          alm.finished = true;
          if (!alm.addons.paging) {
             alm.button.classList.add('done');
+            alm.button.disabled = true;
          }
          if (typeof almDone === 'function') {
             // Delay done until animations complete
@@ -1558,8 +1610,8 @@ var alm_is_filtering = false;
 
       /**  
       * resetBtnText
-       *
-       * Resets the loading button text after loading has completed
+      * Resets the loading button text after loading has completed
+      *
        * @since 2.8.4
        */
       alm.AjaxLoadMore.resetBtnText = function () {
@@ -1571,8 +1623,8 @@ var alm_is_filtering = false;
 
       /** 
        * Ajax Error
-       *
        * Error function after failed data
+       * 
        * @since 2.6.0
        */
 
@@ -1607,8 +1659,8 @@ var alm_is_filtering = false;
 
       /**
       * Button Click Event
-       *
        * Load more button click event 
+       * 
        * @since 1.0.0
        */
 
@@ -1618,8 +1670,8 @@ var alm_is_filtering = false;
 
       /**
       * Window Resize
-       *
        * Add resize function for Paging add-on only.
+       * 
        * @since 2.1.2
        * @updated 4.2
        */
@@ -1637,8 +1689,8 @@ var alm_is_filtering = false;
 
       /**
       * isVisible
-       *
        * Check to see if element is visible before loading posts
+       *
        * @since 2.1.2
        */
 
@@ -1655,7 +1707,6 @@ var alm_is_filtering = false;
        * @since 1.0
        * @updated 4.2.0
        */
-      alm.timer = null;
       alm.AjaxLoadMore.scroll = function () {
 
          if (alm.timer) {
@@ -1704,11 +1755,13 @@ var alm_is_filtering = false;
       /** 
       * destroyed
        * Destroy Ajax Load More functionality
+       * 
        * @since 3.4.2
        */
       alm.AjaxLoadMore.destroyed = function () {
          alm.disable_ajax = true;
          if (!alm.addons.paging) {
+            alm.button.style.display = 'none';
             alm.AjaxLoadMore.triggerDone();
             if (typeof almDestroyed === 'function') {
                window.almDestroyed(alm);
@@ -1724,30 +1777,31 @@ var alm_is_filtering = false;
        */
       alm.AjaxLoadMore.transitionEnd = function () {
          setTimeout(function () {
+            alm.AjaxLoadMore.resetBtnText();
             alm.main.classList.remove('alm-loading');
             alm.AjaxLoadMore.triggerAddons(alm);
             if (!alm.addons.paging) {
                setTimeout(function () {
                   alm.button.classList.remove('loading'); // Loading button
-                  setTimeout(function () {
-                     alm.loading = false; // Delay to prevent loading
-                  }, alm.speed);
+                  alm.loading = false; // Delay to prevent loading to fast
                }, alm.speed);
-               alm.AjaxLoadMore.resetBtnText();
             }
          }, alm.speed);
       };
 
       /**  
-      * setLocalizedVars
-       * Set localized variables 
+      * setLocalizedVar
+       * Set induvidual localized variable
        *
        * @param {string} name 
        * @param {string} value 
        * @since 4.1 
        */
-      alm.AjaxLoadMore.setLocalizedVars = function (name, value) {
-         if (alm.localize && name && value) {
+      alm.AjaxLoadMore.setLocalizedVar = function () {
+         var name = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+         var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+         if (alm.localize && name !== '' && value !== '') {
             alm.localize[name] = value; // Set ALM localize var
             window[alm.master_id + '_vars'][name] = value; // Update global window obj vars
          }
@@ -1812,7 +1866,6 @@ var alm_is_filtering = false;
       };
 
       /**  
-      * init
        * Init Ajax load More
        * Load posts as user scrolls the page
        * 
@@ -1853,13 +1906,9 @@ var alm_is_filtering = false;
                   window.almSEO(alm, true);
                }
             }, alm.speed);
-
-            if (alm.resultsText) {
-               resultsText.almInitResultsText(alm, 'preloaded');
-            }
          }
 
-         // Preloaded
+         // Preloaded && !Paging
          if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
             // Delay for scripts to load
             setTimeout(function () {
@@ -1874,16 +1923,12 @@ var alm_is_filtering = false;
                   }
                }
             }, alm.speed);
-
-            if (alm.resultsText) {
-               resultsText.almInitResultsText(alm, 'preloaded');
-            }
          }
 
-         // Paging Add-on
-         if (alm.addons.paging) {
+         // Preloaded Add-on ONLY
+         if (alm.addons.preloaded === 'true') {
             if (alm.resultsText) {
-               resultsText.almInitResultsText(alm, 'paging');
+               resultsText.almInitResultsText(alm, 'preloaded');
             }
          }
 
@@ -2165,7 +2210,7 @@ Object.defineProperty(exports, "__esModule", {
  * @since 5.0
  */
 
-var nodeNameArray = ['#text'];
+var nodeNameArray = ['#text', '#comment'];
 
 var almAppendChild = function almAppendChild() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -2220,8 +2265,6 @@ function _interopRequireDefault(obj) {
  * @param {*} transition | The transiton
  * @since 5.0
  */
-
-var nodeNameArray = ['#text'];
 
 var almAppendChildren = function almAppendChildren() {
   var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
@@ -2373,6 +2416,69 @@ exports.default = almTableWrap;
 
 /***/ }),
 
+/***/ "./core/src/js/helpers/commentReplyFix.js":
+/*!************************************************!*\
+  !*** ./core/src/js/helpers/commentReplyFix.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+/**
+ * commentReplyFix
+ * Hotfix for Reply links not working in WordPress 5.1+
+ * 
+ * @param listing  object
+ * @since 5.1
+ */
+var commentReplyFix = function commentReplyFix() {
+   var listing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+   // Get  all `Reply` links.
+   var replyLinks = listing.querySelectorAll('.comment-reply-link');
+   if (!replyLinks) {
+      return false;
+   }
+
+   // Loop links
+   replyLinks.forEach(function (link) {
+
+      // Add custom click handler
+      link.onclick = function (e) {
+
+         e.preventDefault();
+
+         var commId = link.dataset.belowelement,
+             parentId = link.dataset.commentid,
+             respondId = link.dataset.respondelement,
+             postId = link.dataset.postid,
+             follow = void 0;
+
+         if (!commId || !parentId || !respondId || !postId) {
+            /*
+            * Theme or plugin defines own link via custom `wp_list_comments()` callback            
+            * and calls `moveForm()` either directly or via a custom event hook.            
+            */
+            return;
+         }
+
+         // Move reply form
+         follow = window.addComment.moveForm(commId, parentId, respondId, postId);
+         if (false === follow) {
+            event.preventDefault();
+         }
+      };
+   });
+};
+exports.default = commentReplyFix;
+
+/***/ }),
+
 /***/ "./core/src/js/helpers/getParameterByName.js":
 /*!***************************************************!*\
   !*** ./core/src/js/helpers/getParameterByName.js ***!
@@ -2415,6 +2521,13 @@ exports.default = getParameterByName;
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';
 }
+
+// isArray
+if (typeof Array.isArray === 'undefined') {
+  Array.isArray = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+};
 
 // Object.entries
 if (!Object.entries) {
@@ -2795,27 +2908,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.almGetAjaxParams = almGetAjaxParams;
 exports.almGetRestParams = almGetRestParams;
-/*
-	almGetAjaxParams
-	Build the data object to send with the Ajax request
-
-   @param alm            object
-   @param action         string
-   @param queryType      string  
-   
-   @since 3.6
-*/
+/**
+ * almGetAjaxParams
+ * Build the data object to send with the Ajax request
+ * 
+ * @param alm            object
+ * @param action         string
+ * @param queryType      string  
+ * @since 3.6
+ */
 
 function almGetAjaxParams(alm, action, queryType) {
+
    // Defaults
    var data = {
-      action: action,
-      nonce: alm_localize.alm_nonce,
-      query_type: queryType,
       id: alm.id,
       post_id: alm.post_id,
       slug: alm.slug,
-      canonical_url: alm.canonical_url,
+      canonical_url: encodeURIComponent(alm.canonical_url),
       posts_per_page: alm.posts_per_page,
       page: alm.page,
       offset: alm.offset,
@@ -2953,17 +3063,19 @@ function almGetAjaxParams(alm, action, queryType) {
       data.custom_args = alm.listing.dataset.customArgs;
    }
 
+   data.action = action;
+   data.query_type = queryType;
+
    return data;
 }
 
-/*
-	almGetRestParams
-	Build the REST API data object to send with REST API request
-
-   @param alm            object
-   
-   @since 3.6
-*/
+/**
+ * almGetRestParams
+ * Build the REST API data object to send with REST API request
+ * 
+ * @param alm            object
+ * @since 3.6
+ */
 function almGetRestParams(alm) {
    var data = {
       id: alm.id,
@@ -2972,7 +3084,7 @@ function almGetRestParams(alm) {
       page: alm.page,
       offset: alm.offset,
       slug: alm.slug,
-      canonical_url: alm.canonical_url,
+      canonical_url: encodeURIComponent(alm.canonical_url),
       post_type: alm.post_type,
       post_format: alm.listing.dataset.postFormat,
       category: alm.listing.dataset.category,
@@ -3008,6 +3120,116 @@ function almGetRestParams(alm) {
 
    return data;
 }
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/restAPI.js":
+/*!****************************************!*\
+  !*** ./core/src/js/helpers/restAPI.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+exports.almGetAjaxUrl = almGetAjaxUrl;
+exports.almGetAjaxAction = almGetAjaxAction;
+/**
+ * almGetAjaxUrl
+ * Build the Ajax URL request
+ * 
+ * @param action         string
+ * @since 3.6
+ */
+
+function almGetAjaxUrl() {
+   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+   if (!action) {
+      return false;
+   }
+
+   var url = '';
+   if (alm_localize.restapi.active) {
+      // REST API Endpoint
+      url = '' + alm_localize.restapi.url + alm_localize.restapi.namespace + '/' + action;
+   } else {
+      // admin-ajax.php
+      url = alm_localize.ajaxurl;
+   }
+   return url;
+}
+
+/**
+ * almGetAjaxAction
+ * If not REST API, prepend 'alm_' to action  
+ * 
+ * @param action         string
+ * @since 5.1
+ */
+function almGetAjaxAction() {
+   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+   if (!action) {
+      return false;
+   }
+
+   var action_name = alm_localize.restapi.active ? action : 'alm_' + action;
+   return action_name;
+}
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/srcsetPolyfill.js":
+/*!***********************************************!*\
+  !*** ./core/src/js/helpers/srcsetPolyfill.js ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * srcsetPolyfill
+ * A Safari srcset polyfill to get Masonry and ImagesLoaded working
+ *
+ * @param {*} container Element
+ * @param {*} ua String
+ * @since 5.0.2
+ */
+var srcsetPolyfill = function srcsetPolyfill() {
+	var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var ua = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+	// Exit if no container
+	if (!container) {
+		return false;
+	}
+
+	// Exit if useragent is Chrome, Safari or Windows
+	if (ua.indexOf('Safari') > -1 && ua.indexOf('Chrome') != -1 || ua.indexOf('Firefox') > -1 || ua.indexOf('Windows') > -1) {
+		return false;
+	}
+
+	// Get the images
+	var imgs = container.querySelectorAll('img[srcset]:not(.alm-loaded)');
+
+	// Loop images
+	for (var i = 0; i < imgs.length; i++) {
+		var img = imgs[i];
+		img.classList.add('alm-loaded');
+		img.outerHTML = img.outerHTML;
+	}
+};
+exports.default = srcsetPolyfill;
 
 /***/ }),
 
@@ -3265,7 +3487,7 @@ var almSetFilters = function almSetFilters() {
       var value = _ref2[1];
 
       // Convert camelCase data atts back to dashes (-).
-      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2');
+      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
       listing.setAttribute('data-' + key, value);
     }
 
@@ -3340,8 +3562,11 @@ function _interopRequireDefault(obj) {
 }
 
 /**
+ * insertScript
  * Search nodes for <script/> tags and run scripts.
  * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
+ * 
+ * @since 5.0
  */
 var insertScript = {
 
@@ -3423,23 +3648,27 @@ var _almDomParser = __webpack_require__(/*! ../helpers/almDomParser */ "./core/s
 
 var _almDomParser2 = _interopRequireDefault(_almDomParser);
 
+var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
+
+var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 
-/*
-	almMasonry
-	Function to trigger built-in Ajax Load More Masonry
-
-   @param {object} alm
-   @param {boolean} init
-   @param {boolean} filtering 
-   
-   @since 3.1
-   @updated 4.3
+/**
+ * almMasonry
+ * Function to trigger built-in Ajax Load More Masonry
+ * 
+ * @param {object} alm
+ * @param {boolean} init
+ * @param {boolean} filtering 
+ * @since 3.1
+ * @updated 5.0.2
 */
+
 var msnry = '';
 var almMasonry = function almMasonry(alm, init, filtering) {
 
@@ -3496,6 +3725,8 @@ var almMasonry = function almMasonry(alm, init, filtering) {
     // First Run
     if (masonry_init && init) {
 
+      (0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
+
       imagesLoaded(container, function () {
 
         var defaults = {
@@ -3540,6 +3771,9 @@ var almMasonry = function almMasonry(alm, init, filtering) {
           // Append elements listing
           (0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
+          // Run srcSet polyfill
+          (0, _srcsetPolyfill2.default)(container, alm.ua);
+
           // Confirm imagesLoaded & append
           imagesLoaded(container, function () {
             msnry.appended(data);
@@ -3576,41 +3810,20 @@ exports.almResultsText = almResultsText;
 exports.almGetResultsText = almGetResultsText;
 exports.almInitResultsText = almInitResultsText;
 /**  
- *  Set the results text if required.
+ * Set the results text if required.
  * 
- *  @param {Object} alm
- *  @since 4.1
+ * @param {object} alm     Global alm object
+ * @param {string} type    Type of results
+ * @since 5.1
  */
 function almResultsText(alm) {
-   if (!alm.resultsText) return false;
+   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-   var resultsType = 'standard';
-   if (alm.nextpage && alm.resultsText) {
-      resultsType = 'nextpage';
-   } else if (alm.paging) {
-      resultsType = 'paging';
-   } else if (alm.preloaded === 'true') {
-      resultsType = 'preloaded';
-   } else {
-      resultsType = 'standard';
-   }
+   if (!alm.resultsText) return false;
+   var resultsType = type === 'nextpage' ? 'nextpage' : 'standard';
+
    almGetResultsText(alm, resultsType);
 }
-
-/**  
- *  Render `Showing {x} of {y} results` text.
- * 
- *  @param {Element} el
- *  @param {String} current
- *  @param {String} total
- *  @since 4.1
- */
-var almRenderResultsText = function almRenderResultsText(el, current, total) {
-   var text = alm_localize.display_results;
-   text = text.replace('{num}', current);
-   text = text.replace('{total}', total);
-   el.innerHTML = text;
-};
 
 /**  
  *  Get values for showing results text.
@@ -3626,50 +3839,38 @@ function almGetResultsText(alm) {
 
    var current = 0;
    var total = 0;
+   var preloaded = alm.addons.preloaded === 'true' ? true : false;
+   var paging = alm.addons.paging ? true : false;
+   var posts_per_page = alm.orginal_posts_per_page;
 
    switch (type) {
 
       // Nextpage
       case 'nextpage':
 
-         current = alm.page + 1 + parseInt(alm.nextpage_startpage);
-         total = parseInt(alm.totalposts) + parseInt(alm.nextpage_startpage);
-         almRenderResultsText(alm.resultsText, current, total);
-
-         break;
-
-      // Preloaded
-      case 'preloaded':
-
-         console.log(alm);
-
-         current = parseInt(alm.posts) + parseInt(alm.preloaded_amount);
-         total = parseInt(alm.totalposts) + parseInt(alm.preloaded_amount);
-         almRenderResultsText(alm.resultsText, current, total);
-
-         break;
-
-      // Paging
-      case 'paging':
-
-         var start = parseInt(alm.page) * parseInt(alm.posts_per_page) + 1;
-         current = start + ' - ' + (parseInt(start) - 1 + parseInt(alm.posts));
-         total = parseInt(alm.totalposts) + parseInt(alm.preloaded_amount);
+         current = parseInt(alm.localize.page);
+         total = parseInt(alm.localize.total_posts);
          almRenderResultsText(alm.resultsText, current, total);
 
          break;
 
       default:
 
-         current = alm.posts;
-         total = parseInt(alm.totalposts);
+         current = parseInt(alm.page) + 1;
+         total = Math.ceil(alm.localize.total_posts / posts_per_page);
+
+         // Add 1 page if Preloaded
+         if (preloaded) {
+            current = paging ? alm.page + 1 : current + 1;
+         }
+
          almRenderResultsText(alm.resultsText, current, total);
 
    }
 }
 
 /**  
- *  Display `Showing {x} of {y} results` text.
+ *  Display `Showing {x} of {y} pages` text.
  *
  *  @param {Object} alm
  *  @param {String} type
@@ -3681,51 +3882,189 @@ function almInitResultsText(alm) {
    if (!alm.resultsText) return false;
 
    var current = 0;
-   var total = 0;
-   var totalEl = '';
+   var total = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
 
    switch (type) {
 
       // Nextpage
       case 'nextpage':
 
-         current = alm.page + parseInt(alm.nextpage_startpage);
-         total = alm.localize.total_posts;
-         if (total) {
-            almRenderResultsText(alm.resultsText, current, total);
-         }
+         almRenderResultsText(alm.resultsText, alm.addons.nextpage_startpage, alm.localize.total_posts);
 
          break;
 
       // Preloaded
       case 'preloaded':
 
-         current = parseInt(alm.posts) + parseInt(alm.preloaded_amount);
-         total = alm.localize.total_posts;
-         if (total) {
-            almRenderResultsText(alm.resultsText, current, total);
-         }
-
-         break;
-
-      // Paging
-      case 'paging':
-
-         var start = parseInt(alm.page) * parseInt(alm.posts_per_page) + 1;
-         current = start + ' - ' + (parseInt(start) - 1 + parseInt(alm.posts_per_page));
-         totalEl = alm.listing.querySelector('.alm-preloaded');
-         if (totalEl) {
-            almRenderResultsText(alm.resultsText, current, totalEl.dataset.totalPosts);
-         }
+         current = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
+         almRenderResultsText(alm.resultsText, current, total);
 
          break;
 
       default:
 
-         console.log('nothing');
+         console.log('Nothing to set.');
 
    }
 }
+
+/**  
+ *  Render `Showing {x} of {y} results` text.
+ * 
+ *  @param {Element} el
+ *  @param {String} current
+ *  @param {String} total
+ *  @since 4.1
+ */
+var almRenderResultsText = function almRenderResultsText(el, current, total) {
+
+   total = parseInt(total);
+   var text = total > 0 ? alm_localize.results_text : alm_localize.no_results_text;
+
+   if (total > 0) {
+      text = text.replace('{num}', '<span class="alm-results-current">' + current + '</span>');
+      text = text.replace('{total}', '<span class="alm-results-total">' + total + '</span>');
+      el.innerHTML = text;
+   } else {
+      el.innerHTML = text;
+   }
+};
+
+/***/ }),
+
+/***/ "./core/src/js/modules/setFocus.js":
+/*!*****************************************!*\
+  !*** ./core/src/js/modules/setFocus.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * setFocus
+ * Set user focus to improve accessibility after load events
+ * 
+ * @param {Boolean} init
+ * @param {String} preloaded
+ * @param {HTMLElement} element
+ * @since 5.1
+ */
+var setFocus = function setFocus() {
+	var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+	var preloaded = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'false';
+	var element = arguments[2];
+
+	if ((init || !element) && preloaded !== 'true') {
+		return false; // Exit if first run
+	}
+
+	console.log(element);
+
+	// Check if element is an array.
+	// If `transition_container="false"`, `element` will be an array.
+	/*
+ let is_array = Array.isArray(element);
+ element = (is_array) ? element[0] : element;
+ */
+
+	// Set tabIndex on `.alm-reveal`
+	element.setAttribute('tabIndex', '-1');
+
+	var scrollHierarchy = [];
+	var parent = element.parentNode;
+	while (parent) {
+		scrollHierarchy.push([parent, parent.scrollLeft, parent.scrollTop]);
+		parent = parent.parentNode;
+	}
+
+	element.focus();
+
+	scrollHierarchy.forEach(function (item) {
+		var element = item[0];
+
+		// Check first to avoid triggering unnecessary `scroll` events				
+		if (element.scrollLeft != item[1]) {
+			element.scrollLeft = item[1];
+		}
+		if (element.scrollTop != item[2]) {
+			element.scrollTop = item[2];
+		}
+	});
+};
+exports.default = setFocus;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/setLocalizedVars.js":
+/*!*************************************************!*\
+  !*** ./core/src/js/modules/setLocalizedVars.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+
+var _resultsText = __webpack_require__(/*! ./resultsText */ "./core/src/js/modules/resultsText.js");
+
+var resultsText = _interopRequireWildcard(_resultsText);
+
+function _interopRequireWildcard(obj) {
+   if (obj && obj.__esModule) {
+      return obj;
+   } else {
+      var newObj = {};if (obj != null) {
+         for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+         }
+      }newObj.default = obj;return newObj;
+   }
+}
+
+/**  
+ * Set localized variables
+ *
+ * @param {object} alm     Global alm object
+ * @since 4.1 
+ */
+
+var setLocalizedVars = function setLocalizedVars(alm) {
+
+   var type = 'standard';
+
+   // Current Page `page`
+   if (alm.addons.nextpage) {
+      type = 'nextpage';
+      if (alm.addons.paging) {
+         alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+      } else {
+         alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
+      }
+   } else {
+      alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+   }
+
+   // Total Posts `total_posts`.
+   // Only update if !Preloaded && !Nextpage
+   if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage) {
+      // Do not set if Preloaded
+      alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
+   }
+
+   // Set Results Text (if required)
+   resultsText.almResultsText(alm, type);
+};
+
+exports.default = setLocalizedVars;
 
 /***/ }),
 

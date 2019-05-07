@@ -6,6 +6,31 @@ jQuery(document).ready(function($) {
 	_alm.options = {
 		speed: 200
 	};
+	
+	
+	
+	/*
+	*  Test REST API access
+	*
+	*  @since 5.1.1
+	*/
+	if($('.restapi-access').length){
+      $.ajax({
+   		type: 'GET',
+   		url: alm_admin_localize.restapi.url + alm_admin_localize.restapi.namespace + '/test/',
+   		dataType: 'json',
+   		success: function(data) { 
+      		if(data.success){
+         		console.log('Ajax Load More successfully connected to the WordPress REST API.');
+      		}     		
+   		},
+   		error: function(xhr, status, error) {
+      		console.log(status);
+      		$('.restapi-access').fadeIn();
+   		}
+   	});
+	}
+	
 
 
    /*
