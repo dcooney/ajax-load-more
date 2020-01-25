@@ -24,6 +24,18 @@
 				<input class="alm_element" name="tax-operator" id="tax-not-in-radio" value="NOT IN" type="radio">
 				<label for="tax-not-in-radio">NOT IN</label>
 			</li>
+			<li>
+				<input class="alm_element" name="tax-operator" id="tax-and-radio" value="AND" type="radio">
+				<label for="tax-and-radio">AND</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator" id="tax-exists-radio" value="EXISTS" type="radio">
+				<label for="tax-exists-radio">EXISTS</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator" id="tax-not-exists-radio" value="NOT EXISTS" type="radio">
+				<label for="tax-not-exists-radio">NOT EXISTS</label>
+			</li>
 	   </ul>
 	</div>
 						
@@ -69,6 +81,18 @@
 				<input class="alm_element" name="tax-operator2" id="tax-not-in-radio2" value="NOT IN" type="radio">
 				<label for="tax-not-in-radio2">NOT IN</label>
 			</li>
+			<li>
+				<input class="alm_element" name="tax-operator2" id="tax-and-radio2" value="AND" type="radio">
+				<label for="tax-and-radio2">AND</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator2" id="tax-exists-radio2" value="EXISTS" type="radio">
+				<label for="tax-exists-radio2">EXISTS</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator2" id="tax-not-exists-radio2" value="NOT EXISTS" type="radio">
+				<label for="tax-not-exists-radio2">NOT EXISTS</label>
+			</li>
 	   </ul>
 	</div>					
 </div>
@@ -99,6 +123,18 @@
 			<li>
 				<input class="alm_element" name="tax-operator3" id="tax-not-in-radio3" value="NOT IN" type="radio">
 				<label for="tax-not-in-radio3">NOT IN</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator3" id="tax-and-radio3" value="AND" type="radio">
+				<label for="tax-and-radio3">AND</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator3" id="tax-exists-radio3" value="EXISTS" type="radio">
+				<label for="tax-exists-radio3">EXISTS</label>
+			</li>
+			<li>
+				<input class="alm_element" name="tax-operator3" id="tax-not-exists-radio3" value="NOT EXISTS" type="radio">
+				<label for="tax-not-exists-radio3">NOT EXISTS</label>
 			</li>
 	   </ul>
 	</div>					

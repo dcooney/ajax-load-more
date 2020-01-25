@@ -100,7 +100,7 @@ var ajaxloadmore =
 Object.defineProperty(exports, "__esModule", {
    value: true
 });
-exports.getOffset = exports.almScroll = exports.start = exports.tracking = exports.filter = undefined;
+exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tracking = exports.tab = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -136,13 +136,13 @@ var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/sr
 
 var _almDomParser2 = _interopRequireDefault(_almDomParser);
 
+var _stripEmptyNodes = __webpack_require__(/*! ./helpers/stripEmptyNodes */ "./core/src/js/helpers/stripEmptyNodes.js");
+
+var _stripEmptyNodes2 = _interopRequireDefault(_stripEmptyNodes);
+
 var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
 
 var queryParams = _interopRequireWildcard(_queryParams);
-
-var _restAPI = __webpack_require__(/*! ./helpers/restAPI */ "./core/src/js/helpers/restAPI.js");
-
-var restAPI_Opts = _interopRequireWildcard(_restAPI);
 
 var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/js/modules/resultsText.js");
 
@@ -176,9 +176,23 @@ var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/m
 
 var _filtering2 = _interopRequireDefault(_filtering);
 
+var _noResults = __webpack_require__(/*! ./modules/noResults */ "./core/src/js/modules/noResults.js");
+
+var _noResults2 = _interopRequireDefault(_noResults);
+
+var _almDebug = __webpack_require__(/*! ./modules/almDebug */ "./core/src/js/modules/almDebug.js");
+
+var _almDebug2 = _interopRequireDefault(_almDebug);
+
+var _getScrollPercentage = __webpack_require__(/*! ./modules/getScrollPercentage */ "./core/src/js/modules/getScrollPercentage.js");
+
+var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
+
 var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
+
+var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
 
 function _interopRequireWildcard(obj) {
    if (obj && obj.__esModule) {
@@ -206,6 +220,28 @@ function _toConsumableArray(arr) {
    }
 }
 
+function _asyncToGenerator(fn) {
+   return function () {
+      var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {
+         function step(key, arg) {
+            try {
+               var info = gen[key](arg);var value = info.value;
+            } catch (error) {
+               reject(error);return;
+            }if (info.done) {
+               resolve(value);
+            } else {
+               return Promise.resolve(value).then(function (value) {
+                  step("next", value);
+               }, function (err) {
+                  step("throw", err);
+               });
+            }
+         }return step("next");
+      });
+   };
+}
+
 /*
  * Ajax Load More
  * https://connekthq.com/plugins/ajax-load-more/
@@ -215,7 +251,7 @@ function _toConsumableArray(arr) {
  */
 
 // Polyfills
-__webpack_require__(/*! @babel/polyfill */ "./node_modules/@babel/polyfill/lib/index.js");
+__webpack_require__(/*! @babel/polyfill/noConflict */ "./node_modules/@babel/polyfill/noConflict.js");
 __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfills.js");
 
 // External Modules
@@ -264,9 +300,13 @@ var alm_is_filtering = false;
       alm.loading = true;
       alm.finished = false;
       alm.timer = null;
-      alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // User agent
+
+      alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // Browser User Agent
+      alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
+      alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
+
       alm.main = el;
-      alm.master_id = el.id; // The div#id of the ALM instance 
+      alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance 
       el.classList.add('alm-' + e); // Add unique classname
       el.setAttribute('data-alm-id', e); // Add unique data id
 
@@ -292,6 +332,10 @@ var alm_is_filtering = false;
       alm.post_id = el.dataset.postId;
       alm.id = el.dataset.id ? el.dataset.id : '';
 
+      // No results template
+      var alm_no_results = el.querySelector('.alm-no-results');
+      alm.no_results = alm_no_results ? alm_no_results.innerHTML : '';
+
       // Shortcode Params 
       alm.repeater = alm.listing.dataset.repeater; // Repeaters
       alm.theme_repeater = alm.listing.dataset.themeRepeater;
@@ -302,12 +346,14 @@ var alm_is_filtering = false;
       alm.btnWrap = el.querySelectorAll('.alm-btn-wrap'); // Get all `.alm-button-wrap` divs
       alm.btnWrap = Array.prototype.slice.call(alm.btnWrap); // Convert NodeList to array
       alm.btnWrap[alm.btnWrap.length - 1].style.visibility = 'visible'; // Get last element (used for nesting)
+      alm.trigger = alm.btnWrap[alm.btnWrap.length - 1];
 
       alm.button_label = alm.listing.dataset.buttonLabel;
       alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
+      alm.placeholder = alm.main.querySelector('.alm-placeholder');
 
       alm.scroll_distance = alm.listing.dataset.scrollDistance;
-      alm.scroll_distance = alm.scroll_distance ? parseInt(alm.scroll_distance) : 100;
+      alm.scroll_distance = alm.scroll_distance ? alm.scroll_distance : 100;
       alm.scroll_container = alm.listing.dataset.scrollContainer;
       alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
       alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
@@ -315,7 +361,7 @@ var alm_is_filtering = false;
       alm.transition = alm.listing.dataset.transition; // Transition
       alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
       alm.tcc = alm.listing.dataset.transitionContainerClasses; // Transition Container Classes
-      alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 250;
+      alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
       alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
       alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
       alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
@@ -348,6 +394,7 @@ var alm_is_filtering = false;
       alm.addons.single_post_init_id = alm.listing.dataset.singlePostId;
       alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy;
       alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms;
+      alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar;
 
       alm.addons.comments = alm.listing.dataset.comments; // Comments add-on      
       alm.addons.comments_post_id = alm.listing.dataset.comments_post_id; // current post id
@@ -357,6 +404,8 @@ var alm_is_filtering = false;
       alm.addons.comments_style = alm.listing.dataset.comments_style;
       alm.addons.comments_template = alm.listing.dataset.comments_template;
       alm.addons.comments_callback = alm.listing.dataset.comments_callback;
+
+      alm.addons.tabs = alm.listing.dataset.tabs;
 
       alm.addons.filters = alm.listing.dataset.filters;
 
@@ -386,6 +435,7 @@ var alm_is_filtering = false;
       alm.extensions.acf = alm.listing.dataset.acf; // ACF
       alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
       alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
+      alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
       alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
       alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
       // if field type, name or post ID is empty
@@ -393,14 +443,26 @@ var alm_is_filtering = false;
          alm.extensions.acf = false;
       }
 
+      alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
+      alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
+      alm.extensions.term_query_fields = alm.listing.dataset.termQueryFields;
+      alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
+      alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
+
       /* Paging */
       if (alm.addons.paging === 'true') {
          alm.addons.paging = true;
-         alm.addons.paging_controls = alm.listing.dataset.pagingControls ? true : false;
+         alm.addons.paging_init = true;
+         alm.addons.paging_controls = alm.listing.dataset.pagingControls === 'true' ? true : false;
          alm.addons.paging_show_at_most = alm.listing.dataset.pagingShowAtMost;
          alm.addons.paging_classes = alm.listing.dataset.pagingClasses;
-         alm.addons.paging_init = true;
          alm.addons.paging_show_at_most = alm.addons.paging_show_at_most === undefined ? 7 : alm.addons.paging_show_at_most;
+
+         alm.addons.paging_first_label = alm.listing.dataset.pagingFirstLabel;
+         alm.addons.paging_previous_label = alm.listing.dataset.pagingPreviousLabel;
+         alm.addons.paging_next_label = alm.listing.dataset.pagingNextLabel;
+         alm.addons.paging_last_label = alm.listing.dataset.pagingLastLabel;
+
          // If preloaded, pause ALM	
          alm.pause = alm.addons.preloaded === 'true' ? true : alm.pause;
       } else {
@@ -412,6 +474,7 @@ var alm_is_filtering = false;
       if (alm.addons.filters === 'true') {
          alm.addons.filters = true;
 
+         alm.addons.filters_url = alm.listing.dataset.filtersUrl === 'true' ? true : false;
          alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
          alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
          alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
@@ -432,6 +495,31 @@ var alm_is_filtering = false;
          alm.addons.filters = false;
       }
       /* End Filters  */
+
+      /* TABS */
+      if (alm.addons.tabs === 'true') {
+         alm.addons.tabs = true;
+         alm.addons.tab_template = alm.listing.dataset.tabTemplate ? alm.listing.dataset.tabTemplate : '';
+         alm.addons.tab_onload = alm.listing.dataset.tabOnload ? alm.listing.dataset.tabOnload : '';
+         alm.addons.tabs_resturl = alm.listing.dataset.tabsRestUrl ? alm.listing.dataset.tabsRestUrl : '';
+
+         // Locate active template (deeplinks)
+         if (alm.addons.tab_onload !== '') {
+            var tabNav = document.querySelector('.alm-tab-nav li [data-tab-url=' + alm.addons.tab_onload + ']');
+            alm.addons.tab_template = tabNav ? tabNav.dataset.tabTemplate : alm.addons.tab_template;
+            alm.listing.dataset.tabOnload = '';
+            // Set selected tab
+            if (tabNav) {
+               var activeTab = document.querySelector('.alm-tab-nav li .active');
+               if (activeTab) {
+                  activeTab.classList.remove('active');
+               }
+            }
+         }
+      } else {
+         alm.addons.tabs = false;
+      }
+      /* End TABS  */
 
       /* REST API */
       if (alm.extensions.restapi === 'true') {
@@ -533,6 +621,7 @@ var alm_is_filtering = false;
       alm.addons.single_post_order = alm.addons.single_post_order === undefined ? 'previous' : alm.addons.single_post_order;
       alm.addons.single_post_taxonomy = alm.addons.single_post_taxonomy === undefined ? '' : alm.addons.single_post_taxonomy;
       alm.addons.single_post_excluded_terms = alm.addons.single_post_excluded_terms === undefined ? '' : alm.addons.single_post_excluded_terms;
+      alm.addons.single_post_progress_bar = alm.addons.single_post_progress_bar === undefined ? '' : alm.addons.single_post_progress_bar;
       alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
       alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
       alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
@@ -568,7 +657,17 @@ var alm_is_filtering = false;
       alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 10000 : alm.max_pages;
 
       /* Scroll Distance */
-      alm.scroll_distance = alm.scroll_distance === undefined ? 150 : alm.scroll_distance;
+      alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
+      alm.scroll_distance_perc = false;
+      if (alm.scroll_distance.toString().indexOf("%") == -1) {
+         // Standard scroll_distance
+         alm.scroll_distance = parseInt(alm.scroll_distance);
+      } else {
+         // Percentage scroll_distance
+         alm.scroll_distance_perc = true;
+         alm.scroll_distance_orig = parseInt(alm.scroll_distance);
+         alm.scroll_distance = (0, _getScrollPercentage2.default)(alm);
+      }
 
       /* Scroll Container */
       alm.scroll_container = alm.scroll_container === undefined ? '' : alm.scroll_container;
@@ -583,6 +682,11 @@ var alm_is_filtering = false;
       alm.is_masonry_preloaded = false;
       if (alm.transition === 'masonry') {
          alm.masonry_init = true;
+         if (alm.msnry) {
+            alm.msnry.destroy(); // destroy masonry if currently exists
+         } else {
+            alm.msnry = '';
+         }
          alm.masonry_selector = alm.listing.dataset.masonrySelector;
          alm.masonry_columnwidth = alm.listing.dataset.masonryColumnwidth;
          alm.masonry_animation = alm.listing.dataset.masonryAnimation;
@@ -640,6 +744,7 @@ var alm_is_filtering = false;
       alm.resultsText = document.querySelector('.alm-results-text');
       if (alm.resultsText) {
          alm.resultsText.setAttribute('aria-live', 'polite');
+         alm.resultsText.setAttribute('aria-atomic', 'true');
       } else {
          alm.resultsText = false;
       }
@@ -651,6 +756,13 @@ var alm_is_filtering = false;
        */
 
       alm.AjaxLoadMore.loadPosts = function () {
+
+         if (typeof almOnChange === 'function') {
+            window.almOnChange(alm);
+         }
+
+         (0, _placeholder.showPlaceholder)(alm);
+
          if (!alm.disable_ajax) {
             // Check for ajax blocker
             if (!alm.addons.paging) {
@@ -697,27 +809,40 @@ var alm_is_filtering = false;
       alm.AjaxLoadMore.ajax = function (queryType) {
 
          // Default ALM action
-         var action = 'get_posts';
+         var action = 'alm_get_posts';
 
          // ACF Params
          alm.acf_array = '';
          if (alm.extensions.acf) {
             // Custom query for the Repeater / Gallery / Flexible Content field types
             if (alm.extensions.acf_field_type !== 'relationship') {
-               action = 'acf';
+               action = 'alm_acf';
             }
             alm.acf_array = {
                'acf': 'true',
                'post_id': alm.extensions.acf_post_id,
                'field_type': alm.extensions.acf_field_type,
-               'field_name': alm.extensions.acf_field_name
+               'field_name': alm.extensions.acf_field_name,
+               'parent_field_name': alm.extensions.acf_parent_field_name
+            };
+         }
+
+         // Term Query Params
+         alm.term_query_array = '';
+         if (alm.extensions.term_query) {
+            action = 'alm_get_terms';
+            alm.term_query_array = {
+               'term_query': 'true',
+               'taxonomy': alm.extensions.term_query_taxonomy,
+               'fields': alm.extensions.term_query_fields,
+               'number': alm.extensions.term_query_number
             };
          }
 
          // Nextpage Params
          alm.nextpage_array = '';
          if (alm.addons.nextpage) {
-            action = 'nextpage';
+            action = 'alm_nextpage';
             alm.nextpage_array = {
                'nextpage': 'true',
                'urls': alm.addons.nextpage_urls,
@@ -741,7 +866,7 @@ var alm_is_filtering = false;
          // Comment Params
          alm.comments_array = '';
          if (alm.addons.comments === 'true') {
-            action = 'comments';
+            action = 'alm_comments';
             alm.posts_per_page = alm.addons.comments_per_page;
             alm.comments_array = {
                'comments': 'true',
@@ -757,7 +882,7 @@ var alm_is_filtering = false;
          // Users Params
          alm.users_array = '';
          if (alm.addons.users) {
-            action = 'users';
+            action = 'alm_users';
             alm.users_array = {
                'users': 'true',
                'role': alm.listing.dataset.usersRole,
@@ -784,11 +909,14 @@ var alm_is_filtering = false;
          if (alm.extensions.restapi) {
             alm.AjaxLoadMore.restapi(alm, action, queryType);
          }
-
-         // Standard ALM
-         else {
-               alm.AjaxLoadMore.adminajax(alm, action, queryType);
+         // Tabs
+         else if (alm.addons.tabs) {
+               alm.AjaxLoadMore.tabs(alm);
             }
+            // Standard ALM
+            else {
+                  alm.AjaxLoadMore.adminajax(alm, action, queryType);
+               }
       };
 
       /**  
@@ -818,14 +946,11 @@ var alm_is_filtering = false;
             return config;
          });
 
-         // Get REST API || admin-ajax URL        
-         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
-
-         // Get the action value
-         var action_name = restAPI_Opts.almGetAjaxAction(action);
+         // Get admin-ajax.php URL        
+         var ajaxURL = alm_localize.ajaxurl;
 
          // Get data params
-         var params = queryParams.almGetAjaxParams(alm, action_name, queryType); // [./helpers/queryParams.js
+         var params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
 
          // Send HTTP request via Axios
          _axios2.default.get(ajaxURL, { params: params }).then(function (response) {
@@ -848,13 +973,68 @@ var alm_is_filtering = false;
             }
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error, 'adminajax');
+         });
+      };
+
+      /**  
+      * tabs
+       * Send request to the WP REST API
+       *
+       * @param {*} alm | ALm object
+       * @since 5.2.0
+       */
+      alm.AjaxLoadMore.tabs = function (alm) {
+
+         var alm_rest_url = alm.addons.tabs_resturl + 'ajaxloadmore/tab';
+
+         var params = {
+            post_id: alm.post_id,
+            template: alm.addons.tab_template
+
+            // Axios Interceptor for nested data objects
+         };_axios2.default.interceptors.request.use(function (config) {
+            config.paramsSerializer = function (params) {
+               // Qs is already included in the Axios package
+               return qs.stringify(params, {
+                  arrayFormat: 'brackets',
+                  encode: false
+               });
+            };
+            return config;
+         });
+
+         // Send Ajax request
+         _axios2.default.get(alm_rest_url, { params: params }).then(function (response) {
+
+            // Success            
+            var results = response.data; // Get data from response
+            var html = results.html;
+
+            // Create object to pass to success()
+            var obj = {
+               'html': html,
+               'meta': {
+                  'postcount': 1,
+                  'totalposts': 1
+               }
+            };
+            alm.AjaxLoadMore.success(obj, false); // Send data
+
+
+            // Callback to Tabs add-on
+            if (typeof almTabLoaded === 'function') {
+               window.almTabLoaded(alm);
+            }
+         }).catch(function (error) {
+            // Error            
+            alm.AjaxLoadMore.error(error, 'restapi');
          });
       };
 
       /**  
       * restapi
-       * Send request to the WP RESP APT
+       * Send request to the WP REST API
        *
        * @param {*} alm | ALm object
        * @param {*} action | Ajax action
@@ -910,7 +1090,7 @@ var alm_is_filtering = false;
             alm.AjaxLoadMore.success(obj, false); // Send data
          }).catch(function (error) {
             // Error            
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error, 'restapi');
          });
       };
 
@@ -940,8 +1120,9 @@ var alm_is_filtering = false;
 
          var isPaged = false;
 
-         // Create `.alm-reveal` div                   
-         var reveal = document.createElement('div');
+         // Create `.alm-reveal` element                   
+         //let reveal = document.createElement('div');
+         var reveal = alm.container_type === 'table' ? document.createElement('tbody') : document.createElement('div');
          alm.el = reveal;
          reveal.style.opacity = 0;
          reveal.style.height = 0;
@@ -953,7 +1134,7 @@ var alm_is_filtering = false;
          var html, meta, total;
 
          if (is_cache) {
-            // If cached don't look for json data - we won't be querying the DB.
+            // If Cache, do not look for json data as we won't be querying the DB.
             html = data;
          } else {
             // Standard ALM query results
@@ -963,6 +1144,7 @@ var alm_is_filtering = false;
             total = meta.postcount;
             alm.totalposts = meta.totalposts;
             alm.totalposts = alm.addons.preloaded === 'true' ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
+            alm.debug = meta.debug ? meta.debug : '';
          }
 
          // Set alm.html as plain text return
@@ -992,6 +1174,11 @@ var alm_is_filtering = false;
                if (typeof almEmpty === 'function') {
                   window.almEmpty(alm);
                }
+               if (alm.no_results) {
+                  setTimeout(function () {
+                     (0, _noResults2.default)(alm.content, alm.no_results);
+                  }, alm.speed + 10);
+               }
             }
 
             // isPaged
@@ -1011,9 +1198,13 @@ var alm_is_filtering = false;
          }
 
          /*
+                *  Display alm_debug results
+                */
+         (0, _almDebug2.default)(alm);
+
+         /*
           *  Set localized variables
           */
-
          (0, _setLocalizedVars2.default)(alm);
 
          /*
@@ -1034,7 +1225,6 @@ var alm_is_filtering = false;
                   reveal.dataset.page = alm.page;
                   reveal.dataset.id = alm.addons.single_post_id;
                   reveal.dataset.title = alm.addons.single_post_title;
-
                   reveal.innerHTML = alm.html;
                } else {
 
@@ -1069,10 +1259,10 @@ var alm_is_filtering = false;
                            total = pages + total; // Get new total w/ CTAs added
                         }
 
-                        // Parse HTML to split data into pages
-                        var _data = (0, _almDomParser2.default)(alm.html, 'text/html');
+                        // Parse returned HTML and strip empty nodes
+                        var _data = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html, 'text/html'));
 
-                        // Slice data array into an array of individual pages
+                        // Slice data array into individual pages (array)
                         for (var i = 0; i < total; i += posts_per_page) {
                            return_data.push(_data.slice(i, posts_per_page + i));
                         }
@@ -1127,6 +1317,9 @@ var alm_is_filtering = false;
 
                            // Append children to `.alm-reveal` element
                            (0, _almAppendChildren2.default)(alm_reveal, return_data[k]);
+
+                           // Run srcSet polyfill
+                           (0, _srcsetPolyfill2.default)(alm_reveal, alm.ua);
 
                            // Push alm_reveal elements into container_array
                            container_array.push(alm_reveal);
@@ -1210,16 +1403,18 @@ var alm_is_filtering = false;
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
                               (0, _almAppendChildren2.default)(alm.listing, reveal);
+
                               // Run srcSet polyfill
                               (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                            });
                         } else {
                            (0, _almAppendChildren2.default)(alm.listing, reveal);
+
                            // Run srcSet polyfill
                            (0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
                         }
                      } else {
-                        // Standard container
+                        // Standard container	
                         alm.listing.appendChild(reveal);
                      }
                   }
@@ -1233,9 +1428,32 @@ var alm_is_filtering = false;
                // Masonry
                if (alm.transition === 'masonry') {
                   alm.el = alm.listing;
-                  (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
-                  alm.masonry_init = false;
-                  alm.AjaxLoadMore.transitionEnd();
+
+                  // Wrap almMasonry in anonymous async/await function
+                  _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+                     return regeneratorRuntime.wrap(function _callee$(_context) {
+                        while (1) {
+                           switch (_context.prev = _context.next) {
+                              case 0:
+                                 _context.next = 2;
+                                 return (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
+
+                              case 2:
+                                 alm.masonry_init = false;
+                                 alm.AjaxLoadMore.transitionEnd();
+                                 if (typeof almComplete === 'function') {
+                                    window.almComplete(alm);
+                                 }
+
+                              case 5:
+                              case 'end':
+                                 return _context.stop();
+                           }
+                        }
+                     }, _callee, this);
+                  }))().catch(function (e) {
+                     console.log('There was an error with ALM Masonry');
+                  });
                }
 
                // None
@@ -1251,7 +1469,7 @@ var alm_is_filtering = false;
                      }
                   }
 
-                  // Fade transition (default)
+                  // Default (Fade)
                   else {
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
@@ -1267,71 +1485,88 @@ var alm_is_filtering = false;
                            alm.AjaxLoadMore.transitionEnd();
                         }
                      }
+
+               // TABS - Trigger almTabsSetHeight callback in Tabs add-on
+               if (alm.addons.tabs && typeof almTabsSetHeight === 'function') {
+                  imagesLoaded(reveal, function () {
+                     (0, _fadeIn2.default)(alm.listing, alm.speed);
+                     setTimeout(function () {
+                        window.almTabsSetHeight(alm);
+                     }, alm.speed);
+                  });
+               }
             } else {
 
                // Paging               
                if (!alm.init) {
-
                   if (pagingContent) {
+                     (0, _fadeOut2.default)(pagingContent, alm.speed);
                      pagingContent.style.outline = 'none';
-                     pagingContent.innerHTML = alm.html;
-                     imagesLoaded(pagingContent, function () {
-                        // Paging addon
-                        if (typeof almOnPagingComplete === 'function') {
-                           window.almOnPagingComplete(alm);
-                        }
-                        // Delay for effect      
-                        setTimeout(function () {
-                           alm.main.classList.remove('alm-loading');
+                     alm.main.classList.remove('alm-loading');
+
+                     setTimeout(function () {
+                        pagingContent.style.opacity = 0;
+                        pagingContent.innerHTML = alm.html;
+
+                        imagesLoaded(pagingContent, function () {
+                           // Delay for effect                           
                            alm.AjaxLoadMore.triggerAddons(alm);
-                        }, alm.speed);
-                     });
+                           (0, _fadeIn2.default)(pagingContent, alm.speed);
+
+                           // Remove opacity on element to fix CSS transition
+                           setTimeout(function () {
+                              pagingContent.style.opacity = '';
+                           }, parseInt(alm.speed) + 25);
+
+                           // Paging addon
+                           if (typeof almOnPagingComplete === 'function') {
+                              window.almOnPagingComplete(alm);
+                           }
+                        });
+                     }, parseInt(alm.speed) + 25);
                   }
                } else {
-
-                  alm.main.classList.remove('alm-loading');
-                  alm.AjaxLoadMore.triggerAddons(alm);
+                  setTimeout(function () {
+                     alm.main.classList.remove('alm-loading');
+                     alm.AjaxLoadMore.triggerAddons(alm);
+                  }, alm.speed);
                }
                // End Paging
             }
 
-            // almFiltersOnload [Filters Add-on hook]
-            if (typeof almFiltersOnload === 'function' && alm.init) {
-               window.almFiltersOnload(alm);
-            }
+            // ALM Loaded            
+            imagesLoaded(reveal, function () {
+               // Nested
+               alm.AjaxLoadMore.nested(reveal);
 
-            // ALM Complete / Nested
-            if (alm.images_loaded === 'true') {
-               imagesLoaded(reveal, function () {
-                  alm.AjaxLoadMore.nested(reveal); // Nested						
-                  _insertScript2.default.init(alm.el); // Run script inserter
-                  if (typeof almComplete === 'function') {
-                     window.almComplete(alm);
-                  }
-               });
-            } else {
-               alm.AjaxLoadMore.nested(reveal); // Nested
-               _insertScript2.default.init(alm.el); // Run script inserter
-               if (typeof almComplete === 'function') {
+               // Insert Script						
+               _insertScript2.default.init(alm.el);
+
+               // almComplete
+               if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
                   window.almComplete(alm);
                }
-            }
-            // End ALM Complete / Nested
 
+               // Filters onLoad
+               if (typeof almFiltersOnload === 'function' && alm.init) {
+                  window.almFiltersOnload(alm);
+               }
 
-            // ALM Done
-            if (!alm.addons.cache) {
-               // Not Cache & Previous Post
-               if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-                  alm.AjaxLoadMore.triggerDone();
+               // ALM Done
+               if (!alm.addons.cache) {
+                  // Not Cache & Previous Post
+                  if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
+               } else {
+                  // Cache 
+                  if (total < alm.posts_per_page) {
+                     alm.AjaxLoadMore.triggerDone();
+                  }
                }
-            } else {
-               // Cache 
-               if (total < alm.posts_per_page) {
-                  alm.AjaxLoadMore.triggerDone();
-               }
-            }
-            // End ALM Done
+               // End ALM Done   
+            });
+            // End ALM Loaded
          }
 
          /*
@@ -1361,18 +1596,15 @@ var alm_is_filtering = false;
             }
          }
 
-         // Set focus
-         if (alm.transition_container) {
-            if (alm.addons.paging) {
-               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, pagingContent);
-            } else {
-               (0, _setFocus2.default)(alm.init, alm.addons.preloaded, reveal);
-            }
-         }
+         // Set Focus for A11y
+         (0, _setFocus2.default)(alm, reveal, total, alm_is_filtering);
 
          // Comment Reply Fix
-         if (alm.addons.comments === 'true') {
-            (0, _commentReplyFix2.default)(alm.listing);
+         (0, _commentReplyFix2.default)(alm.addons.comments, alm.listing);
+
+         // Remove filtering class
+         if (alm.main.classList.contains('alm-is-filtering')) {
+            alm.main.classList.remove('alm-is-filtering');
          }
 
          // Set flags
@@ -1400,6 +1632,9 @@ var alm_is_filtering = false;
             }
             if (typeof almEmpty === 'function') {
                window.almEmpty(alm);
+            }
+            if (alm.no_results) {
+               (0, _noResults2.default)(alm.content, alm.no_results);
             }
          }
       };
@@ -1514,7 +1749,7 @@ var alm_is_filtering = false;
 
       alm.AjaxLoadMore.getSinglePost = function () {
 
-         var action = 'get_single';
+         var action = 'alm_get_single';
 
          if (alm.fetchingPreviousPost) {
             return false;
@@ -1522,11 +1757,8 @@ var alm_is_filtering = false;
 
          alm.fetchingPreviousPost = true;
 
-         // Get REST API || admin-ajax URL        
-         var ajaxURL = restAPI_Opts.almGetAjaxUrl(action);
-
-         // Get the action value
-         var action_name = restAPI_Opts.almGetAjaxAction(action);
+         // Get admin-ajax.php URL        
+         var ajaxURL = alm_localize.ajaxurl;
 
          // Get data params       
          var params = {
@@ -1537,7 +1769,7 @@ var alm_is_filtering = false;
             excluded_terms: alm.addons.single_post_excluded_terms,
             post_type: alm.post_type,
             init: alm.addons.single_post_init,
-            action: action_name
+            action: action
          };
 
          // Send HTTP request via Axios
@@ -1565,7 +1797,7 @@ var alm_is_filtering = false;
          }).catch(function (error) {
             // Error
 
-            alm.AjaxLoadMore.error(error.message);
+            alm.AjaxLoadMore.error(error, 'getSinglePost');
             alm.fetchingPreviousPost = false;
          });
       };
@@ -1604,6 +1836,7 @@ var alm_is_filtering = false;
             // Delay done until animations complete
             setTimeout(function () {
                window.almDone(alm);
+               (0, _placeholder.hidePlaceholder)(alm);
             }, alm.speed + 10);
          }
       };
@@ -1627,14 +1860,40 @@ var alm_is_filtering = false;
        * 
        * @since 2.6.0
        */
+      alm.AjaxLoadMore.error = function (error) {
+         var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
-      alm.AjaxLoadMore.error = function (message) {
          alm.loading = false;
          if (!alm.addons.paging) {
             alm.button.classList.remove('loading');
             alm.AjaxLoadMore.resetBtnText();
          }
-         console.log(message);
+
+         console.log('Error: ', error);
+         if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            //console.log(error.response.data);
+            //console.log(error.response.status);
+            //console.log(error.response.headers);
+            console.log('Error Msg: ', error.message);
+         } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            console.log(error.request);
+         } else {
+            // Something happened in setting up the request that triggered an Error
+            console.log('Error Msg: ', error.message);
+         }
+
+         if (location) {
+            console.log('ALM Error started in ' + location);
+         }
+
+         if (error.config) {
+            console.log('ALM Error Debug: ', error.config);
+         }
       };
 
       /** 
@@ -1670,18 +1929,30 @@ var alm_is_filtering = false;
 
       /**
       * Window Resize
-       * Add resize function for Paging add-on only.
+       * Add resize function for Paging, Scroll Distance Percentage & Tabs.
        * 
        * @since 2.1.2
-       * @updated 4.2
+       * @updated 5.2
        */
-      if (alm.addons.paging) {
-         var pagingResize = void 0;
+      if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc) {
+         var resize = void 0;
          alm.window.onresize = function () {
-            clearTimeout(pagingResize);
-            pagingResize = setTimeout(function (e) {
-               if (typeof almOnWindowResize === 'function') {
-                  window.almOnWindowResize(alm);
+            clearTimeout(resize);
+            resize = setTimeout(function (e) {
+               if (alm.addons.tabs) {
+                  // Tabs
+                  if (typeof almOnTabsWindowResize === 'function') {
+                     window.almOnTabsWindowResize(alm);
+                  }
+               }
+               if (alm.addons.paging) {
+                  // Paging
+                  if (typeof almOnWindowResize === 'function') {
+                     window.almOnWindowResize(alm);
+                  }
+               }
+               if (alm.scroll_distance_perc) {
+                  alm.scroll_distance = (0, _getScrollPercentage2.default)(alm);
                }
             }, alm.speed);
          };
@@ -1715,8 +1986,8 @@ var alm_is_filtering = false;
 
          alm.timer = setTimeout(function () {
             if (alm.AjaxLoadMore.isVisible() && !alm.fetchingPreviousPost) {
-               var trigger = alm.button.getBoundingClientRect();
-               var btnPos = Math.round(trigger.top - alm.button.offsetHeight - alm.window.innerHeight) + alm.scroll_distance;
+               var trigger = alm.trigger.getBoundingClientRect();
+               var btnPos = Math.round(trigger.top - alm.window.innerHeight) + alm.scroll_distance;
                var scrollTrigger = btnPos <= 0 ? true : false;
 
                // Scroll Container
@@ -1748,8 +2019,25 @@ var alm_is_filtering = false;
             // Scroll Container         
             alm.window = document.querySelector(alm.scroll_container) ? document.querySelector(alm.scroll_container) : alm.window;
          }
-         alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll);
-         alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll);
+         alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
+         alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
+         alm.window.addEventListener('wheel', function (e) {
+            // Mousewheel
+            var direction = Math.sign(e.deltaY);
+            if (direction > 0) {
+               alm.AjaxLoadMore.scroll();
+            }
+         });
+         alm.window.addEventListener('keyup', function (e) {
+            // End, Page Down
+            var code = e.keyCode ? e.keyCode : e.which;
+            switch (code) {
+               case 35:
+               case 34:
+                  alm.AjaxLoadMore.scroll();
+                  break;
+            }
+         });
       }
 
       /** 
@@ -1779,14 +2067,15 @@ var alm_is_filtering = false;
          setTimeout(function () {
             alm.AjaxLoadMore.resetBtnText();
             alm.main.classList.remove('alm-loading');
+            alm.button.classList.remove('loading'); // Loading button
             alm.AjaxLoadMore.triggerAddons(alm);
             if (!alm.addons.paging) {
                setTimeout(function () {
-                  alm.button.classList.remove('loading'); // Loading button
                   alm.loading = false; // Delay to prevent loading to fast
-               }, alm.speed);
+               }, alm.speed * 3);
             }
-         }, alm.speed);
+         }, 100);
+         (0, _placeholder.hidePlaceholder)(alm);
       };
 
       /**  
@@ -1802,8 +2091,8 @@ var alm_is_filtering = false;
          var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
          if (alm.localize && name !== '' && value !== '') {
-            alm.localize[name] = value; // Set ALM localize var
-            window[alm.master_id + '_vars'][name] = value; // Update global window obj vars
+            alm.localize[name] = value.toString(); // Set ALM localize var
+            window[alm.master_id + '_vars'][name] = value.toString(); // Update global window obj vars
          }
       };
 
@@ -1921,6 +2210,9 @@ var alm_is_filtering = false;
                   if (typeof almEmpty === 'function') {
                      window.almEmpty(alm);
                   }
+                  if (alm.no_results) {
+                     (0, _noResults2.default)(alm.content, alm.no_results);
+                  }
                }
             }, alm.speed);
          }
@@ -1959,8 +2251,31 @@ var alm_is_filtering = false;
          // Window Load (Masonry + Preloaded)
          alm.window.addEventListener('load', function () {
             if (alm.is_masonry_preloaded) {
-               (0, _masonry2.default)(alm, true, false);
-               alm.masonry_init = false;
+
+               // Wrap almMasonry in anonymous async/await function
+               _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
+                     while (1) {
+                        switch (_context2.prev = _context2.next) {
+                           case 0:
+                              _context2.next = 2;
+                              return (0, _masonry2.default)(alm, true, false);
+
+                           case 2:
+                              alm.masonry_init = false;
+
+                           case 3:
+                           case 'end':
+                              return _context2.stop();
+                        }
+                     }
+                  }, _callee2, this);
+               }))().catch(function (e) {
+                  console.log('There was an error with ALM Masonry');
+               });
+            }
+            if (typeof almOnLoad === 'function') {
+               window.almOnLoad(alm);
             }
          });
       };
@@ -2093,16 +2408,41 @@ var alm_is_filtering = false;
  */
 var filter = function filter() {
    var transition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'fade';
-   var speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '250';
+   var speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '200';
    var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
    if (!transition || !speed || !data) {
       return false;
    }
    alm_is_filtering = true;
-   (0, _filtering2.default)(transition, speed, data);
+   (0, _filtering2.default)(transition, speed, data, 'filter');
 };
 exports.filter = filter;
+
+/** 
+ * tab
+ * Tabbed content for Ajax Load More instance
+ * 
+ * @since 5.2
+ * @param {*} data
+ * @param {*} url
+ */
+
+var tab = function tab() {
+   var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+   var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+   var transition = 'fade';
+   var speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
+
+   if (!data) {
+      return false;
+   }
+
+   alm_is_filtering = true;
+   (0, _filtering2.default)(transition, speed, data, 'tab');
+};
+exports.tab = tab;
 
 /** 
  * tracking
@@ -2118,14 +2458,28 @@ var tracking = function tracking(path) {
       gtag('event', 'page_view', {
          'page_path': path
       });
+      if (alm_localize.ga_debug) {
+         console.log('Pageview sent to Google Analytics (gtag)');
+      }
    }
    if (typeof ga === 'function') {
       // Deprecated GA Tracking
       ga('send', 'pageview', path);
+      if (alm_localize.ga_debug) {
+         console.log('Pageview sent to Google Analytics (ga)');
+      }
    }
    if (typeof __gaTracker === 'function') {
       // Monster Insights
       __gaTracker('send', 'pageview', path);
+      if (alm_localize.ga_debug) {
+         console.log('Pageview sent to Google Analytics (__gaTracker)');
+      }
+   }
+
+   // Dispatch global Analytics callback
+   if (typeof almAnalytics === 'function') {
+      window.almAnalytics(path);
    }
 };
 exports.tracking = tracking;
@@ -2185,6 +2539,23 @@ var getOffset = function getOffset() {
    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
 };
 exports.getOffset = getOffset;
+
+/** 
+ *  render
+ *
+ *  @since 5.0
+ *  @param {*} position
+ */
+
+var render = function render(el) {
+   var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+   if (!el) {
+      return false;
+   }
+   // console.log(el, options);
+};
+exports.render = render;
 
 /***/ }),
 
@@ -2348,31 +2719,40 @@ var almGetCacheUrl = function almGetCacheUrl(alm) {
    var cache_url = '';
    var ext = '.html';
 
+   // SEO Add-on
    if (alm.init && alm.addons.seo && alm.isPaged) {
-      // SEO Add-on
       // If the request is a paged URL (/page/3/)
       var firstpage = '1';
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + firstpage + '-' + alm.start_page + ext;
-   } else if (alm.addons.nextpage) {
-      // Nextpage add-on
-      var nextpage_cache_url = void 0;
-      if (alm.addons.paging) {
-         nextpage_cache_url = parseInt(alm.page) + 1;
-      } else {
-         nextpage_cache_url = parseInt(alm.page) + 2;
-         if (alm.isPaged) {
-            // If the request a paged URL (/page/3/)
-            nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
-         }
-      }
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + nextpage_cache_url + ext;
-   } else if (alm.addons.single_post) {
-      // Previous Post
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/' + alm.addons.single_post_id + ext;
-   } else {
-      // Standard URL request
-      cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + (alm.page + 1) + ext;
    }
+
+   // Nextpage add-on
+   else if (alm.addons.nextpage) {
+
+         var nextpage_cache_url = void 0;
+         if (alm.addons.paging) {
+            nextpage_cache_url = parseInt(alm.page) + 1;
+         } else {
+            nextpage_cache_url = parseInt(alm.page) + 2;
+            if (alm.isPaged) {
+               // If the request a paged URL (/page/3/)
+               nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
+            }
+         }
+         cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + nextpage_cache_url + ext;
+      }
+      // Single Post
+      else if (alm.addons.single_post) {
+            cache_url = alm.addons.cache_path + alm.addons.cache_id + '/' + alm.addons.single_post_id + ext;
+         }
+
+         // Filters
+         else if (alm.addons.filters) {
+               console.log(alm);
+            } else {
+               // Standard URL request
+               cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + (alm.page + 1) + ext;
+            }
 
    return cache_url;
 };
@@ -2433,32 +2813,34 @@ Object.defineProperty(exports, "__esModule", {
  * commentReplyFix
  * Hotfix for Reply links not working in WordPress 5.1+
  * 
+ * @param comments  string
  * @param listing  object
  * @since 5.1
  */
 var commentReplyFix = function commentReplyFix() {
-   var listing = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+   var comments = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+   var listing = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+   if (comments !== 'true') {
+      // Exit if not comments
+      return false;
+   }
 
    // Get  all `Reply` links.
    var replyLinks = listing.querySelectorAll('.comment-reply-link');
    if (!replyLinks) {
       return false;
    }
-
    // Loop links
    replyLinks.forEach(function (link) {
-
       // Add custom click handler
       link.onclick = function (e) {
-
          e.preventDefault();
-
          var commId = link.dataset.belowelement,
              parentId = link.dataset.commentid,
              respondId = link.dataset.respondelement,
              postId = link.dataset.postid,
              follow = void 0;
-
          if (!commId || !parentId || !respondId || !postId) {
             /*
             * Theme or plugin defines own link via custom `wp_list_comments()` callback            
@@ -2518,16 +2900,9 @@ exports.default = getParameterByName;
 // Prevent native browser scrolling on popstate
 // https://developer.mozilla.org/en-US/docs/Web/API/History#Browser_compatibility
 
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
-}
+if ('scrollRestoration' in history) {}
+//history.scrollRestoration = 'manual';
 
-// isArray
-if (typeof Array.isArray === 'undefined') {
-  Array.isArray = function (obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-  };
-};
 
 // Object.entries
 if (!Object.entries) {
@@ -2540,6 +2915,13 @@ if (!Object.entries) {
     }return resArray;
   };
 }
+
+// isArray
+if (typeof Array.isArray === 'undefined') {
+  Array.isArray = function (obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  };
+};
 
 // Array.from
 if (!Array.from) {
@@ -2634,7 +3016,8 @@ if (window.NodeList && !NodeList.prototype.forEach) {
   };
 }
 
-// from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+// removeChild
+// https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
 (function (arr) {
   arr.forEach(function (item) {
     if (item.hasOwnProperty('remove')) {
@@ -2952,6 +3335,9 @@ function almGetAjaxParams(alm, action, queryType) {
    if (alm.acf_array) {
       data.acf = alm.acf_array;
    }
+   if (alm.term_query_array) {
+      data.term_query = alm.term_query_array;
+   }
    if (alm.cta_array) {
       data.cta = alm.cta_array;
    }
@@ -3123,67 +3509,6 @@ function almGetRestParams(alm) {
 
 /***/ }),
 
-/***/ "./core/src/js/helpers/restAPI.js":
-/*!****************************************!*\
-  !*** ./core/src/js/helpers/restAPI.js ***!
-  \****************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-   value: true
-});
-exports.almGetAjaxUrl = almGetAjaxUrl;
-exports.almGetAjaxAction = almGetAjaxAction;
-/**
- * almGetAjaxUrl
- * Build the Ajax URL request
- * 
- * @param action         string
- * @since 3.6
- */
-
-function almGetAjaxUrl() {
-   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-   if (!action) {
-      return false;
-   }
-
-   var url = '';
-   if (alm_localize.restapi.active) {
-      // REST API Endpoint
-      url = '' + alm_localize.restapi.url + alm_localize.restapi.namespace + '/' + action;
-   } else {
-      // admin-ajax.php
-      url = alm_localize.ajaxurl;
-   }
-   return url;
-}
-
-/**
- * almGetAjaxAction
- * If not REST API, prepend 'alm_' to action  
- * 
- * @param action         string
- * @since 5.1
- */
-function almGetAjaxAction() {
-   var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-
-   if (!action) {
-      return false;
-   }
-
-   var action_name = alm_localize.restapi.active ? action : 'alm_' + action;
-   return action_name;
-}
-
-/***/ }),
-
 /***/ "./core/src/js/helpers/srcsetPolyfill.js":
 /*!***********************************************!*\
   !*** ./core/src/js/helpers/srcsetPolyfill.js ***!
@@ -3230,6 +3555,80 @@ var srcsetPolyfill = function srcsetPolyfill() {
 	}
 };
 exports.default = srcsetPolyfill;
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/stripEmptyNodes.js":
+/*!************************************************!*\
+  !*** ./core/src/js/helpers/stripEmptyNodes.js ***!
+  \************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**
+ * Remove empty HTML nodes from array of nodes
+ * Remove all empty text nodes from SEO and Filters return
+ *
+ * @param {*} nodes | Array of HTML nodes
+ * @return array
+ * @since 5.1.3
+ */
+var stripEmptyNodes = function stripEmptyNodes() {
+  var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+  if (!nodes) {
+    return false;
+  }
+
+  // Exclude these nodeNames from being rendered
+  var nodeNameArray = ['#text', '#comment'];
+
+  // Filter data by nodeName 
+  var results = nodes.filter(function (node) {
+    return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
+  });
+
+  // Send the results
+  return results;
+};
+exports.default = stripEmptyNodes;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/almDebug.js":
+/*!*****************************************!*\
+  !*** ./core/src/js/modules/almDebug.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/**  
+ * Display alm_debug results
+ * https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
+ *
+ * @param {object} alm     Global alm object
+ * @since 5.1.6 
+ */
+
+var almDebug = function almDebug(alm) {
+  if (alm && alm.debug) {
+    console.log('alm_debug info:', alm.debug);
+  }
+};
+
+exports.default = almDebug;
 
 /***/ }),
 
@@ -3293,10 +3692,8 @@ Object.defineProperty(exports, "__esModule", {
  */
 var almFadeOut = function almFadeOut(element, speed) {
 	speed = speed / 10;
+	element.style.opacity = 0.5;
 	var fadeEffect = setInterval(function () {
-		if (!element.style.opacity) {
-			element.style.opacity = 1;
-		}
 		if (element.style.opacity < 0.1) {
 			clearInterval(fadeEffect);
 		} else {
@@ -3319,33 +3716,33 @@ exports.default = almFadeOut;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _slicedToArray = function () {
-  function sliceIterator(arr, i) {
-    var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
-      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-        _arr.push(_s.value);if (i && _arr.length === i) break;
-      }
-    } catch (err) {
-      _d = true;_e = err;
-    } finally {
-      try {
-        if (!_n && _i["return"]) _i["return"]();
-      } finally {
-        if (_d) throw _e;
-      }
-    }return _arr;
-  }return function (arr, i) {
-    if (Array.isArray(arr)) {
-      return arr;
-    } else if (Symbol.iterator in Object(arr)) {
-      return sliceIterator(arr, i);
-    } else {
-      throw new TypeError("Invalid attempt to destructure non-iterable instance");
-    }
-  };
+	function sliceIterator(arr, i) {
+		var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+			for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+				_arr.push(_s.value);if (i && _arr.length === i) break;
+			}
+		} catch (err) {
+			_d = true;_e = err;
+		} finally {
+			try {
+				if (!_n && _i["return"]) _i["return"]();
+			} finally {
+				if (_d) throw _e;
+			}
+		}return _arr;
+	}return function (arr, i) {
+		if (Array.isArray(arr)) {
+			return arr;
+		} else if (Symbol.iterator in Object(arr)) {
+			return sliceIterator(arr, i);
+		} else {
+			throw new TypeError("Invalid attempt to destructure non-iterable instance");
+		}
+	};
 }();
 
 var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
@@ -3357,43 +3754,46 @@ var _fadeOut = __webpack_require__(/*! ./fadeOut */ "./core/src/js/modules/fadeO
 var _fadeOut2 = _interopRequireDefault(_fadeOut);
 
 function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+	return obj && obj.__esModule ? obj : { default: obj };
 }
 
 function _toConsumableArray(arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-      arr2[i] = arr[i];
-    }return arr2;
-  } else {
-    return Array.from(arr);
-  }
+	if (Array.isArray(arr)) {
+		for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+			arr2[i] = arr[i];
+		}return arr2;
+	} else {
+		return Array.from(arr);
+	}
 }
 
 /**
  * almFilter(type, speed, data)
  * Filter Ajax Load More
  *
- * @param transition string;
- * @param speed number;
- * @param data obj;
+ * @param {*} transition string;
+ * @param {*} speed number;
+ * @param {*} data obj;
+ * @param {*} type string;
  * @since 2.6.1
  */
 
 var almFilter = function almFilter(transition, speed, data) {
-  if (data.target) {
-    // if a target has been specified
-    var target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
-    target.forEach(function (element) {
-      almFilterTransition(transition, speed, data, element);
-    });
-  } else {
-    // Target not specified
-    var alm = document.querySelectorAll('.ajax-load-more-wrap');
-    alm.forEach(function (element) {
-      almFilterTransition(transition, speed, data, element);
-    });
-  }
+	var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "filter";
+
+	if (data.target) {
+		// if a target has been specified
+		var target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
+		target.forEach(function (element) {
+			almFilterTransition(transition, speed, data, element, type);
+		});
+	} else {
+		// Target not specified
+		var alm = document.querySelectorAll('.ajax-load-more-wrap');
+		alm.forEach(function (element) {
+			almFilterTransition(transition, speed, data, element, type);
+		});
+	}
 };
 exports.default = almFilter;
 
@@ -3401,141 +3801,239 @@ exports.default = almFilter;
  * almFilterTransition(transition, speed, data, el)
  * Transition Ajax Load More
  *
- * @param transition string;
- * @param speed number;
- * @param data obj;
- * @param el element;
+ * @param {*} transition string;
+ * @param {*} speed number;
+ * @param {*} data obj;
+ * @param {*} el element;
+ * @param {*} type string;
  * @since 2.13.1
  */
 
-var almFilterTransition = function almFilterTransition(transition, speed, data, el) {
+var almFilterTransition = function almFilterTransition(transition, speed, data, el, type) {
 
-  if (transition === 'fade' || transition === 'masonry') {
-    // Fade, Masonry transition
-    (0, _fadeOut2.default)(el, speed);
-    setTimeout(function () {
-      almCompleteFilterTransition(speed, data, el);
-    }, speed);
-  } else {
-    // No transition
-    almCompleteFilterTransition(speed, data, el);
-  }
+	if (transition === 'fade' || transition === 'masonry') {
+		// Fade, Masonry transition
+
+		switch (type) {
+			case 'filter':
+				el.classList.add('alm-is-filtering');
+				(0, _fadeOut2.default)(el, speed);
+
+				break;
+
+			case 'tab':
+				el.classList.add('alm-loading');
+				var new_el = el.querySelector('.alm-listing');
+				el.style.height = new_el.offsetHeight + 'px';
+				(0, _fadeOut2.default)(new_el, speed);
+
+				break;
+		}
+
+		// Move to next function
+		setTimeout(function () {
+			almCompleteFilterTransition(speed, data, el, type);
+		}, speed);
+	} else {
+		// No transition
+		el.classList.add('alm-is-filtering');
+		almCompleteFilterTransition(speed, data, el, type);
+	}
 };
 
 /**  
  * almCompleteFilterTransition
  * Complete the filter transition
  * 
- * @param speed number;
- * @param data obj;
- * @param el element;
+ * @param {*} speed number;
+ * @param {*} data obj;
+ * @param {*} el element;
+ * @param {*} type string;
  * @since 3.3
  */
-var almCompleteFilterTransition = function almCompleteFilterTransition(speed, data, el) {
+var almCompleteFilterTransition = function almCompleteFilterTransition(speed, data, el, type) {
 
-  // Get `.alm-listing` element
-  var listing = el.querySelectorAll('.alm-listing');
+	// Get `.alm-btn-wrap` element
+	var btnWrap = el.querySelector('.alm-btn-wrap');
 
-  // Loop over all .alm-listing divs
-  [].concat(_toConsumableArray(listing)).forEach(function (e) {
-    e.innerHTML = ''; // Clear listings
-  });
+	// Get `.alm-listing` element
+	var listing = el.querySelectorAll('.alm-listing');
 
-  // Get Load More button
-  var button = el.querySelector('.alm-load-more-btn');
-  if (button) {
-    button.classList.remove('done'); // Reset Button 
-  }
+	// Loop over all .alm-listing divs
+	[].concat(_toConsumableArray(listing)).forEach(function (e) {
+		e.innerHTML = ''; // Clear listings
+	});
 
-  // Dispatch Filters
-  almSetFilters(speed, data, el);
+	// Get Load More button
+	var button = btnWrap.querySelector('.alm-load-more-btn');
+	if (button) {
+		button.classList.remove('done'); // Reset Button 
+	}
+
+	// Clear paging navigation
+	var paging = btnWrap.querySelector('.alm-paging');
+	if (paging) {
+		paging.style.opacity = 0;
+	}
+
+	// Dispatch Filters
+	almSetFilters(speed, data, el, type);
 };
 
 /**
  * almSetFilters
  * Set filter parameters on .alm-listing element
  *
- * @param speed number;
- * @param el element;
- * @param data string;
+ * @param {*} speed number;
+ * @param {*} el element;
+ * @param {*} data string;
+ * @param {*} type string;
  * @updated 3.3
  * @since 2.6.1
  */
 var almSetFilters = function almSetFilters() {
-  var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 250;
-  var data = arguments[1];
-  var el = arguments[2];
+	var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 250;
+	var data = arguments[1];
+	var el = arguments[2];
+	var type = arguments[3];
 
-  // Get `alm-listing` container
-  var listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
-  if (!listing) {
-    return false;
-  }
+	// Get `alm-listing` container
+	var listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+	if (!listing) {
+		return false;
+	}
 
-  // Update data attributes
-  var _iteratorNormalCompletion = true;
-  var _didIteratorError = false;
-  var _iteratorError = undefined;
+	switch (type) {
+		case 'filter':
+			// Update data attributes
+			var _iteratorNormalCompletion = true;
+			var _didIteratorError = false;
+			var _iteratorError = undefined;
 
-  try {
-    for (var _iterator = Object.entries(data)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-      var _ref = _step.value;
+			try {
+				for (var _iterator = Object.entries(data)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+					var _ref = _step.value;
 
-      var _ref2 = _slicedToArray(_ref, 2);
+					var _ref2 = _slicedToArray(_ref, 2);
 
-      var key = _ref2[0];
-      var value = _ref2[1];
+					var key = _ref2[0];
+					var value = _ref2[1];
 
-      // Convert camelCase data atts back to dashes (-).
-      key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
-      listing.setAttribute('data-' + key, value);
-    }
+					// Convert camelCase data atts back to dashes (-).
+					key = key.replace(/\W+/g, '-').replace(/([a-z\d])([A-Z])/g, '$1-$2').toLowerCase();
+					listing.setAttribute('data-' + key, value);
+				}
+				// Fade ALM back (Filters only)
+			} catch (err) {
+				_didIteratorError = true;
+				_iteratorError = err;
+			} finally {
+				try {
+					if (!_iteratorNormalCompletion && _iterator.return) {
+						_iterator.return();
+					}
+				} finally {
+					if (_didIteratorError) {
+						throw _iteratorError;
+					}
+				}
+			}
 
-    // Fade ALM back in
-  } catch (err) {
-    _didIteratorError = true;
-    _iteratorError = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion && _iterator.return) {
-        _iterator.return();
-      }
-    } finally {
-      if (_didIteratorError) {
-        throw _iteratorError;
-      }
-    }
-  }
+			(0, _fadeIn2.default)(el, speed);
+			break;
 
-  (0, _fadeIn2.default)(el, speed);
+		case 'tab':
+			// Update `data-tab-template` attribute
+			listing.setAttribute('data-preloaded', 'false');
+			listing.setAttribute('data-pause', 'false');
+			listing.setAttribute('data-tab-template', data.tabTemplate);
 
-  // Re-initiate Ajax Load More
-  var target = '';
-  if (data.target) {
-    // Target has been specified
-    target = document.querySelector('.ajax-load-more-wrap[data-id="' + data.target + '"]');
-    if (target) {
-      window.almInit(target);
-    }
-  } else {
-    // Target not specified
-    target = document.querySelector('.ajax-load-more-wrap');
-    if (target) {
-      window.almInit(target);
-    }
-  }
+			break;
+	}
 
-  // Filters Complete            
-  if (typeof almFilterComplete === 'function') {
-    // Standard Filtering
-    almFilterComplete();
-  }
-  if (typeof almFiltersAddonComplete === "function") {
-    // Filters Add-on
-    almFiltersAddonComplete(el);
-  }
-  // End Filters Complete
+	// Re-initiate Ajax Load More
+	var target = '';
+	if (data.target) {
+		// Target has been specified
+		target = document.querySelector('.ajax-load-more-wrap[data-id="' + data.target + '"]');
+		if (target) {
+			window.almInit(target);
+		}
+	} else {
+		// Target not specified
+		target = document.querySelector('.ajax-load-more-wrap');
+		if (target) {
+			window.almInit(target);
+		}
+	}
+
+	switch (type) {
+
+		case 'filter':
+			// Filters Complete            
+			if (typeof almFilterComplete === 'function') {
+				// Standard Filtering
+				almFilterComplete();
+			}
+			// Filter Add-on Complete
+			if (typeof almFiltersAddonComplete === "function") {
+				// Filters Add-on
+				almFiltersAddonComplete(el);
+			}
+			break;
+
+		case 'tab':
+			// Tabs Complete            
+			if (typeof almTabsComplete === 'function') {
+				// Standard Filtering
+				almTabsComplete();
+			}
+			break;
+
+	}
 };
+
+/***/ }),
+
+/***/ "./core/src/js/modules/getScrollPercentage.js":
+/*!****************************************************!*\
+  !*** ./core/src/js/modules/getScrollPercentage.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * getScrollPercentage
+ * Get the scroll distance in pixels from a percentage
+ * 
+ * @param {Object} alm
+ * @return {NUMBER} newdistance
+ * @since 5.2
+ */
+
+var getScrollPercentage = function getScrollPercentage(alm) {
+	if (!alm) {
+		return false;
+	}
+
+	var is_negative = alm.scroll_distance_orig.toString().indexOf("-") === -1 ? false : true; // Is this a negative number   
+	var raw_distance = alm.scroll_distance_orig.toString().replace("-", "").replace("%", ""); // Remove - and perc 	
+	var wh = alm.window.innerHeight; // window height
+
+	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
+
+	var newdistance = is_negative ? "-" + height : height; // Set the distance	
+	//console.log(parseInt(newdistance));
+
+	return parseInt(newdistance);
+};
+exports.default = getScrollPercentage;
 
 /***/ }),
 
@@ -3633,7 +4131,7 @@ exports.default = insertScript;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 
 var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
@@ -3653,7 +4151,7 @@ var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./co
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
 function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
+	return obj && obj.__esModule ? obj : { default: obj };
 }
 
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
@@ -3668,128 +4166,221 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
  * @since 3.1
  * @updated 5.0.2
 */
-
-var msnry = '';
 var almMasonry = function almMasonry(alm, init, filtering) {
 
-  var container = alm.listing;
-  var html = alm.html;
+	return new Promise(function (resolve) {
 
-  var selector = alm.masonry_selector;
-  var columnWidth = alm.masonry_columnwidth;
-  var animation = alm.masonry_animation;
-  var horizontalOrder = alm.masonry_horizontalorder;
-  var speed = alm.speed;
-  var masonry_init = alm.masonry_init;
+		var container = alm.listing;
+		var html = alm.html;
 
-  var duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
-  var hidden = 'scale(0.5)';
-  var visible = 'scale(1)';
+		var selector = alm.masonry_selector;
+		var columnWidth = alm.masonry_columnwidth;
+		var animation = alm.masonry_animation;
+		var horizontalOrder = alm.masonry_horizontalorder;
+		var speed = alm.speed;
+		var masonry_init = alm.masonry_init;
 
-  if (animation === 'zoom-out') {
-    hidden = 'translateY(-20px) scale(1.25)';
-    visible = 'translateY(0) scale(1)';
-  }
+		var duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
+		var hidden = 'scale(0.5)';
+		var visible = 'scale(1)';
 
-  if (animation === 'slide-up') {
-    hidden = 'translateY(50px)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'zoom-out') {
+			hidden = 'translateY(-20px) scale(1.25)';
+			visible = 'translateY(0) scale(1)';
+		}
 
-  if (animation === 'slide-down') {
-    hidden = 'translateY(-50px)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'slide-up') {
+			hidden = 'translateY(50px)';
+			visible = 'translateY(0)';
+		}
 
-  if (animation === 'none') {
-    hidden = 'translateY(0)';
-    visible = 'translateY(0)';
-  }
+		if (animation === 'slide-down') {
+			hidden = 'translateY(-50px)';
+			visible = 'translateY(0)';
+		}
 
-  // columnWidth
-  if (columnWidth) {
-    if (!isNaN(columnWidth)) {
-      // Check if number
-      columnWidth = parseInt(columnWidth);
-    }
-  } else {
-    // No columnWidth, use the selector
-    columnWidth = selector;
-  }
+		if (animation === 'none') {
+			hidden = 'translateY(0)';
+			visible = 'translateY(0)';
+		}
 
-  // horizontalOrder
-  horizontalOrder = horizontalOrder === 'true' ? true : false;
+		// columnWidth
+		if (columnWidth) {
+			if (!isNaN(columnWidth)) {
+				// Check if number
+				columnWidth = parseInt(columnWidth);
+			}
+		} else {
+			// No columnWidth, use the selector
+			columnWidth = selector;
+		}
 
-  if (!filtering) {
+		// horizontalOrder
+		horizontalOrder = horizontalOrder === 'true' ? true : false;
 
-    // First Run
-    if (masonry_init && init) {
+		if (!filtering) {
 
-      (0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
+			// First Run
+			if (masonry_init && init) {
 
-      imagesLoaded(container, function () {
+				(0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
 
-        var defaults = {
-          itemSelector: selector,
-          transitionDuration: duration,
-          columnWidth: columnWidth,
-          horizontalOrder: horizontalOrder,
-          hiddenStyle: {
-            transform: hidden,
-            opacity: 0
-          },
-          visibleStyle: {
-            transform: visible,
-            opacity: 1
+				imagesLoaded(container, function () {
 
-            // Get custom Masonry options (https://masonry.desandro.com/options.html)
-          } };var alm_masonry_vars = window.alm_masonry_vars;
-        if (alm_masonry_vars) {
-          Object.keys(alm_masonry_vars).forEach(function (key) {
-            // Loop object	to create key:prop			
-            defaults[key] = alm_masonry_vars[key];
-          });
-        }
+					var defaults = {
+						itemSelector: selector,
+						transitionDuration: duration,
+						columnWidth: columnWidth,
+						horizontalOrder: horizontalOrder,
+						hiddenStyle: {
+							transform: hidden,
+							opacity: 0
+						},
+						visibleStyle: {
+							transform: visible,
+							opacity: 1
 
-        // Init Masonry, delay to allow time for items to be added to the page
-        setTimeout(function () {
-          msnry = new Masonry(container, defaults);
-          // Fade In
-          (0, _fadeIn2.default)(container.parentNode, speed);
-        }, 100);
-      });
-    }
+							// Get custom Masonry options (https://masonry.desandro.com/options.html)
+						} };var alm_masonry_vars = window.alm_masonry_vars;
+					if (alm_masonry_vars) {
+						Object.keys(alm_masonry_vars).forEach(function (key) {
+							// Loop object	to create key:prop			
+							defaults[key] = alm_masonry_vars[key];
+						});
+					}
 
-    // Standard / Append content
-    else {
+					// Init Masonry, delay to allow time for items to be added to the page
+					setTimeout(function () {
+						alm.msnry = new Masonry(container, defaults);
+						// Fade In
+						(0, _fadeIn2.default)(container.parentNode, speed);
+						resolve(true);
+					}, 100);
+				});
+			}
 
-        // Loop all items and create array of node elements
-        var data = (0, _almDomParser2.default)(html, 'text/html');
+			// Standard / Append content
+			else {
 
-        if (data) {
+					// Loop all items and create array of node elements
+					var data = (0, _almDomParser2.default)(html, 'text/html');
 
-          // Append elements listing
-          (0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
+					if (data) {
 
-          // Run srcSet polyfill
-          (0, _srcsetPolyfill2.default)(container, alm.ua);
+						// Append elements listing
+						(0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
-          // Confirm imagesLoaded & append
-          imagesLoaded(container, function () {
-            msnry.appended(data);
-          });
-        }
-      }
-  } else {
+						// Run srcSet polyfill
+						(0, _srcsetPolyfill2.default)(container, alm.ua);
 
-    // Reset
-    msnry.destroy(); // destroy masonry
-    container.parentNode.style.opacity = 0;
-    almMasonry(alm, true, false);
-  }
+						// Confirm imagesLoaded & append
+						imagesLoaded(container, function () {
+							alm.msnry.appended(data);
+							resolve(true);
+						});
+					}
+				}
+		} else {
+
+			// Reset		
+			container.parentNode.style.opacity = 0;
+			almMasonry(alm, true, false);
+			resolve(true);
+		}
+	});
 };
 
 exports.default = almMasonry;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/noResults.js":
+/*!******************************************!*\
+  !*** ./core/src/js/modules/noResults.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**  
+ * Set the results text if required.
+ * 
+ * @param {*} target The target HTML element
+ * @param {*} html The HTML
+ * @since 5.1
+ */
+var almNoResults = function almNoResults(target) {
+	var html = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+	if (html === '') {
+		return false; // exit if empty	
+	}
+
+	// Remove empty <p/> tags
+	html = html.replace(/(<p><\/p>)+/g, '');
+
+	// Append to DOM
+	target.innerHTML = html;
+};
+
+exports.default = almNoResults;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/placeholder.js":
+/*!********************************************!*\
+  !*** ./core/src/js/modules/placeholder.js ***!
+  \********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+   value: true
+});
+exports.showPlaceholder = showPlaceholder;
+exports.hidePlaceholder = hidePlaceholder;
+
+var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
+
+var _fadeIn2 = _interopRequireDefault(_fadeIn);
+
+var _fadeOut = __webpack_require__(/*! ./fadeOut */ "./core/src/js/modules/fadeOut.js");
+
+var _fadeOut2 = _interopRequireDefault(_fadeOut);
+
+function _interopRequireDefault(obj) {
+   return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function showPlaceholder(alm) {
+   if (!alm || !alm.main || alm.addons.paging) {
+      return false;
+   }
+   if (alm.placeholder) {
+      alm.placeholder.style.display = 'block';
+      (0, _fadeIn2.default)(alm.placeholder, 75);
+   }
+}
+
+function hidePlaceholder(alm) {
+   if (!alm || !alm.main || alm.addons.paging) {
+      return false;
+   }
+   if (alm.placeholder) {
+      (0, _fadeOut2.default)(alm.placeholder, 75);
+      setTimeout(function () {
+         alm.placeholder.style.display = 'none';
+      }, 75);
+   }
+}
 
 /***/ }),
 
@@ -3949,21 +4540,62 @@ Object.defineProperty(exports, "__esModule", {
  * setFocus
  * Set user focus to improve accessibility after load events
  * 
+ * @param {Object} alm
+ * @param {HTMLElement} preloaded
+ * @param {Number} total
+ * @param {Boolean} is_filtering
+ * @since 5.1
+ */
+
+var setFocus = function setFocus(alm) {
+	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	var total = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+	var is_filtering = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
+	// If has total
+	if (alm.transition_container && total > 0) {
+		if (alm.addons.paging) {
+			// Paging
+			moveFocus(alm.init, alm.addons.preloaded, alm.listing, is_filtering, alm.isSafari);
+		} else if (alm.addons.single_post || alm.addons.nextpage) {
+			// Single Posts OR Next Page, set `init` to false to trigger focus
+			moveFocus(false, alm.addons.preloaded, element, is_filtering, alm.isSafari);
+		} else {
+			// Standard ALM
+			moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);
+		}
+	} else if (!alm.transition_container && alm.container_type === 'table') {
+
+		// Table Layout
+		moveFocus(alm.init, alm.addons.preloaded, element[0], is_filtering, alm.isSafari);
+	}
+};
+exports.default = setFocus;
+
+/**
+ * moveFocus
+ * Move user focus to alm-reveal div
+ * 
  * @param {Boolean} init
  * @param {String} preloaded
  * @param {HTMLElement} element
+ * @param {Boolean} is_filtering
+ * @param {Boolean} isSafari
  * @since 5.1
  */
-var setFocus = function setFocus() {
+
+var moveFocus = function moveFocus() {
 	var init = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 	var preloaded = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'false';
 	var element = arguments[2];
+	var is_filtering = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+	var isSafari = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
-	if ((init || !element) && preloaded !== 'true') {
-		return false; // Exit if first run
+	if (!is_filtering) {
+		if ((init || !element) && preloaded !== 'true') {
+			return false; // Exit if first run
+		}
 	}
-
-	console.log(element);
 
 	// Check if element is an array.
 	// If `transition_container="false"`, `element` will be an array.
@@ -3974,29 +4606,40 @@ var setFocus = function setFocus() {
 
 	// Set tabIndex on `.alm-reveal`
 	element.setAttribute('tabIndex', '-1');
+	element.style.outline = 'none';
 
-	var scrollHierarchy = [];
-	var parent = element.parentNode;
-	while (parent) {
-		scrollHierarchy.push([parent, parent.scrollLeft, parent.scrollTop]);
-		parent = parent.parentNode;
+	// Get Parent container
+	// If `.alm-listing` set parent to element
+	var parent = !element.classList.contains('alm-listing') ? element.parentNode : element;
+
+	// Scroll Container
+	var scrollContainer = parent.dataset.scrollContainer;
+
+	// If scroll container, move it, not the window.	
+	if (scrollContainer) {
+		var container = document.querySelector(scrollContainer);
+		if (container) {
+			var left = container.scrollLeft;
+			var top = container.scrollTop;
+			element.focus();
+			container.scrollLeft = left;
+			container.scrollTop = top;
+		}
 	}
 
-	element.focus();
-
-	scrollHierarchy.forEach(function (item) {
-		var element = item[0];
-
-		// Check first to avoid triggering unnecessary `scroll` events				
-		if (element.scrollLeft != item[1]) {
-			element.scrollLeft = item[1];
+	// Move window
+	else {
+			var x = window.scrollX;
+			var y = window.scrollY;
+			// Safari fix for window movement if Y = 0
+			if (isSafari) {
+				window.scrollTo(x, y);
+				y = y === 0 ? 1 : y;
+			}
+			element.focus();
+			window.scrollTo(x, y);
 		}
-		if (element.scrollTop != item[2]) {
-			element.scrollTop = item[2];
-		}
-	});
 };
-exports.default = setFocus;
 
 /***/ }),
 
@@ -4056,7 +4699,6 @@ var setLocalizedVars = function setLocalizedVars(alm) {
    // Total Posts `total_posts`.
    // Only update if !Preloaded && !Nextpage
    if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage) {
-      // Do not set if Preloaded
       alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
    }
 
@@ -4068,15 +4710,15 @@ exports.default = setLocalizedVars;
 
 /***/ }),
 
-/***/ "./node_modules/@babel/polyfill/lib/index.js":
-/*!***************************************************!*\
-  !*** ./node_modules/@babel/polyfill/lib/index.js ***!
-  \***************************************************/
+/***/ "./node_modules/@babel/polyfill/lib/noConflict.js":
+/*!********************************************************!*\
+  !*** ./node_modules/@babel/polyfill/lib/noConflict.js ***!
+  \********************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
+
 
 __webpack_require__(/*! core-js/es6 */ "./node_modules/@babel/polyfill/node_modules/core-js/es6/index.js");
 
@@ -4100,12 +4742,17 @@ __webpack_require__(/*! core-js/web */ "./node_modules/@babel/polyfill/node_modu
 
 __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/@babel/polyfill/node_modules/regenerator-runtime/runtime.js");
 
-if (global._babelPolyfill && typeof console !== "undefined" && console.warn) {
-  console.warn("@babel/polyfill is loaded more than once on this page. This is probably not desirable/intended " + "and may have consequences if different versions of the polyfills are applied sequentially. " + "If you do need to load the polyfill more than once, use @babel/polyfill/noConflict " + "instead to bypass the warning.");
-}
+/***/ }),
 
-global._babelPolyfill = true;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+/***/ "./node_modules/@babel/polyfill/noConflict.js":
+/*!****************************************************!*\
+  !*** ./node_modules/@babel/polyfill/noConflict.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ./lib/noConflict */ "./node_modules/@babel/polyfill/lib/noConflict.js");
+
 
 /***/ }),
 
@@ -17264,37 +17911,6 @@ module.exports = {
   } else {}
 
 }());
-
-
-/***/ }),
-
-/***/ "./node_modules/webpack/buildin/global.js":
-/*!***********************************!*\
-  !*** (webpack)/buildin/global.js ***!
-  \***********************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || new Function("return this")();
-} catch (e) {
-	// This works if the window reference is available
-	if (typeof window === "object") g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
 
 
 /***/ })

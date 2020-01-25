@@ -20,7 +20,7 @@
    			<?php //include_once( ALM_PATH . 'admin/includes/cta/sharing.php');	?>
 
    	   	<?php
-      	   	if(has_action('alm_cache_settings') || has_action('alm_layouts_installed') || has_action('alm_prev_post_settings')  || has_action('alm_paging_settings') || has_action('alm_seo_settings') || has_action('alm_theme_repeaters_settings')) {
+      	   	if(has_action('alm_cache_settings') || has_action('alm_layouts_installed') || has_action('alm_prev_post_settings')  || has_action('alm_paging_settings') || has_action('alm_seo_settings') || has_action('alm_tabs_settings') || has_action('alm_theme_repeaters_settings')) {
        	   ?>
        	   <div class="admin-select">
           	   <label for="alm-settings-nav" class="offscreen">
@@ -45,8 +45,10 @@
                      echo '<option value="7">'.__('SEO', 'ajax-load-more').'</option>';
          	   	if(has_action('alm_prev_post_settings'))
                      echo '<option value="8">'.__('Single Posts', 'ajax-load-more').'</option>';
+         	   	if(has_action('alm_tabs_settings'))
+                     echo '<option value="9">'.__('Tabs', 'ajax-load-more').'</option>';
                   if(has_action('alm_theme_repeaters_settings'))
-                     echo '<option value="9">'.__('Theme Repeaters', 'ajax-load-more').'</option>';
+                     echo '<option value="10">'.__('Theme Repeaters', 'ajax-load-more').'</option>';
          	   ?>
    	   	   </select>
        	   </div>
@@ -56,18 +58,18 @@
       	   <?php settings_errors(); ?>
    			<form action="options.php" method="post" id="alm_OptionsForm">
    				<?php
-   				settings_fields( 'alm-setting-group' );
-   				do_settings_sections( 'ajax-load-more' );
-   				//get the older values, wont work the first time
-   				$options = get_option( '_alm_settings' ); ?>
+      				settings_fields( 'alm-setting-group' );
+      				do_settings_sections( 'ajax-load-more' );
+      				//get the older values, wont work the first time
+      				$options = get_option( '_alm_settings' ); 
+   				?>
    				<div class="save-in-progress"></div>
    			</form>
 
    	   </div>
    	   <aside class="cnkt-sidebar">
-   			<?php //include_once( ALM_PATH . 'admin/includes/cta/pro.php');	?>
-   			<?php //include_once( ALM_PATH . 'admin/includes/cta/sharing.php'); ?>
-   			<?php include_once( ALM_PATH . 'admin/includes/cta/test.php');	?>
+   			<?php include_once( ALM_PATH . 'admin/includes/cta/sharing.php'); ?>
+   			<?php //include_once( ALM_PATH . 'admin/includes/cta/test.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/resources.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/dyk.php');	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/about.php'); ?>

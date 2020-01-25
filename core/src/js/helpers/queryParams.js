@@ -42,6 +42,9 @@ export function almGetAjaxParams(alm, action, queryType){
    }	 
    if(alm.acf_array){
       data.acf = alm.acf_array;
+   } 	 
+   if(alm.term_query_array){
+      data.term_query = alm.term_query_array;
    } 
    if(alm.cta_array){
       data.cta = alm.cta_array;

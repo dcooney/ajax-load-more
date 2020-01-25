@@ -9,6 +9,7 @@ jQuery(document).ready(function($) {
 	
 	
 	
+	
 	/*
 	*  Test REST API access
 	*
@@ -30,6 +31,45 @@ jQuery(document).ready(function($) {
    		}
    	});
 	}
+	
+	
+	
+	/*
+   *  Save Repeater Templates with cmd + s and ctrl + s
+   *  @since 5.1
+   */
+	document.addEventListener("keydown", function(e) {
+		if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 83) {
+			
+			
+			if(e.target.nodeName === 'TEXTAREA' && $(e.target).closest('.repeater-wrap')){
+				console.log('Saving template...');
+				var btn = $(e.target).closest('.repeater-wrap').find('input.save-repeater');
+				if(btn){
+					btn.click();
+				}
+			}
+			
+			e.preventDefault();
+			
+		}
+	}, false);  
+	 
+   
+   
+   /*
+   *  Set focus in code mirror editor
+   *  @since 5.1
+   */
+   $('label.trigger-codemirror').on('click', function(){
+	   var el = $(this);
+	   var id = el.data('id');
+	   var cm = window['editor_'+id];
+	   if(cm){
+		   cm.focus();
+		   cm.setCursor(cm.lineCount(), 0);
+	   }
+   });
 	
 
 
@@ -137,7 +177,6 @@ jQuery(document).ready(function($) {
    *
    *  @since 2.8.4
    */
-	
 	$('body').on('mouseenter', '.tooltip:not(.tooltipstered)', function(){
 		$(this).tooltipster({
 			delay: 100,
@@ -310,9 +349,12 @@ jQuery(document).ready(function($) {
    var almActivating = false;
    $(document).on('click', '.license-btn', function(e){
       e.preventDefault();
+      
       if(!almActivating){
+         
 	      $('.license-btn-wrap .msg').remove();
 	      almActivating = true;
+	      
 	      var el = $(this),
 	      	 wrap = el.closest('.license-btn-wrap'),
 	      	 parent = el.closest('.license'),
@@ -354,13 +396,16 @@ jQuery(document).ready(function($) {
 			   		$('.license-key-field .status', parent).addClass('active').removeClass('inactive').text(alm_admin_localize.active);
 			   		$('.license-title .status', parent).addClass('valid').removeClass('invalid');
 			   		$('.activate.license-btn', parent).addClass('hide');
+			   		$('.check-licence.license-btn', parent).addClass('hide');
 			   		$('.deactivate.license-btn', parent).removeClass('hide');
+			   		$('.renew-btn', parent).addClass('hide');
 			   		$('.no-license', parent).slideUp(200);
 
 		   		}else{
 			   		$('.license-key-field .status', parent).removeClass('active').addClass('inactive').text(alm_admin_localize.inactive);
 			   		$('.license-title .status', parent).removeClass('valid').addClass('invalid');
 			   		$('.activate.license-btn', parent).removeClass('hide');
+			   		$('.check-licence.license-btn', parent).addClass('hide');
 			   		$('.deactivate.license-btn', parent).addClass('hide');
 			   		$('.no-license', parent).slideDown(200);
 		   		}
@@ -369,6 +414,7 @@ jQuery(document).ready(function($) {
 					almActivating = false;
 
 	   		},
+	   		
 	   		error: function(xhr, status, error) {
 	      		console.log(status);
 	      		$('.loading', parent).delay(250).fadeOut(300);
@@ -377,13 +423,14 @@ jQuery(document).ready(function($) {
 	   	});
    	}
    });
-
-
-
-   /*
+   
+   
+   
+	/*
    *  Get layout value Ajax
    *  @since 2.8.7
    */
+   console.log(window.editorDefault);
    $(document).on('click', '.alm-layout-selection li a.layout', function(e){
       e.preventDefault();
       var el = $(this), 
@@ -402,7 +449,7 @@ jQuery(document).ready(function($) {
          var eid = '';
          if(name === 'default'){ 
             // Default Template
-            eid = window.editorDefault;
+            eid = window.editor_default;
    	   }else{ 
       	   // Repeater Templates
             eid = window['editor_'+name];
@@ -453,7 +500,8 @@ jQuery(document).ready(function($) {
    $(document).on('click', '.alm-notification--dismiss', function(e){
       e.preventDefault();
       var el = $(this),
-          container = el.parent('.group');
+          container = el.parent('.cta');
+          
 	   // Get value from Ajax
 	   $.ajax({
    		type: 'POST',

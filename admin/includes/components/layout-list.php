@@ -11,17 +11,20 @@
             } else { ?>
    	      <li>
    	         <a href="javascript:void(0);" class="layout" data-type="default">
-      	         <i class="fa fa-list-alt"></i>
+      	         <i class="fa fa-file-code-o" aria-hidden="true"></i>
 	   	         <?php _e('Default Layout', 'ajax-load-more'); ?>
 	   	      </a>
    	      </li>
    	      <?php
 
+					$link = 'href="https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/?utm_source=WP%20Admin&utm_medium=Extend&utm_campaign=Layouts';
       	      include( ALM_PATH . 'admin/includes/components/custom-layouts.php'); // Custom Layouts
-               echo '<li><a href="https://connekthq.com/plugins/ajax-load-more/add-ons/layouts/?utm_source=WP%20Admin&utm_medium=Extend&utm_campaign=Layouts" class="add-on" target="_blank">';
-	               echo '<i class="fa fa-key"></i>';
-	               _e('Get predefined responsive layouts with the <strong>Layouts add-on</strong>', 'ajax-load-more');
-               echo '</a></li>';
+               echo '<li class="layout-cta">';
+               	echo '<span>';
+	            		_e('Get predefined responsive layouts with the <strong>Layouts add-on</strong>', 'ajax-load-more');	            	
+               	echo '</span>';
+						echo '<a class="button button-primary" href="'. $link .'">'. __('Get More Layouts', 'ajax-load-more') .'</a>';
+					echo '</li>';
             }?>
    	   </ul>
 	   </div>

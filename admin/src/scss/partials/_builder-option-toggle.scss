@@ -1,0 +1,54 @@
+.ajax-load-more .builder-option-toggle{
+	display: flex;
+	flex-wrap: nowrap;
+	input{
+		border-radius: $radius 0 0 $radius;
+		margin: 0;
+		width: auto;
+		flex: 1;
+	}
+	&--buttons{
+		border-radius: 0 $radius $radius 0;
+		padding: 3px;
+		width: auto;
+		border: 1px solid $border;
+		border-left: none;
+		button{
+			height: 100%;
+			border: 1px solid $border;
+			border-left-width: 0;
+			margin: 0;
+			font-weight: 600;
+			font-size: 11px;
+			text-transform: uppercase;
+			float: left;
+			cursor: pointer;
+			padding: 0;
+			margin: 0;
+			border-radius: 0;
+			width: 34px;
+			text-align: center;
+			display: inline-block;
+			color: $grey;
+			background-color: transparent;
+			&:hover,
+			&:focus{
+				color: #222;
+				border-color: #ccc;
+			}
+			&:first-child{
+				border-radius: $radius 0 0 $radius;
+				border-left-width: 1px;
+			}
+			&:last-child{
+				border-radius: 0 $radius $radius 0;
+			}
+			&.active{
+				border-color: $grey;
+				background-color: $grey;
+				color: #fff;
+				cursor: default;
+			}
+		}
+	}
+}

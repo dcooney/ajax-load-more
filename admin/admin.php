@@ -14,6 +14,78 @@ add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu 
 
 
 
+/*
+*  almCreatePluginUpdateNotifications
+*  Create custom update notifications
+*
+*  @since 5.2
+*/
+function alm_plugin_update_messages(){
+	$addons = alm_get_addons();
+	foreach($addons as $addon){
+		$path = $addon['path'];
+		$hook = "in_plugin_update_message-{$path}/{$path}.php";
+		add_action( $hook, 'alm_prefix_plugin_update_message', 10, 2);
+	}
+}
+alm_plugin_update_messages();
+
+
+
+/*
+*  alm_prefix_plugin_update_message
+*  Add extra message to plugin updater about expired/inactive licenses
+*
+*  @since 5.2
+*/
+function alm_prefix_plugin_update_message( $data, $response ) {
+	$addons = alm_get_addons();
+	$slug = $response->slug;
+	$version = $response->new_version;
+	
+	foreach($addons as $key=>$addon){
+		if($addon['path'] === $slug){
+			$index = $key;
+		}
+	}
+	
+	if(isset($index)){
+		$style = 'display: block; padding: 10px 5px 2px;';
+		$addon = $addons[$index];
+		
+		if(isset($addon)){
+			$name = '<strong>'. $addon['name'] .'</strong>';
+			$status = get_option($addon['status']);
+			
+			// Expired
+			if($status === 'expired'){
+				printf('<span style="'. $style .'">%s %s</span>',
+					__( 'Looks like your subscription has expired.', 'ajax-load-more' ),
+					__( 'Please login to your <a href="https://connekthq.com/account/" target="_blank">Account</a> to renew the license.', 'ajax-load-more' )
+				);
+			}
+			
+			// Invalid/Inactive
+			if($status === 'invalid' || $status === 'disabled'){
+				printf('<span style="'. $style .'">%s %s</span>',
+					__( 'Looks like your license is inactive and/or invalid.', 'ajax-load-more' ),
+					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> or login to your <a href="https://connekthq.com/account/" target="_blank">Account</a> to renew the license.', 'ajax-load-more' )
+				);
+			}
+			
+			// Deactivated
+			if($status === 'deactivated'){
+				printf('<span style="'. $style .'">%s %s</span>',
+					__( 'Looks like your license has been deactivated.', 'ajax-load-more' ),
+					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> to update.', 'ajax-load-more' )
+				);
+			}
+			
+		}
+	}
+}
+
+
 
 /*
 *  alm_render_transient_notification
@@ -97,7 +169,7 @@ function alm_repeaters_export(){
          if(file_exists($file)){
    	      header("Content-Description: File Transfer");
    			header("Content-Type: application/octet-stream");
-   			header("Content-Disposition: attachment; filename='" . basename($file) . "'");
+   			header('Content-Disposition: attachment; filename="'. basename($file) .'"');
    			readfile ($file);
    			exit();
          }
@@ -105,6 +177,96 @@ function alm_repeaters_export(){
    }
 }
 add_action( 'admin_init', 'alm_repeaters_export');
+
+
+
+/*
+*  alm_license_activation
+*  Activate Add-on licenses
+*
+*  @since 2.8.3
+*/
+function alm_license_activation(){
+
+	if (current_user_can( 'edit_theme_options' )){
+
+		$nonce = $_GET["nonce"];
+	   $type = $_GET["type"]; // activate / deactivate
+	   $item_id = $_GET["item"];
+	   $license = $_GET["license"];
+	   $url = $_GET["url"];
+	   $upgrade = $_GET["upgrade"];
+	   $option_status = $_GET["status"];
+	   $option_key = $_GET["key"];
+
+	   // Check our nonce, if they don't match then bounce!
+	   if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){
+	      die('Error - unable to verify nonce, please try again.');
+	   }
+
+		// API Action
+		if($type === 'activate' || $type === 'check'){
+			$action = 'activate_license';
+		}else{
+			$action = 'deactivate_license';
+		}
+      
+      // Create the params for the request
+		$api_params = array(
+			'edd_action'=> $action,
+			'license' 	=> $license,
+			'item_id'   => $item_id, // the ID of our product in EDD
+			'url'       => home_url()
+		);
+
+		// Call API
+		$response = wp_remote_post( ALM_STORE_URL, array( 'body' => $api_params, 'timeout' => 15, 'sslverify' => false ) );
+
+		// make sure the response came back okay
+		if ( is_wp_error($response) ){
+			return false;
+		}		
+
+		$license_data = $response['body'];
+		$license_data = json_decode($license_data); // decode the license data
+		$return["success"] = $license_data->success;
+
+		$msg = '';
+		if($type === 'activate'){
+			$return["license_limit"] = $license_data->license_limit;
+			$return["expires"] = $license_data->expires;
+			$return["site_count"] = $license_data->site_count;
+			$return["activations_left"] = $license_data->activations_left;
+			$return["item_name"] = $license_data->item_name;
+			
+			if($license_data->activations_left === 0 && $license_data->success === false){
+				$msg = '<strong>You\'re out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em></strong>. Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> website to add additional licenses.';
+			}
+		}
+		$return["msg"] = $msg;
+		
+			
+		// If error, make error the status of the license
+		$license_status = (isset($license_data->error)) ? $license_data->error : $license_data->license;
+		
+		$return["license"] = $license_status;
+
+		// Update the options table
+		update_option( $option_status, $license_status);
+		update_option( $option_key, $license );
+		
+		// Set transient value to store license status
+		set_transient( "alm_{$item_id}_{$license}", $license_status, 96 * HOUR_IN_SECONDS ); // 4 days
+		
+		// Send the response
+	   wp_send_json($return);
+
+	} else {
+
+      echo __('You don\'t belong here.', 'ajax-load-more');
+
+   }
+}
 
 
 
@@ -118,10 +280,12 @@ function alm_admin_notice_errors() {
 
    $screen = get_current_screen();
    $alm_is_admin_screen = alm_is_admin_screen();
-   // Exit if screen is not dashboard, plugins or ALM admin.
-	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins'){
+   
+   // Exit if screen is not dashboard, plugins, settings or ALM admin.
+	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins' && $screen->id !== 'options-general' && $screen->id !== 'options'){
 		return;
 	}
+	
    $class = 'notice error alm-err-notice';
    $message = '';
    $count = 0;
@@ -130,19 +294,22 @@ function alm_admin_notice_errors() {
 	   $addons = alm_get_pro_addon();
 	   $message = __( 'You have an invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="admin.php?page=ajax-load-more-licenses">License</a> section to input your key or <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">purchase</a> one now.', 'ajax-load-more' );
 
-   } else {
+   } else { // Other Addons
 	   $addons = alm_get_addons();
-	   $message = __( 'You have invalid <a href="admin.php?page=ajax-load-more"><b>Ajax Load More</b></a> license keys - please visit the <a href="admin.php?page=ajax-load-more-licenses">Licenses</a> section and input your keys.', 'ajax-load-more' );
+	   $message = __( 'You have invalid or expired <a href="admin.php?page=ajax-load-more"><b>Ajax Load More</b></a> license keys - please visit the <a href="admin.php?page=ajax-load-more-licenses">Licenses</a> section and input your keys.', 'ajax-load-more' );
 	}
 
 	 // Loop each addon
    foreach($addons as $addon){
-      $action = $addon['action']; // Get action
-      if (has_action($action)){
+	   
+      if (has_action($addon['action'])){	      
          $key = $addon['key']; // Option key
-         $status = $addon['status']; // license status
-         $addon_status = get_option( $status );
-         if( !isset($addon_status) || empty($addon_status) || $addon_status !== 'valid' ) {
+         $status = get_option($addon['status']); // license status
+         
+         // Check license
+         $license_status = alm_license_check($addon['item_id'], get_option($key), $status);
+         
+         if( !isset($status) || empty($status) || $license_status !== 'valid' ) {
             $count++;
          }
       }
@@ -152,87 +319,60 @@ function alm_admin_notice_errors() {
 	if( $count > 0 ) {
 		printf( '<div class="%1$s"><p>%2$s</p></div>', $class, $message );
 	}
-
 }
 add_action( 'admin_notices', 'alm_admin_notice_errors' );
 
 
 
 /*
-*  alm_license_activation
-*  Activate Add-on licenses
+*  alm_license_check
+*  Check the status of a license
 *
+*  @param {String} $item_id The ID of the product
+*  @param {String} $license The actual license key
+*  @param {String} $option_status The status of the license
+*  @updated 5.1.7
 *  @since 2.8.3
 */
+function alm_license_check($item_id = null, $license = null, $option_status = null){
 
-function alm_license_activation(){
-
-	if (current_user_can( 'edit_theme_options' )){
-
-		$nonce = $_GET["nonce"];
-	   $type = $_GET["type"]; // activate / deactivate
-	   $item = $_GET["item"];
-	   $license = $_GET["license"];
-	   $url = $_GET["url"];
-	   $upgrade = $_GET["upgrade"];
-	   $option_status = $_GET["status"];
-	   $option_key = $_GET["key"];
-
-	   // Check our nonce, if they don't match then bounce!
-	   if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-	      die('Error - unable to verify nonce, please try again.');
-
-		// data to send in our API request
-		if($type === 'activate'){
-			$action = 'activate_license';
-		}else{
-			$action = 'deactivate_license';
-		}
-
-		$api_params = array(
-			'edd_action'=> $action,
-			'license' 	=> $license,
-			'item_id'   => $item, // the ID of our product in EDD
-			'url'       => home_url()
-		);
-
-		// Call API
-		// Updated 2.8.7
-		$response = wp_remote_post( ALM_STORE_URL, array( 'timeout' => 15, 'sslverify' => false, 'body' => $api_params ) );
-
-		// make sure the response came back okay
-		if ( is_wp_error( $response ) )
-			return false;
-
-		$license_data = $response['body'];
-		$license_data = json_decode($license_data); // decode the license data
-		$return["success"] = $license_data->success;
-
-		$msg = '';
-		if($type === 'activate'){
-			$return["license_limit"] = $license_data->license_limit;
-			$return["expires"] = $license_data->expires;
-			$return["site_count"] = $license_data->site_count;
-			$return["activations_left"] = $license_data->activations_left;
-			$return["license"] = $license_data->license;
-			$return["item_name"] = $license_data->item_name;
-			if($license_data->activations_left === 0 && $license_data->success === false){
-				$msg = '<strong>Sorry, but you are out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em>.</strong> Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> page to add additional licenses.';
-			}
-		}
-		$return["msg"] = $msg;
-
-		update_option( $option_status, $license_data->license);
-		update_option( $option_key, $license );
-
-	   wp_send_json($return);
-
-
+	if(!$item_id || !$license || !$option_status){
+		return false;
+	}
+	
+	// Get plugin transient for license status
+	if(get_transient( "alm_{$item_id}_{$license}")){
+		
+		// Transient exists
+		return get_transient( "alm_{$item_id}_{$license}");
+		
 	} else {
-
-      echo __('You don\'t belong here.', 'ajax-load-more');
-
-   }
+	
+		$api_params = array(
+			'edd_action' => 'check_license',
+			'license' => $license,
+			'item_id' => $item_id,
+			'url' => home_url()
+		);
+		$response = wp_remote_post( ALM_STORE_URL, array( 'body' => $api_params, 'timeout' => 15, 'sslverify' => false ) );
+		if ( is_wp_error( $response ) ) {
+			return false;
+		}
+		
+		// Get Data
+		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
+		
+		// Update the options table
+		update_option( $option_status, $license_data->license);
+		
+		// Set transient value to store license status
+		set_transient( "alm_{$item_id}_{$license}", $license_data->license, 168 * HOUR_IN_SECONDS ); // 7 days
+		
+		// Return the status
+		return $license_data->license;
+		
+	}
+	
 }
 
 
@@ -340,7 +480,8 @@ function alm_admin_vars() { ?>
         'activate_btn' => __('Activate', 'ajax-load-more'),
         'settings_saving' => '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' . __('Saving Settings', 'ajax-load-more'),
         'settings_saved' => '<i class="fa fa-check" aria-hidden="true"></i> ' . __('Settings Saved Successfully', 'ajax-load-more'),
-        'settings_error' => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __('Error Saving Settings', 'ajax-load-more')
+        'settings_error' => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __('Error Saving Settings', 'ajax-load-more'),
+        'shortcode_max' => __('There is a maximum of 3 tax_query objects while using the shortcode builder', 'ajax-load-more'),
     )); ?>
     /* ]]> */
     </script>
@@ -369,8 +510,14 @@ function alm_set_admin_nonce(){
 */
 
 function alm_core_update() {
+	
+	// Exit if Repeater Templates are disbaled
+	if(defined('ALM_DISABLE_REPEATER_TEMPLATES') && ALM_DISABLE_REPEATER_TEMPLATES){
+		return false;
+	}
 
-	if(!get_option( 'alm_version')){ // Add 'alm_version' to WP options table if it does not exist
+	// Add 'alm_version' to WP options table if it does not exist
+	if(!get_option( 'alm_version')){
 		add_option( 'alm_version', ALM_VERSION );
 	}
 
@@ -1222,14 +1369,6 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
-	add_settings_field(  // Button classes
-		'_alm_btn_classname',
-		__('Button Classes', 'ajax-load-more' ),
-		'alm_btn_class_callback',
-		'ajax-load-more',
-		'alm_general_settings'
-	);
-
 	add_settings_field(  // Inline CSS
 		'_alm_inline_css',
 		__('Load CSS Inline', 'ajax-load-more' ),
@@ -1238,6 +1377,15 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	add_settings_field(  // Button classes
+		'_alm_btn_classname',
+		__('Button Classes', 'ajax-load-more' ),
+		'alm_btn_class_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
+/*
 	add_settings_field(  // Disable REST API
 		'_alm_use_rest_api',
 		__('REST API', 'ajax-load-more' ),
@@ -1245,6 +1393,7 @@ function alm_admin_init(){
 		'ajax-load-more',
 		'alm_general_settings'
 	);
+*/
 
 	add_settings_field(  // Legacy Callbacks
 		'_alm_legacy_callbacks',
@@ -1347,6 +1496,13 @@ function alm_admin_init(){
 	if(has_action('alm_prev_post_settings')){
    	do_action('alm_prev_post_settings');
    }
+
+
+	// TABS
+	if(has_action('alm_tabs_settings')){
+   	do_action('alm_tabs_settings');
+   }
+
 
 
 	// THEME REPEATERS
@@ -1762,7 +1918,7 @@ function _alm_uninstall_callback(){
 	$html =  '<input type="hidden" name="alm_settings[_alm_uninstall]" value="0" />';
 	$html .= '<input type="checkbox" name="alm_settings[_alm_uninstall]" id="_alm_uninstall" value="1"'. (($options['_alm_uninstall']) ? ' checked="checked"' : '') .' />';
 	$html .= '<label for="_alm_uninstall">'.__('Check this box if Ajax Load More should remove all of its data* when the plugin is deleted.', 'ajax-load-more');
-	$html .= '<span style="display:block">'. __('* Database Tables, Options and Repeater Templates', 'ajax-load-more') .'</span>';
+	$html .= '<span style="display:block"><em>'. __('* Database Tables, Options and Repeater Templates', 'ajax-load-more') .'</em></span>';
 	$html .= '</label>';
 
 	echo $html;

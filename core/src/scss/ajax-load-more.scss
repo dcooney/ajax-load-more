@@ -10,6 +10,17 @@
  * Twitter: @KaptonKaos
 */
 .alm-btn-wrap{
+	display: block;	
+	text-align: center;
+	padding: 10px 0 25px;
+	position: relative;
+	&:after{
+		display: table;
+		clear: both;
+		height: 0;
+		width: 100%;
+		content: '';
+	}
    .alm-load-more-btn{
       font-size: 15px;
       font-weight: 600;
@@ -83,15 +94,10 @@
    }
 }
 
-.alm-masonry,
-.alm-btn-wrap{
+.alm-masonry{
 	display: block;
 	overflow: hidden;
 	clear: both;
-}
-.alm-btn-wrap{
-	text-align: center;
-	padding: 10px 0 25px;
 }
 
 /* Blue */
@@ -217,6 +223,13 @@
 	padding: 0;
 	.alm-reveal{
 		outline: none;
+		&:after{
+			display: table;
+			clear: both;
+			height: 0;
+			width: 100%;
+			content: '';
+		}
 	}
 	.alm-reveal > li,
 	.alm-paging-content > li,
@@ -247,4 +260,11 @@
 			border-radius: 2px;
 		}
 	}	
+}
+
+
+.alm-placeholder{   
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	display: none;
 }

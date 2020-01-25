@@ -1,15 +1,9 @@
 // Prevent native browser scrolling on popstate
 // https://developer.mozilla.org/en-US/docs/Web/API/History#Browser_compatibility
 if ('scrollRestoration' in history) {
-   history.scrollRestoration = 'manual';
+	//history.scrollRestoration = 'manual';
 }
 
-// isArray
-if (typeof Array.isArray === 'undefined') {
-  Array.isArray = function(obj) {
-    return Object.prototype.toString.call(obj) === '[object Array]';
-  }
-};
 
 // Object.entries
 if (!Object.entries){
@@ -23,6 +17,15 @@ if (!Object.entries){
     return resArray;
   };
 }  
+
+
+// isArray
+if (typeof Array.isArray === 'undefined') {
+  Array.isArray = function(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+  }
+};
+
 
 // Array.from
 if (!Array.from) {
@@ -103,6 +106,7 @@ if (!Array.from) {
   }());
 }
 
+
 // Nodelist
 if (window.NodeList && !NodeList.prototype.forEach) {
 	NodeList.prototype.forEach = function (callback, thisArg) {
@@ -113,7 +117,9 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 	};
 }
 
-// from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
+
+// removeChild
+// https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
 (function (arr) {
 	arr.forEach(function (item) {
 	  if (item.hasOwnProperty('remove')) {

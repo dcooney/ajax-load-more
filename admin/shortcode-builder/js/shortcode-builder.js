@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
 	         $('#alm-taxonomy .controls button').addClass('disabled');
 	      }
 
-      }else{
-         alert("Sorry - maximum of 3 tax_query objects.");
+      }else{	      	      
+         alert(alm_admin_localize.shortcode_max);
          return false;
       }
 
@@ -87,8 +87,6 @@ jQuery(document).ready(function($) {
       }
 
    });
-
-
 
 
    // Add additional meta_query
@@ -123,6 +121,7 @@ jQuery(document).ready(function($) {
       }
 
    });
+   
 
    /* Delete Meta Query */
    $(document).on('click', '.remove-meta-query', function(e){
@@ -132,11 +131,9 @@ jQuery(document).ready(function($) {
          el.parent('.meta-query-wrap').remove();
          _alm.buildShortcode();
       });
-
       if($('.meta-query-wrap').length > 3){ // Show "Add" button if less than 4 $('.meta-query-wrap')
          $('#alm-meta-key .controls button').removeClass('disabled');
       }
-
    });
 
 
@@ -160,6 +157,24 @@ jQuery(document).ready(function($) {
       var unique_id = $('input#unique-id').val();
       if(unique_id)
          output += ' id="'+unique_id+'"';
+
+
+      // ---------------------------
+      // - Loading Style
+      // ---------------------------
+
+      var loading_style = $('select#loading-style').val();
+      var loading_style_default = $('select#loading-style').data('default');
+      var loading_style_target = $('select#loading-style').parent().find('.ajax-load-more-wrap');
+      
+      if(loading_style_target){
+	      var loading_style_base = loading_style_target.data('base');
+			loading_style_target.removeAttr('class');
+			loading_style_target.attr('class', loading_style_base + loading_style);
+      }
+      if(loading_style && loading_style !== loading_style_default){
+         output += ' loading_style="'+loading_style+'"';
+      }
 
 
       // ---------------------------
@@ -193,7 +208,8 @@ jQuery(document).ready(function($) {
 
          var acf_post_id = $('#acf_post_id').val(),
              acf_field_type = $('#acf_field_type').val(),
-             acf_field_name = $('#acf_field_name').val();
+             acf_field_name = $('#acf_field_name').val(),
+             acf_parent_field_name = $('#acf_parent_field_name').val();
 
          $('.acf-options').slideDown(250, 'alm_easeInOutQuad');
 
@@ -204,6 +220,10 @@ jQuery(document).ready(function($) {
             }
             output += ' acf_field_type="'+ acf_field_type +'"';
             output += ' acf_field_name="'+ acf_field_name +'"';
+            
+            if(acf_parent_field_name){
+	            output += ' acf_parent_field_name="'+ acf_parent_field_name +'"';
+            }
          }
 
       }else{
@@ -327,6 +347,10 @@ jQuery(document).ready(function($) {
 
          output += ' filters="'+filters+'"';
 
+			var filters_url = $('#alm-filters input[name=filters-url]:checked').val().trim();
+         if(filters_url !== '' && filters_url !== 'true')
+            output += ' filters_url="'+filters_url+'"';
+
 			var filters_paging = $('#alm-filters input[name=filters-paging]:checked').val().trim();
          if(filters_paging !== '' && filters_paging !== 'true')
             output += ' filters_paging="'+filters_paging+'"';
@@ -405,6 +429,12 @@ jQuery(document).ready(function($) {
       var paging_controls = $('#alm-paging input[name=paging-controls]:checked').val();
       var paging_show_at_most = $('#alm-paging input#show-at-most').val();
       var paging_classes = $('#alm-paging input#paging-classes').val();
+      
+      var paging_first_label = $('#alm-paging input#paging-first-label').val();
+      var paging_last_label = $('#alm-paging input#paging-last-label').val();
+      var paging_previous_label = $('#alm-paging input#paging-previous-label').val();
+      var paging_next_label = $('#alm-paging input#paging-next-label').val();
+      
       if(paging !== 'false' && paging != undefined){
          output += ' paging="'+paging+'"';
          output += ' paging_controls="'+paging_controls+'"';
@@ -415,6 +445,20 @@ jQuery(document).ready(function($) {
             output += ' paging_classes="'+paging_classes+'"';
          }
          $('#nav-controls').slideDown(250, 'alm_easeInOutQuad');
+         
+         if(paging_controls === 'true'){
+            $('#paging-controls-nav').slideDown(250, 'alm_easeInOutQuad');
+            
+            output += (paging_first_label !== '') ? ' paging_first_label="'+paging_first_label+'"' : '';
+            output += (paging_last_label !== '') ? ' paging_last_label="'+paging_last_label+'"' : '';
+            output += (paging_previous_label !== '') ? ' paging_previous_label="'+paging_previous_label+'"' : '';
+            output += (paging_next_label !== '') ? ' paging_next_label="'+paging_next_label+'"' : '';
+            
+            
+         } else {
+            $('#paging-controls-nav').slideUp(250, 'alm_easeInOutQuad');
+         }
+         
       }else{
          $('#nav-controls').slideUp(250, 'alm_easeInOutQuad');
       }
@@ -486,7 +530,6 @@ jQuery(document).ready(function($) {
       if(seo !== 'false' && seo != undefined){
 	      if(preload === 'true')
 		      $('.preload_amount').slideUp(250, 'alm_easeInOutQuad');
-
          output += ' seo="'+seo+'"';
       }
 
@@ -503,7 +546,9 @@ jQuery(document).ready(function($) {
              pp_order = $('#pp-order').val(),
              pp_post__in_order = $('#pp_post__in_input').val(),
              pp_taxonomy = $('#pp-taxonomy-select').val(),
-             pp_excluded_terms = $('#pp-term-exclude').val();
+             pp_excluded_terms = $('#pp-term-exclude').val(),
+             pp_progress_bar = $('.previous-post input[name=prev-post-progress]:checked').val();
+             
              
          $('.prev_post_options').slideDown(250, 'alm_easeInOutQuad');
          
@@ -535,6 +580,38 @@ jQuery(document).ready(function($) {
 
 			output += (pp_taxonomy !== '' ) ? ' single_post_taxonomy="'+pp_taxonomy+'"' : '';
 			output += (pp_excluded_terms !== '' ) ? ' single_post_excluded_terms="'+pp_excluded_terms+'"' : '';
+         
+         // Reading Progress Bar
+         if(pp_progress_bar === 'true'){       
+            $('#pp_progressbar_options').slideDown(250, 'alm_easeInOutQuad');
+            
+	         var pp_progress_bar_position = $('#pp_progressbar_options input[name=prev-post-progress-position]:checked').val();
+	         var pp_progress_bar_height = $('#pp_progressbar_options input[name=prev-post-progress-height]').val();	
+	         
+	         var pp_progress_bar_color = $('.prev-post-progress-front-color input').val();
+	         var pp_progress_indicator = $('.prev-post-progress-front-color .progress_bar_color_indicator'); 	
+	         
+	         var pp_progress_bar_bkg_color = $('.prev-post-progress-back-color input').val();
+	         pp_progress_bar_bkg_color = (pp_progress_bar_bkg_color.length === 6) ? pp_progress_bar_bkg_color : ''; // Minimum 6
+	         var pp_progress_indicator_bkg = $('.prev-post-progress-back-color .progress_bar_color_indicator');  
+	         
+	         
+	         // Remove style atts from indicator
+	         pp_progress_indicator_bkg.removeAttr('style');
+	         pp_progress_indicator.removeAttr('style');
+   	   	
+   	   	
+   	   	// If all values are set
+   	   	if(pp_progress_bar_color.length === 6 && pp_progress_bar_height && pp_progress_bar_position){
+   	   	   pp_progress_indicator.css("background-color", '#'+pp_progress_bar_color);   
+   	   	   pp_progress_indicator_bkg.css("background-color", '#'+pp_progress_bar_bkg_color);   	 
+   	   	   pp_progress_bar_bkg_color = (pp_progress_bar_bkg_color !== '') ? ':'+ pp_progress_bar_bkg_color : '';  	
+               output += ' single_post_progress_bar="'+ pp_progress_bar_position +':'+ pp_progress_bar_height +':'+ pp_progress_bar_color + pp_progress_bar_bkg_color +'"';
+   			}
+   			
+         } else {
+			   $('#pp_progressbar_options').slideUp(250, 'alm_easeInOutQuad');            
+         }
          
       }else{
          $('.prev_post_options').slideUp(250, 'alm_easeInOutQuad');
@@ -1075,7 +1152,7 @@ jQuery(document).ready(function($) {
 
 
       // ---------------------------
-      // - Pause Loading
+      // - Pause
       // ---------------------------
 
       var pause_load = $('.pause_load input[name=pause]:checked').val();
@@ -1091,6 +1168,40 @@ jQuery(document).ready(function($) {
       var destroy_after = $('.alm-destroy-after input[name=destroy-after]').val();
       if(destroy_after !== '' && destroy_after !== undefined && destroy_after !== '0')
          output += ' destroy_after="'+destroy_after+'"';
+         
+
+      // ---------------------------
+      // - Images loaded
+      // ---------------------------
+
+      var images_loaded = $('.alm-images-loaded input[name=images_loaded]:checked').val();
+      if(images_loaded === 't')
+      	output += ' images_loaded="true"';
+
+
+      // ---------------------------
+      // - Placeholder
+      // ---------------------------
+
+      var placeholder = $('.alm-placeholder-wrap input[name=has_placeholder]:checked').val();
+      var placeholder_target = $('.alm-placeholder-wrap .alm-placeholder-target');
+      var placeholder_url = $('.alm-placeholder-wrap #placeholder');
+      var placeholder_img = $('.alm-placeholder-wrap #placeholder-img');
+      if(placeholder === 't'){         
+      	placeholder_target.slideDown(250, 'alm_easeInOutQuad');
+      	
+      	// Set preview image
+      	if(placeholder_url.val() === '' || placeholder_url.val() === placeholder_url.data('empty')){
+         	output += ' placeholder="true"';
+         	placeholder_img.attr('src', placeholder_url.data('empty'));
+      	} else {
+         	output += ' placeholder="'+ placeholder_url.val() +'"';
+      	   placeholder_img.attr('src', placeholder_url.val());
+         }
+      	
+      } else {
+      	placeholder_target.slideUp(250, 'alm_easeInOutQuad');         
+      }
 
 
       // ---------------------------
@@ -1100,17 +1211,27 @@ jQuery(document).ready(function($) {
       var scroll_load = $('.scroll_load input[name=scroll]:checked').val();
       if(scroll_load === 'f'){
 
-         $('.max_pages, .scroll_distance, .pause_override, .scroll_container').slideUp(250, 'alm_easeInOutQuad');
-         if($('.scroll_load input').hasClass('changed'))
+         $('.scrolling-options').slideUp(250, 'alm_easeInOutQuad');
+         if($('.scroll_load input').hasClass('changed')){
             output += ' scroll="false"';
+         }
 
       }else{
 
-         $('.max_pages, .scroll_distance, .pause_override, .scroll_container').slideDown(250, 'alm_easeInOutQuad');
+         $('.scrolling-options').slideDown(250, 'alm_easeInOutQuad');
 
          var scroll_distance = $('.scroll_distance input').val();
-         if(scroll_distance !== '100')
-            output += ' scroll_distance="'+$('.scroll_distance input').val()+'"';
+         var scroll_distance_toggle_btns = $('.scroll_distance .builder-option-toggle--buttons');
+         var scroll_distance_px = $('button.pixels', scroll_distance_toggle_btns);
+         var scroll_distance_perc = $('button.perc', scroll_distance_toggle_btns);
+         var scroll_distance_type = '';
+         
+         if(scroll_distance !== '100' || scroll_distance_perc.hasClass('active')){	       	         
+	         if(scroll_distance_perc.hasClass('active')){
+		         scroll_distance_type = '%';
+	         }	         
+            output += ' scroll_distance="'+$('.scroll_distance input').val()+ scroll_distance_type +'"';
+         }
 
          var scroll_container = $('.scroll_container input').val();
          if(scroll_container != '')
@@ -1188,27 +1309,16 @@ jQuery(document).ready(function($) {
 	      var progress_bar_color = $('.alm-progress-bar input[name=progress_bar_color]').val();
 	   	$('.progress-bar-options').slideDown(250, 'alm_easeInOutQuad');
 	   	output += ' progress_bar="true"';
-   	   $('.progress_bar_color_indicator').removeAttr('style');
+   	   $('.alm-progress-bar .progress_bar_color_indicator').removeAttr('style');
 	   	if(progress_bar_color){
    	   	if(progress_bar_color.length === 6){
-   	   	   $('.progress_bar_color_indicator').css("background-color", '#'+progress_bar_color);
+   	   	   $('.alm-progress-bar .progress_bar_color_indicator').css("background-color", '#'+progress_bar_color);
    	   	}
 	   		output += ' progress_bar_color="'+ progress_bar_color +'"';
 			}
 	   }else{
 	   	$('.progress-bar-options').slideUp(250, 'alm_easeInOutQuad');
 	   }
-
-
-
-
-      // ---------------------------
-      // - Images loaded
-      // ---------------------------
-
-      var images_loaded = $('.alm-images-loaded input[name=images_loaded]:checked').val();
-      if(images_loaded === 't')
-      	output += ' images_loaded="true"';
 
 
       // ---------------------------
@@ -1232,6 +1342,18 @@ jQuery(document).ready(function($) {
       var nested = $('.alm-instance-options input[name=nested]:checked').val();
       if(nested === 't'){
          output += ' nested="true"';
+      }
+         
+
+      // ---------------------------
+      // - No Results Text
+      // ---------------------------
+
+      var no_results = $('.alm-instance-options textarea#no_results_text').val();
+      if(no_results !== ''){
+	      no_results = no_results.replace(/"/g, "'");
+
+         output += ' no_results_text="'+ no_results +'"';
       }
 
 
@@ -1501,6 +1623,19 @@ jQuery(document).ready(function($) {
        $(el).val(id);
        //_alm.buildShortcode();
    }
+   
+   
+   
+   /*
+   *  Option toggle click events
+   8
+   *  @since 5.2.0
+   */
+	$('.builder-option-toggle--buttons button').on('click', function(){
+		var siblings = $(this).siblings('button').removeClass('active');
+		$(this).addClass('active');
+		_alm.buildShortcode();
+	});
 
 
 

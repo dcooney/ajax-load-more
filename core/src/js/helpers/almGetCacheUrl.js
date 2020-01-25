@@ -14,14 +14,17 @@ let almGetCacheUrl = function( alm ) {
 	let cache_url = '';
 	let ext = '.html';
 	
+	// SEO Add-on
    if (alm.init && alm.addons.seo && alm.isPaged) {
-      // SEO Add-on
       // If the request is a paged URL (/page/3/)
       let firstpage = '1';
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + firstpage + '-' + alm.start_page + ext;
       
-   } else if (alm.addons.nextpage) {
-      // Nextpage add-on
+   } 
+   
+   // Nextpage add-on
+   else if (alm.addons.nextpage) {
+      
       let nextpage_cache_url;
       if (alm.addons.paging) {
          nextpage_cache_url = parseInt(alm.page) + 1;
@@ -34,10 +37,17 @@ let almGetCacheUrl = function( alm ) {
       }
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + nextpage_cache_url + ext;
       
-   } else if (alm.addons.single_post) {
-      // Previous Post
+   } 
+   // Single Post
+   else if (alm.addons.single_post) {      
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/' + alm.addons.single_post_id + ext;
       
+   } 
+   
+   // Filters
+   else if(alm.addons.filters){
+	   console.log(alm);
+   
    } else {
       // Standard URL request
       cache_url = alm.addons.cache_path + alm.addons.cache_id + '/page-' + (alm.page + 1) + ext;

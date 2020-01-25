@@ -146,48 +146,46 @@ if(!class_exists('ALM_NOSCRIPT')):
 		 * @since 2.8.3
 		 */
 		public static function build_noscript_paging($query){	
-			$paged = get_query_var('paged');
-			if(empty(get_query_var('paged')) || get_query_var('paged') == 0) {
-		      $paged = 1;
-		   }
+   		
+			$paged = (empty(get_query_var('paged'))) ? 1 : get_query_var('paged');			
 		   $numposts = $query->found_posts;
 		   $max_page = $query->max_num_pages;   
-		   $pages_to_show = 8;
-		   $pages_to_show_minus_1 = $pages_to_show-1;
-		   $half_page_start = floor($pages_to_show_minus_1/2);
-		   $half_page_end = ceil($pages_to_show_minus_1/2);
-		   $start_page = $paged - $half_page_start;
-		   if($start_page <= 0) {
-		      $start_page = 1;
-		   }
-		   $end_page = $paged + $half_page_end;
-		   if(($end_page - $start_page) != $pages_to_show_minus_1) {
-		      $end_page = $start_page + $pages_to_show_minus_1;
-		   }
-		   if($end_page > $max_page) {
-		      $start_page = $max_page - $pages_to_show_minus_1;
-		      $end_page = $max_page;
-		   }
-		   if($start_page <= 0) {
-		      $start_page = 1;
-		   }
+		   $posts_per_page = $query->query_vars['posts_per_page'];		   
+		   $total = ceil($numposts/$posts_per_page);	   		   
+		   
+		   $start_page = 1;
 		   $content = '';
-		   if ($max_page > 1) {
+		   
+		   if ($total > 1) {
+   		   
 		      $content .= '<div class="alm-paging" style="opacity: 1">';
-		      $content .= __('Pages: ', 'ajax-load-more');
-		      if ($start_page >= 2 && $pages_to_show < $max_page) {
-		         $first_page_text = "&laquo;";
-		         $content .= '<span class="page"><a href="'.get_pagenum_link().'">'.$first_page_text.'</a></span>';
-		      }
-		      // Loop pages
-		      for($i = $start_page; $i <= $end_page; $i++) {
-		         $content .= ' <span class="page"><a href="'.get_pagenum_link($i).'">'.$i.'</a></span>';
-		   	}
-		   	
-			   if ($end_page < $max_page) {
-			      $last_page_text = "&raquo;";
-			      $content .= '<span><a href="'.get_pagenum_link($max_page).'" title="'.$last_page_text.'">'.$last_page_text.'</a></span>';
-			   }
+		      
+   		      $content .= __('Pages: ', 'ajax-load-more');
+   		      
+   		      // First Page
+   		      if ($paged >= 2) {
+   			      $first_page_text = __('First Page', 'ajax-load-more');
+   		         $content .= '<span class="page"><a href="'.get_pagenum_link(1).'">'.$first_page_text.'</a></span>';
+   		      }
+   		      
+   		      // Loop pages
+   		      for($i = $start_page; $i <= $total; $i++) {
+      		      $content .= '<span class="page">';
+      		      if($paged === $i){
+                     $content .= '<u>'.$i.'</u>';   
+      		      } else {
+                     $content .= '<a href="'.get_pagenum_link($i).'">'.$i.'</a>';     		      
+      		      }
+      		      $content .= '</span>';
+   		         
+   		   	}
+   		   	
+   		   	// Last Page
+   			   if ($paged != $total) {
+   			      $last_page_text = __('Last Page', 'ajax-load-more');
+   			      $content .= '<span><a href="'.get_pagenum_link($total).'">'.$last_page_text.'</a></span>';
+   			   }
+   			   
 		      $content .= '</div>';
 		   }
 		   

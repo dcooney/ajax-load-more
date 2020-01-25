@@ -25,7 +25,7 @@ let setLocalizedVars = function(alm){
             
    // Total Posts `total_posts`.
    // Only update if !Preloaded && !Nextpage
-   if(alm.addons.preloaded !== 'true' && !alm.addons.nextpage){// Do not set if Preloaded
+   if(alm.addons.preloaded !== 'true' && !alm.addons.nextpage){
    	alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
    }                 
    

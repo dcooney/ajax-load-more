@@ -246,6 +246,7 @@ function alm_get_addons(){
 }
 
 
+
 /*
 *  alm_masonry_after
 *  Masonry HTML wrapper open
@@ -684,9 +685,21 @@ function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_o
 *  @since 2.5.0
 */
 function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
-   if(!empty($meta_key)){
-      $meta_values = alm_parse_meta_value($meta_value, $meta_compare);
-      if(!empty($meta_values)){
+   if(!empty($meta_key)){  
+      
+      // do_shortcode fixes (shortcode was rendering as HTML when using < OR  <==)
+      $meta_compare = ($meta_compare === 'lessthan') ? '<' : $meta_compare; 
+      $meta_compare = ($meta_compare === 'lessthanequalto') ? '<=' : $meta_compare; 
+     
+      // Get optimized `meta_value` parameter
+      $meta_values = alm_parse_meta_value($meta_value, $meta_compare);      
+      
+      // Unset `$meta_values` if empty
+      if($meta_values === ''){         
+         unset($meta_values);
+      }      
+      
+      if(isset($meta_values)){
          $return = array(
             'key' => $meta_key,
             'value' => $meta_values,
@@ -715,14 +728,17 @@ function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
 *  @return array;
 *  @since 2.6.4
 */
-function alm_parse_meta_value($meta_value, $meta_compare){
-   // See the docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query)
-   if($meta_compare === 'IN' || $meta_compare === 'NOT IN' || $meta_compare === 'BETWEEN' || $meta_compare === 'NOT BETWEEN'){
+function alm_parse_meta_value($meta_value, $meta_compare){   
+   
+   // Meta Query Docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query)
+   $meta_array = array('IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN');
+   
+   if(in_array($meta_compare, $meta_array)){
    	// Remove all whitespace for meta_value because it needs to be an exact match
    	$mv_trimmed = preg_replace('/\s+/', ' ', $meta_value); // Trim whitespace
    	$meta_values = str_replace(', ', ',', $mv_trimmed); // Replace [term, term] with [term,term]
-   	$meta_values = explode(",", $meta_values);
-   }else{
+   	$meta_values = ($meta_values === '') ? '' : explode(",", $meta_values);
+   }else{      
    	$meta_values = $meta_value;
    }
    return $meta_values;

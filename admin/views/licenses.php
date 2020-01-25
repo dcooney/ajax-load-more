@@ -40,6 +40,7 @@
                $addon_count = 0;
                               
                foreach($addons as $addon){ 
+	               
             		$name = $addon['name'];
             		$intro = $addon['intro'];
             		$desc = $addon['desc'];
@@ -47,19 +48,27 @@
             		$key = $addon['key'];
             		$license = get_option($key);  
             		$status = $addon['status'];
-            		$license_status = get_option($status);
             		$settings_field = $addon['settings_field'];
             		$url = $addon['url'];
             		$img = $addon['img'];  
-            		$item_id = $addon['item_id'];  
+            		$item_id = $addon['item_id'];
             		
-            		if(has_action($action)){
-               		$addon_count++;
+            		
+            		// If installed
+            		if(!has_action($action)){
+	            		continue;	
+	            	}
+               		
+            		$addon_count++;            		 
+						
+            		// Check license
+            		$license_status = alm_license_check($item_id, $license, $status);
+            		
                ?> 
                
                <div class="license" id="license-<?php echo sanitize_title_with_dashes($name); ?>">
    		         <div class="license-title">
-      		         <div class="status <?php if($license_status == 'valid'){echo 'valid';}else{echo 'invalid';} ?> "></div>
+      		         <div class="status <?php echo ($license_status === 'valid') ? 'valid' : 'invalid'; ?> "></div>
             			<h2><?php echo $name; ?></h2>
    		         </div>
                   <div class="license-wrap">
@@ -85,7 +94,13 @@
    	            		   </span>
    	            		   <?php } else { ?>
    	            		   <span class="status inactive">
-   	            		      <?php _e('Inactive', 'ajax-load-more'); ?>
+   	            		      <?php 
+   	            		      if($license_status === 'expired'){
+		   	            		   _e('Expired', 'ajax-load-more'); 
+	   	            		   }else{
+		   	            		   _e('Inactive', 'ajax-load-more'); 
+		   	            		}
+		   	            		?>
    	            		   </span>
    	            		   <?php } ?>
    	         			</div>   
@@ -101,20 +116,30 @@
    					         	data-option-status="<?php echo $status; ?>"
    						         data-option-key="<?php echo $key; ?>"
    						         data-upgrade-url="<?php echo $url; ?>">
-   		         			<button type="button" class="activate license-btn <?php if($license_status === 'valid'){ echo 'hide'; } ?> button-primary" data-type="activate">
+   		         			<button type="button" class="activate license-btn <?php if($license_status === 'valid'){ echo 'hide'; } ?> button button-primary" data-type="activate">
    							   	<?php _e('Activate License', 'ajax-load-more'); ?>
    							   </button>
-   							   <button type="button" class="deactivate license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button-secondary" data-type="deactivate">
+   							   <button type="button" class="deactivate license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button button-secondary" data-type="deactivate">
    							   	<?php _e('Deactivate License', 'ajax-load-more'); ?>
    							   </button>
-   	         			</div>   
+   							   <button type="button" class="check-licence license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button button-secondary" data-type="check">
+   							   	<i class="fa fa-refresh" aria-hidden="true"></i> <?php _e('Refresh Status', 'ajax-load-more'); ?>
+   							   </button>
+   							   <?php if($license_status === 'expired'){ 
+	   							   if(isset($license) && !empty($license)){
+		   							   $store = ALM_STORE_URL;
+		   							   $url = "{$store}/checkout/?edd_license_key={$license}&download_id={$item_id}";
+	   							   }
+   							   ?>
+	      	         		<a class="button renew-btn" href="<?php echo $url; ?>" target="_blank">
+ <?php _e('Renew License', 'ajax-load-more'); ?></a>
+	      	         		<?php } ?>
+   	         			</div>  
                   	</form>
    			      </div>
    			      <div class="loading"></div>
-               </div>            
-               <?php } ?>          
+               </div>              
             <?php } unset($addons); ?>
-            
             
             <?php   		     
                // No add-ons installed 
@@ -137,10 +162,13 @@
 	                     <ul>
 	                        <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more');?></li>
 	                        <li><?php _e('If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
+	                        <li>
+	                        <strong><?php _e('Are you having issues updating an add-on?', 'ajax-load-more'); ?></strong><br/>
+	                        <?php _e('Please try deactivating and then re-activating each license. Once you’ve done that, try running the update again.', 'ajax-load-more'); ?></li>
 	                     </ul>
 	                  </div>
 	                  <div class="major-publishing-actions">
-	      	            <a class="button button-primary button-large" target="_blank" href="https://connekthq.com/account/">
+	      	            <a class="button button-primary" target="_blank" href="https://connekthq.com/account/">
 	      		            <?php _e('Your Account', 'ajax-load-more'); ?>
 	                     </a>
 	                  </div>
