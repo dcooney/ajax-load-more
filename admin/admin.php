@@ -1,5 +1,6 @@
 <?php
 add_action( 'init', 'alm_core_update' ); // Core Update
+add_action( 'admin_init', 'alm_admin_hooks' );
 add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
 add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
@@ -11,15 +12,26 @@ add_action( 'wp_ajax_alm_get_layout', 'alm_get_layout' ); // Get layout
 add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing
 add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient
 add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu text
+add_action( 'after_plugin_row', 'alm_plugin_row' );
 
 
 
-/*
-*  almCreatePluginUpdateNotifications
-*  Create custom update notifications
-*
-*  @since 5.2
-*/
+/**
+ * Setup the admin hooks
+ *
+ * @return void
+ */
+function alm_admin_hooks() {
+	require_once( plugin_dir_path( __FILE__ ) . '/classes/class-nag.php' );
+}
+
+
+/**
+ *  almCreatePluginUpdateNotifications
+ *  Create custom update notifications
+ *
+ *  @since 5.2
+ */
 function alm_plugin_update_messages(){
 	$addons = alm_get_addons();
 	foreach($addons as $addon){
@@ -80,6 +92,40 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> to update.', 'ajax-load-more' )
 				);
 			}
+			
+		}
+	}
+}
+
+
+
+/*
+*  alm_plugin_row
+*  Create a notification in the plugin row
+*
+*  @since 5.2
+*/
+function alm_plugin_row( $plugin_name ) {
+
+	$addons = alm_get_addons();
+	$pro_addons = alm_get_pro_addon();
+
+	$addons = array_merge(alm_get_addons(), alm_get_pro_addon());
+	foreach($addons as $addon){
+		if ( $plugin_name == $addon['path'].'/'.$addon['path'].'.php' ) {		
+			
+			$status = get_option($addon['status']);			
+			$style = 'margin: 5px 20px 6px 40px;';
+			
+			// !valid
+			if($status !== 'valid'){
+				$name = ($addon['name'] === 'Ajax Load More Pro') ? '<strong>'. $addon['name'] .'</strong>' : '<strong>'. 'Ajax Load More: '. $addon['name'] .'</strong>';
+				
+				$row = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message" style="'. $style .'">';
+				$row .= sprintf(__('%sRegister%s your copy of %s to receive access to automatic upgrades and support. Need a license key? %sPurchase one now%s.'), '<a href="admin.php?page=ajax-load-more-licenses">', '</a>', $name, '<a href="'. $addon['url'] .'" target="blank">', '</a>');
+				$row .= '</div></td>';
+				echo $row;
+			}			
 			
 		}
 	}
@@ -1814,13 +1860,11 @@ function alm_btn_class_callback(){
     	jQuery('input#alm_disable_css_input').change(function() {
     		var el = jQuery(this);
 	      if(el.is(":checked")) {
-	      	el.parent().parent('tr').next('tr').hide(); // Hide button
-	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide button color
-	      	el.parent().parent('tr').next('tr').next('tr').next('tr').hide(); // Hide inline css
+	      	el.parent().parent('tr').next('tr').hide(); // Hide button color
+	      	el.parent().parent('tr').next('tr').next('tr').hide(); // Hide inline css
 	      }else{
-	      	el.parent().parent('tr').next('tr').show(); // show button
-	      	el.parent().parent('tr').next('tr').next('tr').show(); // show button color
-	      	el.parent().parent('tr').next('tr').next('tr').next('tr').show(); // show inline css
+	      	el.parent().parent('tr').next('tr').show(); // show button color
+	      	el.parent().parent('tr').next('tr').next('tr').show(); // show inline css
 	      }
 	   });
 

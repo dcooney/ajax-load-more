@@ -4,7 +4,7 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
 Tested up to: 5.3.2
-Stable tag: 5.1.7.2
+Stable tag: 5.1.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -382,8 +382,24 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 5.1.8 = March 2, 2020 = 
+
+UPGRADE NOTICE
+This release updates the default text for users who implemented [Results Text](https://connekthq.com/plugins/ajax-load-more/examples/results-text/).
+[New variables](https://connekthq.com/plugins/ajax-load-more/docs/results-text/) have been added to this feature and the default text has changes from `Displaying {num} of {total}.` to `Viewing {post_count} of {total_posts} results.`.
+If you wish to revert this update, you can with the `alm_display_results` [filter](https://connekthq.com/plugins/ajax-load-more/docs/results-text/#filter-hooks).
+
+* NEW - Added rtl (right to left) support for the default ALM Repeater Template. Add `.rtl` to the container to align items right to left. Use `css_classes="rtl"` in a shortcode or globally via ALM settings. 
+* NEW - Added `archive="true"` parameter that will automatically pull content on archive pages - taxonomy, category, tag, date (year, month, day) and authors are currently supported. [View Docs](https://connekthq.com/plugins/ajax-load-more/docs/archives/)
+* NEW - Added `woocommerce="true"` parameter that will automatically pull product content on woocommerce pages - [docs](https://connekthq.com/plugins/ajax-load-more/docs/woocommerce/) coming soon on this new integration.
+* UPDATE - Updated [Results Text](https://connekthq.com/plugins/ajax-load-more/docs/results-text/) to include post_count and total_posts. 
+* UPDATE - Updated time of filter transitions. In some cases users were reporting issues of double clicks causing no results to be returned.
+* FIX - Fixed almComplete callback not firing when zero results are returned in Ajax.   
+* FIX - Fixed issue with JavaScript not triggering in Repeater Templates used with Paging add-on. 
+
+
 = 5.1.7.2 = January 25, 2020 = 
-* NEW - Added support for percentage values in `scroll_distance`. Users can now trigger Ajax requests based on the percentage height of their browsers. e.g. `scoll_distance="-50%"`
+* NEW - Added support for percentage values in `scroll_distance`. Users can now trigger Ajax requests based on the percentage height of their browsers. e.g. `scroll_distance="-50%"`
 * NEW - Added `alm_query_after_{id}` filter to allow for modification of the returned query.
 * NEW - Added new `alm_id` parameter for the `WP_Query` that allows for easier access of query args using `pre_get_post` using the Ajax Load More ID.
 ```

@@ -9,63 +9,63 @@
             <?php echo ALM_TITLE; ?>: <strong><?php echo $pg_title; ?></strong>
             <em><?php echo $pg_desc; ?>.</em>
          </h1>
-         <?php alm_render_transient_notification(); ?>  
+         <?php alm_render_transient_notification(); ?>
       </header>
-      
+
       <div class="ajax-load-more-inner-wrapper">
-		
+
    		<div class="cnkt-main">
-   		
-		      <h3><?php    		      
+
+		      <h3><?php
    		      if(has_action('alm_pro_installed')){
-   		         _e('License Key', 'ajax-load-more');       		      
+   		         _e('License Key', 'ajax-load-more');
    		      } else {
-   		         _e('License Keys', 'ajax-load-more'); 
+   		         _e('License Keys', 'ajax-load-more');
    		      }
    		      ?></h3>
 
 		      <p>
-   		      <?php 
+   		      <?php
       		      if(has_action('alm_pro_installed')){
-      		         _e('Enter your Ajax Load More Pro license key to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); 
+      		         _e('Enter your Ajax Load More Pro license key to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more');
       		      } else {
-         		      _e('Enter a key for each of your Ajax Load More add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more'); 
+         		      _e('Enter a key for each of your Ajax Load More add-ons to receive plugin update notifications directly within the <a href="plugins.php">WP Plugins dashboard</a>.', 'ajax-load-more');
       		      }
       		      ?>
-   		   </p>            
-            
-            <?php 
-	            
-			      $addons = (has_action('alm_pro_installed')) ? alm_get_pro_addon() : alm_get_addons();		         
+   		   </p>
+
+            <?php
+
+			      $addons = (has_action('alm_pro_installed')) ? alm_get_pro_addon() : alm_get_addons();
                $addon_count = 0;
-                              
-               foreach($addons as $addon){ 
-	               
+
+               foreach($addons as $addon){
+
             		$name = $addon['name'];
             		$intro = $addon['intro'];
             		$desc = $addon['desc'];
             		$action = $addon['action'];
             		$key = $addon['key'];
-            		$license = get_option($key);  
+            		$license = get_option($key);
             		$status = $addon['status'];
             		$settings_field = $addon['settings_field'];
             		$url = $addon['url'];
-            		$img = $addon['img'];  
+            		$img = $addon['img'];
             		$item_id = $addon['item_id'];
-            		
-            		
+
+
             		// If installed
             		if(!has_action($action)){
-	            		continue;	
+	            		continue;
 	            	}
-               		
-            		$addon_count++;            		 
-						
+
+            		$addon_count++;
+
             		// Check license
             		$license_status = alm_license_check($item_id, $license, $status);
-            		
-               ?> 
-               
+
+               ?>
+
                <div class="license" id="license-<?php echo sanitize_title_with_dashes($name); ?>">
    		         <div class="license-title">
       		         <div class="status <?php echo ($license_status === 'valid') ? 'valid' : 'invalid'; ?> "></div>
@@ -73,7 +73,7 @@
    		         </div>
                   <div class="license-wrap">
       			      <form method="post" action="options.php">
-   
+
             			   <?php if( $license_status !== false && $license_status == 'valid' ) { ?>
             			   <!-- nothing -->
             			   <?php } else { ?>
@@ -81,10 +81,10 @@
                	         <h4><?php _e('Don\'t have a license?', 'ajax-load-more'); ?></h4>
                	         <p><?php _e('A valid license is required to activate and receive plugin updates directly in your WordPress dashboard', 'ajax-load-more'); ?> &rarr; <a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=Licenses&utm_campaign=<?php echo $name; ?>" target="blank"><strong><?php _e('Purchase Now', 'ajax-load-more'); ?>!</strong></a></p>
                         </div>
-            			   <?php } ?>   
-            			   
-   	         			<?php settings_fields($settings_field); ?>   
-   	         			
+            			   <?php } ?>
+
+   	         			<?php settings_fields($settings_field); ?>
+
    	         			<label class="description offscreen" for="<?php echo $key; ?>"><?php _e('Enter License Key', 'ajax-load-more'); ?></label>
    	         			<div class="license-key-field">
    	         			   <input id="<?php echo $key; ?>" name="<?php echo $key; ?>" type="text" class="regular-text" value="<?php esc_attr_e( $license ); ?>" placeholder="<?php _e('Enter License Key', 'ajax-load-more'); ?>" />
@@ -94,22 +94,22 @@
    	            		   </span>
    	            		   <?php } else { ?>
    	            		   <span class="status inactive">
-   	            		      <?php 
+   	            		      <?php
    	            		      if($license_status === 'expired'){
-		   	            		   _e('Expired', 'ajax-load-more'); 
+		   	            		   _e('Expired', 'ajax-load-more');
 	   	            		   }else{
-		   	            		   _e('Inactive', 'ajax-load-more'); 
+		   	            		   _e('Inactive', 'ajax-load-more');
 		   	            		}
 		   	            		?>
    	            		   </span>
    	            		   <?php } ?>
-   	         			</div>   
-   	         			
-   	         			<?php 
-      	         			$nonce = 'alm_'. $item_id .'_license_nonce'; 		
-      	         			wp_nonce_field( $nonce, $nonce ); 
+   	         			</div>
+
+   	         			<?php
+      	         			$nonce = 'alm_'. $item_id .'_license_nonce';
+      	         			wp_nonce_field( $nonce, $nonce );
       	         		?>
-      	         		
+
    	         			<div class="license-btn-wrap"
    						   		data-name="<?php echo $item_id; ?>"
    				         		data-url="<?php echo ALM_STORE_URL; ?>"
@@ -125,7 +125,7 @@
    							   <button type="button" class="check-licence license-btn <?php if($license_status !== 'valid'){ echo 'hide'; } ?> button button-secondary" data-type="check">
    							   	<i class="fa fa-refresh" aria-hidden="true"></i> <?php _e('Refresh Status', 'ajax-load-more'); ?>
    							   </button>
-   							   <?php if($license_status === 'expired'){ 
+   							   <?php if($license_status === 'expired'){
 	   							   if(isset($license) && !empty($license)){
 		   							   $store = ALM_STORE_URL;
 		   							   $url = "{$store}/checkout/?edd_license_key={$license}&download_id={$item_id}";
@@ -134,25 +134,25 @@
 	      	         		<a class="button renew-btn" href="<?php echo $url; ?>" target="_blank">
  <?php _e('Renew License', 'ajax-load-more'); ?></a>
 	      	         		<?php } ?>
-   	         			</div>  
+   	         			</div>
                   	</form>
    			      </div>
    			      <div class="loading"></div>
-               </div>              
+               </div>
             <?php } unset($addons); ?>
-            
-            <?php   		     
-               // No add-ons installed 
-               if($addon_count == 0) :   		   
+
+            <?php
+               // No add-ons installed
+               if($addon_count == 0) :
             ?>
             <div class="spacer"></div>
             <div class="license-no-addons">
                <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e('Go Pro', 'ajax-load-more'); ?></strong></a></p>
             </div>
-            <?php endif; ?>   
-   
+            <?php endif; ?>
+
    	   </div>
-   
+
    	   <aside class="cnkt-sidebar">
       	   <div id="cnkt-sticky-wrapper">
 	      	   <div id="cnkt-sticky">
@@ -164,7 +164,7 @@
 	                        <li><?php _e('If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more'); ?></li>
 	                        <li>
 	                        <strong><?php _e('Are you having issues updating an add-on?', 'ajax-load-more'); ?></strong><br/>
-	                        <?php _e('Please try deactivating and then re-activating each license. Once you’ve done that, try running the update again.', 'ajax-load-more'); ?></li>
+	                        <?php _e('Please try deactivating and then re-activating each license. Once you\'ve done that, try running the update again.', 'ajax-load-more'); ?></li>
 	                     </ul>
 	                  </div>
 	                  <div class="major-publishing-actions">
@@ -176,8 +176,8 @@
 	      	   </div>
       	   </div>
    	   </div>
-	   
-			<div class="clear"></div>   
+
+			<div class="clear"></div>
       </aside>
 
 	</div>

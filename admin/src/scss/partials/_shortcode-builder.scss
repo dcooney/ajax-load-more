@@ -1,4 +1,18 @@
 .shortcode-builder{
+	
+	p.warning-callout{
+		&:before{
+			display: block;
+			width: calc(100% + 36px);
+			height: 1px;
+			content: '';
+			background: $light_border;
+			position: absolute;
+			left: -18px;
+			top: -10px;
+			z-index: 1;
+		}
+	}
 	section{
 		display: flex;
 		flex-wrap: nowrap;
@@ -66,11 +80,12 @@
 		padding-top: 22px;
 		flex: 1;
 		input, textarea, select{
-   		width: 100%;
+   		width: 100%; 
 		}
 		section{
    		width: 104%;
    		margin-left: -2%;
+   		border: none;
 		}
 		.half{
    		width: 50%;
@@ -176,4 +191,10 @@
          }
       }
    } 
+   .section-intro{
+	   font-size: 13px;
+	   padding: 20px 5px 20px;
+	   margin: 0 0 20px;
+	   border-bottom: 1px solid $light_border;
+   }
 }

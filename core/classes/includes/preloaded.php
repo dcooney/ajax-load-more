@@ -78,9 +78,13 @@ elseif($comments){
       
       $total_comments = wp_count_comments( $comments_post_id );
       
-		// Add total_posts to localized ALM JS variables
+		// Add localized ALM JS variables
 		ALM_LOCALIZE::add_localized_var('total_posts', $total_comments->approved, $localize_id);
-         
+		
+		$post_count = ($total_comments->approved > $preloaded_amount) ? $preloaded_amount : $total_comments->approved;		
+		ALM_LOCALIZE::add_localized_var('post_count', $post_count, $localize_id);
+      
+      
       // Open .alm-reveal      
       $preloaded_output .= $alm_reveal;
       
@@ -118,15 +122,19 @@ elseif($users){
 	   $preloaded_users_total = $preloaded_users['total'];
 	   
 		
-		// Add total_posts to localized ALM JS variables
+		// Add localized ALM JS variables
 		ALM_LOCALIZE::add_localized_var('total_posts', $preloaded_users_total, $localize_id);
 		
+		$post_count = ($preloaded_users_total > $preloaded_amount) ? $preloaded_amount : $preloaded_users_total;		
+		ALM_LOCALIZE::add_localized_var('post_count', $post_count, $localize_id);
 		
+				
 		// Open .alm-reveal
 		
       if($seo === 'true'){
          $alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded'. $transition_container_classes .'" data-page="1" data-url="'.$canonicalURL.'">';
       }
+         
          
       // Open .alm-reveal      
       $preloaded_output .= $alm_reveal;
@@ -159,12 +167,14 @@ elseif($term_query){
 	   $preloaded_terms_total = $preloaded_terms['total'];
 	   
 		
-		// Add total_posts to localized ALM JS variables
+		// Add localized ALM JS variables
 		ALM_LOCALIZE::add_localized_var('total_posts', $preloaded_terms_total, $localize_id);
 		
+		$post_count = ($preloaded_terms_total > $preloaded_amount) ? $preloaded_amount : $preloaded_terms_total;		
+		ALM_LOCALIZE::add_localized_var('post_count', $post_count, $localize_id);		
 		
-		// Open .alm-reveal
 		
+		// Open .alm-reveal		
       if($seo === 'true'){
          $alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded'. $transition_container_classes .'" data-page="1" data-url="'.$canonicalURL.'">';
       }
@@ -196,7 +206,11 @@ elseif($acf && ($acf_field_type !== 'relationship')){
 	  	
 	  	
 	  	// Add total_posts to localized ALM JS variables		
-	  	ALM_LOCALIZE::add_localized_var('total_posts', apply_filters('alm_acf_total_rows', $query_args), $localize_id);
+	  	$acf_total_rows = apply_filters('alm_acf_total_rows', $query_args);
+	  	ALM_LOCALIZE::add_localized_var('total_posts', $acf_total_rows, $localize_id);
+	  	
+	  	$post_count = ($acf_total_rows > $preloaded_amount) ? $preloaded_amount : $acf_total_rows;		
+		ALM_LOCALIZE::add_localized_var('post_count', $post_count, $localize_id);	
 		
 		// Open .alm-reveal
       if($seo === 'true'){
@@ -268,9 +282,9 @@ else {
 	 * @return $alm_query;
 	 */
    $alm_preload_query = apply_filters('alm_query_after_'. $id, $alm_preload_query, $post_id); // ALM Core Filter Hook
-   
-	
+   	
 	$alm_total_posts = $alm_preload_query->found_posts - $offset;	
+	$alm_post_count = $alm_preload_query->post_count;
 	
    $output = '';
 
@@ -321,8 +335,9 @@ else {
 	endif;
 
 
-	// Add total_posts to localized ALM JS variables
+	// Add localized ALM JS variables
 	ALM_LOCALIZE::add_localized_var('total_posts', $alm_total_posts, $localize_id);
+	ALM_LOCALIZE::add_localized_var('post_count', $alm_post_count, $localize_id);
 	
 	
 	if($seo === "true"){ // SEO, not Paging

@@ -12,9 +12,7 @@
 // Exit if accessed directly.
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 
-
 include_once( 'ajax-load-more.php' );
-
 
 
 global $wpdb;
@@ -60,7 +58,7 @@ if(is_multisite()){ // Multisite
 function alm_delete_templates(){
 
 	$dir = AjaxLoadMore::alm_get_repeater_path(); // /alm_templates directory
-
+	
    if(!is_dir( $dir )) return; // Confirm directory exists
 
 	// Loop all files in directory

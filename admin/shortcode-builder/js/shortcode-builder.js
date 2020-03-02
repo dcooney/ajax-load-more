@@ -547,6 +547,7 @@ jQuery(document).ready(function($) {
              pp_post__in_order = $('#pp_post__in_input').val(),
              pp_taxonomy = $('#pp-taxonomy-select').val(),
              pp_excluded_terms = $('#pp-term-exclude').val(),
+             pp_elementor = $('.previous-post input[name=elementor-single]:checked').val(),
              pp_progress_bar = $('.previous-post input[name=prev-post-progress]:checked').val();
              
              
@@ -578,8 +579,10 @@ jQuery(document).ready(function($) {
 	         }	         
          }
 
-			output += (pp_taxonomy !== '' ) ? ' single_post_taxonomy="'+pp_taxonomy+'"' : '';
-			output += (pp_excluded_terms !== '' ) ? ' single_post_excluded_terms="'+pp_excluded_terms+'"' : '';
+			output += (pp_taxonomy !== '' ) ? ' single_post_taxonomy="'+ pp_taxonomy +'"' : '';
+			output += (pp_excluded_terms !== '' ) ? ' single_post_excluded_terms="'+ pp_excluded_terms +'"' : '';
+         output += (pp_elementor === 't' ) ? ' elementor="true"' : '';
+         
          
          // Reading Progress Bar
          if(pp_progress_bar === 'true'){       
@@ -1346,6 +1349,21 @@ jQuery(document).ready(function($) {
          
 
       // ---------------------------
+      // - Integrations
+      // ---------------------------
+
+      var archive = $('.alm-archive input[name=archive]:checked').val();
+      if(archive === 't'){
+         output += ' archive="true"';
+      }
+
+      var woocommerce = $('.alm-woocommerce input[name=woocommerce]:checked').val();
+      if(woocommerce === 't'){
+         output += ' woocommerce="true"';
+      }
+         
+
+      // ---------------------------
       // - No Results Text
       // ---------------------------
 
@@ -1384,8 +1402,30 @@ jQuery(document).ready(function($) {
    $(document).on('change keyup', '.alm_element', function() {
 	   var el = $(this);
       el.addClass('changed');
+      
+      // WooCommerce
+      if( el.attr('name') === 'woocommerce'){
+	      var postTypeCheckboxes = $('ul.alm-post-type-list input[type=checkbox]');
+	      // Check 'product'
+	      $('ul.alm-post-type-list input[type=checkbox]#chk-product').prop('checked', true).addClass('changed');
+	      
+	      if(postTypeCheckboxes){
+		      postTypeCheckboxes.each(function(index, item){
+			      if(item.dataset.type !== 'product'){
+			      	item.checked = false;
+			      }
+		      });
+	      }
+	      
+	      $('.alm-archive input#archive_f').prop('checked', true);
+	   }
+	   
+	   // Archives
+      if( el.attr('name') === 'archive'){
+	      $('.alm-woocommerce input#woocommerce_f').prop('checked', true);
+	   }
 
-      // reset repeater templates
+      // Reset Repeater Templates
 		if(el.attr('name') === 'repeater-select'){
 			$('.select-theme-repeater select[name=theme-repeater-select]').select2('val','');
 		}
@@ -1394,7 +1434,8 @@ jQuery(document).ready(function($) {
 				$('.repeater select[name=repeater-select]').select2('val','default');
 			}
 		}
-
+		
+		// Comments
 		if(el.attr('id') === 'comments_template'){
 			$('#comments_callback').val('');
 		}

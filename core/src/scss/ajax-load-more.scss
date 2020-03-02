@@ -217,10 +217,7 @@
 *  Generic alm-listing styles
 *  @since 1.0.0
 */
- 
-.alm-listing{
-	margin: 0;
-	padding: 0;
+ .alm-listing{
 	.alm-reveal{
 		outline: none;
 		&:after{
@@ -231,6 +228,10 @@
 			content: '';
 		}
 	}
+ }
+.alm-listing:not(.products){
+	margin: 0;
+	padding: 0;
 	.alm-reveal > li,
 	.alm-paging-content > li,
 	> li{
@@ -262,6 +263,18 @@
 	}	
 }
 
+// Right to left (rtl)
+.alm-listing.rtl{
+   .alm-reveal > li,
+	.alm-paging-content > li{
+		padding: 0 170px 0 0;	
+		text-align: right;	
+		img{
+			left: auto;
+			right: 0;
+		}
+	}
+}
 
 .alm-placeholder{   
 	opacity: 0;

@@ -1665,7 +1665,6 @@ jQuery(document).ready(function ($) {
     *  Get layout value Ajax
     *  @since 2.8.7
     */
-  console.log(window.editorDefault);
   $(document).on('click', '.alm-layout-selection li a.layout', function (e) {
     e.preventDefault();
     var el = $(this),

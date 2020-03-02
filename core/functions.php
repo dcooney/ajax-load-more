@@ -70,7 +70,7 @@ function alm_get_addons(){
          'status' => 'alm_cta_license_status',
          'settings_field' => 'alm_cta_license',
          'img' => 'img/add-ons/cta-add-on.jpg',
-         'url' => $url_prefix .'/call-to-actions/',
+         'url' => $url_prefix .'call-to-actions/',
          'item_id' => ALM_CTA_ITEM_NAME,
          'version' => 'ALM_CTA_VERSION',
 	   	'path' => $path_prefix .'call-to-actions',

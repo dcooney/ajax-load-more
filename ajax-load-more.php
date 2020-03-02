@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com
-Version: 5.1.7.2
+Version: 5.1.8
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.1.7.2');
-define('ALM_RELEASE', 'January 25, 2020');
+define('ALM_VERSION', '5.1.8');
+define('ALM_RELEASE', 'March 2, 2020');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -265,15 +265,16 @@ if( !class_exists('AjaxLoadMore') ):
 
       	include_once( ALM_PATH . 'core/functions.php'); // Load Core Functions
       	include_once( ALM_PATH . 'core/classes/class.alm-shortcode.php'); // Load Shortcode Class
+      	include_once( ALM_PATH . 'core/classes/class.alm-woocommerce.php'); // Load Woocommerce Class
       	include_once( ALM_PATH . 'core/classes/class.alm-enqueue.php'); // Load Enqueue Class
       	include_once( ALM_PATH . 'core/classes/class.alm-queryargs.php'); // Load Query Args Class
       	include_once( ALM_PATH . 'core/classes/class.alm-localize.php'); // Load Localize Class
 
    		if( is_admin() ){
-   			include_once('admin/editor/editor.php');
-   			include_once('admin/admin.php');
-   			include_once('admin/admin-functions.php');
-            include_once('vendor/connekt-plugin-installer/class-connekt-plugin-installer.php');
+   			require_once('admin/editor/editor.php');
+   			require_once('admin/admin.php');
+   			require_once('admin/admin-functions.php');
+            require_once('vendor/connekt-plugin-installer/class-connekt-plugin-installer.php');
             if( !class_exists( 'EDD_SL_Plugin_Updater' ) ) {
                include( dirname( __FILE__ ) . '/vendor/EDD_SL_Plugin_Updater.php' );
             }
@@ -392,12 +393,11 @@ if( !class_exists('AjaxLoadMore') ):
    				'scrolltop' => $scrolltop,
    				'speed' => apply_filters('alm_speed', 200),
    				'ga_debug' => apply_filters('alm_ga_debug', 'false'),
-   				'results_text' => apply_filters('alm_display_results', __('Displaying page {num} of {total}.', 'ajax-load-more')),
+   				'results_text' => apply_filters('alm_display_results', __('Viewing {post_count} of {total_posts} results.', 'ajax-load-more')),
    				'no_results_text' => apply_filters('alm_no_results_text', __('No results found.', 'ajax-load-more')),
    				'alm_debug' => apply_filters('alm_debug', false)
    			)
    		);
-
    	}
 
 

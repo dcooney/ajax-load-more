@@ -179,50 +179,60 @@
 *  Generic alm-listing styles
 *  @since 1.0.0
 */
-.alm-listing {
+.alm-listing .alm-reveal {
+  outline: none; }
+  .alm-listing .alm-reveal:after {
+    display: table;
+    clear: both;
+    height: 0;
+    width: 100%;
+    content: ''; }
+
+.alm-listing:not(.products) {
   margin: 0;
   padding: 0; }
-  .alm-listing .alm-reveal {
-    outline: none; }
-    .alm-listing .alm-reveal:after {
-      display: table;
-      clear: both;
-      height: 0;
-      width: 100%;
-      content: ''; }
-  .alm-listing .alm-reveal > li,
-  .alm-listing .alm-paging-content > li,
-  .alm-listing > li {
+  .alm-listing:not(.products) .alm-reveal > li,
+  .alm-listing:not(.products) .alm-paging-content > li,
+  .alm-listing:not(.products) > li {
     background: none;
     margin: 0 0 30px;
     padding: 0 0 0 170px;
     overflow: hidden;
     position: relative;
     list-style: none; }
-    .alm-listing .alm-reveal > li.no-img,
-    .alm-listing .alm-paging-content > li.no-img,
-    .alm-listing > li.no-img {
+    .alm-listing:not(.products) .alm-reveal > li.no-img,
+    .alm-listing:not(.products) .alm-paging-content > li.no-img,
+    .alm-listing:not(.products) > li.no-img {
       padding: 0; }
-    .alm-listing .alm-reveal > li p,
-    .alm-listing .alm-paging-content > li p,
-    .alm-listing > li p {
+    .alm-listing:not(.products) .alm-reveal > li p,
+    .alm-listing:not(.products) .alm-paging-content > li p,
+    .alm-listing:not(.products) > li p {
       margin: 0; }
-      .alm-listing .alm-reveal > li p.entry-meta,
-      .alm-listing .alm-paging-content > li p.entry-meta,
-      .alm-listing > li p.entry-meta {
+      .alm-listing:not(.products) .alm-reveal > li p.entry-meta,
+      .alm-listing:not(.products) .alm-paging-content > li p.entry-meta,
+      .alm-listing:not(.products) > li p.entry-meta {
         margin: 0 0 5px;
         opacity: 0.75; }
-    .alm-listing .alm-reveal > li h3,
-    .alm-listing .alm-paging-content > li h3,
-    .alm-listing > li h3 {
+    .alm-listing:not(.products) .alm-reveal > li h3,
+    .alm-listing:not(.products) .alm-paging-content > li h3,
+    .alm-listing:not(.products) > li h3 {
       margin: 0 0 10px; }
-    .alm-listing .alm-reveal > li img,
-    .alm-listing .alm-paging-content > li img,
-    .alm-listing > li img {
+    .alm-listing:not(.products) .alm-reveal > li img,
+    .alm-listing:not(.products) .alm-paging-content > li img,
+    .alm-listing:not(.products) > li img {
       position: absolute;
       left: 0;
       top: 0;
       border-radius: 2px; }
+
+.alm-listing.rtl .alm-reveal > li,
+.alm-listing.rtl .alm-paging-content > li {
+  padding: 0 170px 0 0;
+  text-align: right; }
+  .alm-listing.rtl .alm-reveal > li img,
+  .alm-listing.rtl .alm-paging-content > li img {
+    left: auto;
+    right: 0; }
 
 .alm-placeholder {
   opacity: 0;

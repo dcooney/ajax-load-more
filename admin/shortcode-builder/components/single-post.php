@@ -113,7 +113,33 @@
    		            </div>
    		         </div> 
 		         </section>
+		         
 	         </div> 
+	         
+	         <?php if( is_plugin_active( 'elementor-pro/elementor-pro.php' ) ) { ?>
+				<!-- Elementor -->
+				<section>
+		         <div class="shortcode-builder--label">
+			         <h4><?php _e('Elementor', 'ajax-load-more'); ?></h4>
+		   		 	<p><?php _e('Set Elementor <b>true</b> if you are using Elementor templates to build single posts.', 'ajax-load-more'); ?></p>
+		   		 	<p><a class="button-small" href="https://connekthq.com/elementor-infinite-scrolling/" target="_blank"><?php _e('View Blog Post', 'ajax-load-more'); ?></a></p>
+		   		</div>
+		         <div class="shortcode-builder--fields">
+			         <div class="inner">
+		               <ul>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="elementor-single" value="t" id="elementor_t">
+		                     <label for="elementor_t"><?php _e('True', 'ajax-load-more'); ?></label>
+		                  </li>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="elementor-single" value="f" id="elementor_f" checked="checked">
+		                     <label for="elementor_f"><?php _e('False', 'ajax-load-more'); ?></label>
+		                  </li>
+		               </ul>
+			         </div>
+		         </div>
+				</section>
+			   <?php } ?>
 	         
 	         <section>
    	         <div class="shortcode-builder--label">
@@ -214,7 +240,6 @@
 	         <!-- END Reading Progress Bar -->	         
 	         
 	         <div class="clear"></div>
-	         <hr>
 	         
 	         <p class="warning-callout">
 	            <?php _e('You must add the Single Post shortcode directly to your single template file using the <a href="https://developer.wordpress.org/reference/functions/do_shortcode/" target="_blank">do_shortcode</a> method.', 'ajax-load-more'); ?> <a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a>

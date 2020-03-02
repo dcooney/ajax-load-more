@@ -45,12 +45,14 @@
 <div class="shortcode-parameter-wrap">
    <h2 tabindex="0" class="shortcode-title"><i class="fa fa-cog"></i><?php _e('Display Settings', 'ajax-load-more'); ?></h2>
    <div class="section-wrap">
-
+	   
+	   <p class="section-intro"><?php _e('Display Settings allow you create a custom Ajax Load More experience for your visitors.', 'ajax-load-more'); ?></p>
+	   
 	   <!-- Options -->
 	   <div class="row input alm-instance-options" id="alm-instance-options">
 	      <h3 class="heading" tabindex="0"><?php _e('Options', 'ajax-load-more'); ?></h3>
 	      <div class="expand-wrap">
-
+				
 	         <!-- ID -->
 	         <section class="first">
 		         <div class="shortcode-builder--label">
@@ -181,7 +183,8 @@
 	         <section>
 		         <div class="shortcode-builder--label">
 		            <h4><?php _e('Destroy After', 'ajax-load-more'); ?></h4>
-		   		 	<p><?php _e('Remove Ajax Load More functionality after {<em>n</em>} number of pages have been loaded.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Remove Ajax Load More functionality after {<em>n</em>} number of pages have been loaded.', 'ajax-load-more'); ?></p>		   		 	
+		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/examples/destroy-after/" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
 		   		 </div>
 		         <div class="shortcode-builder--fields alm-destroy-after">
 		            <div class="inner">
@@ -194,7 +197,8 @@
 	         <section>
 		         <div class="shortcode-builder--label">
 	   	         <h4><?php _e('Images Loaded', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Background images are not supported.','ajax-load-more'); ?>"></a></h4>
-		   		 	<p><?php _e('Wait for all images to load before displaying ajax loaded content.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Wait for all images to load before displaying ajax loaded content.', 'ajax-load-more'); ?></p>		   		 	
+		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/examples/images-loaded/" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
 		   		</div>
 		         <div class="shortcode-builder--fields alm-images-loaded">
 			         <div class="inner">
@@ -701,7 +705,9 @@
 <div class="shortcode-parameter-wrap">
    <h2 tabindex="0" class="shortcode-title"><i class="fa fa-database"></i><?php _e('Query Parameters', 'ajax-load-more'); ?></h2>
 	<div class="section-wrap">
-
+		
+		<p class="section-intro"><?php _e('Query Parameters allow you build a custom <b>WP_Query</b> based on Ajax Load More shortcode values.', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('When using Ajax Load More add-ons or extensions not all Query Parameters will be available in the query.', 'ajax-load-more'); ?>"></a></p>
+	   
 	   <!-- Posts Per Page -->
 	   <div class="row input posts_per_page" id="alm-post-page">
 	      <h3 class="heading" tabindex="0"><?php _e('Posts Per Page', 'ajax-load-more'); ?></h3>
@@ -1124,11 +1130,13 @@
 
 	   <!-- Search -->
 	   <div class="row input search-term" id="alm-search">
-	      <h3 class="heading" tabindex="0"><?php _e('Search Term', 'ajax-load-more'); ?></h3>
+	      <h3 class="heading" tabindex="0"><?php _e('Search', 'ajax-load-more'); ?></h3>
 	      <div class="expand-wrap">
 		      <section>
 		         <div class="shortcode-builder--label">
 		   		 	<p><?php _e('Enter a search term to query.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Search uses the default WordPress search, however Ajax Load More does offer integrations with SearchWP and Relevanssi.', 'ajax-load-more'); ?></p>
+		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/examples/search-results/" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
 		   		 </div>
 		         <div class="shortcode-builder--fields">
 		            <div class="inner">
@@ -1159,7 +1167,7 @@
 		         <div class="shortcode-builder--label">
 		            <h4><?php _e('Exclude', 'ajax-load-more'); ?></h4>
 		   		 	<p><?php _e('A comma separated list of post ID\'s to exclude from query.', 'ajax-load-more'); ?></p>
-		   		 	<P><a class="button-small" href="admin.php?page=ajax-load-more-help&section=examples#example-exclude" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
+		   		 	<p><a class="button-small" href="admin.php?page=ajax-load-more-help&section=examples#example-exclude" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
 		   		</div>
 		         <div class="shortcode-builder--fields">
 		            <div class="inner">
@@ -1271,5 +1279,78 @@
 </div>
 <!-- End Query Parameters -->
 
+<!-- ****************************** -->
+
+<!-- Integrations -->
+<div class="shortcode-parameter-wrap">
+   <h2 tabindex="0" class="shortcode-title"><i class="fa fa-handshake-o" aria-hidden="true"></i> <?php _e('Integrations', 'ajax-load-more'); ?></h2>
+	
+	<div class="section-wrap">
+		
+		<p class="section-intro"><?php _e('Ajax Load More provides integration solutions for popular plugins and core WP functionality - when selecting an integration, Ajax Load More will automatically set various parameters on the server side to provide the best experience for users based on the selected integration.', 'ajax-load-more'); ?></a></p>
+		
+		<!-- Archives -->
+	   <div class="row input alm-archive" id="alm-archive">
+	      <h3 class="heading" tabindex="0"><?php _e('Archives', 'ajax-load-more'); ?></h3>
+	      <div class="expand-wrap">
+		      <section class="first">
+		         <div class="shortcode-builder--label">
+		   		 	<p><?php _e('Ajax Load More will automatically create an archive query while viewing site archives.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Taxonomy, category, tag, date (year, month, day) and author archives are currently supported.', 'ajax-load-more'); ?></p>
+		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/archives/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a></p>
+		   		</div>
+		         <div class="shortcode-builder--fields">
+			         <div class="inner">
+		               <ul>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="archive" value="t" id="archive_t">
+		                     <label for="archive_t"><?php _e('True', 'ajax-load-more'); ?></label>
+		                  </li>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="archive" value="f" id="archive_f" checked="checked">
+		                     <label for="archive_f"><?php _e('False', 'ajax-load-more'); ?></label>
+		                  </li>
+		               </ul>
+			         </div>
+		         </div>
+		      </section>
+		      <p class="warning-callout"><?php _e('<b>Note</b>: Do not select Query Parameters other than <b>Posts Per Page</b> and/or <b>Post Type</b> when using the Archives integration. Ajax Load More will automatically create the perfect shortcode for you based on the current archive page.', 'ajax-load-more'); ?></p>
+	      </div>		   
+	   </div>
+	   
+	   <!-- WooCommerce -->	   	
+	   <div class="row input alm-woocommerce" id="alm-woocommerce">
+	      <h3 class="heading" tabindex="0"><?php _e('WooCommerce', 'ajax-load-more'); ?></h3>
+	      <div class="expand-wrap">
+		      <section class="first">
+		         <div class="shortcode-builder--label">
+		   		 	<p><?php _e('Ajax Load More will automatically set WooCommerce configuration options.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Post type, products per page, container classes, sort order and taxonomy/tag archive queries will be set on the server side based on your sites WooCommerce configuration.', 'ajax-load-more'); ?></p>
+		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/woocommerce/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a></p>
+		   		</div>
+		         <div class="shortcode-builder--fields">
+			         <div class="inner">
+				         <?php if( is_plugin_active('woocommerce/woocommerce.php') ) { ?>	
+		               <ul>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="woocommerce" value="t" id="woocommerce_t">
+		                     <label for="woocommerce_t"><?php _e('True', 'ajax-load-more'); ?></label>
+		                  </li>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="woocommerce" value="f" id="woocommerce_f" checked="checked">
+		                     <label for="woocommerce_f"><?php _e('False', 'ajax-load-more'); ?></label>
+		                  </li>
+		               </ul>		               
+							<?php } else { ?>
+							<p class="highlight" style="font-size: 13px; border-radius: 3px; line-height: 1; padding: 6px;">WooCommerce is not installed.</p>
+							<?php }?>
+			         </div>
+		         </div>
+		      </section>
+	      </div>
+	   </div>
+	   
+	</div>
+</div>
 
 <div class="clear"></div>

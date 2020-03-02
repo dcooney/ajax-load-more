@@ -148,6 +148,8 @@ var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/
 
 var resultsText = _interopRequireWildcard(_resultsText);
 
+var _anchorNav = __webpack_require__(/*! ./modules/anchorNav */ "./core/src/js/modules/anchorNav.js");
+
 var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ "./core/src/js/modules/setLocalizedVars.js");
 
 var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
@@ -290,6 +292,7 @@ var alm_is_filtering = false;
       alm.AjaxLoadMore = {};
       alm.addons = {};
       alm.extensions = {};
+      alm.integration = {};
       alm.window = window;
       alm.page = 0;
       alm.posts = 0;
@@ -357,7 +360,7 @@ var alm_is_filtering = false;
       alm.scroll_container = alm.listing.dataset.scrollContainer;
       alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
       alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
-      alm.pause = alm.listing.dataset.pause; // true | false
+      alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
       alm.transition = alm.listing.dataset.transition; // Transition
       alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
       alm.tcc = alm.listing.dataset.transitionContainerClasses; // Transition Container Classes
@@ -367,6 +370,8 @@ var alm_is_filtering = false;
       alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
       alm.posts_per_page = alm.listing.dataset.postsPerPage;
       alm.offset = alm.listing.dataset.offset ? parseInt(alm.listing.dataset.offset) : 0;
+      alm.integration.woocommerce = alm.listing.dataset.woocommerce ? alm.listing.dataset.woocommerce : false;
+      alm.integration.woocommerce = alm.integration.woocommerce === 'true' ? true : false;
 
       // Addon Shortcode Params
       alm.addons.cache = alm.listing.dataset.cache; // Cache add-on
@@ -741,12 +746,32 @@ var alm_is_filtering = false;
 
       // Results Text
       // Render "Showing x of y results" text.
-      alm.resultsText = document.querySelector('.alm-results-text');
+      // If woocommerce, get the default woocommerce results block
+      if (alm.integration.woocommerce) {
+         alm.resultsText = document.querySelectorAll('.woocommerce-result-count');
+         if (alm.resultsText.length < 1) {
+            alm.resultsText = document.querySelectorAll('.alm-results-text');
+         }
+      } else {
+         alm.resultsText = document.querySelectorAll('.alm-results-text');
+      }
       if (alm.resultsText) {
-         alm.resultsText.setAttribute('aria-live', 'polite');
-         alm.resultsText.setAttribute('aria-atomic', 'true');
+         alm.resultsText.forEach(function (results) {
+            results.setAttribute('aria-live', 'polite');
+            results.setAttribute('aria-atomic', 'true');
+         });
       } else {
          alm.resultsText = false;
+      }
+
+      // Anchor Nav
+      // Render 1, 2, 3 etc. when pages are loaded
+      alm.anchorNav = document.querySelector('.alm-anchor-nav');
+      if (alm.anchorNav) {
+         alm.anchorNav.setAttribute('aria-live', 'polite');
+         alm.anchorNav.setAttribute('aria-atomic', 'true');
+      } else {
+         alm.anchorNav = false;
       }
 
       /**  
@@ -786,7 +811,6 @@ var alm_is_filtering = false;
                   }).catch(function (error) {
                      // Error || Page does not yet exist
                      alm.AjaxLoadMore.ajax('standard');
-                     //console.warn(error.message);      					
                   });
                } else {
                   // Standard ALM query
@@ -1112,6 +1136,7 @@ var alm_is_filtering = false;
        * @since 2.6.0
        */
       alm.AjaxLoadMore.success = function (data, is_cache) {
+         var _this = this;
 
          if (alm.addons.single_post) {
             // Get previous page data
@@ -1203,9 +1228,23 @@ var alm_is_filtering = false;
          (0, _almDebug2.default)(alm);
 
          /*
-          *  Set localized variables
+          *  Set localized variables and Results Text
           */
-         (0, _setLocalizedVars2.default)(alm);
+         _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+            return regeneratorRuntime.wrap(function _callee$(_context) {
+               while (1) {
+                  switch (_context.prev = _context.next) {
+                     case 0:
+                        _context.next = 2;
+                        return (0, _setLocalizedVars2.default)(alm);
+
+                     case 2:
+                     case 'end':
+                        return _context.stop();
+                  }
+               }
+            }, _callee, _this);
+         }))();
 
          /*
           *  Render results
@@ -1430,12 +1469,12 @@ var alm_is_filtering = false;
                   alm.el = alm.listing;
 
                   // Wrap almMasonry in anonymous async/await function
-                  _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-                     return regeneratorRuntime.wrap(function _callee$(_context) {
+                  _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
+                     return regeneratorRuntime.wrap(function _callee2$(_context2) {
                         while (1) {
-                           switch (_context.prev = _context.next) {
+                           switch (_context2.prev = _context2.next) {
                               case 0:
-                                 _context.next = 2;
+                                 _context2.next = 2;
                                  return (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
 
                               case 2:
@@ -1447,10 +1486,10 @@ var alm_is_filtering = false;
 
                               case 5:
                               case 'end':
-                                 return _context.stop();
+                                 return _context2.stop();
                            }
                         }
-                     }, _callee, this);
+                     }, _callee2, this);
                   }))().catch(function (e) {
                      console.log('There was an error with ALM Masonry');
                   });
@@ -1516,7 +1555,10 @@ var alm_is_filtering = false;
                            // Remove opacity on element to fix CSS transition
                            setTimeout(function () {
                               pagingContent.style.opacity = '';
-                           }, parseInt(alm.speed) + 25);
+
+                              // Insert Script		
+                              _insertScript2.default.init(pagingContent);
+                           }, parseInt(alm.speed) + 10);
 
                            // Paging addon
                            if (typeof almOnPagingComplete === 'function') {
@@ -1534,8 +1576,9 @@ var alm_is_filtering = false;
                // End Paging
             }
 
-            // ALM Loaded            
+            // ALM Loaded, run complete callbacks       
             imagesLoaded(reveal, function () {
+
                // Nested
                alm.AjaxLoadMore.nested(reveal);
 
@@ -1545,6 +1588,31 @@ var alm_is_filtering = false;
                // almComplete
                if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
                   window.almComplete(alm);
+               }
+
+               // Filters Complete
+               if (alm_is_filtering && alm.addons.filters) {
+                  // Filters Complete            
+                  if (typeof almFilterComplete === 'function') {
+                     // Standard Filtering
+                     window.almFilterComplete();
+                  }
+
+                  // Filter Add-on Complete
+                  if (typeof almFiltersAddonComplete === "function") {
+                     // Filters Add-on
+                     window.almFiltersAddonComplete(el);
+                  }
+                  alm_is_filtering = false;
+               }
+
+               // Tabs Complete
+               if (alm.addons.tabs) {
+                  // Tabs Complete            
+                  if (typeof almTabsComplete === 'function') {
+                     // Standard Filtering
+                     window.almTabsComplete();
+                  }
                }
 
                // Filters onLoad
@@ -1564,7 +1632,7 @@ var alm_is_filtering = false;
                      alm.AjaxLoadMore.triggerDone();
                   }
                }
-               // End ALM Done   
+               // End ALM Done               
             });
             // End ALM Loaded
          }
@@ -1583,6 +1651,36 @@ var alm_is_filtering = false;
                   alm.AjaxLoadMore.resetBtnText();
                }
 
+               // almComplete
+               if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+                  window.almComplete(alm);
+               }
+
+               // Filters Complete
+               if (alm_is_filtering && alm.addons.filters) {
+                  // Filters Complete            
+                  if (typeof almFilterComplete === 'function') {
+                     // Standard Filtering
+                     almFilterComplete();
+                  }
+
+                  // Filter Add-on Complete
+                  if (typeof almFiltersAddonComplete === "function") {
+                     // Filters Add-on
+                     almFiltersAddonComplete(el);
+                  }
+                  alm_is_filtering = false;
+               }
+
+               // Tabs Complete
+               if (alm.addons.tabs) {
+                  // Tabs Complete            
+                  if (typeof almTabsComplete === 'function') {
+                     // Standard Filtering
+                     almTabsComplete();
+                  }
+               }
+
                alm.AjaxLoadMore.triggerDone(); // ALM Done
             }
 
@@ -1596,6 +1694,11 @@ var alm_is_filtering = false;
             }
          }
 
+         /*
+          *  Display anchorNav
+          */
+         (0, _anchorNav.anchorNav)(alm, alm.init);
+
          // Set Focus for A11y
          (0, _setFocus2.default)(alm, reveal, total, alm_is_filtering);
 
@@ -1607,8 +1710,8 @@ var alm_is_filtering = false;
             alm.main.classList.remove('alm-is-filtering');
          }
 
-         // Set flags
-         alm_is_filtering = alm.init = false;
+         // Set init flag
+         alm.init = false;
       };
 
       /**
@@ -2185,6 +2288,11 @@ var alm_is_filtering = false;
          if (alm.addons.single_post) {
             alm.AjaxLoadMore.getSinglePost(); // Set next post on load
             alm.loading = false;
+
+            /*
+            *  Display anchorNav
+            */
+            (0, _anchorNav.anchorNav)(alm, alm.init, true);
          }
 
          // Preloaded + SEO && !Paging
@@ -2222,6 +2330,11 @@ var alm_is_filtering = false;
             if (alm.resultsText) {
                resultsText.almInitResultsText(alm, 'preloaded');
             }
+
+            /*
+            *  Display anchorNav
+            */
+            (0, _anchorNav.anchorNav)(alm, alm.init, true);
          }
 
          // Next Page Add-on
@@ -2246,6 +2359,11 @@ var alm_is_filtering = false;
             if (alm.resultsText) {
                resultsText.almInitResultsText(alm, 'nextpage');
             }
+
+            /*
+            *  Display anchorNav
+            */
+            (0, _anchorNav.anchorNav)(alm, alm.init, true);
          }
 
          // Window Load (Masonry + Preloaded)
@@ -2253,12 +2371,12 @@ var alm_is_filtering = false;
             if (alm.is_masonry_preloaded) {
 
                // Wrap almMasonry in anonymous async/await function
-               _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-                  return regeneratorRuntime.wrap(function _callee2$(_context2) {
+               _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+                  return regeneratorRuntime.wrap(function _callee3$(_context3) {
                      while (1) {
-                        switch (_context2.prev = _context2.next) {
+                        switch (_context3.prev = _context3.next) {
                            case 0:
-                              _context2.next = 2;
+                              _context3.next = 2;
                               return (0, _masonry2.default)(alm, true, false);
 
                            case 2:
@@ -2266,10 +2384,10 @@ var alm_is_filtering = false;
 
                            case 3:
                            case 'end':
-                              return _context2.stop();
+                              return _context3.stop();
                         }
                      }
-                  }, _callee2, this);
+                  }, _callee3, this);
                }))().catch(function (e) {
                   console.log('There was an error with ALM Masonry');
                });
@@ -3624,11 +3742,164 @@ Object.defineProperty(exports, "__esModule", {
 
 var almDebug = function almDebug(alm) {
   if (alm && alm.debug) {
-    console.log('alm_debug info:', alm.debug);
+    var obj = {
+      'query': alm.debug,
+      'localize': alm.localize
+    };
+    console.log('ALM Debug:', obj);
   }
 };
 
 exports.default = almDebug;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/anchorNav.js":
+/*!******************************************!*\
+  !*** ./core/src/js/modules/anchorNav.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.anchorNav = anchorNav;
+exports.clearAnchorNav = clearAnchorNav;
+
+var _ajaxLoadMore = __webpack_require__(/*! ../ajax-load-more */ "./core/src/js/ajax-load-more.js");
+
+/**  
+ * Create a numbered anchored navigation
+ *
+ * @param {object} alm
+ * @param {boolean} init
+ * @since 5.2 
+ */
+function anchorNav(alm) {
+	var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+	var from_preloaded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+	var totalPosts = parseInt(alm.localize.post_count);
+	if (totalPosts == 0) {
+		return false; // Exit if zero posts
+	}
+
+	if (alm && alm.anchorNav && alm.transition_container && alm.transition !== 'masonry') {
+
+		var offset = alm.anchorNav.dataset.offset ? parseInt(alm.anchorNav.dataset.offset) : 30;
+		var startPage = alm.start_page ? parseInt(alm.start_page) : 0;
+		var filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
+		var nextpageStartPage = alm.addons.nextpage_startpage ? parseInt(alm.addons.nextpage_startpage) : 0;
+		var page = parseInt(alm.page);
+		var preloaded = alm.addons.preloaded === 'true' ? true : false;
+
+		// Exit if Paging or Next Page
+		if (alm.addons.paging || alm.addons.nextpage) {
+			return false;
+		}
+
+		// Init
+
+		if (init) {
+			setTimeout(function () {
+				// Paged results
+				if (alm.addons.seo && startPage > 1 || alm.addons.filters && filterStartPage > 1 || alm.addons.nextpage && nextpageStartPage > 1) {
+					// SEO
+					if (alm.addons.seo && startPage > 1) {
+						for (var i = 0; i < startPage; i++) {
+							createAnchorButton(alm, i, offset);
+						}
+					}
+					// Filters
+					if (alm.addons.filters && filterStartPage > 1) {
+						for (var _i = 0; _i < filterStartPage; _i++) {
+							createAnchorButton(alm, _i, offset);
+						}
+					}
+					// Nextpage
+					if (alm.addons.nextpage && nextpageStartPage > 1) {
+						for (var _i2 = 0; _i2 < nextpageStartPage; _i2++) {
+							createAnchorButton(alm, _i2, offset);
+						}
+					}
+				} else {
+					if (!from_preloaded && preloaded) {
+						page = page + 1;
+					}
+					createAnchorButton(alm, page, offset);
+				}
+			}, 100);
+		} else {
+
+			// Preloaded
+			if (preloaded) {
+				if (alm.addons.seo && startPage > 0) {
+					page = page;
+				} else if (alm.addons.filters && filterStartPage > 0) {
+					page = page;
+				} else {
+					page = page + 1;
+				}
+			}
+
+			createAnchorButton(alm, page, offset);
+		}
+	}
+}
+
+// Clear clearAnchorNav
+function clearAnchorNav() {
+	var anchorNav = document.querySelector('.alm-anchor-nav');
+	if (anchorNav) {
+		anchorNav.innerHTML = '';
+	}
+}
+
+// Create Standar Page Button
+function createAnchorButton(alm, page, offset) {
+
+	var button = document.createElement('button');
+	button.type = "button";
+
+	page = parseInt(page) + 1;
+	button.innerHTML = getAnchorLabel(alm, page);
+	button.dataset.page = page;
+	alm.anchorNav.appendChild(button);
+
+	button.addEventListener('click', function (e) {
+		var page = this.dataset.page;
+		var target = document.querySelector('.alm-reveal:nth-child(' + page + ')') || document.querySelector('.alm-nextpage:nth-child(' + page + ')');
+		if (!target) {
+			return false;
+		}
+		var top = typeof _ajaxLoadMore.getOffset === 'function' ? (0, _ajaxLoadMore.getOffset)(target).top : target.offsetTop;
+		(0, _ajaxLoadMore.almScroll)(top - offset);
+	});
+}
+
+// Get Button Label
+function getAnchorLabel(alm, page) {
+
+	var label = page;
+
+	// Single Posts
+	if (alm.addons.single_post) {
+		var element = document.querySelector('.alm-reveal.alm-single-post[data-page="' + (page - 1) + '"]');
+		label = element ? element.dataset.title : label;
+	}
+
+	// Dynamic function name
+	var funcName = 'almAnchorLabel_' + alm.id;
+	if (typeof window[funcName] === 'function') {
+		label = window[funcName](page, label);
+	}
+
+	return label;
+}
 
 /***/ }),
 
@@ -3753,6 +4024,8 @@ var _fadeOut = __webpack_require__(/*! ./fadeOut */ "./core/src/js/modules/fadeO
 
 var _fadeOut2 = _interopRequireDefault(_fadeOut);
 
+var _anchorNav = __webpack_require__(/*! ./anchorNav */ "./core/src/js/modules/anchorNav.js");
+
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -3794,6 +4067,9 @@ var almFilter = function almFilter(transition, speed, data) {
 			almFilterTransition(transition, speed, data, element, type);
 		});
 	}
+
+	// Clear anchor nav if required
+	(0, _anchorNav.clearAnchorNav)();
 };
 exports.default = almFilter;
 
@@ -3876,6 +4152,8 @@ var almCompleteFilterTransition = function almCompleteFilterTransition(speed, da
 		paging.style.opacity = 0;
 	}
 
+	// Reset Preloaded Amount
+	data.preloadedAmount = 0;
 	// Dispatch Filters
 	almSetFilters(speed, data, el, type);
 };
@@ -3969,18 +4247,18 @@ var almSetFilters = function almSetFilters() {
 
 	switch (type) {
 
-		case 'filter':
-			// Filters Complete            
-			if (typeof almFilterComplete === 'function') {
-				// Standard Filtering
-				almFilterComplete();
-			}
-			// Filter Add-on Complete
-			if (typeof almFiltersAddonComplete === "function") {
-				// Filters Add-on
-				almFiltersAddonComplete(el);
-			}
-			break;
+		/*
+  case 'filter' : 
+  // Filters Complete            
+  if (typeof almFilterComplete === 'function') { // Standard Filtering
+    almFilterComplete();
+  }
+  // Filter Add-on Complete
+  if (typeof almFiltersAddonComplete === "function") { // Filters Add-on
+    almFiltersAddonComplete(el);
+  }
+  break;
+  */
 
 		case 'tab':
 			// Tabs Complete            
@@ -4395,7 +4673,7 @@ function hidePlaceholder(alm) {
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+  value: true
 });
 exports.almResultsText = almResultsText;
 exports.almGetResultsText = almGetResultsText;
@@ -4408,12 +4686,12 @@ exports.almInitResultsText = almInitResultsText;
  * @since 5.1
  */
 function almResultsText(alm) {
-   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-   if (!alm.resultsText) return false;
-   var resultsType = type === 'nextpage' ? 'nextpage' : 'standard';
+  if (!alm.resultsText) return false;
+  var resultsType = type === 'nextpage' ? 'nextpage' : 'standard';
 
-   almGetResultsText(alm, resultsType);
+  almGetResultsText(alm, resultsType);
 }
 
 /**  
@@ -4424,40 +4702,46 @@ function almResultsText(alm) {
  *  @since 4.1
  */
 function almGetResultsText(alm) {
-   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-   if (!alm.resultsText) return false;
+  if (!alm.resultsText) return false;
 
-   var current = 0;
-   var total = 0;
-   var preloaded = alm.addons.preloaded === 'true' ? true : false;
-   var paging = alm.addons.paging ? true : false;
-   var posts_per_page = alm.orginal_posts_per_page;
+  var page = 0;
+  var pages = 0;
+  var post_count = 0;
+  var total_posts = 0;
+  var preloaded = alm.addons.preloaded === 'true' ? true : false;
+  var paging = alm.addons.paging ? true : false;
+  var posts_per_page = alm.orginal_posts_per_page;
 
-   switch (type) {
+  switch (type) {
 
-      // Nextpage
-      case 'nextpage':
+    // Nextpage
+    case 'nextpage':
 
-         current = parseInt(alm.localize.page);
-         total = parseInt(alm.localize.total_posts);
-         almRenderResultsText(alm.resultsText, current, total);
+      page = parseInt(alm.localize.page);
+      post_count = page;
+      pages = parseInt(alm.localize.total_posts);
+      total_posts = pages;
+      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
 
-         break;
+      break;
 
-      default:
+    default:
 
-         current = parseInt(alm.page) + 1;
-         total = Math.ceil(alm.localize.total_posts / posts_per_page);
+      page = parseInt(alm.page) + 1;
+      pages = Math.ceil(alm.localize.total_posts / posts_per_page);
+      post_count = alm.localize.post_count;
+      total_posts = alm.localize.total_posts;
 
-         // Add 1 page if Preloaded
-         if (preloaded) {
-            current = paging ? alm.page + 1 : current + 1;
-         }
+      // Add 1 page if Preloaded
+      if (preloaded) {
+        page = paging ? alm.page + 1 : page + 1;
+      }
 
-         almRenderResultsText(alm.resultsText, current, total);
+      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
 
-   }
+  }
 }
 
 /**  
@@ -4468,57 +4752,66 @@ function almGetResultsText(alm) {
  *  @since 4.1
  */
 function almInitResultsText(alm) {
-   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-   if (!alm.resultsText) return false;
+  if (!alm.resultsText) return false;
 
-   var current = 0;
-   var total = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
+  var page = 0;
+  var pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
+  var post_count = alm.localize.post_count;
+  var total_posts = alm.localize.total_posts;
 
-   switch (type) {
+  switch (type) {
 
-      // Nextpage
-      case 'nextpage':
+    // Nextpage
+    case 'nextpage':
+      page = alm.addons.nextpage_startpage;
+      post_count = page;
+      almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts);
+      break;
 
-         almRenderResultsText(alm.resultsText, alm.addons.nextpage_startpage, alm.localize.total_posts);
+    // Preloaded
+    case 'preloaded':
+      page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
+      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
+      break;
 
-         break;
+    default:
 
-      // Preloaded
-      case 'preloaded':
+      console.log('No results to set.');
 
-         current = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
-         almRenderResultsText(alm.resultsText, current, total);
-
-         break;
-
-      default:
-
-         console.log('Nothing to set.');
-
-   }
+  }
 }
 
 /**  
  *  Render `Showing {x} of {y} results` text.
  * 
  *  @param {Element} el
- *  @param {String} current
- *  @param {String} total
+ *  @param {String} page
+ *  @param {String} pages
+ *  @param {String} post_count
+ *  @param {String} total_posts
  *  @since 4.1
  */
-var almRenderResultsText = function almRenderResultsText(el, current, total) {
+var almRenderResultsText = function almRenderResultsText(el, page, pages, post_count, total_posts) {
 
-   total = parseInt(total);
-   var text = total > 0 ? alm_localize.results_text : alm_localize.no_results_text;
+  el.forEach(function (result) {
 
-   if (total > 0) {
-      text = text.replace('{num}', '<span class="alm-results-current">' + current + '</span>');
-      text = text.replace('{total}', '<span class="alm-results-total">' + total + '</span>');
-      el.innerHTML = text;
-   } else {
-      el.innerHTML = text;
-   }
+    pages = parseInt(pages);
+    var text = pages > 0 ? alm_localize.results_text : alm_localize.no_results_text;
+
+    if (pages > 0) {
+      text = text.replace('{num}', '<span class="alm-results-num">' + page + '</span>'); // Deprecated
+      text = text.replace('{page}', '<span class="alm-results-page">' + page + '</span>');
+      text = text.replace('{total}', '<span class="alm-results-total">' + pages + '</span>'); // Deprecated
+      text = text.replace('{pages}', '<span class="alm-results-pages">' + pages + '</span>');
+      text = text.replace('{post_count}', '<span class="alm-results-post_count">' + post_count + '</span>');
+      text = text.replace('{total_posts}', '<span class="alm-results-total_posts">' + total_posts + '</span>');
+      result.innerHTML = text;
+    } else {
+      result.innerHTML = text;
+    }
+  });
 };
 
 /***/ }),
@@ -4654,7 +4947,7 @@ var moveFocus = function moveFocus() {
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 
 var _resultsText = __webpack_require__(/*! ./resultsText */ "./core/src/js/modules/resultsText.js");
@@ -4662,15 +4955,15 @@ var _resultsText = __webpack_require__(/*! ./resultsText */ "./core/src/js/modul
 var resultsText = _interopRequireWildcard(_resultsText);
 
 function _interopRequireWildcard(obj) {
-   if (obj && obj.__esModule) {
-      return obj;
-   } else {
-      var newObj = {};if (obj != null) {
-         for (var key in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
-         }
-      }newObj.default = obj;return newObj;
-   }
+	if (obj && obj.__esModule) {
+		return obj;
+	} else {
+		var newObj = {};if (obj != null) {
+			for (var key in obj) {
+				if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key];
+			}
+		}newObj.default = obj;return newObj;
+	}
 }
 
 /**  
@@ -4682,31 +4975,56 @@ function _interopRequireWildcard(obj) {
 
 var setLocalizedVars = function setLocalizedVars(alm) {
 
-   var type = 'standard';
+	return new Promise(function (resolve) {
 
-   // Current Page `page`
-   if (alm.addons.nextpage) {
-      type = 'nextpage';
-      if (alm.addons.paging) {
-         alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
-      } else {
-         alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
-      }
-   } else {
-      alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
-   }
+		var type = 'standard';
 
-   // Total Posts `total_posts`.
-   // Only update if !Preloaded && !Nextpage
-   if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage) {
-      alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
-   }
+		// Current Page `page`
+		if (alm.addons.nextpage) {
+			type = 'nextpage';
+			if (alm.addons.paging) {
+				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+			} else {
+				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
+			}
+		} else {
+			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+		}
 
-   // Set Results Text (if required)
-   resultsText.almResultsText(alm, type);
+		// Total Posts `total_posts`.
+		// Only update if !Preloaded && !Nextpage
+		if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage) {
+			alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
+		}
+
+		// Viewing
+		alm.AjaxLoadMore.setLocalizedVar('post_count', almSetPostCount(alm));
+
+		// Set Results Text (if required)
+		resultsText.almResultsText(alm, type);
+
+		resolve(true);
+	});
 };
 
 exports.default = setLocalizedVars;
+
+/**
+ * almSetViewing
+ * Get total post_count
+ */
+
+function almSetPostCount(alm) {
+	var pc = parseInt(alm.posts);
+	var pa = parseInt(alm.addons.preloaded_amount);
+	var count = pc + pa;
+	count = alm.start_page > 1 ? count - pa : count; // SEO
+	count = alm.addons.filters_startpage > 1 ? count - pa : count; // Filters
+	count = alm.addons.single_post ? count + 1 : count; // Single Posts	
+	count = alm.addons.nextpage ? count + 1 : count; // Next Page
+
+	return count;
+}
 
 /***/ }),
 
