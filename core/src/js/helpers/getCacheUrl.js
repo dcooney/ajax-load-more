@@ -5,7 +5,7 @@
  * @param {*} array | An array of elements
  * @since 5.0
  */
-let almGetCacheUrl = function( alm ) {
+let getCacheUrl = function( alm ) {
       
    if(!alm){
       return false;
@@ -57,4 +57,4 @@ let almGetCacheUrl = function( alm ) {
    return cache_url;
 };
 
-export default almGetCacheUrl;
+export default getCacheUrl;

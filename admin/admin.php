@@ -805,6 +805,27 @@ function alm_admin_menu() {
       add_action( 'load-' . $alm_filters_page, 'alm_set_admin_nonce' );
    }
 
+
+	// WooCommerce
+   if(has_action('alm_woocommerce_installed') && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins')))){
+
+	   if(has_action('alm_cache_installed') || has_action('alm_filters_installed')){
+		   $before_link = '<span style="display:block;">';
+		}
+		$wooIcon = '<style>.dashicons.alm-woo:before{font-family: WooCommerce!important; content: "\e03d"; font-size: 16px; margin-top: 2px;}</style>';
+
+      $alm_woocommerce_page = add_submenu_page(
+         'ajax-load-more',
+         __('WooCommerce', 'ajax-load-more'),
+         $before_link . $wooIcon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" '.$style_link_icon.'></span> '. __('WooCommerce', 'ajax-load-more') . $after_link,
+         'edit_theme_options',
+         'ajax-load-more-woocommerce',
+         'alm_woocommerce_page'
+      );
+      add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
+      add_action( 'load-' . $alm_woocommerce_page, 'alm_set_admin_nonce' );
+   }
+
    //Add our admin scripts
    add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
    add_action( 'load-' . $alm_settings_page, 'alm_set_admin_nonce' );
@@ -987,6 +1008,18 @@ function alm_cache_page(){
 function alm_filters_page(){
    include_once( ALM_FILTERS_PATH . 'admin/functions.php');
    include_once( ALM_FILTERS_PATH . 'admin/views/filters.php');
+}
+
+
+/*
+*  alm_woocommerce_page
+*  WooCommerce Add-on page
+*
+*  @since 5.3.0
+*/
+
+function alm_woocommerce_page(){
+   include_once( ALM_WOO_PATH. 'admin/views/woocommerce.php');
 }
 
 
@@ -1219,7 +1252,8 @@ function alm_update_repeater(){
 		if($t === 'default')	$n = 'default';
 	   if($t === 'unlimited') $table_name = $wpdb->prefix . "alm_unlimited";
 
-	   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
+	   //$the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
+	   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '".esc_sql($n)."'");
 
 	   echo $the_repeater; // Return repeater value
 
@@ -1449,6 +1483,7 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	/*
 	add_settings_field(  // Scroll to top on load
 		'_alm_scroll_top',
 		__('Top of Page', 'ajax-load-more' ),
@@ -1456,6 +1491,7 @@ function alm_admin_init(){
 		'ajax-load-more',
 		'alm_general_settings'
 	);
+	*/
 
 	add_settings_field(  // Uninstall
 		'_alm_uninstall',
@@ -1760,6 +1796,9 @@ function alm_btn_color_callback() {
 	 $selected6 = '';
 	 if($type == 'white') $selected6 = 'selected="selected"';
 
+	 $selected13 = '';
+	 if($type == 'light-grey') $selected13 = 'selected="selected"';
+
 	 $selected7 = '';
 	 if($type == 'infinite classic') $selected7 = 'selected="selected"';
 
@@ -1783,31 +1822,42 @@ function alm_btn_color_callback() {
     $html .= '</label>';
     $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
 
-    $html .= '<optgroup label="'. __('Button', 'ajax-load-more') .'">';
-    $html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
-    $html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
-    $html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
-    $html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
-    $html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
-    $html .= '</optgroup>';
+	    $html .= '<optgroup label="'. __('Button Style (Dark)', 'ajax-load-more') .'">';
+		    $html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
+		    $html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
+		    $html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
+		    $html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
+		    $html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
+		 $html .= '</optgroup>';
+		 $html .= '<optgroup label="'. __('Button Style (Light)', 'ajax-load-more') .'">';
+		    $html .= '<option value="white" class="alm-color white" ' . $selected6 .'>White</option>';
+		    $html .= '<option value="light-grey" class="alm-color light-grey" ' . $selected13 .'>Light Grey</option>';
+	    $html .= '</optgroup>';
+	
+	    $html .= '<optgroup label="'. __('Infinite Scroll (No Button)', 'ajax-load-more') .'">';
+		    $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
+		    $html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
+		    $html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 .'>Circle Fill</option>';
+		    $html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 .'>Fading Blocks</option>';
+		    $html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 .'>Fading Circles</option>';
+		    $html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 .'>Chasing Arrows</option>';
+	    $html .= '</optgroup>';
 
-    $html .= '<optgroup label="'. __('Infinite Scroll (No Button)', 'ajax-load-more') .'">';
-    $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
-    $html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
-    $html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 .'>Circle Fill</option>';
-    $html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 .'>Fading Blocks</option>';
-    $html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 .'>Fading Circles</option>';
-    $html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 .'>Chasing Arrows</option>';
-    $html .= '</optgroup>';
-
-    $html .= '</select>';
+   $html .= '</select>';
+    
+   // Set loading class for infinite type only
+	$loadingClass = (strpos($type, 'infinite') !== false) ? ' loading' : '';
 
     $html .= '<div class="clear"></div>';
 	 $html .= '<div class="alm-btn-wrap">';
-	 $html .= '<div class="ajax-load-more-wrap core '.$type.'"><span>'.__('Preview', 'ajax-load-more') .'</span><button class="alm-load-more-btn loading" disabled="disabled">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button></div>';
-	 $html .= '</div>';
+		 $html .= '<div class="ajax-load-more-wrap core '.$type.'">';
+		 	$html .='<span>'.__('Click to Preview', 'ajax-load-more') .'</span>';
+			$html .= '<button style="cursor: pointer;" type="button" class="alm-load-more-btn'. $loadingClass .'" id="test-alm-button">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button>';
 
-    echo $html;
+		 $html .= '</div>';
+	$html .= '</div>';
+
+   echo $html;
 }
 
 

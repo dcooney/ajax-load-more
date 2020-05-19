@@ -48,18 +48,20 @@
 	&--wrap{
    	display: flex;
    	flex-wrap: wrap;
-   	justify-content: space-between;
+   	width: calc(100% + 10px);
+   	margin-left: -5px;
 	}
 	
 	.item{
-		width: 49.5%;
+		width: calc(50% - 10px);
    	display: flex;    
-   	margin-bottom: 10px;
+   	margin: 0 5px 10px;
    	@media screen and (min-width: 1500px){
-      	width: 32.775%;
+			width: calc(33.333% - 10px);
    	}
    	@media screen and (max-width: 480px){
       	width: 100%;
+      	margin: 0 0 10px;
    	}
 		h2, p, img, .state{
 			transition: all 0.15s ease;
@@ -72,8 +74,8 @@
    		border: 1px solid #e1e1e1;
          transition: all 0.15s ease;   
          border-radius: 2px;
-         @media screen and (min-width: 768px) and (max-width: 1100px){
-            padding: 0 40px;  
+         @media screen and (max-width: 1100px){
+            padding: 0 10px 20px;  
          }
          &:hover,
          &:focus{
@@ -88,8 +90,8 @@
 			position: relative;
 			min-height: 110px;
 			display: flex;
-			align-items: center;
-			@media screen and (min-width: 768px) and (max-width: 1100px){
+			align-items: flex-start;
+			@media screen and (max-width: 1100px){
    		   display: block;	
    		   text-align: center;
    		   img{
@@ -102,10 +104,7 @@
 			img{ 
 				width: 110px;
 				height: auto;
-				margin-right: 15px;
-				@media screen and (max-width: 768px){
-   				display: none;
-				}
+				margin-right: 20px;
 			}
 			a{
 				text-decoration: none;
@@ -141,6 +140,21 @@
 					padding-top: 2px;
 					opacity: 0;
 					transition: opacity 0.15s ease; 
+				}
+			}
+			.highlight-addon{
+				padding-top: 15px;
+				font-size: 12px;
+				margin: 0;
+				
+				span{
+					display: inline-block;
+					padding: 5px;
+					position: relative;
+					left: -5px;
+					line-height: 1;
+					background-color: $yellow;
+					font-weight: 500;
 				}
 			}
 		}

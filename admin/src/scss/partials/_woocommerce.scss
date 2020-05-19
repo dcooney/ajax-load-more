@@ -1,0 +1,33 @@
+.woocommerce-intro{
+}
+.woocommerce-help{
+	&--item{
+		width: 100%;
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		padding-top: 20px;
+		margin-top: 20px;
+		border-top: 1px solid #efefef; 
+		div{
+			flex: 1;
+			padding: 20px 20px 20px 30px;
+			@media screen and (max-width: 600px){
+				padding: 20px 0;	
+			}
+		}
+		.img{
+			padding: 0;
+			flex: none;
+			width: 30%;
+			@media screen and (max-width: 600px){
+				display: none;
+			}
+			img{
+				border: 1px solid #efefef;
+				padding: 2px;
+				border-radius: 4px;
+			}
+		}
+	}
+}

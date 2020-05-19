@@ -1,0 +1,32 @@
+.alm-toc{
+	display: flex;
+	width: auto;
+	padding: 10px 0;
+	button{
+		background: #f7f7f7;
+		border-radius: 4px;
+		transition: all 0.15s ease;
+		outline: none;
+		border: 1px solid #efefef;
+		box-shadow: none;
+		color: #454545;
+		cursor: pointer;
+		font-size: 14px;
+      font-weight: 500;
+      padding: 7px 10px;
+      line-height: 1;
+      margin: 0 5px 0 0;
+      height: auto; 
+      &:hover,
+      &:focus{
+	      border-color: #ccc;
+	      color: #222;
+      }   
+      &:hover{
+	      text-decoration: underline;
+      }
+      &:focus{
+	      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+      }     
+	}
+}

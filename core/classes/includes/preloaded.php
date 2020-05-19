@@ -305,15 +305,15 @@ else {
          $alm_current++;	
          
          // Call to Action [Before]
-			if($cta && has_action('alm_cta_inc') && $cta_pos === 'before'){
-	          $output .= ($alm_current == $cta_val) ? apply_filters('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true) : '';
+			if($cta === 'true' && has_action('alm_cta_inc') && $cta_pos === 'before'){
+	         $output .= ($alm_current == $cta_val) ? apply_filters('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true) : '';
 		   }	   
 
 			// Repeater Template
 			$output .= alm_loop($repeater, $type, $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current);
 
 	   	// Call to Action [After]
-			if($cta && has_action('alm_cta_inc') && $cta_pos === 'after'){
+			if($cta === 'true' && has_action('alm_cta_inc') && $cta_pos === 'after'){
 	         $output .= ($alm_current == $cta_val) ? apply_filters('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true) : '';
 		   }
 
@@ -333,7 +333,7 @@ else {
       
 
 	endif;
-
+	
 
 	// Add localized ALM JS variables
 	ALM_LOCALIZE::add_localized_var('total_posts', $alm_total_posts, $localize_id);

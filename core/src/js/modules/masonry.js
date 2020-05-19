@@ -2,6 +2,9 @@ import almFadeIn from './fadeIn';
 import almAppendChildren from '../helpers/almAppendChildren';
 import almDomParser from '../helpers/almDomParser';
 import srcsetPolyfill from '../helpers/srcsetPolyfill';
+import stripEmptyNodes from '../helpers/stripEmptyNodes';
+import { createMasonrySEOPages, createMasonrySEOPage } from '../addons/seo';
+import setFocus from './setFocus';
 let imagesLoaded = require('imagesloaded');
 
 /**
@@ -95,6 +98,11 @@ let almMasonry = (alm, init, filtering) => {
 							defaults[key] = alm_masonry_vars[key];					
 						});
 					}				
+					
+					
+					// Create SEO URL, if available
+					let data = container.querySelectorAll(selector);
+					data = createMasonrySEOPages(alm, Array.prototype.slice.call(data));
 	            
 	            // Init Masonry, delay to allow time for items to be added to the page
 	            setTimeout(function(){
@@ -102,7 +110,7 @@ let almMasonry = (alm, init, filtering) => {
 	            	// Fade In
 						almFadeIn(container.parentNode, speed); 
 						resolve(true);
-	            }, 100 );				
+	            }, 25 );				
 					
 					
 				});
@@ -112,7 +120,7 @@ let almMasonry = (alm, init, filtering) => {
 			else{						
 							
 				// Loop all items and create array of node elements
-				let data = almDomParser(html, 'text/html');
+				let data = stripEmptyNodes(almDomParser(html, 'text/html'));
 				
 				if(data){   	
 					
@@ -122,9 +130,17 @@ let almMasonry = (alm, init, filtering) => {
 	   			// Run srcSet polyfill
 	   			srcsetPolyfill(container, alm.ua);
 	   			
-	   			// Confirm imagesLoaded & append
+	   			// imagesLoaded & append
 	   			imagesLoaded( container, function() {
+						
 						alm.msnry.appended( data );
+						
+						// Set Focus
+						setFocus(alm, data, data.length, false);
+						
+						// Create SEO URL, if required
+						createMasonrySEOPage(alm, data[0]);
+						
 						resolve(true);			
 					});
 					

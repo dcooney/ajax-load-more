@@ -2,12 +2,14 @@
  * Ajax Load More
  * http://wordpress.org/plugins/ajax-load-more/
  *
- * Copyright 2015-2019 Connekt Media - https://connekthq.com
+ * Copyright 2015-2020 Connekt Media - https://connekthq.com
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
+ * Twitter: @ajaxloadmore
+ * Twitter: @connekthq
 */
 .alm-btn-wrap {
   display: block;
@@ -22,20 +24,22 @@
     content: ''; }
   .alm-btn-wrap .alm-load-more-btn {
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 500;
     width: auto;
-    height: 42px;
-    line-height: 42px;
+    height: 43px;
+    line-height: 1;
     background: #ed7070;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
     color: #fff;
     border: none;
     border-radius: 4px;
-    margin: 0 0 4px;
+    margin: 0;
     padding: 0 20px;
     display: inline-block;
     position: relative;
-    -webkit-transition: all 0.35s ease;
-    transition: all 0.35s ease;
+    -webkit-transition: all 0.3s ease;
+    transition: all 0.3s ease;
     text-align: center;
     text-decoration: none;
     -webkit-appearance: none;
@@ -51,12 +55,14 @@
     /* Loading Icon */
     /* Loading :before */ }
     .alm-btn-wrap .alm-load-more-btn:hover, .alm-btn-wrap .alm-load-more-btn.loading {
-      background-color: #e06464;
+      background-color: #e06161;
+      -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.09);
+              box-shadow: 0 1px 3px rgba(0, 0, 0, 0.09);
       color: #fff;
       text-decoration: none; }
     .alm-btn-wrap .alm-load-more-btn:active {
-      -webkit-box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
-              box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.1);
+      -webkit-box-shadow: none;
+              box-shadow: none;
       text-decoration: none; }
     .alm-btn-wrap .alm-load-more-btn.loading {
       cursor: default;
@@ -75,7 +81,7 @@
     .alm-btn-wrap .alm-load-more-btn.loading:before {
       background: #fff url("../../img/ajax-loader.gif") no-repeat center center;
       width: 30px;
-      height: 30px;
+      height: 31px;
       margin: 6px;
       border-radius: 3px;
       display: inline-block;
@@ -88,51 +94,97 @@
       -webkit-transition: width 0.5s ease-in-out;
       transition: width 0.5s ease-in-out; }
 
-.alm-masonry {
-  display: block;
-  overflow: hidden;
-  clear: both; }
-
-/* Blue */
-.ajax-load-more-wrap.blue .alm-load-more-btn {
-  background-color: #0081bf; }
-  .ajax-load-more-wrap.blue .alm-load-more-btn:hover, .ajax-load-more-wrap.blue .alm-load-more-btn.loading, .ajax-load-more-wrap.blue .alm-load-more-btn.done {
-    background-color: #0073aa; }
-
-/* green */
-.ajax-load-more-wrap.green .alm-load-more-btn {
-  background-color: #6fca68; }
-  .ajax-load-more-wrap.green .alm-load-more-btn:hover, .ajax-load-more-wrap.green .alm-load-more-btn.loading, .ajax-load-more-wrap.green .alm-load-more-btn.done {
-    background-color: #64b95e; }
-
-/* red */
-.ajax-load-more-wrap.red .alm-load-more-btn {
-  background-color: #ca4b4b; }
-  .ajax-load-more-wrap.red .alm-load-more-btn:hover, .ajax-load-more-wrap.red .alm-load-more-btn.loading, .ajax-load-more-wrap.red .alm-load-more-btn.done {
-    background-color: #b13b3b; }
-
-/* purple */
-.ajax-load-more-wrap.purple .alm-load-more-btn {
-  background-color: #a86bb9; }
-  .ajax-load-more-wrap.purple .alm-load-more-btn:hover, .ajax-load-more-wrap.purple .alm-load-more-btn.loading, .ajax-load-more-wrap.purple .alm-load-more-btn.done {
-    background-color: #9963a8; }
-
-/* grey */
-.ajax-load-more-wrap.grey .alm-load-more-btn {
-  background-color: #888; }
-  .ajax-load-more-wrap.grey .alm-load-more-btn:hover, .ajax-load-more-wrap.grey .alm-load-more-btn.loading, .ajax-load-more-wrap.grey .alm-load-more-btn.done {
-    background-color: #777; }
-
 /* white */
 .ajax-load-more-wrap.white .alm-load-more-btn {
   background-color: #fff;
-  color: #666;
-  border: 1px solid #efefef; }
-  .ajax-load-more-wrap.white .alm-load-more-btn:hover, .ajax-load-more-wrap.white .alm-load-more-btn.loading, .ajax-load-more-wrap.white .alm-load-more-btn.done {
-    background-color: #efefef;
-    color: #333; }
+  color: #787878;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  -webkit-transition: none;
+  transition: none;
+  outline: none; }
+  .ajax-load-more-wrap.white .alm-load-more-btn:focus, .ajax-load-more-wrap.white .alm-load-more-btn:hover, .ajax-load-more-wrap.white .alm-load-more-btn.loading {
+    background-color: #fff;
+    color: #333;
+    border-color: #aaaaaa; }
   .ajax-load-more-wrap.white .alm-load-more-btn.done {
-    border-color: #fff; }
+    background-color: #fff;
+    color: #444;
+    border-color: #ccc; }
+  .ajax-load-more-wrap.white .alm-load-more-btn.loading {
+    color: rgba(255, 255, 255, 0) !important;
+    outline: none !important;
+    background-color: transparent;
+    border-color: transparent !important;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+    padding-left: 20px; }
+    .ajax-load-more-wrap.white .alm-load-more-btn.loading:before {
+      margin: 0;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      background-image: url("../../img/ajax-loader-lg.gif");
+      background-size: 25px 25px;
+      background-position: center center; }
+
+/* light grey */
+.ajax-load-more-wrap.light-grey .alm-load-more-btn {
+  background-color: #efefef;
+  color: #787878;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+  -webkit-transition: all 0.075s ease;
+  transition: all 0.075s ease;
+  outline: none; }
+  .ajax-load-more-wrap.light-grey .alm-load-more-btn:focus, .ajax-load-more-wrap.light-grey .alm-load-more-btn:hover, .ajax-load-more-wrap.light-grey .alm-load-more-btn.loading, .ajax-load-more-wrap.light-grey .alm-load-more-btn.done {
+    background-color: #f1f1f1;
+    color: #222;
+    border-color: #aaaaaa; }
+  .ajax-load-more-wrap.light-grey .alm-load-more-btn.loading {
+    color: rgba(255, 255, 255, 0) !important;
+    outline: none !important;
+    background-color: transparent;
+    border-color: transparent !important;
+    -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+    padding-left: 20px; }
+    .ajax-load-more-wrap.light-grey .alm-load-more-btn.loading:before {
+      margin: 0;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      background-image: url("../../img/ajax-loader-lg.gif");
+      background-size: 25px 25px;
+      background-position: center center; }
+
+/* Blue */
+.ajax-load-more-wrap.blue .alm-load-more-btn {
+  background-color: #1b91ca; }
+  .ajax-load-more-wrap.blue .alm-load-more-btn:hover, .ajax-load-more-wrap.blue .alm-load-more-btn.loading, .ajax-load-more-wrap.blue .alm-load-more-btn.done {
+    background-color: #1b84b7; }
+
+/* green */
+.ajax-load-more-wrap.green .alm-load-more-btn {
+  background-color: #80ca7a; }
+  .ajax-load-more-wrap.green .alm-load-more-btn:hover, .ajax-load-more-wrap.green .alm-load-more-btn.loading, .ajax-load-more-wrap.green .alm-load-more-btn.done {
+    background-color: #81c17b; }
+
+/* purple */
+.ajax-load-more-wrap.purple .alm-load-more-btn {
+  background-color: #b97eca; }
+  .ajax-load-more-wrap.purple .alm-load-more-btn:hover, .ajax-load-more-wrap.purple .alm-load-more-btn.loading, .ajax-load-more-wrap.purple .alm-load-more-btn.done {
+    background-color: #a477b1; }
+
+/* grey */
+.ajax-load-more-wrap.grey .alm-load-more-btn {
+  background-color: #a09e9e; }
+  .ajax-load-more-wrap.grey .alm-load-more-btn:hover, .ajax-load-more-wrap.grey .alm-load-more-btn.loading, .ajax-load-more-wrap.grey .alm-load-more-btn.done {
+    background-color: #888; }
 
 /* Infinite */
 .ajax-load-more-wrap.infinite .alm-load-more-btn {
@@ -175,10 +227,10 @@
 .ajax-load-more-wrap.infinite.chasing-arrows .alm-load-more-btn {
   background-image: url("../../img/spinner-chasing-arrows.gif"); }
 
-/*
-*  Generic alm-listing styles
-*  @since 1.0.0
-*/
+/**
+ *  Generic alm-listing Styles
+ *  @since 1.0.0
+ */
 .alm-listing .alm-reveal {
   outline: none; }
   .alm-listing .alm-reveal:after {
@@ -188,42 +240,58 @@
     width: 100%;
     content: ''; }
 
-.alm-listing:not(.products) {
+.alm-listing {
   margin: 0;
   padding: 0; }
-  .alm-listing:not(.products) .alm-reveal > li,
-  .alm-listing:not(.products) .alm-paging-content > li,
-  .alm-listing:not(.products) > li {
+  .alm-listing .alm-reveal > li,
+  .alm-listing .alm-paging-content > li,
+  .alm-listing > li {
     background: none;
     margin: 0 0 30px;
     padding: 0 0 0 170px;
-    overflow: hidden;
     position: relative;
     list-style: none; }
-    .alm-listing:not(.products) .alm-reveal > li.no-img,
-    .alm-listing:not(.products) .alm-paging-content > li.no-img,
-    .alm-listing:not(.products) > li.no-img {
+    .alm-listing .alm-reveal > li.no-img,
+    .alm-listing .alm-paging-content > li.no-img,
+    .alm-listing > li.no-img {
       padding: 0; }
-    .alm-listing:not(.products) .alm-reveal > li p,
-    .alm-listing:not(.products) .alm-paging-content > li p,
-    .alm-listing:not(.products) > li p {
+    .alm-listing .alm-reveal > li p,
+    .alm-listing .alm-paging-content > li p,
+    .alm-listing > li p {
       margin: 0; }
-      .alm-listing:not(.products) .alm-reveal > li p.entry-meta,
-      .alm-listing:not(.products) .alm-paging-content > li p.entry-meta,
-      .alm-listing:not(.products) > li p.entry-meta {
+      .alm-listing .alm-reveal > li p.entry-meta,
+      .alm-listing .alm-paging-content > li p.entry-meta,
+      .alm-listing > li p.entry-meta {
         margin: 0 0 5px;
         opacity: 0.75; }
-    .alm-listing:not(.products) .alm-reveal > li h3,
-    .alm-listing:not(.products) .alm-paging-content > li h3,
-    .alm-listing:not(.products) > li h3 {
+    .alm-listing .alm-reveal > li h3,
+    .alm-listing .alm-paging-content > li h3,
+    .alm-listing > li h3 {
       margin: 0 0 10px; }
-    .alm-listing:not(.products) .alm-reveal > li img,
-    .alm-listing:not(.products) .alm-paging-content > li img,
-    .alm-listing:not(.products) > li img {
+    .alm-listing .alm-reveal > li img,
+    .alm-listing .alm-paging-content > li img,
+    .alm-listing > li img {
       position: absolute;
       left: 0;
       top: 0;
       border-radius: 2px; }
+  .alm-listing.products li.product {
+    padding-left: inherit; }
+    .alm-listing.products li.product img {
+      position: static;
+      border-radius: inherit; }
+  .alm-listing.stylefree .alm-reveal > li,
+  .alm-listing.stylefree .alm-paging-content > li,
+  .alm-listing.stylefree > li {
+    padding: inherit;
+    margin: inherit; }
+    .alm-listing.stylefree .alm-reveal > li img,
+    .alm-listing.stylefree .alm-paging-content > li img,
+    .alm-listing.stylefree > li img {
+      padding: inherit;
+      margin: inherit;
+      position: static;
+      border-radius: inherit; }
 
 .alm-listing.rtl .alm-reveal > li,
 .alm-listing.rtl .alm-paging-content > li {
@@ -234,8 +302,48 @@
     left: auto;
     right: 0; }
 
+.alm-listing.rtl.products li.product {
+  padding-right: inherit; }
+
+.alm-masonry {
+  display: block;
+  overflow: hidden;
+  clear: both; }
+
 .alm-placeholder {
   opacity: 0;
   -webkit-transition: opacity 0.2s ease;
   transition: opacity 0.2s ease;
   display: none; }
+
+.alm-toc {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: auto;
+  padding: 10px 0; }
+  .alm-toc button {
+    background: #f7f7f7;
+    border-radius: 4px;
+    -webkit-transition: all 0.15s ease;
+    transition: all 0.15s ease;
+    outline: none;
+    border: 1px solid #efefef;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+    color: #454545;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 7px 10px;
+    line-height: 1;
+    margin: 0 5px 0 0;
+    height: auto; }
+    .alm-toc button:hover, .alm-toc button:focus {
+      border-color: #ccc;
+      color: #222; }
+    .alm-toc button:hover {
+      text-decoration: underline; }
+    .alm-toc button:focus {
+      -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+              box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }

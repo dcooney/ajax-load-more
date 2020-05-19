@@ -9,7 +9,8 @@
 		  'partials/alm-settings-feedback',
 		  'partials/select2',
 		  'partials/shortcode-builder',
-		  'partials/_builder-option-toggle'; 
+		  'partials/woocommerce',
+		  'partials/builder-option-toggle'; 
  
 body.toplevel_page_ajax-load-more,
 body.ajax-load-more_page_ajax-load-more-repeaters,
@@ -21,11 +22,12 @@ body.ajax-load-more_page_ajax-load-more-licenses,
 body.ajax-load-more_page_ajax-load-more-cache,
 body.ajax-load-more_page_ajax-load-more-filters,
 body.ajax-load-more_page_ajax-load-more-pro,
-body.ajax-load-more_page_ajax-load-more-go-pro{
+body.ajax-load-more_page_ajax-load-more-go-pro,
+body.ajax-load-more_page_ajax-load-more-woocommerce{
    background-color: #f7f7f7; 
    #wpcontent{
       padding-left: 0;
-      padding-bottom: 40px;
+      padding-bottom: 20px;
       background-color: #efefef;
    }
    #wpbody-content{
@@ -42,7 +44,8 @@ body.ajax-load-more_page_ajax-load-more-licenses,
 body.ajax-load-more_page_ajax-load-more-cache,
 body.ajax-load-more_page_ajax-load-more-filters,
 body.ajax-load-more_page_ajax-load-more-pro,
-body.ajax-load-more_page_ajax-load-more-go-pro{
+body.ajax-load-more_page_ajax-load-more-go-pro,
+body.ajax-load-more_page_ajax-load-more-woocommerce{
 	background: #efefef;
 	#wpfooter {
 	   padding-top: 0;
@@ -252,7 +255,7 @@ body.ajax-load-more_page_ajax-load-more-pro{
 	clear: both;
 	text-transform: none;
 	padding: 0;
-	margin:0 0 15px;
+	margin: 0 0 15px;
 }
 
 .ajax-load-more p,
@@ -261,6 +264,9 @@ body.ajax-load-more_page_ajax-load-more-pro{
 .ajax-load-more textarea,
 .ajax-load-more label{
 	font-size: 14px;
+	&.lg{
+		font-size: 16px
+	}
 }
 textarea#_alm_layouts_css{
    height: 240px;
@@ -1391,8 +1397,8 @@ hr.indented{ // Indented as fake padding in shortcode builder
 .admin.ajax-load-more .ajax-load-more-wrap {
 	position: relative;
 	top: 5px;
-	padding: 15px 17px 17px;
-	border: 2px dashed #efefef;
+	padding: 15px;
+	border: 1px dashed #e1e1e1;
 	display: inline-block;
 	margin-top:10px;
 	margin-bottom: 10px;
@@ -1407,7 +1413,7 @@ hr.indented{ // Indented as fake padding in shortcode builder
 		font-size: 10px;
 		line-height: 1;
 		opacity: 0.7;
-		padding: 0 0 8px;
+		padding: 0 0 15px;
 		text-transform: uppercase;
 	}
 }
@@ -3113,6 +3119,10 @@ p.theme-title{
 	      }
          .alm-drop-btn.alm-layout-selection li.type .col-select a.column-3{
 	      	background-image: url('../../img/column-3.png');
+	      	width: 36px;
+	      }
+         .alm-drop-btn.alm-layout-selection li.type .col-select a.column-4{
+	      	background-image: url('../../img/column-4.png');
 	      	width: 36px;
 	      }
 	      .alm-drop-btn.alm-layout-selection li.type .col-select a.column-1.updating,

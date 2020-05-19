@@ -5,7 +5,7 @@
  * @param {*} html | Plain text
  * @since 5.0
  */
-let almTableWrap = function( html = null ) {
+let tableWrap = function( html = null ) {
    if(!html){
       return false;
    }
@@ -14,4 +14,4 @@ let almTableWrap = function( html = null ) {
    let table_reveal_array = [table_reveal];
    return table_reveal_array; // Return new array
 };
-export default almTableWrap;
+export default tableWrap;

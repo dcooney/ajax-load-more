@@ -11,6 +11,7 @@
 	   $alm_options['_alm_disable_dynamic'] = '0';
 	}
 	$disable_dynamic_content = $alm_options['_alm_disable_dynamic'];
+	$show_max = 100; // Max number of items to show in tags, cats and taxonomies
 ?>
 
 
@@ -34,6 +35,7 @@
 		   require_once('components/rest-api.php');
 		   require_once('components/seo.php');
 		   require_once('components/single-post.php');
+		   require_once('components/term-query.php');
 		   require_once('components/users.php');
 		?>
    </div>
@@ -82,12 +84,16 @@
 		         <div class="shortcode-builder--fields">
 		            <div class="inner">
 							<select id="loading-style" class="alm_element" data-default="<?php echo $loading_style; ?>">
-								<optgroup label="<?php _e('Button', 'ajax-load-more'); ?>">
-									<option value="default" class="alm-color default"<?php echo ($loading_style === 'default') ? $selected : ''; ?>>Default</option>
+								<optgroup label="<?php _e('Button Style (Dark)', 'ajax-load-more'); ?>">
+									<option value="default" class="alm-color default"<?php echo ($loading_style === 'default') ? $selected : ''; ?>>Red (Default)</option>
 									<option value="blue" class="alm-color blue"<?php echo ($loading_style === 'blue') ? $selected : ''; ?>>Blue</option>
 									<option value="green" class="alm-color green"<?php echo ($loading_style === 'green') ? $selected : ''; ?>>Green</option>
 									<option value="purple" class="alm-color purple"<?php echo ($loading_style === 'purple') ? $selected : ''; ?>>Purple</option>
 									<option value="grey" class="alm-color grey"<?php echo ($loading_style === 'grey') ? $selected : ''; ?>>Grey</option>
+								</optgroup>
+								<optgroup label="<?php _e('Button Style (Light)', 'ajax-load-more'); ?>">
+									<option value="white" class="alm-color white"<?php echo ($loading_style === 'white') ? $selected : ''; ?>>White</option>
+									<option value="light-grey" class="alm-color light-grey"<?php echo ($loading_style === 'light-grey') ? $selected : ''; ?>>Light Grey</option>
 								</optgroup>
 								<optgroup label="<?php _e('Infinite Scroll (No Button)', 'ajax-load-more'); ?>">
 									<option value="infinite classic" class="infinite classic"<?php echo ($loading_style === 'infinite classic') ? $selected : ''; ?>>Classic</option>
@@ -101,8 +107,8 @@
 		               <div class="clear"></div>
 							<div class="alm-btn-wrap">
 								<div class="ajax-load-more-wrap core target <?php echo $loading_style; ?>" data-base="ajax-load-more-wrap core ">
-									<span><?php _e('Preview', 'ajax-load-more'); ?></span>
-									<button class="alm-load-more-btn loading" disabled="disabled">
+									<span><?php _e('CLICK TO PREVIEW', 'ajax-load-more'); ?></span>
+									<button class="alm-load-more-btn" type="button">
 										<?php echo apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')) ;?>
 									</button>
 								</div>
@@ -823,9 +829,12 @@
 		   $cats = 'null';
 	   }else{
 		   $cats = get_categories();
+		   if(count($cats) > $show_max){
+			   $disable_dynamic_content = true;
+		   }
 	   }
 		if($cats){
-			$cat_link = 'https://codex.wordpress.org/Class_Reference/WP_Query#Category_Parameters';
+			$cat_link = 'https://developer.wordpress.org/reference/classes/wp_query/#category-parameters';
 		?>
 		<div class="row checkboxes categories" id="alm-categories">
 	      <h3 class="heading" tabindex="0"><?php _e('Category', 'ajax-load-more'); ?></h3>
@@ -848,7 +857,7 @@
 			                  }
 			                  echo '</select>';
 			               }else{
-			                  echo '<input type="text" class="alm_element" name="category-select" id="category-select" placeholder="design, development, science etc...">';
+			                  echo '<input type="text" class="alm_element" name="category-select" id="category-select" placeholder="design, development, science etc..." style="margin-bottom: 15px;">';
 			               }
 			               ?>
 			            </div>
@@ -913,6 +922,9 @@
 		   $tags = 'null';
 	   }else{
 		   $tags = get_tags();
+		   if(count($tags) > 3){
+			   $disable_dynamic_content = true;
+		   }
 	   }
 		if($tags){
 			$tag_link = 'https://codex.wordpress.org/Class_Reference/WP_Query#Tag_Parameters';
@@ -940,7 +952,7 @@
 									}
 									echo '</select>';
 								}else{
-									echo '<input type="text" class="alm_element" name="tag-select" id="tag-select" placeholder="hockey, puck, crosby etc...">';
+									echo '<input type="text" class="alm_element" name="tag-select" id="tag-select" placeholder="hockey, toronto, canada etc..." style="margin-bottom: 20px;">';
 								}
 								?>
 			   		   </div>
@@ -1024,7 +1036,7 @@
 				</section>
 		   </div>
 		</div>
-		<?php }?>
+		<?php } ?>
 		<!-- End Taxonomies -->
 
 	   <!-- Meta_Query -->
@@ -1296,7 +1308,7 @@
 		      <section class="first">
 		         <div class="shortcode-builder--label">
 		   		 	<p><?php _e('Ajax Load More will automatically create an archive query while viewing site archives.', 'ajax-load-more'); ?></p>
-		   		 	<p><?php _e('Taxonomy, category, tag, date (year, month, day) and author archives are currently supported.', 'ajax-load-more'); ?></p>
+		   		 	<p><?php _e('Taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported.', 'ajax-load-more'); ?></p>
 		   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/archives/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a></p>
 		   		</div>
 		         <div class="shortcode-builder--fields">
@@ -1319,6 +1331,7 @@
 	   </div>
 	   
 	   <!-- WooCommerce -->	   	
+<!--
 	   <div class="row input alm-woocommerce" id="alm-woocommerce">
 	      <h3 class="heading" tabindex="0"><?php _e('WooCommerce', 'ajax-load-more'); ?></h3>
 	      <div class="expand-wrap">
@@ -1349,6 +1362,7 @@
 		      </section>
 	      </div>
 	   </div>
+-->
 	   
 	</div>
 </div>

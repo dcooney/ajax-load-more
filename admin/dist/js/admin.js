@@ -1446,22 +1446,17 @@ jQuery(document).ready(function ($) {
   $("select#alm_settings_btn_color").change(function () {
     var color = jQuery(this).val();
     // Remove other colors
-    $('.ajax-load-more-wrap.core.preview-pane').removeClass('none');
-    $('.ajax-load-more-wrap.core').removeClass('default');
-    $('.ajax-load-more-wrap.core').removeClass('grey');
-    $('.ajax-load-more-wrap.core').removeClass('purple');
-    $('.ajax-load-more-wrap.core').removeClass('green');
-    $('.ajax-load-more-wrap.core').removeClass('red');
-    $('.ajax-load-more-wrap.core').removeClass('blue');
-    $('.ajax-load-more-wrap.core').removeClass('white');
-    $('.ajax-load-more-wrap.core').removeClass('infinite');
-    $('.ajax-load-more-wrap.core').removeClass('skype');
-    $('.ajax-load-more-wrap.core').removeClass('ring');
-    $('.ajax-load-more-wrap.core').removeClass('fading-blocks');
-    $('.ajax-load-more-wrap.core').removeClass('fading-circles');
-    $('.ajax-load-more-wrap.core').removeClass('chasing-arrows');
-    $('.ajax-load-more-wrap.core').addClass(color);
+
+    $(".alm-btn-wrap .ajax-load-more-wrap").attr('class', 'ajax-load-more-wrap');
+    $('.alm-btn-wrap .ajax-load-more-wrap').addClass(color);
+    $('.alm-btn-wrap .ajax-load-more-wrap #test-alm-button').removeClass('loading');
+
+    // Add loading class if Infinite loading style
+    if (color.indexOf("infinite") >= 0) {
+      $('.alm-btn-wrap .ajax-load-more-wrap #test-alm-button').addClass('loading');
+    }
   });
+
   $("select#alm_settings_btn_color").click(function (e) {
     e.preventDefault();
   });

@@ -80,10 +80,11 @@ if( !class_exists('ALM_SHORTCODE') ):
    		$atts = ($default_atts) ? array_merge($default_atts, $atts) : $atts;
    		
    		
-         
          // Extact shortcode arrtibutes
    		extract(shortcode_atts(array(
 	   		'nested' => false,
+	   		'woo' => false,
+	   		'woo_template' => '',
 	   		'tabs' => false,
 	   		'tab_template' => '',
 	   		'filters' => false,
@@ -96,7 +97,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 	   		'filters_debug' => false,
 	   		'term_query' => false,
 	   		'term_query_taxonomy' => '',
-	   		'term_query_fields' => 'all',
+	   		'term_query_hide_empty' => 'true',
 	   		'term_query_number' => '5',
 				'acf' => false,
 				'acf_post_id' => '',
@@ -126,7 +127,7 @@ if( !class_exists('ALM_SHORTCODE') ):
       		'nextpage' => false,
       		'nextpage_post_id' => '',      		
       		'nextpage_urls' => 'true',
-      		'nextpage_scroll' => 'true:30',
+      		'nextpage_scroll' => 'false:30',
       		'nextpage_pageviews' => 'true',
       		'nextpage_start' => 1,
       		'previous_post' => false,
@@ -140,12 +141,14 @@ if( !class_exists('ALM_SHORTCODE') ):
       		'single_post_taxonomy' => '',
       		'single_post_excluded_terms' => '',
       		'single_post_progress_bar' => '',
+      		'single_post_target' => '',
    			'cache' => 'false',
    			'cache_id' => '',
    			'paging' => 'false',
    			'paging_controls' => 'false',
    			'paging_show_at_most' => '7',
    			'paging_classes' => '',
+   			'paging_scroll' => false,
    			'paging_first_label' => apply_filters('alm_paging_first_label', ''),
    			'paging_last_label' => apply_filters('alm_paging_last_label', ''),
    			'paging_previous_label' => apply_filters('alm_paging_previous_label', '&laquo;'),
@@ -238,7 +241,8 @@ if( !class_exists('ALM_SHORTCODE') ):
 			
 			
 			// WooCommerce
-			$woocommerce = ($woocommerce === 'true') ? true : false;
+			$woo = ($woo === 'true') ? true : false; // Add-on
+			$woocommerce = ($woocommerce === 'true') ? true : false; // Standard ALM
 			
 			
 			// Archives
@@ -336,6 +340,11 @@ if( !class_exists('ALM_SHORTCODE') ):
 		         }
 	      	}
          }
+
+   		// WooCommerce
+   		if(has_action('alm_woocommerce_installed') && $woo){
+      		wp_enqueue_script( 'ajax-load-more-woocommerce' );
+   		}
    		         
 
 
@@ -416,7 +425,7 @@ if( !class_exists('ALM_SHORTCODE') ):
    		$alm_loading_style = ($loading_style !== '') ? ' ' . $loading_style : $alm_loading_style;
 
    		// Get paging color
-   		$paging_color = (isset($options['_alm_paging_color']) && has_action('alm_paging_installed') && $paging === 'true') ? ' paging-'.$options['_alm_paging_color'] : '';
+   		$paging_color = (isset($options['_alm_paging_color']) && has_action('alm_paging_installed') && $paging === 'true') ? ' alm-paging paging-'.$options['_alm_paging_color'] : '';
 
    		// Layouts Class
    		$alm_layouts = (has_action('alm_layouts_installed')) ? ' alm-layouts' : '';
@@ -516,7 +525,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 					$post_type = 'product';
 					
 					$woo_config = array(
-						'classes' => apply_filters('alm_woo_classes', 'products'),
+						'classes' => apply_filters('alm_woo_classes', 'products stylefree'),
 						'columns' => ALM_WOOCOMMERCE::get_loop_prop('columns', '4'),
 						'per_page' => ALM_WOOCOMMERCE::get_loop_prop('per_page', $posts_per_page),
 					);
@@ -596,7 +605,7 @@ if( !class_exists('ALM_SHORTCODE') ):
 				 * Archive
 				 * Set required archive config options
 				 */
-				if($archive &&is_archive()){
+				if($archive && is_archive()){
 					if(is_date()){
 						$archive_year = get_the_date('Y');
 						$archive_month = get_the_date('m');
@@ -623,6 +632,26 @@ if( !class_exists('ALM_SHORTCODE') ):
 						$taxonomy_terms = $obj->slug;
 						$taxonomy_operator = 'IN';
 					}
+					if(is_post_type_archive()){
+						$obj = get_queried_object();
+						if(isset($obj->name)){
+							$post_type = $obj->name;
+						}
+					}
+				}
+				
+				
+				// WooCommerce Add-on
+				if($woo){
+					$filters = false;
+					$single_post = false;
+	      		$seo = false;
+	      		$paging = false;
+	      		$comments = false;
+	      		$nextpage = false;
+	      		$acf = false;
+	      		$users = false;
+					$preloaded = false;
 				}
 
 
@@ -693,7 +722,7 @@ if( !class_exists('ALM_SHORTCODE') ):
             	'acf_parent_field_name' => $acf_parent_field_name,
             	'term_query'			=> array(
 						'taxonomy' 		=> $term_query_taxonomy,
-						'fields'			=> $term_query_fields,
+						'hide_empty'	=> $term_query_hide_empty,
 						'number'			=> $term_query_number,
       		   ),
             	'nextpage' 				=> $nextpage,
@@ -836,19 +865,40 @@ if( !class_exists('ALM_SHORTCODE') ):
    	         }
    
    
+   	   		// Nextpage Post Add-on
+   	   		if(has_action('alm_nextpage_installed') && $nextpage){
+	   	   		
+	   	   		// Get post ID if null
+	   	   		if(!$nextpage_post_id){
+			   			global $post;
+			   			$nextpage_post_id = $post->ID;
+			   		}
+			   		
+   	   		   $nextpage_return = apply_filters(
+   	   		   	'alm_nextpage_shortcode',
+   	   		   	$nextpage_urls,
+   	   		   	$nextpage_pageviews,
+   	   		   	$nextpage_post_id,
+   	   		   	$nextpage_scroll,
+   	   		   	$options
+   	   		   );
+   	   			$ajaxloadmore .= $nextpage_return;
+   	         }
+   
+   
    	   		// Paging Add-on
    	         if(has_action('alm_paging_installed') && $paging === 'true'){
-   	   		   $paging_return = apply_filters(
+	   	         $paging_return = apply_filters(
    	   		   	'alm_paging_shortcode',
    	   		   	$paging,
    	   		   	$paging_controls,
    	   		   	$paging_show_at_most,
-   	   		   	$paging_classes,   	   		   	
+   	   		   	$paging_classes,   		   	
                      $paging_first_label,
                      $paging_last_label,
                      $paging_previous_label,
                      $paging_next_label,
-                     $options
+                     $paging_scroll
    	   		   );
    	   			$ajaxloadmore .= $paging_return;
    	         }
@@ -870,19 +920,6 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   			if($preloaded === 'true'){
 	   	   			$pause = "true";
    	   			}
-   	         }
-   	         
-   	         
-   	         // Term Query
-   	   		if(has_action('alm_terms_installed') && $term_query){
-   	   		   $term_query_return = apply_filters(
-   	   		   	'alm_terms_shortcode',
-   	      		   $term_query,
-   	      		   $term_query_taxonomy,
-   	      		   $term_query_fields,
-   	      		   $term_query_number
-   	   		   );
-   	   			$ajaxloadmore .= $term_query_return;
    	         }
    
    
@@ -949,6 +986,11 @@ if( !class_exists('ALM_SHORTCODE') ):
 			   			$single_post_id = $post->ID;
 			   		}
 			   		
+			   		if($single_post_target){
+				   		$offset = 1;
+				   		$pause = "true";
+			   		}
+			   		
    	   		   $single_post_return = apply_filters(
    	   		   	'alm_single_post_shortcode',
    	   		   	$single_post_id,
@@ -956,30 +998,23 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		   	$single_post_taxonomy,
    	   		   	$single_post_excluded_terms,
    	   		   	$single_post_progress_bar,
-   	   		   	$options
+   	   		   	$options,
+   	   		   	$single_post_target
    	   		   );
    	   			$ajaxloadmore .= $single_post_return;
    	         }
-   
-   
-   	   		// Nextpage Post Add-on
-   	   		if(has_action('alm_nextpage_installed') && $nextpage){
-	   	   		
-	   	   		// Get post ID if null
-	   	   		if(!$nextpage_post_id){
-			   			global $post;
-			   			$nextpage_post_id = $post->ID;
-			   		}
-			   		
-   	   		   $nextpage_return = apply_filters(
-   	   		   	'alm_nextpage_shortcode',
-   	   		   	$nextpage_urls,
-   	   		   	$nextpage_pageviews,
-   	   		   	$nextpage_post_id,
-   	   		   	$nextpage_scroll,
-   	   		   	$options
+   	         
+   	         
+   	         // Term Query
+   	   		if(has_action('alm_terms_installed') && $term_query){
+   	   		   $term_query_return = apply_filters(
+   	   		   	'alm_terms_shortcode',
+   	      		   $term_query,
+   	      		   $term_query_taxonomy,
+   	      		   $term_query_hide_empty,
+   	      		   $term_query_number
    	   		   );
-   	   			$ajaxloadmore .= $nextpage_return;
+   	   			$ajaxloadmore .= $term_query_return;
    	         }
    	         
    	         
@@ -999,6 +1034,14 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   			$ajaxloadmore .= $users_return;	   			
    	         }
    	         
+   	         
+   	         // Woocommerce Add-on
+   	         if( $woo && has_action('alm_woocommerce_init') && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option('active_plugins'))) ){ 
+   	   		   apply_filters('alm_woocommerce_init', $localize_id, $query_args);
+	   	         $ajaxloadmore .= ' data-woo="true"';   			
+   	         }
+   	         
+   	         
    	   		$ajaxloadmore .= ' data-container-type="'.$container_element.'"';	   
 					
 					// Archive
@@ -1008,8 +1051,10 @@ if( !class_exists('ALM_SHORTCODE') ):
 					$ajaxloadmore .= ($woocommerce) ? ' data-woocommerce="true"' : '';
    
 					// Repeaters
-   	   		$ajaxloadmore .= ($theme_repeater === 'null') ? ' data-repeater="'.$repeater.'"' : '';	   		
-               $ajaxloadmore .= ($theme_repeater !== 'null') ? ' data-theme-repeater="'.$theme_repeater.'"' : ''; 
+					if(!$woo){
+   	   			$ajaxloadmore .= ($theme_repeater === 'null') ? ' data-repeater="'.$repeater.'"' : '';	   		
+               	$ajaxloadmore .= ($theme_repeater !== 'null') ? ' data-theme-repeater="'.$theme_repeater.'"' : ''; 
+               }
                
                // Post Type	                 
    	   		$ajaxloadmore .= ' data-post-type="'.$post_type.'"';
@@ -1079,12 +1124,14 @@ if( !class_exists('ALM_SHORTCODE') ):
    	   		$ajaxloadmore .= (!empty($lang)) ? ' data-lang="'.$lang.'"' : '';
    	   		
    	   		// Scroll
-   	   		$ajaxloadmore .= ' data-scroll="'.$scroll.'"';
-   	   		if($scroll === 'true'){
-      	   		$ajaxloadmore .= ' data-scroll-distance="'.$scroll_distance.'"';
-      	   		$ajaxloadmore .= (!empty($scroll_container)) ? ' data-scroll-container="'.$scroll_container.'"' : '';
-      	   		$ajaxloadmore .= ' data-max-pages="'.$max_pages.'"';
-      	   		$ajaxloadmore .= (!empty($pause_override)) ? ' data-pause-override="'.$pause_override.'"' : '';
+   	   		if($paging !== 'true') {
+	   	   		$ajaxloadmore .= ' data-scroll="'.$scroll.'"';
+	   	   		if($scroll === 'true'){
+	      	   		$ajaxloadmore .= ' data-scroll-distance="'.$scroll_distance.'"';
+	      	   		$ajaxloadmore .= (!empty($scroll_container)) ? ' data-scroll-container="'.$scroll_container.'"' : '';
+	      	   		$ajaxloadmore .= ' data-max-pages="'.$max_pages.'"';
+	      	   		$ajaxloadmore .= (!empty($pause_override)) ? ' data-pause-override="'.$pause_override.'"' : '';
+	   	   		}
    	   		}
    	   		
    	   		// Pause

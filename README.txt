@@ -3,8 +3,8 @@ Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
-Tested up to: 5.3.2
-Stable tag: 5.1.8
+Tested up to: 5.4.1
+Stable tag: 5.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -185,6 +185,7 @@ The [Custom Repeater Add-On](https://connekthq.com/plugins/ajax-load-more/custom
 * **[Single Post](https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/)**: Enable infinite scrolling of single posts on your WordPress post templates.
 * **[Theme Repeaters](https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)**: Manage Ajax Load More repeater templates from within your current theme directory.
 * **[Users](https://connekthq.com/plugins/ajax-load-more/add-ons/users/)**: Lazy loading WordPress Users with Ajax Load More.
+* **[WooCommerce](https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/)**: Infinite scroll WooCommerce products with Ajax Load More.
 
 
 
@@ -196,7 +197,7 @@ The following [extensions](https://connekthq.com/plugins/ajax-load-more/extensio
 * **[Relevanssi](https://connekthq.com/plugins/ajax-load-more/extensions/relevanssi/)**: Display Relevanssi search results with Ajax Load More.
 * **[REST API](https://connekthq.com/plugins/ajax-load-more/extensions/rest-api/)**: Enable compatibility with the WordPress REST API.
 * **[SearchWP](https://connekthq.com/plugins/ajax-load-more/extensions/searchwp/)**: Display SearchWP query results with Ajax Load More.
-
+* **[Term Query](https://wordpress.org/plugins/ajax-load-more-for-terms/)**: Infinite scroll WordPress Terms.
 
 
 
@@ -382,29 +383,63 @@ How to install Ajax Load More.
 
 == Changelog ==
 
-= 5.1.8 = March 2, 2020 = 
+= 5.3.2 - May 19, 2020 =
+* SECURITY FIX - Added security fix for a possible authenticated SQL injection. Attacker needs to be authenticated, with edit_theme_options capability. (Read More)[https://wpvulndb.com/vulnerabilities/10230]
+* FIX - Fix for accidental `print_r` left inside a WooCommerce function. Sorry!
+
+
+= 5.3.1 - May 1, 2020 =
+* NEW - Added support for creating paged URLs with the SEO add-on and Masonry.
+* UPDATE - Improved accessiblity of element focus feature by implementing native browser support (`preventScroll`) for focusing on elements without scrolling after an Ajax load. There is still a slight jump on mobile safari and chrome for iOS. Hopefully these browsers will implement better native support for [preventScroll](https://developer.mozilla.org/en-US/docs/Web/API/HTMLOrForeignElement/focus)
+* UPDATE - Removed `Top of Page` global ALM setting.
+* FIX - Add accessibility fix for when using Masonry transition. New item is now auto focused after an Ajax load.
+* FIX - Fixed issue with Destroy After not working correctly after being filtered.
+* FIX - Fixed bug with CTA and Preloaded add-ons. If `cta="false"` was set Ajax Load More may still render the CTA is some cases.
+* FIX- Fixed issue with custom Filtering and Masonry not appending items after a filter.
+
+
+= 5.3.0 - April 22, 2020 =
+* NEW - Added support and core functionality for new [WooCommerce add-on](https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/).
+* NEW - Added new `White` & `Light Grey` loading style.
+* NEW - Added loading preview toggle on ALM Settings screen.
+* NEW - Added `alm_a11y_focus` filter to allow users to remove the focus accessibility feature of Ajax Load More.
+* UPDATE - Updated loading animations and various color combinations.
+* UPDATE - Removed Comment Reply hotfix script as this fix was patched in WordPress core.
+* FIX - Fixed issue with `almFilterComplete` callback not triggering.
+* FIX - Fixed issue with initial Paging add-on load not executing JavaScript in Repeater Templates.
+
+
+= 5.2.0 - March 13, 2020 =
+* NEW - Added new [Table of Contents](https://connekthq.com/plugins/ajax-load-more/examples/table-of-contents/) functionality. Table of Contents creates a pagination anchor links with every page loaded via Ajax Load More.
+* NEW - Added support for new [Term Query](https://wordpress.org/plugins/ajax-load-more-for-terms/) extension.
+* UPDATE - Added support for Post Type archives in the [Archives](https://connekthq.com/plugins/ajax-load-more/docs/archives/) integration.
+* UPDATE - Updated `.alm-listing` CSS styles to better integrate with WooCommerce.
+* UPDATE - Added new Single Post [implementation](https://connekthq.com/plugins/ajax-load-more/add-ons/single-posts/#implementation) technique.
+
+
+= 5.1.8 =- March 2, 2020 =
 
 UPGRADE NOTICE
 This release updates the default text for users who implemented [Results Text](https://connekthq.com/plugins/ajax-load-more/examples/results-text/).
 [New variables](https://connekthq.com/plugins/ajax-load-more/docs/results-text/) have been added to this feature and the default text has changes from `Displaying {num} of {total}.` to `Viewing {post_count} of {total_posts} results.`.
 If you wish to revert this update, you can with the `alm_display_results` [filter](https://connekthq.com/plugins/ajax-load-more/docs/results-text/#filter-hooks).
 
-* NEW - Added rtl (right to left) support for the default ALM Repeater Template. Add `.rtl` to the container to align items right to left. Use `css_classes="rtl"` in a shortcode or globally via ALM settings. 
+* NEW - Added rtl (right to left) support for the default ALM Repeater Template. Add `.rtl` to the container to align items right to left. Use `css_classes="rtl"` in a shortcode or globally via ALM settings.
 * NEW - Added `archive="true"` parameter that will automatically pull content on archive pages - taxonomy, category, tag, date (year, month, day) and authors are currently supported. [View Docs](https://connekthq.com/plugins/ajax-load-more/docs/archives/)
 * NEW - Added `woocommerce="true"` parameter that will automatically pull product content on woocommerce pages - [docs](https://connekthq.com/plugins/ajax-load-more/docs/woocommerce/) coming soon on this new integration.
-* UPDATE - Updated [Results Text](https://connekthq.com/plugins/ajax-load-more/docs/results-text/) to include post_count and total_posts. 
+* UPDATE - Updated [Results Text](https://connekthq.com/plugins/ajax-load-more/docs/results-text/) to include post_count and total_posts.
 * UPDATE - Updated time of filter transitions. In some cases users were reporting issues of double clicks causing no results to be returned.
-* FIX - Fixed almComplete callback not firing when zero results are returned in Ajax.   
-* FIX - Fixed issue with JavaScript not triggering in Repeater Templates used with Paging add-on. 
+* FIX - Fixed almComplete callback not firing when zero results are returned in Ajax.
+* FIX - Fixed issue with JavaScript not triggering in Repeater Templates used with Paging add-on.
 
 
-= 5.1.7.2 = January 25, 2020 = 
+= 5.1.7.2 - January 25, 2020 =
 * NEW - Added support for percentage values in `scroll_distance`. Users can now trigger Ajax requests based on the percentage height of their browsers. e.g. `scroll_distance="-50%"`
 * NEW - Added `alm_query_after_{id}` filter to allow for modification of the returned query.
 * NEW - Added new `alm_id` parameter for the `WP_Query` that allows for easier access of query args using `pre_get_post` using the Ajax Load More ID.
 ```
 add_action( 'pre_get_posts', 'my_custom_category' );
-function my_custom_category( $query ) {	
+function my_custom_category( $query ) {
 	if ( isset($query->query['alm_id']) && $query->query['alm_id'] === 'preloaded' ) {
 		$query->set( 'category_name', 'design' );
 	}

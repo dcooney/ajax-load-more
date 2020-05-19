@@ -1,6 +1,6 @@
 import almFadeIn from './fadeIn';
 import almFadeOut from './fadeOut';
-import { clearAnchorNav } from './anchorNav';
+import { clearTOC } from './tableofcontents';
 
 /**
  * almFilter(type, speed, data)
@@ -26,8 +26,8 @@ let almFilter = function(transition, speed, data, type = "filter") {
 		});
    }
    
-   // Clear anchor nav if required
-   clearAnchorNav();
+   // Clear table of contents if required
+   clearTOC();
     
 }; 
 export default almFilter;
@@ -184,18 +184,13 @@ let almSetFilters = function(speed = 250, data, el, type){
    
    switch (type){	   
 	   
-      /*
 	   case 'filter' : 
-		   // Filters Complete            
+		   // Filters Complete (not the add-on)           
 		   if (typeof almFilterComplete === 'function') { // Standard Filtering
 		      almFilterComplete();
 		   }
-		   // Filter Add-on Complete
-		   if (typeof almFiltersAddonComplete === "function") { // Filters Add-on
-		      almFiltersAddonComplete(el);
-		   }
 		break;
-      */
+      
 		
 		case 'tab' :
 			// Tabs Complete            

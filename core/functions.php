@@ -240,11 +240,25 @@ function alm_get_addons(){
          'version' => 'ALM_USERS_VERSION',
 	   	'path' => $path_prefix .'users',
 	   	'slug' => 'users'
+      ),
+      array(
+         'name' => __('WooCommerce', 'ajax-load-more'),
+         'intro' => __('Infinite scroll WooCommerce products with Ajax Load More.', 'ajax-load-more'),
+         'desc' => __('The WooCommerce add-on automatically integrates infinite scrolling into your existing shop templates.', 'ajax-load-more'),
+         'action' => 'alm_woocommerce_installed',
+         'key' => 'alm_woocommerce_license_key',
+         'status' => 'alm_woocommerce_license_status',
+         'settings_field' => 'alm_woocommerce_license',
+         'img' => 'img/add-ons/woocommerce-add-on.jpg',
+         'url' => $url_prefix .'woocommerce/',
+         'item_id' => ALM_WOO_ITEM_NAME,
+         'version' => 'ALM_WOO_VERSION',
+	   	'path' => $path_prefix .'woocommerce',
+	   	'slug' => 'woocommerce'
       )
    );
    return $addons;
 }
-
 
 
 /*
@@ -301,7 +315,7 @@ add_filter('alm_progress_css', 'alm_progress_css', 10, 3);
 
 /*
 *  alm_css_disabled
-*  Has core ALM CSS disabled?
+*  Is ALM CSS disabled?
 *
 *  @param $setting name of the setting field
 *  @return boolean
@@ -311,7 +325,7 @@ add_filter('alm_progress_css', 'alm_progress_css', 10, 3);
 function alm_css_disabled($setting) {
 	$options = get_option( 'alm_settings' );
 	$disabled = true;
-	if(!isset($options[$setting]) || $options[$setting] != '1'){
+	if(!isset($options[$setting]) || $options[$setting] !== '1'){
 		$disabled = false;
 	}
 	return $disabled;
@@ -343,6 +357,8 @@ function alm_do_inline_css($setting) {
 	}
 	return $inline;
 }
+
+
 
 /*
 * alm_loop
@@ -404,10 +420,8 @@ function alm_get_current_repeater($repeater, $type) {
    // Custom Repeaters v2
 	elseif( $type == 'template_' && has_action('alm_unlimited_installed' )){
 
-
    	// Custom Repeaters 2.5+
    	if(ALM_UNLIMITED_VERSION >= '2.5'){
-
       	// Get path to repeater (alm_templates)
 			$base_dir = AjaxLoadMore::alm_get_repeater_path();
 			$include = $base_dir .'/'. $template .'.php';
@@ -416,7 +430,6 @@ function alm_get_current_repeater($repeater, $type) {
 
    		global $wpdb;
    		$blog_id = $wpdb->blogid;
-
    		$include = ($blog_id > 1) ? ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id .'/'. $template .'.php' : ALM_UNLIMITED_PATH. 'repeaters/'. $template .'.php';
 
 		}

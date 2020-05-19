@@ -24,6 +24,9 @@
    					),
    					array(
    						'slug' => 'ajax-load-more-for-searchwp'
+   					),
+   					array(
+   						'slug' => 'ajax-load-more-for-terms'
    					)
    				);	   				   			
       			if(class_exists('Connekt_Plugin_Installer')){

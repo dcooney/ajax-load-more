@@ -6,8 +6,8 @@
  * @since 5.1
  */
 export function almResultsText( alm, type = 'standard' ){
-	if(!alm.resultsText) return false;	
-	let resultsType = (type === 'nextpage') ? 'nextpage' : 'standard';
+	if(!alm.resultsText || alm.nested === 'true') return false;	
+	let resultsType = (type === 'nextpage' || type === 'woocommerce') ? type : 'standard';
 	
    almGetResultsText(alm, resultsType);   
 }
@@ -23,7 +23,7 @@ export function almResultsText( alm, type = 'standard' ){
  */
 export function almGetResultsText( alm, type = 'standard' ){   
 	
-	if(!alm.resultsText) return false;
+	if(!alm.resultsText || alm.nested === 'true') return false;
 	
 	let page = 0;
 	let pages = 0;
@@ -37,21 +37,26 @@ export function almGetResultsText( alm, type = 'standard' ){
    	
    	// Nextpage
    	case 'nextpage' :
-	
+			
          page = parseInt(alm.localize.page);
          post_count = page;
          pages = parseInt(alm.localize.total_posts);
-         total_posts = pages;
+         total_posts = parseInt(pages);
          almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
       	
+      	break;
+      	
+      // WooCommerce
+      case 'woocommerce' :
+			// Don't do anything
       	break;
    
    	default :
    		
    		page = parseInt(alm.page) + 1;    		
    		pages = Math.ceil(alm.localize.total_posts / posts_per_page);
-   		post_count = alm.localize.post_count;
-   		total_posts = alm.localize.total_posts;
+   		post_count = parseInt(alm.localize.post_count);
+   		total_posts = parseInt(alm.localize.total_posts);
    		
    		// Add 1 page if Preloaded
    		if(preloaded){
@@ -73,13 +78,12 @@ export function almGetResultsText( alm, type = 'standard' ){
  *  @since 4.1
  */
 export function almInitResultsText( alm, type = 'standard' ){
-   
-	if(!alm.resultsText) return false;
+	if(!alm.resultsText || !alm.localize || alm.nested === 'true') return false;
 	
 	let page = 0;
 	let pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
-	let post_count = alm.localize.post_count;
-	let total_posts = alm.localize.total_posts;
+	let post_count = parseInt(alm.localize.post_count);
+	let total_posts = parseInt(alm.localize.total_posts);
 	
 	switch (type) {
    	
@@ -87,6 +91,7 @@ export function almInitResultsText( alm, type = 'standard' ){
    	case 'nextpage' :   
    		page = alm.addons.nextpage_startpage;
    		post_count = page;
+   		pages = total_posts;
          almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts);      	
          break;
    	
@@ -94,6 +99,11 @@ export function almInitResultsText( alm, type = 'standard' ){
    	case 'preloaded' :    	     
          page = (alm.addons.paging && alm.addons.seo) ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1; 
          almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);      	
+      	break;
+      
+      // WooCommerce
+      case 'woocommerce' : 
+      	// Don't do anything
       	break;
    	
    	default :
@@ -116,7 +126,7 @@ export function almInitResultsText( alm, type = 'standard' ){
  *  @since 4.1
  */
 let almRenderResultsText = function( el, page, pages, post_count, total_posts ){
-   
+
    el.forEach(function(result){
 	   
 	   pages = parseInt(pages);
@@ -133,5 +143,6 @@ let almRenderResultsText = function( el, page, pages, post_count, total_posts ){
 	   } else {
 	      result.innerHTML = text;  
 	   }
+	   
    });
 }

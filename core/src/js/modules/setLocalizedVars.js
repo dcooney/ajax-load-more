@@ -14,6 +14,8 @@ let setLocalizedVars = function(alm){
 	   let type = 'standard';      
 	
 		// Current Page `page`
+		
+		// nextpage
 		if(alm.addons.nextpage){
 	   	type = 'nextpage';
 	   	if(alm.addons.paging){
@@ -21,13 +23,20 @@ let setLocalizedVars = function(alm){
 	   	} else {
 	         alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
 	   	}
+	   }
+	   // woocommerce
+	   else if(alm.addons.woocommerce){
+		   type = 'woocommerce';
+		   alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+		   
 	   } else {
 	      alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+	      
 	   }
 	            
 	   // Total Posts `total_posts`.
-	   // Only update if !Preloaded && !Nextpage
-	   if(alm.addons.preloaded !== 'true' && !alm.addons.nextpage){
+	   // Only update if !preloaded && !nextpage && !woocommerce
+	   if(alm.addons.preloaded !== 'true' && !alm.addons.nextpage && !alm.addons.woocommerce){
 	   	alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
 	   }          
 	   
@@ -38,6 +47,7 @@ let setLocalizedVars = function(alm){
 	   resultsText.almResultsText(alm, type);
 	   
 	   resolve(true);
+	   
    });
    
 }

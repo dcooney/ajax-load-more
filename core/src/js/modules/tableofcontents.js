@@ -1,22 +1,24 @@
 import {almScroll, getOffset} from '../ajax-load-more';
+import setFocus from './setFocus';
+
 
 /**  
- * Create a numbered anchored navigation
+ * Create a numbered table of contents navigation
  *
  * @param {object} alm
  * @param {boolean} init
  * @since 5.2 
  */ 
-export function anchorNav(alm, init = false, from_preloaded = false){  
+export function tableOfContents(alm, init = false, from_preloaded = false){  
 	
-	let totalPosts = parseInt(alm.localize.post_count);
-	if(totalPosts == 0){
-		return false; // Exit if zero posts
+	let totalPosts = (alm.localize.post_count) ? parseInt(alm.localize.post_count) : 0;
+	if(totalPosts == 0 && !alm.addons.single_post){ // Exit if zero posts and not single posts
+		return false; 
 	}
-
-	if(alm && alm.anchorNav && alm.transition_container && alm.transition !== 'masonry'){
+	
+	if(alm && alm.tableofcontents && alm.transition_container && alm.transition !== 'masonry'){
 		
-		let offset = (alm.anchorNav.dataset.offset) ? parseInt(alm.anchorNav.dataset.offset) : 30;
+		let offset = (alm.tableofcontents.dataset.offset) ? parseInt(alm.tableofcontents.dataset.offset) : 30;
 		let startPage = (alm.start_page) ? parseInt(alm.start_page) : 0;
 		let filterStartPage = (alm.addons.filters_startpage) ? parseInt(alm.addons.filters_startpage) : 0;
 		let nextpageStartPage = (alm.addons.nextpage_startpage) ? parseInt(alm.addons.nextpage_startpage) : 0;		
@@ -28,7 +30,6 @@ export function anchorNav(alm, init = false, from_preloaded = false){
 			return false;
 		}
 		
-		
 		// Init
 		
 		if(init){
@@ -38,19 +39,19 @@ export function anchorNav(alm, init = false, from_preloaded = false){
    				// SEO
    				if(alm.addons.seo && startPage > 1){
    					for(let i = 0; i < startPage; i++){
-   						createAnchorButton(alm, i, offset);
+   						createTOCButton(alm, i, offset);
    					}
    				} 
    				// Filters
    				if(alm.addons.filters && filterStartPage > 1){
    					for(let i = 0; i < filterStartPage; i++){
-   						createAnchorButton(alm, i, offset);
+   						createTOCButton(alm, i, offset);
    					}
    				}
    				// Nextpage
    				if(alm.addons.nextpage && nextpageStartPage > 1){
    					for(let i = 0; i < nextpageStartPage; i++){
-   						createAnchorButton(alm, i, offset);
+   						createTOCButton(alm, i, offset);
    					}
    				}
    			}
@@ -58,11 +59,11 @@ export function anchorNav(alm, init = false, from_preloaded = false){
    				if(!from_preloaded && preloaded){
    					page = page + 1;
    				}
-   				createAnchorButton(alm, page, offset);
+   				createTOCButton(alm, page, offset);
    			}	
-			}, 100);
+			}, 100);	
 		} 
-		else {			
+		else {	
 			
 			// Preloaded
 			if(preloaded){
@@ -77,32 +78,36 @@ export function anchorNav(alm, init = false, from_preloaded = false){
 				}
 			}
 			
-			createAnchorButton(alm, page, offset);
+			createTOCButton(alm, page, offset);
 			
 		}		
 	}    
 }
 
 
-// Clear clearAnchorNav
-export function clearAnchorNav(){
-	let anchorNav = document.querySelector('.alm-anchor-nav');
-   if (anchorNav) {
-		anchorNav.innerHTML = '';
+// Clear table of contents
+export function clearTOC(){
+	let toc = document.querySelector('.alm-toc');
+   if (toc) {
+		toc.innerHTML = '';
 	}
 }
 
 
-// Create Standar Page Button
-function createAnchorButton(alm, page, offset){		
-		
+// Create Standard Page Button
+function createTOCButton(alm, page, offset){		
+	
+	if(!alm.tableofcontents){
+		return false;
+	}
+	
 	let button = document.createElement('button');
 	button.type = "button";
 	
 	page = parseInt(page) + 1;
-	button.innerHTML = getAnchorLabel(alm, page);		 
+	button.innerHTML = getTOCLabel(alm, page);		 
 	button.dataset.page = page;
-	alm.anchorNav.appendChild(button);
+	alm.tableofcontents.appendChild(button);
 	
 	button.addEventListener('click', function(e){
 		let page = this.dataset.page;
@@ -111,14 +116,19 @@ function createAnchorButton(alm, page, offset){
 			return false;
 		}
 		let top = (typeof getOffset === 'function') ? getOffset(target).top : target.offsetTop;
-		almScroll(top - offset);
+		almScroll(top - offset);		
+		
+		// Set Focus for A11y
+		setTimeout(function(){
+			setFocus(alm, target, page, false);
+		}, 1000);
 	});
 	
 }
 
 
 // Get Button Label
-function getAnchorLabel(alm, page){
+function getTOCLabel(alm, page){
    
 	let label = page;
 	
@@ -129,7 +139,7 @@ function getAnchorLabel(alm, page){
 	}
 	
 	// Dynamic function name
-	let funcName = `almAnchorLabel_${alm.id}`;
+	let funcName = `almTOCLabel_${alm.id}`;
 	if (typeof window[funcName] === 'function') {
    	label = window[funcName](page, label);
    }

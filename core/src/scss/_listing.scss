@@ -1,0 +1,107 @@
+
+/**
+ *  Generic alm-listing Styles
+ *  @since 1.0.0
+ */
+ .alm-listing{
+	.alm-reveal{
+		outline: none;
+		&:after{
+			display: table;
+			clear: both;
+			height: 0;
+			width: 100%;
+			content: '';
+		}
+	}
+ }
+ 
+.alm-listing{
+	margin: 0;
+	padding: 0;
+	.alm-reveal > li,
+	.alm-paging-content > li,
+	> li{
+		background: none;
+		margin: 0 0 30px; 
+		padding: 0 0 0 170px;
+		position: relative;
+		list-style: none;
+		&.no-img{ 
+			padding: 0;
+		}
+		p{
+			margin: 0;
+			&.entry-meta{
+				margin: 0 0 5px;
+				opacity: 0.75;
+			}
+		} 
+		h3{
+			margin: 0 0 10px; 
+		}
+		img{
+			position: absolute;
+			left: 0;
+			top: 0;
+			border-radius: 2px;
+		}
+	}
+	&.products{
+		li.product{
+			padding-left: inherit;
+			img{
+				position: static;
+				border-radius: inherit;
+			}
+		}
+	}
+	&.stylefree{
+		.alm-reveal > li,
+		.alm-paging-content > li,
+		> li{
+			padding: inherit;
+			margin: inherit;
+			img{
+				padding: inherit;
+				margin: inherit;
+				position: static;
+				border-radius: inherit;
+			}
+		}
+	}
+}
+
+// Right to left (rtl)
+.alm-listing.rtl{
+   .alm-reveal > li,
+	.alm-paging-content > li{
+		padding: 0 170px 0 0;	
+		text-align: right;	
+		img{
+			left: auto;
+			right: 0;
+		}
+	}
+	&.products{
+		li.product{
+			padding-right: inherit;
+		}
+	}
+}
+
+
+// Masonry default styles
+.alm-masonry{
+	display: block;
+	overflow: hidden;
+	clear: both;
+}
+
+
+// Placeholder default styles
+.alm-placeholder{   
+	opacity: 0;
+	transition: opacity 0.2s ease;
+	display: none;
+}

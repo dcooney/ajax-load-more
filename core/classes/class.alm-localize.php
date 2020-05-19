@@ -29,6 +29,7 @@ if(!class_exists('ALM_LOCALIZE')):
 		 *  @since 3.7
 		 */
 		public static function add_localized_var($key = '', $value = '', $id = 'ajax-load-more', $position = ''){
+						
 			if($position){
 				self::$vars[$id][$position][$key] = $value; // Add key & val
 			} else {

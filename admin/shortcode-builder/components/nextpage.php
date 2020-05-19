@@ -89,14 +89,14 @@
       	            <div class="half">
       	               <label for="next-page-scroll" class="full"><?php _e('Enable Scrolling', 'ajax-load-more'); ?></label>               
       	               <select class="alm_element" name="next-page-scroll" id="next-page-scroll">
-      	                   <option value="true" selected="selected"><?php _e('True', 'ajax-load-more'); ?></option>
-      	                   <option value="false"><?php _e('False', 'ajax-load-more'); ?></option>
+      	                   <option value="true"><?php _e('True', 'ajax-load-more'); ?></option>
+      	                   <option value="false" selected="selected"><?php _e('False', 'ajax-load-more'); ?></option>
       	               </select>
       	            </div>
       	            <div class="half">
       	               <label for="next-page-scroll-top" class="full">
       	                  <?php _e('Scroll Top', 'ajax-load-more'); ?>
-      	                  <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('The scrolltop position of the window (used with scrolling and fwd/back browser buttons).','ajax-load-more'); ?>"></a>
+      	                  <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('The scrolltop position of the browser window (used with scrolling and fwd/back browser buttons).','ajax-load-more'); ?>"></a>
       	               </label>
       	               <input id="next-page-scroll-top" name="next-page-scroll-top" class="alm_element sm" type="number" min="0" max="1000" step="1" value="30" placeholder="30">
       	            </div>

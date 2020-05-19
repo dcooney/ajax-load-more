@@ -50,6 +50,33 @@
    	         </div>
             </section>
             
+            <?php if( ALM_PAGING_VERSION > '1.5.2'){ ?>
+            <section>
+   	         <div class="shortcode-builder--label">
+   	            <h4><?php _e('Scroll', 'ajax-load-more'); ?></h4>
+   	   		 	<p><?php _e('Move users to the top of the Ajax Load More container after a paging click event.', 'ajax-load-more'); ?></p>
+   	   		 </div>
+   	   		 <div class="shortcode-builder--fields">
+   	            <section class="first">
+      	            <div class="half">
+      	               <label for="paging-scroll" class="full"><?php _e('Enable Scrolling', 'ajax-load-more'); ?></label>               
+      	               <select class="alm_element" name="paging-scroll" id="paging-scroll">
+      	                   <option value="true" selected="selected"><?php _e('True', 'ajax-load-more'); ?></option>
+      	                   <option value="false"><?php _e('False', 'ajax-load-more'); ?></option>
+      	               </select>
+      	            </div>
+      	            <div class="half paging-scrolltop-wrap">
+      	               <label for="paging-scrolltop" class="full">
+      	                  <?php _e('Scroll Top', 'ajax-load-more'); ?>
+      	                  <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('The scrolltop position of the browser window when scrolling back to top.','ajax-load-more'); ?>"></a>
+      	               </label>
+      	               <input id="paging-scrolltop" name="paging-scrolltop" class="alm_element sm" type="number" min="0" max="1000" step="1" value="100" placeholder="100">
+      	            </div>
+      	         </section>
+   	         </div>
+            </section>
+            <?php } ?>
+            
             <section>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Controls', 'ajax-load-more'); ?></h4>
