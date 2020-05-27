@@ -362,6 +362,9 @@ if( !class_exists('AjaxLoadMore') ):
    		// Core ALM JS
          $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
    		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'. $suffix .'.js', __FILE__ ), '',  ALM_VERSION, true );
+		
+		// LiteSpeed Cache compatability
+		wp_script_add_data('ajax-load-more', 'data-no-optimize' , '1');
 
    		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );
