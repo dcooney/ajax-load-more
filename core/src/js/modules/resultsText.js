@@ -23,7 +23,9 @@ export function almResultsText( alm, type = 'standard' ){
  */
 export function almGetResultsText( alm, type = 'standard' ){   
 	
-	if(!alm.resultsText || alm.nested === 'true') return false;
+	if(!alm.resultsText || !alm.localize || alm.nested === 'true'){
+		return false;
+	}
 	
 	let page = 0;
 	let pages = 0;

@@ -4,7 +4,7 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
 Tested up to: 5.4.1
-Stable tag: 5.3.2
+Stable tag: 5.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -382,6 +382,18 @@ How to install Ajax Load More.
 
 
 == Changelog ==
+
+= 5.3.4 - May 29, 2020 =
+* NEW - Added required functionality for integrating for [Cache](https://connekthq.com/plugins/ajax-load-more/add-ons/cache/) and [WooCommerce])https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/0) add-ons.
+* FIX - Fixed issue when using [Next Page](https://connekthq.com/plugins/ajax-load-more/add-ons/next-page/) and [Cache](https://connekthq.com/plugins/ajax-load-more/add-ons/cache/) add-ons together. When a user would hit a paged URL, infinite scroll would disable itself after the 2nd page load.
+* FIX - Fixed issue with undefined `alm.localize` variables when Ajax Load More is loaded via Ajax itself.
+* NEW - Adding [LiteSpeed Cache](https://wordpress.org/plugins/litespeed-cache/) compatibility.
+
+= 5.3.3 - May 20, 2020 =
+* FIX - Added fix for when using Masonry and Filters add-on. Filter would become inaccessible after the first first attempt.
+* FIX - Added fix for new WooCommerce Add-on and SPA sites throwing an error about undefined variable.
+* UPDATE - Updated a11y focus feature for users with `transition_container=false`. Focus will now be set on the newly added items.
+
 
 = 5.3.2 - May 19, 2020 =
 * SECURITY FIX - Added security fix for a possible authenticated SQL injection. Attacker needs to be authenticated, with edit_theme_options capability. (Read More)[https://wpvulndb.com/vulnerabilities/10230]

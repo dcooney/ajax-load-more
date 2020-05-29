@@ -87,6 +87,94 @@ var ajaxloadmore =
 /************************************************************************/
 /******/ ({
 
+/***/ "./core/src/js/addons/cache.js":
+/*!*************************************!*\
+  !*** ./core/src/js/addons/cache.js ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.createCacheFile = createCacheFile;
+exports.wooCache = wooCache;
+
+var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+/**  
+ * createCacheFile
+ * Create a single post cache file
+ *
+ * @param {Object} alm
+ * @param {String} content
+ * @param {String} type
+ * @since 5.3.1
+ */
+function createCacheFile(alm, content) {
+	var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'standard';
+
+	if (alm.addons.cache !== 'true' || !content || content === '') {
+		return false;
+	}
+
+	var name = type === 'single' ? alm.addons.single_post_id : 'page-' + (alm.page + 1);
+
+	var formData = new FormData();
+	formData.append('action', 'alm_cache_from_html');
+	formData.append('security', alm_localize.alm_nonce);
+	formData.append('cache_id', alm.addons.cache_id);
+	formData.append('cache_logged_in', alm.addons.cache_logged_in);
+	formData.append('canonical_url', alm.canonical_url);
+	formData.append('name', name);
+	formData.append('html', content.trim());
+
+	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
+		console.log('Cache created for: ' + alm.canonical_url);
+		//console.log(response);
+	});
+}
+
+/**  
+ * wooCache
+ * Create a WooCommerce cache file
+ *
+ * @param {Object} alm
+ * @param {String} content
+ * @since 5.3.1
+ */
+function wooCache(alm, content) {
+
+	if (alm.addons.cache !== 'true' || !content || content === '') {
+		return false;
+	}
+
+	var formData = new FormData();
+	formData.append('action', 'alm_cache_from_html');
+	formData.append('security', alm_localize.alm_nonce);
+	formData.append('cache_id', alm.addons.cache_id);
+	formData.append('cache_logged_in', alm.addons.cache_logged_in);
+	formData.append('canonical_url', alm.canonical_url);
+	formData.append('name', 'page-' + alm.page);
+	formData.append('html', content.trim());
+
+	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
+		console.log('Cache created for post: ' + alm.canonical_url);
+		//console.log(response);
+	});
+}
+
+/***/ }),
+
 /***/ "./core/src/js/addons/seo.js":
 /*!***********************************!*\
   !*** ./core/src/js/addons/seo.js ***!
@@ -241,16 +329,6 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.singlePostHTML = singlePostHTML;
-exports.singlePostCache = singlePostCache;
-
-var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-
-var _axios2 = _interopRequireDefault(_axios);
-
-function _interopRequireDefault(obj) {
-	return obj && obj.__esModule ? obj : { default: obj };
-}
-
 /**  
  * singlePostHTML
  * Create the HTML for loading Single Posts
@@ -282,35 +360,6 @@ function singlePostHTML(response) {
 }
 
 exports.default = singlePostHTML;
-
-/**  
- * singlePostCache
- * Create a single post cache file
- *
- * @param {Object} alm
- * @param {String} content
- * @since 5.3.1
- */
-
-function singlePostCache(alm, content) {
-
-	if (alm.addons.cache !== 'true' || !content || content === '') {
-		return false;
-	}
-
-	var formData = new FormData();
-	formData.append('action', 'alm_cache_from_html');
-	formData.append('security', alm_localize.alm_nonce);
-	formData.append('cache_id', alm.addons.cache_id);
-	formData.append('cache_logged_in', alm.addons.cache_logged_in);
-	formData.append('canonical_url', alm.canonical_url);
-	formData.append('name', alm.addons.single_post_id);
-	formData.append('html', content.trim());
-
-	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
-		console.log(response);
-	});
-}
 
 /***/ }),
 
@@ -791,6 +840,8 @@ var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/
 
 var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/js/addons/singleposts.js");
 
+var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
+
 var _woocommerce = __webpack_require__(/*! ./addons/woocommerce */ "./core/src/js/addons/woocommerce.js");
 
 var _seo = __webpack_require__(/*! ./addons/seo */ "./core/src/js/addons/seo.js");
@@ -920,7 +971,6 @@ var alm_is_filtering = false;
       alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
       alm.localize = window[alm.master_id + '_vars']; // Get localize vars
 
-
       // Main ALM Containers
       alm.main = el; // Top level DOM element
       alm.listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
@@ -979,7 +1029,7 @@ var alm_is_filtering = false;
       // Addon Shortcode Params
 
       // Woocommerce add-on
-      alm.addons.woocommerce = alm.localize.woocommerce ? true : false;
+      alm.addons.woocommerce = alm.localize && alm.localize.woocommerce ? true : false;
       if (alm.addons.woocommerce) {
          alm.addons.woocommerce_columns = alm.localize.woocommerce.columns ? parseInt(alm.localize.woocommerce.columns) : 3; // Woocommerce columns
          alm.addons.woocommerce_paged = alm.localize.woocommerce.paged ? parseInt(alm.localize.woocommerce.paged) : 1; // Woocommerce Paged
@@ -1642,10 +1692,11 @@ var alm_is_filtering = false;
             if (alm.addons.single_post && alm.addons.single_post_target) {
                // Single Posts 
                data = (0, _singleposts.singlePostHTML)(response, alm.addons.single_post_target);
-               (0, _singleposts.singlePostCache)(alm, data.html);
+               (0, _cache.createCacheFile)(alm, data.html, 'single');
             } else if (alm.addons.woocommerce) {
                // WooCommerce 
                data = (0, _woocommerce.wooGetContent)(response, alm);
+               (0, _cache.createCacheFile)(alm, data.html, 'woocommerce');
             } else {
                // Get data from response
                data = response.data;
@@ -1849,6 +1900,8 @@ var alm_is_filtering = false;
          // If cache, get the length of the html object
          total = is_cache ? (0, _almDomParser2.default)(html).length : total;
 
+         //console.log(total);
+
          // First Run Only
          if (alm.init) {
             // Set Meta		         
@@ -1879,10 +1932,14 @@ var alm_is_filtering = false;
 
             // isPaged
             if (alm.isPaged) {
+
                // Reset the posts_per_page parameter
-               alm.posts_per_page = alm.users ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage;
+               alm.posts_per_page = alm.addons.users ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage; // Users
+               alm.posts_per_page = alm.addons.nextpage ? 1 : alm.posts_per_page; // NextPage
+
                // SEO add-on
                alm.page = alm.start_page ? alm.start_page - 1 : alm.page; // Set new page #
+
                // Filters add-on               
                if (alm.addons.filters) {
                   if (alm.addons.filters_startpage > 0) {
@@ -2179,12 +2236,11 @@ var alm_is_filtering = false;
                                  alm.masonry_init = false;
                                  alm.AjaxLoadMore.triggerWindowResize();
                                  alm.AjaxLoadMore.transitionEnd();
-                                 alm_is_filtering = false;
                                  if (typeof almComplete === 'function') {
                                     window.almComplete(alm);
                                  }
 
-                              case 7:
+                              case 6:
                               case 'end':
                                  return _context3.stop();
                            }
@@ -2208,7 +2264,7 @@ var alm_is_filtering = false;
                      }
                   }
 
-                  // Default (Fade)
+                  // Default(Fade)
                   else {
                         if (alm.images_loaded === 'true') {
                            imagesLoaded(reveal, function () {
@@ -2282,7 +2338,7 @@ var alm_is_filtering = false;
                // Nested
                alm.AjaxLoadMore.nested(reveal);
 
-               // Insert Script						
+               // Insert Script		
                _insertScript2.default.init(alm.el);
 
                // almComplete
@@ -2315,14 +2371,21 @@ var alm_is_filtering = false;
 
                // ALM Done
                if (!alm.addons.cache) {
-                  // Not Cache & Previous Post
+                  // Not Cache & Single Post
                   if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
                      alm.AjaxLoadMore.triggerDone();
                   }
                } else {
                   // Cache 
-                  if (total < alm.posts_per_page) {
-                     alm.AjaxLoadMore.triggerDone();
+                  if (alm.addons.nextpage && alm.localize) {
+                     // Nextpage
+                     if (parseInt(alm.localize.page) === parseInt(alm.localize.total_posts)) {
+                        alm.AjaxLoadMore.triggerDone();
+                     }
+                  } else {
+                     if (total < parseInt(alm.posts_per_page)) {
+                        alm.AjaxLoadMore.triggerDone();
+                     }
                   }
                }
                // End ALM Done   
@@ -2837,31 +2900,33 @@ var alm_is_filtering = false;
       };
 
       // Add scroll eventlisteners, only when needed
-      if (alm.scroll && !alm.addons.paging) {
-         if (alm.scroll_container !== '') {
-            // Scroll Container         
-            alm.window = document.querySelector(alm.scroll_container) ? document.querySelector(alm.scroll_container) : alm.window;
-         }
-         alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
-         alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
-         alm.window.addEventListener('wheel', function (e) {
-            // Mousewheel
-            var direction = Math.sign(e.deltaY);
-            if (direction > 0) {
-               alm.AjaxLoadMore.scroll();
+      alm.AjaxLoadMore.scrollSetup = function () {
+         if (alm.scroll && !alm.addons.paging) {
+            if (alm.scroll_container !== '') {
+               // Scroll Container         
+               alm.window = document.querySelector(alm.scroll_container) ? document.querySelector(alm.scroll_container) : alm.window;
             }
-         });
-         alm.window.addEventListener('keyup', function (e) {
-            // End, Page Down
-            var code = e.keyCode ? e.keyCode : e.which;
-            switch (code) {
-               case 35:
-               case 34:
+            alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
+            alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
+            alm.window.addEventListener('wheel', function (e) {
+               // Mousewheel
+               var direction = Math.sign(e.deltaY);
+               if (direction > 0) {
                   alm.AjaxLoadMore.scroll();
-                  break;
-            }
-         });
-      }
+               }
+            });
+            alm.window.addEventListener('keyup', function (e) {
+               // End, Page Down
+               var code = e.keyCode ? e.keyCode : e.which;
+               switch (code) {
+                  case 35:
+                  case 34:
+                     alm.AjaxLoadMore.scroll();
+                     break;
+               }
+            });
+         }
+      };
 
       /** 
       * destroyed
@@ -3134,13 +3199,14 @@ var alm_is_filtering = false;
          });
       };
 
-      // Init Ajax Load More
-      alm.AjaxLoadMore.init();
-
-      // Flag to prevent unnecessary loading of posts on initial page load.
+      // Flag to prevent loading of posts on initial page load.
       setTimeout(function () {
          alm.proceed = true;
-      }, alm.speed);
+         alm.AjaxLoadMore.scrollSetup();
+      }, 500);
+
+      // Init Ajax Load More
+      alm.AjaxLoadMore.init();
 
       /**  
       * almUpdateCurrentPage
@@ -5244,7 +5310,9 @@ function almResultsText(alm) {
 function almGetResultsText(alm) {
   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-  if (!alm.resultsText || alm.nested === 'true') return false;
+  if (!alm.resultsText || !alm.localize || alm.nested === 'true') {
+    return false;
+  }
 
   var page = 0;
   var pages = 0;
@@ -5419,8 +5487,7 @@ var setFocus = function setFocus(alm) {
 			moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);
 		}
 	} else if (!alm.transition_container) {
-
-		// Table Layout
+		// Table Layout, no transition container 
 		moveFocus(alm.init, alm.addons.preloaded, element[0], is_filtering, alm.isSafari);
 	}
 };
@@ -5478,16 +5545,21 @@ var moveFocus = function moveFocus() {
 			//element.focus();
 			//container.scrollLeft = left;
 			//container.scrollTop = top;	
-			element.focus({ preventScroll: true });
+			setTimeout(function () {
+				element.focus({ preventScroll: true });
+			}, 50);
 		}
 	}
 
 	// Move window
 	else {
-			var x = window.scrollX;
-			var y = window.scrollY;
 
-			element.focus({ preventScroll: true });
+			setTimeout(function () {
+				element.focus({ preventScroll: true });
+			}, 50);
+
+			//let x = window.scrollX;
+			//let y = window.scrollY;
 
 			// Safari fix for window movement if Y = 0
 			//if(isSafari){

@@ -22,6 +22,7 @@ let setFocus = (alm, element = null, total = 0, is_filtering = false) => {
 		return;
 	}
 	
+	
 	// Has Total
 	if(alm.transition_container && total > 0){
 		if(alm.addons.paging){
@@ -36,9 +37,9 @@ let setFocus = (alm, element = null, total = 0, is_filtering = false) => {
          // Standard ALM
    	   moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);                  
       }
+      
 	} else if(!alm.transition_container){
-		
-		// Table Layout
+		// Table Layout, no transition container 
    	moveFocus(alm.init, alm.addons.preloaded, element[0], is_filtering, alm.isSafari);
 	}
 }
@@ -93,16 +94,21 @@ let moveFocus = (init = true, preloaded = 'false', element, is_filtering = false
 			//element.focus();
 			//container.scrollLeft = left;
 			//container.scrollTop = top;	
-			element.focus({ preventScroll: true });		
+			setTimeout(function(){	
+				element.focus({ preventScroll: true });
+			}, 50);		
 		}		
 	} 
 	
 	// Move window
 	else {   
-		let x = window.scrollX;
-		let y = window.scrollY;
 		
-		element.focus({ preventScroll: true });
+		setTimeout(function(){	
+			element.focus({ preventScroll: true });
+		}, 50);
+		
+		//let x = window.scrollX;
+		//let y = window.scrollY;
 		
 		// Safari fix for window movement if Y = 0
 		//if(isSafari){

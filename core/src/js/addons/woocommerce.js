@@ -3,7 +3,6 @@ import setFocus from '../modules/setFocus';
 let imagesLoaded = require('imagesloaded');
 
 
-
 /**  
  * wooGetContent
  * Get the content, title and results text from the Ajax response
@@ -269,9 +268,6 @@ export function wooGetURL(alm){
 	
 	return (url) ? url : '';
 }
-
-
-
 
 
 

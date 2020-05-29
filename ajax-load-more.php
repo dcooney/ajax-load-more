@@ -7,14 +7,14 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com 
-Version: 5.3.2
+Version: 5.3.4
 License: GPL
 Copyright: Darren Cooney & Connekt Media
 */
 
 
-define('ALM_VERSION', '5.3.2');
-define('ALM_RELEASE', 'May 19, 2020');
+define('ALM_VERSION', '5.3.4');
+define('ALM_RELEASE', 'May 29, 2020');
 define('ALM_STORE_URL', 'https://connekthq.com');
 
 
@@ -362,6 +362,9 @@ if( !class_exists('AjaxLoadMore') ):
    		// Core ALM JS
          $suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off
    		wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more'. $suffix .'.js', __FILE__ ), '',  ALM_VERSION, true );
+   		
+			// LiteSpeed Cache compatability
+			wp_script_add_data('ajax-load-more', 'data-no-optimize' , '1');
 
    		// Progress Bar JS
    		wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more',  ALM_VERSION, true );

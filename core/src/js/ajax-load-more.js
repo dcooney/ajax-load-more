@@ -45,7 +45,8 @@ import almDebug from './modules/almDebug';
 import getScrollPercentage from './modules/getScrollPercentage';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 import { showPlaceholder, hidePlaceholder } from './modules/placeholder';
-import { singlePostHTML, singlePostCache } from './addons/singleposts';
+import { singlePostHTML } from './addons/singleposts';
+import { createCacheFile } from './addons/cache';
 import { wooGetURL, wooGetContent, wooInit, woocommerce } from './addons/woocommerce';
 import { createSEOAttributes } from './addons/seo';
 
@@ -104,7 +105,6 @@ let alm_is_filtering = false;
       // Get localized <script/> variables
       alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
       alm.localize = window[alm.master_id + '_vars']; // Get localize vars
-
 
       // Main ALM Containers
       alm.main = el; // Top level DOM element
@@ -165,7 +165,7 @@ let alm_is_filtering = false;
       // Addon Shortcode Params
       
       // Woocommerce add-on
-      alm.addons.woocommerce = (alm.localize.woocommerce) ? true : false; 
+      alm.addons.woocommerce = (alm.localize && alm.localize.woocommerce) ? true : false; 
       if(alm.addons.woocommerce){
       	alm.addons.woocommerce_columns = (alm.localize.woocommerce.columns) ? parseInt(alm.localize.woocommerce.columns) : 3; // Woocommerce columns
       	alm.addons.woocommerce_paged = (alm.localize.woocommerce.paged) ? parseInt(alm.localize.woocommerce.paged) : 1; // Woocommerce Paged
@@ -644,8 +644,7 @@ let alm_is_filtering = false;
                                 
                   // Load `.html` page
                   axios.get(cache_page)
-                  .then(response => {
-                        // Exists
+                  .then(response => { // Exists
                         alm.AjaxLoadMore.success(response.data, true);
                      }                     
                   )
@@ -851,11 +850,12 @@ let alm_is_filtering = false;
             if(alm.addons.single_post && alm.addons.single_post_target){
 	            // Single Posts 
 	            data = singlePostHTML(response, alm.addons.single_post_target);
-	            singlePostCache(alm, data.html);
+	            createCacheFile(alm, data.html, 'single');
             }
             else if(alm.addons.woocommerce){
 	            // WooCommerce 
 	            data = wooGetContent(response, alm);
+	            createCacheFile(alm, data.html, 'woocommerce');
 	            
             }
             
@@ -1119,10 +1119,14 @@ let alm_is_filtering = false;
 
             // isPaged
             if (alm.isPaged) {
+	            
                // Reset the posts_per_page parameter
-               alm.posts_per_page = (alm.users) ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage;
+               alm.posts_per_page = (alm.addons.users) ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage; // Users
+               alm.posts_per_page = (alm.addons.nextpage) ? 1 : alm.posts_per_page; // NextPage
+               
                // SEO add-on
                alm.page = (alm.start_page) ? alm.start_page - 1 : alm.page; // Set new page #
+               
                // Filters add-on               
                if (alm.addons.filters) {
                   if (alm.addons.filters_startpage > 0) {
@@ -1417,7 +1421,6 @@ let alm_is_filtering = false;
 							alm.masonry_init = false;
 							alm.AjaxLoadMore.triggerWindowResize();
 							alm.AjaxLoadMore.transitionEnd();
-							alm_is_filtering = false;
 							if (typeof almComplete === 'function') {
 	                  	window.almComplete(alm); 
 	                  }
@@ -1441,7 +1444,7 @@ let alm_is_filtering = false;
                   }
                }
                
-               // Default (Fade)
+               // Default(Fade)
                else {
                   if (alm.images_loaded === 'true') {	                  
 	                  imagesLoaded( reveal, function() {
@@ -1525,7 +1528,7 @@ let alm_is_filtering = false;
                // Nested
                alm.AjaxLoadMore.nested(reveal);   
                             
-               // Insert Script						
+               // Insert Script		
 					insertScript.init(alm.el); 
 										
 					// almComplete
@@ -1555,13 +1558,22 @@ let alm_is_filtering = false;
    				}	
    				   
    				// ALM Done
-               if (!alm.addons.cache) { // Not Cache & Previous Post
+               if (!alm.addons.cache) { 
+	               // Not Cache & Single Post
                   if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
                      alm.AjaxLoadMore.triggerDone();
                   }
-               } else { // Cache 
-                  if (total < alm.posts_per_page) {
-                     alm.AjaxLoadMore.triggerDone();
+               } else { 
+	               // Cache 
+	               if(alm.addons.nextpage && alm.localize){
+		               // Nextpage
+		               if(parseInt(alm.localize.page) === parseInt(alm.localize.total_posts)){
+			               alm.AjaxLoadMore.triggerDone();
+		               }
+	               } else {
+	                  if (total < parseInt(alm.posts_per_page)) {
+	                     alm.AjaxLoadMore.triggerDone();
+	                  }
                   }
                }
                // End ALM Done   
@@ -2120,28 +2132,30 @@ let alm_is_filtering = false;
       
 
       // Add scroll eventlisteners, only when needed
-      if (alm.scroll && !alm.addons.paging) {
-         if (alm.scroll_container !== '') { // Scroll Container         
-            alm.window = (document.querySelector(alm.scroll_container)) ? document.querySelector(alm.scroll_container) : alm.window;
-         }
-         alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
-         alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
-         alm.window.addEventListener('wheel', function(e) { // Mousewheel
-				let direction = Math.sign(e.deltaY);
-				if(direction > 0){
-					alm.AjaxLoadMore.scroll();
-				}
-			});
-			alm.window.addEventListener('keyup', function(e) { // End, Page Down
-				let code = (e.keyCode ? e.keyCode : e.which);
-				switch (code) {
-					case 35 :
-					case 34 :
+      alm.AjaxLoadMore.scrollSetup = function() {
+	      if (alm.scroll && !alm.addons.paging) {
+	         if (alm.scroll_container !== '') { // Scroll Container         
+	            alm.window = (document.querySelector(alm.scroll_container)) ? document.querySelector(alm.scroll_container) : alm.window;
+	         }
+	         alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
+	         alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
+	         alm.window.addEventListener('wheel', function(e) { // Mousewheel
+					let direction = Math.sign(e.deltaY);
+					if(direction > 0){
 						alm.AjaxLoadMore.scroll();
-					break;
-				}
-			});
-         
+					} 
+				});
+				alm.window.addEventListener('keyup', function(e) { // End, Page Down
+					let code = (e.keyCode ? e.keyCode : e.which);
+					switch (code) {
+						case 35 :
+						case 34 :
+							alm.AjaxLoadMore.scroll();
+						break;
+					}
+				});
+	         
+	      }
       }
       
       
@@ -2420,14 +2434,15 @@ let alm_is_filtering = false;
       };
 
 
-      // Init Ajax Load More
-      alm.AjaxLoadMore.init();
-
-
-      // Flag to prevent unnecessary loading of posts on initial page load.
+      // Flag to prevent loading of posts on initial page load.
       setTimeout(function() {
          alm.proceed = true;
-      }, alm.speed);
+         alm.AjaxLoadMore.scrollSetup();
+      }, 500);
+
+
+      // Init Ajax Load More
+      alm.AjaxLoadMore.init();
 
 
 
