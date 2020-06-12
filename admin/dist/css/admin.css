@@ -1,4 +1,4 @@
-@import '//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css';
+@import "//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 /* This is the default Tooltipster theme (feel free to modify or duplicate and create multiple themes!): */
 .tooltipster-default {
   border-radius: 3px;
@@ -1489,9 +1489,10 @@ body.ajax-load-more_page_ajax-load-more-pro {
   display: flex;
   -ms-flex-wrap: nowrap;
       flex-wrap: nowrap;
-  font-family: Consolas,monaco,monospace;
+  font-family: Consolas, monaco, monospace;
   border-radius: 3px; }
-  .ajax-load-more .file-location p, .ajax-load-more .file-location code {
+  .ajax-load-more .file-location p,
+  .ajax-load-more .file-location code {
     padding: 12px 16px;
     line-height: 18px;
     font-size: 12px; }
@@ -1630,8 +1631,8 @@ a.layout-hover:hover img {
   outline: none; }
 
 .ajax-load-more h3.heading:after {
-  font-family: 'FontAwesome';
-  content: '\f056';
+  font-family: "FontAwesome";
+  content: "\f056";
   color: #e1e1e1;
   position: absolute;
   left: 13px;
@@ -1640,7 +1641,7 @@ a.layout-hover:hover img {
   width: 20px; }
 
 .ajax-load-more h3.heading.open:after {
-  content: '\f055'; }
+  content: "\f055"; }
 
 .ajax-load-more h3.heading.open {
   border-bottom-color: transparent; }
@@ -1693,21 +1694,21 @@ a.layout-hover:hover img {
   display: none; }
 
 .ajax-load-more .toggle-all .inner-wrap:before {
-  font-family: 'FontAwesome';
-  content: '\f068';
+  font-family: "FontAwesome";
+  content: "\f068";
   font-size: 10px;
   position: absolute;
   left: 0;
   top: -5px; }
 
 .ajax-load-more .toggle-all.closed .inner-wrap:before {
-  content: '\f067'; }
+  content: "\f067"; }
 
 #alm-container.ajax-load-more .toggle-all {
   display: none; }
 
 #alm-builder {
-  font-family: -apple-system,BlinkMacSystemFont, "Segoe UI", Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; }
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif; }
 
 a.button-small {
   text-decoration: none;
@@ -1893,8 +1894,7 @@ a.button-small {
   display: none;
   position: relative; }
 
-.ajax-load-more .row .wrap .inner
-.ajax-load-more p.warning {
+.ajax-load-more .row .wrap .inner .ajax-load-more p.warning {
   color: #d24646;
   font-size: 13px;
   border-left: 3px solid #d24646;
@@ -1960,8 +1960,8 @@ a.button-small {
   -webkit-box-shadow: none;
           box-shadow: none; }
 
-.ajax-load-more input[type=checkbox],
-.ajax-load-more input[type=radio] {
+.ajax-load-more input[type="checkbox"],
+.ajax-load-more input[type="radio"] {
   width: 1rem; }
 
 .controls button.disabled {
@@ -1998,14 +1998,14 @@ a.button-small {
   margin-left: 3px; }
 
 .ajax-load-more textarea,
-.ajax-load-more input[type=text],
-.ajax-load-more input[type=number] {
+.ajax-load-more input[type="text"],
+.ajax-load-more input[type="number"] {
   padding: 10px 12px;
   line-height: 1.3;
   border: 1px solid #e1e1e1;
   width: 60%; }
 
-.ajax-load-more input[type=text].full {
+.ajax-load-more input[type="text"].full {
   width: 100%; }
 
 .ajax-load-more .wrap-30 {
@@ -2020,12 +2020,12 @@ a.button-small {
 .ajax-load-more .wrap-30.wrap-50.padding-top {
   padding-top: 15px; }
 
-.ajax-load-more .wrap-30 input[type=text].sm,
+.ajax-load-more .wrap-30 input[type="text"].sm,
 .ajax-load-more .wrap-30 .select2-container {
   width: 100%;
   margin: 0; }
 
-.ajax-load-more input[type=number].sm {
+.ajax-load-more input[type="number"].sm {
   width: 100px; }
 
 .ajax-load-more ::-webkit-input-placeholder {
@@ -2046,16 +2046,16 @@ a.button-small {
   color: #999;
   font-style: italic; }
 
-.ajax-load-more input[type=text],
-.ajax-load-more input[type=number],
-.ajax-load-more input[type=email],
+.ajax-load-more input[type="text"],
+.ajax-load-more input[type="number"],
+.ajax-load-more input[type="email"],
 .ajax-load-more textarea {
   background: #f7f7f7; }
 
-.ajax-load-more .repeaters input[type=text] {
+.ajax-load-more .repeaters input[type="text"] {
   padding: 9px 10px; }
 
-.ajax-load-more input[type=number] {
+.ajax-load-more input[type="number"] {
   height: auto; }
 
 .ajax-load-more input.disabled-input {
@@ -2067,9 +2067,9 @@ a.button-small {
   -webkit-box-shadow: none !important;
           box-shadow: none !important; }
 
-.ajax-load-more input[type=text]:focus,
-.ajax-load-more input[type=number]:focus,
-.ajax-load-more input[type=email]:focus,
+.ajax-load-more input[type="text"]:focus,
+.ajax-load-more input[type="number"]:focus,
+.ajax-load-more input[type="email"]:focus,
 .ajax-load-more textarea:focus {
   border-color: #bbbbbb;
   -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
@@ -2335,7 +2335,7 @@ hr.indented {
   position: fixed;
   bottom: 0;
   left: 0;
-  background: #FF5A58;
+  background: #ff5a58;
   border-top: 1px solid #ca5252;
   -webkit-box-shadow: 0 -5px 5px #efefef;
           box-shadow: 0 -5px 5px #efefef;
@@ -2366,7 +2366,7 @@ hr.indented {
 
 .output-wrap .copy {
   background: #fff;
-  color: #FF5A58;
+  color: #ff5a58;
   margin: 0;
   display: inline-block;
   z-index: 9;
@@ -2416,6 +2416,11 @@ hr.indented {
 .admin.ajax-load-more #shortcode_output {
   border: none;
   padding: 12px 12px 24px; }
+
+#shortcode_output::-moz-selection {
+  background: #fff;
+  color: #ca5252;
+  text-shadow: none; }
 
 #shortcode_output::selection {
   background: #fff;
@@ -2482,8 +2487,8 @@ hr.indented {
   cursor: pointer !important;
   line-height: 1.5; }
 
-.form-table input[type=radio],
-.form-table input[type=checkbox] {
+.form-table input[type="radio"],
+.form-table input[type="checkbox"] {
   vertical-align: top;
   margin-top: 0 !important;
   max-width: 8%; }
@@ -2547,13 +2552,13 @@ hr.indented {
   text-shadow: 1px 1px 0 #fff;
   resize: none; }
 
-.admin.ajax-load-more .form-table input[type=radio],
-.admin.ajax-load-more .form-table input[type=checkbox] {
+.admin.ajax-load-more .form-table input[type="radio"],
+.admin.ajax-load-more .form-table input[type="checkbox"] {
   margin-right: 10px;
   margin-top: 0 !important; }
 
-.admin.ajax-load-more.settings input[type=text],
-.admin.ajax-load-more.settings input[type=number],
+.admin.ajax-load-more.settings input[type="text"],
+.admin.ajax-load-more.settings input[type="number"],
 .admin.ajax-load-more.settings .select2-container {
   margin-top: 10px; }
 
@@ -2774,7 +2779,7 @@ table.highlight {
     overflow: hidden;
     line-height: 1px;
     margin: 0;
-    content: ''; }
+    content: ""; }
 
 #alm_OptionsForm .form-table:last-of-type {
   margin-bottom: 0; }
@@ -2799,7 +2804,7 @@ table.highlight {
   max-width: 25%; }
 
 .repeaters .repeater-wrap textarea,
-.repeaters .repeater-wrap input[type=text] {
+.repeaters .repeater-wrap input[type="text"] {
   width: 100%; }
 
 .repeaters input.save-repeater.saving {
@@ -3203,7 +3208,7 @@ span.cnkt-button.installed i,
   font-weight: 600;
   top: -3px; }
 
-.license-wrap input[type=text] {
+.license-wrap input[type="text"] {
   margin: 0;
   width: 100% !important;
   padding: 14px; }
@@ -3257,7 +3262,7 @@ span.cnkt-button.installed i,
 
 /*
  * Plugin Sidebar
- * 
+ *
  *  @since 1.0
  */
 .ajax-load-more .cnkt-sidebar .cta {
@@ -3559,7 +3564,7 @@ span.cnkt-button.installed i,
   opacity: 0;
   cursor: default; }
 
-.ajax-load-more .row.unlimited input[type=text] {
+.ajax-load-more .row.unlimited input[type="text"] {
   width: 100%; }
 
 .alm-add-template {
@@ -3655,6 +3660,11 @@ span.cnkt-button.installed i,
     overflow: visible; }
   .alm-cache .row:first-of-type {
     margin-top: 0 !important; }
+  .alm-cache h3.heading {
+    padding-right: 90px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
   .alm-cache .alm-cache-search-wrap {
     position: relative;
     display: block;
@@ -3662,25 +3672,38 @@ span.cnkt-button.installed i,
     .alm-cache .alm-cache-search-wrap input {
       width: 100% !important;
       margin: 0 !important;
-      padding: 12px;
+      padding: 12px 20px;
       display: block;
-      font-size: 16px; }
+      font-size: 16px;
+      border-radius: 100px; }
     .alm-cache .alm-cache-search-wrap i {
       position: absolute;
-      right: 11px;
-      top: 13px;
+      right: 15px;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+          -ms-transform: translateY(-50%);
+              transform: translateY(-50%);
       color: #ccc;
       font-size: 20px;
       z-index: 1; }
+  .alm-cache .alm-cache-listing {
+    position: relative; }
+    .alm-cache .alm-cache-listing .toggle-all {
+      right: 0;
+      top: -42px; }
+  .alm-cache hr {
+    margin: 30px 0 25px;
+    border-top-color: #efefef; }
   .alm-cache .alm-dir-listing {
     border: 1px solid #e1e1e1;
     border-radius: 3px;
     overflow: hidden;
     padding: 0;
     margin: 10px 0 0; }
-    .alm-cache .alm-dir-listing:hover {
-      -webkit-box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-              box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05); }
+    .alm-cache .alm-dir-listing--nested {
+      padding: 0 15px 15px; }
+      .alm-cache .alm-dir-listing--nested .alm-dir-listing {
+        margin: 0; }
     .alm-cache .alm-dir-listing.theme-repeaters {
       padding: 15px;
       margin: 0; }
@@ -3697,12 +3720,12 @@ span.cnkt-button.installed i,
   .alm-cache .alm-dir-listing .dir-title {
     margin: 0 0 5px;
     position: relative; }
-  .alm-cache .ajax-load-more .alm-dir-listing h3.heading {
+  .alm-cache .alm-dir-listing h3.heading {
     padding-left: 40px !important; }
-  .alm-cache .ajax-load-more .alm-dir-listing h3.heading:after {
-    content: "\f07c"; }
-  .alm-cache .ajax-load-more .alm-dir-listing h3.heading.open:after {
-    content: "\f07b"; }
+    .alm-cache .alm-dir-listing h3.heading:after {
+      content: "\f07c"; }
+    .alm-cache .alm-dir-listing h3.heading.open:after {
+      content: "\f07b"; }
   .alm-cache .alm-dir-listing .dir-title .delete {
     position: absolute;
     right: 10px;
@@ -3713,7 +3736,7 @@ span.cnkt-button.installed i,
     padding: 5px 12px;
     border: 1px solid #e1e1e1;
     color: #ccc;
-    border-radius: 2px; }
+    border-radius: 3px; }
   .alm-cache .alm-dir-listing:hover .dir-title .delete {
     border-color: #e1e1e1;
     background-color: #fff;
@@ -3721,36 +3744,57 @@ span.cnkt-button.installed i,
   .alm-cache .alm-dir-listing .dir-title .delete:hover {
     background-color: #c94141;
     border-color: #c94141;
-    color: #fff;
-    -webkit-box-shadow: 0 0 3px #ccc;
-            box-shadow: 0 0 3px #ccc; }
+    color: #fff; }
   .alm-cache .alm-dir-listing .dir-title .delete:active {
     -webkit-box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.2);
             box-shadow: inset 0 2px 1px rgba(0, 0, 0, 0.2); }
   .alm-cache .cache-page-title {
-    font-size: 14px;
+    font-size: 12px;
     display: block;
     width: 100%;
     padding: 0 7px 10px;
-    font-weight: 600; }
+    font-weight: 700;
+    text-transform: uppercase; }
   .alm-cache .cache-page-wrap {
-    padding: 0 10px 15px; }
+    padding: 0 10px 20px; }
+  .alm-cache .cache-full-path {
+    display: none; }
+    .alm-cache .cache-full-path-button {
+      border: 1px solid #f1f1f1;
+      border-radius: 3px;
+      background: #fff;
+      cursor: pointer;
+      margin: 0 2px 0 0;
+      text-align: left;
+      color: #878787;
+      font-size: 13px;
+      padding: 2px 4px; }
+      .alm-cache .cache-full-path-button:hover, .alm-cache .cache-full-path-button:focus {
+        border-color: #e1e1e1; }
   .alm-cache .alm-dir-listing ul.cache-details {
     display: block;
-    padding: 10px 10px;
+    padding: 15px 10px 5px;
     margin: 0;
     border: none; }
-  .alm-cache .alm-dir-listing ul.cache-details li {
-    display: block;
-    width: 100%;
-    background: none;
-    padding: 6px 4px 6px;
-    color: #333; }
-  .alm-cache .alm-dir-listing ul.cache-details li i {
-    color: #ccc;
-    font-size: 18px;
-    position: relative;
-    top: 1px; }
+    .alm-cache .alm-dir-listing ul.cache-details li {
+      position: relative;
+      display: block;
+      width: 100%;
+      background: none;
+      padding: 0 10px 0 28px;
+      margin: 0 0 10px;
+      color: #878787;
+      font-size: 13px; }
+      .alm-cache .alm-dir-listing ul.cache-details li i {
+        color: #ccc;
+        font-size: 16px;
+        position: absolute;
+        top: 1px;
+        left: 5px; }
+      .alm-cache .alm-dir-listing ul.cache-details li a {
+        word-break: break-word; }
+  .alm-cache .dir-empty {
+    margin-top: 10px; }
   .alm-cache .dir-empty,
   .alm-cache .cache-cleared {
     background-color: #ffffe8;
@@ -3812,13 +3856,16 @@ p.theme-title {
 
 .alm-dir-listing ul li {
   margin: 0 -2px;
-  padding: 7px 0 7px 40px;
+  padding: 9px 0 5px 40px;
   display: inline-block;
   vertical-align: top;
   overflow: hidden;
   width: 47%;
   font-size: 14px;
   background: transparent url("../../img/directory-list.gif") no-repeat left 46%; }
+  .alm-dir-listing ul li.full {
+    width: 100%;
+    display: block; }
 
 .alm-dir-listing.theme-repeaters ul li {
   display: block;
@@ -3884,19 +3931,19 @@ p.theme-title {
     margin: 0;
     width: 100%; }
 
-.shortcode-builder input[type=checkbox],
-.shortcode-builder input[type=radio],
-.ajax-load-more .form-table input[type=checkbox],
-.ajax-load-more .form-table input[type=radio] {
+.shortcode-builder input[type="checkbox"],
+.shortcode-builder input[type="radio"],
+.ajax-load-more .form-table input[type="checkbox"],
+.ajax-load-more .form-table input[type="radio"] {
   width: 0;
   height: 0;
   opacity: 0;
   position: absolute; }
 
-.shortcode-builder input[type=checkbox] + label,
-.ajax-load-more .form-table input[type=checkbox] + label,
-.shortcode-builder input[type=radio] + label,
-.ajax-load-more .form-table input[type=radio] + label {
+.shortcode-builder input[type="checkbox"] + label,
+.ajax-load-more .form-table input[type="checkbox"] + label,
+.shortcode-builder input[type="radio"] + label,
+.ajax-load-more .form-table input[type="radio"] + label {
   background: transparent url("../../img/bkg-chkbox_off.png") no-repeat left 1px;
   height: auto;
   min-height: 23px;
@@ -3907,49 +3954,49 @@ p.theme-title {
   font-size: 14px;
   line-height: 1.5;
   cursor: pointer !important; }
-  .shortcode-builder input[type=checkbox] + label span,
-  .ajax-load-more .form-table input[type=checkbox] + label span,
-  .shortcode-builder input[type=radio] + label span,
-  .ajax-load-more .form-table input[type=radio] + label span {
+  .shortcode-builder input[type="checkbox"] + label span,
+  .ajax-load-more .form-table input[type="checkbox"] + label span,
+  .shortcode-builder input[type="radio"] + label span,
+  .ajax-load-more .form-table input[type="radio"] + label span {
     display: inline-block;
     padding-left: 1px;
     font-size: 12px;
     color: #999; }
 
-.shortcode-builder input[type=radio] + label,
-.ajax-load-more .form-table input[type=radio] + label {
+.shortcode-builder input[type="radio"] + label,
+.ajax-load-more .form-table input[type="radio"] + label {
   background: transparent url("../../img/bkg-radio_off.png") no-repeat left 2px; }
 
-.shortcode-builder input[type=checkbox]:hover + label,
-.ajax-load-more .form-table input[type=checkbox]:hover + label,
-.shortcode-builder input[type=checkbox]:focus + label,
-.ajax-load-more .form-table input[type=checkbox]:focus + label {
+.shortcode-builder input[type="checkbox"]:hover + label,
+.ajax-load-more .form-table input[type="checkbox"]:hover + label,
+.shortcode-builder input[type="checkbox"]:focus + label,
+.ajax-load-more .form-table input[type="checkbox"]:focus + label {
   /* hover/focus */
   background-image: url("../../img/bkg-chkbox_on.png"); }
 
-.shortcode-builder input[type=radio]:hover + label,
-.ajax-load-more .form-table input[type=radio]:hover + label,
-.shortcode-builder input[type=radio]:focus + label,
-.ajax-load-more .form-table input[type=radio]:focus + label {
+.shortcode-builder input[type="radio"]:hover + label,
+.ajax-load-more .form-table input[type="radio"]:hover + label,
+.shortcode-builder input[type="radio"]:focus + label,
+.ajax-load-more .form-table input[type="radio"]:focus + label {
   /* hover/focus */
   background-image: url("../../img/bkg-radio_on.png"); }
 
-.shortcode-builder input[type=checkbox]:checked + label,
-.ajax-load-more .form-table input[type=checkbox]:checked + label {
+.shortcode-builder input[type="checkbox"]:checked + label,
+.ajax-load-more .form-table input[type="checkbox"]:checked + label {
   /* selected */
   background-image: url("../../img/bkg-chkbox_selected.png");
   color: #000; }
 
-.shortcode-builder input[type=radio]:checked + label,
-.ajax-load-more .form-table input[type=radio]:checked + label {
+.shortcode-builder input[type="radio"]:checked + label,
+.ajax-load-more .form-table input[type="radio"]:checked + label {
   /* selected */
   background-image: url("../../img/bkg-radio_selected.png");
   color: #000; }
 
-.shortcode-builder input[type=checkbox] + label:hover,
-.ajax-load-more .form-table input[type=checkbox] + label:hover,
-.shortcode-builder input[type=radio] + label:hover,
-.ajax-load-more .form-table input[type=radio] + label:hover {
+.shortcode-builder input[type="checkbox"] + label:hover,
+.ajax-load-more .form-table input[type="checkbox"] + label:hover,
+.shortcode-builder input[type="radio"] + label:hover,
+.ajax-load-more .form-table input[type="radio"] + label:hover {
   color: #000; }
 
 /*
@@ -3989,8 +4036,8 @@ p.theme-title {
     #alm-shortcode-builder-form .shortcode-parameter-wrap h2:hover:after, #alm-shortcode-builder-form .shortcode-parameter-wrap h2:focus:after {
       color: #ccc; }
     #alm-shortcode-builder-form .shortcode-parameter-wrap h2:after {
-      font-family: 'FontAwesome';
-      content: '\f056';
+      font-family: "FontAwesome";
+      content: "\f056";
       color: #e1e1e1;
       position: absolute;
       left: 15px;
@@ -3998,7 +4045,7 @@ p.theme-title {
       height: 20px;
       width: 20px; }
     #alm-shortcode-builder-form .shortcode-parameter-wrap h2.open:after {
-      content: '\f055'; }
+      content: "\f055"; }
     #alm-shortcode-builder-form .shortcode-parameter-wrap h2 i {
       position: absolute;
       right: 15px;
@@ -4030,7 +4077,7 @@ p.theme-title {
 
 /*
  * Repeater Template options dropdown
- * @since 2.4.1 
+ * @since 2.4.1
  */
 .ajax-load-more .row.template {
   position: relative; }
@@ -4784,8 +4831,8 @@ span.dismiss a {
 * @since 1.0
 */
 @media screen and (max-width: 1200px) {
-  .ajax-load-more input[type=text],
-  .ajax-load-more input[type=number],
+  .ajax-load-more input[type="text"],
+  .ajax-load-more input[type="number"],
   .select2-container,
   #alm-builder .select2-container-multi,
   .ajax-load-more textarea {
@@ -4842,8 +4889,8 @@ span.dismiss a {
   .ajax-load-more .row .wrap {
     padding: 10px 20px; }
   .ajax-load-more textarea,
-  .ajax-load-more input[type=text],
-  .ajax-load-more input[type=number],
+  .ajax-load-more input[type="text"],
+  .ajax-load-more input[type="number"],
   .select2-container,
   #alm-builder .select2-container-multi {
     width: 100% !important; }

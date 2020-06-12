@@ -25,7 +25,7 @@ const admin_dist = './admin/dist';
 // Sass [Core Compile]
 gulp.task('sass', () => {
 	setTimeout(function(){
-	    gulp.src('./core/src/scss/'+ appname +'.scss')
+	    gulp.src('./core/src/scss/*.scss')
 	      .pipe(sass())
 	      .pipe(prefix({browsers: ['last 2 versions', 'ie >= 9', 'and_chr >= 2.3']}))
 	      .pipe(gulp.dest( dist +'/css/'))

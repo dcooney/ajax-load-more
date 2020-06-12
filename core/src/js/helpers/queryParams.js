@@ -30,6 +30,10 @@ export function almGetAjaxParams(alm, action, queryType){
    if(alm.theme_repeater){
       data.theme_repeater = alm.theme_repeater;
    }  
+   if(alm.addons.filters){
+      data.filters = alm.addons.filters;
+      data.filters_startpage = alm.addons.filters_startpage;
+   } 
    if(alm.addons.paging){
       data.paging = alm.addons.paging;
    }  
