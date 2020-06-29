@@ -4,7 +4,7 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, infinite scrolling, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.0
 Tested up to: 5.4.2
-Stable tag: 5.3.5
+Stable tag: 5.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,7 +34,7 @@ Check out the **[demo site](https://connekthq.com/plugins/ajax-load-more/)** for
 
 #### What's New
 
--  **[WooCommerce](https://connekthq.com/plugins/ajax-load-more/add-ons/wocommerce/)** - Infinite scroll WooCommerce products without updating a line of template code.
+-  **[WooCommerce](https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/)** - Infinite scroll WooCommerce products without updating a line of template code.
 -  **[Pro](https://connekthq.com/plugins/ajax-load-more/pro/)** - Access to all premium add-ons in a single installation.
 -  **[Filters](https://connekthq.com/plugins/ajax-load-more/add-ons/filters/)** - The Filters add-on provides front-end and admin functionality for building and managing Ajax filters.
 -  **[User Query](https://connekthq.com/plugins/ajax-load-more/add-ons/users/)** - Query and display a list of WordPress users by role using a `WP_User_Query` and Ajax Load More.
@@ -345,6 +345,14 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.3.6 - June 29, 2020 =
+* NEW - Added support for Masonry `transition` and [Filters](https://connekthq.com/plugins/ajax-load-more/add-ons/filters/) add-on - previously when using Masonry paging URLs would not update as users load additional pages.
+  This requires Filters 1.9.3
+* FIX - Fixed issue with `Load More` not working after running a [custom filter](https://connekthq.com/plugins/ajax-load-more/docs/public-functions/#filter) when using Masonry `transition` .
+* UPDATE - Updated Babel dependancy versions to (hopefully) resolve issues around IE11 `startsWith` and `endsWith` errors.
+* UPDATE - Updated uninstall.php script to skip removal of Repeater Templates if the template directory has been changed via the `alm_repeater_path` hook.
+
 
 = 5.3.5 - June 12, 2020 =
 

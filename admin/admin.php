@@ -54,21 +54,21 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 	$addons = alm_get_addons();
 	$slug = $response->slug;
 	$version = $response->new_version;
-	
+
 	foreach($addons as $key=>$addon){
 		if($addon['path'] === $slug){
 			$index = $key;
 		}
 	}
-	
+
 	if(isset($index)){
 		$style = 'display: block; padding: 10px 5px 2px;';
 		$addon = $addons[$index];
-		
+
 		if(isset($addon)){
 			$name = '<strong>'. $addon['name'] .'</strong>';
 			$status = get_option($addon['status']);
-			
+
 			// Expired
 			if($status === 'expired'){
 				printf('<span style="'. $style .'">%s %s</span>',
@@ -76,7 +76,7 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 					__( 'Please login to your <a href="https://connekthq.com/account/" target="_blank">Account</a> to renew the license.', 'ajax-load-more' )
 				);
 			}
-			
+
 			// Invalid/Inactive
 			if($status === 'invalid' || $status === 'disabled'){
 				printf('<span style="'. $style .'">%s %s</span>',
@@ -84,7 +84,7 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> or login to your <a href="https://connekthq.com/account/" target="_blank">Account</a> to renew the license.', 'ajax-load-more' )
 				);
 			}
-			
+
 			// Deactivated
 			if($status === 'deactivated'){
 				printf('<span style="'. $style .'">%s %s</span>',
@@ -92,7 +92,7 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 					__( 'Please activate the <a href="admin.php?page=ajax-load-more-licenses" target="_blank">license</a> to update.', 'ajax-load-more' )
 				);
 			}
-			
+
 		}
 	}
 }
@@ -112,21 +112,21 @@ function alm_plugin_row( $plugin_name ) {
 
 	$addons = array_merge(alm_get_addons(), alm_get_pro_addon());
 	foreach($addons as $addon){
-		if ( $plugin_name == $addon['path'].'/'.$addon['path'].'.php' ) {		
-			
-			$status = get_option($addon['status']);			
+		if ( $plugin_name == $addon['path'].'/'.$addon['path'].'.php' ) {
+
+			$status = get_option($addon['status']);
 			$style = 'margin: 5px 20px 6px 40px;';
-			
+
 			// !valid
 			if($status !== 'valid'){
 				$name = ($addon['name'] === 'Ajax Load More Pro') ? '<strong>'. $addon['name'] .'</strong>' : '<strong>'. 'Ajax Load More: '. $addon['name'] .'</strong>';
-				
+
 				$row = '</tr><tr class="plugin-update-tr"><td colspan="3" class="plugin-update"><div class="update-message" style="'. $style .'">';
 				$row .= sprintf(__('%sRegister%s your copy of %s to receive access to automatic upgrades and support. Need a license key? %sPurchase one now%s.'), '<a href="admin.php?page=ajax-load-more-licenses">', '</a>', $name, '<a href="'. $addon['url'] .'" target="blank">', '</a>');
 				$row .= '</div></td>';
 				echo $row;
-			}			
-			
+			}
+
 		}
 	}
 }
@@ -256,7 +256,7 @@ function alm_license_activation(){
 		}else{
 			$action = 'deactivate_license';
 		}
-      
+
       // Create the params for the request
 		$api_params = array(
 			'edd_action'=> $action,
@@ -271,7 +271,7 @@ function alm_license_activation(){
 		// make sure the response came back okay
 		if ( is_wp_error($response) ){
 			return false;
-		}		
+		}
 
 		$license_data = $response['body'];
 		$license_data = json_decode($license_data); // decode the license data
@@ -284,26 +284,26 @@ function alm_license_activation(){
 			$return["site_count"] = $license_data->site_count;
 			$return["activations_left"] = $license_data->activations_left;
 			$return["item_name"] = $license_data->item_name;
-			
+
 			if($license_data->activations_left === 0 && $license_data->success === false){
 				$msg = '<strong>You\'re out of available licenses <em>('. $license_data->license_limit .' / '. $license_data->site_count .')</em></strong>. Please visit the <a href="'.$upgrade.'" target="_blank">'.$license_data->item_name.'</a> website to add additional licenses.';
 			}
 		}
 		$return["msg"] = $msg;
-		
-			
+
+
 		// If error, make error the status of the license
 		$license_status = (isset($license_data->error)) ? $license_data->error : $license_data->license;
-		
+
 		$return["license"] = $license_status;
 
 		// Update the options table
 		update_option( $option_status, $license_status);
 		update_option( $option_key, $license );
-		
+
 		// Set transient value to store license status
 		set_transient( "alm_{$item_id}_{$license}", $license_status, 96 * HOUR_IN_SECONDS ); // 4 days
-		
+
 		// Send the response
 	   wp_send_json($return);
 
@@ -326,12 +326,12 @@ function alm_admin_notice_errors() {
 
    $screen = get_current_screen();
    $alm_is_admin_screen = alm_is_admin_screen();
-   
+
    // Exit if screen is not dashboard, plugins, settings or ALM admin.
 	if(!$alm_is_admin_screen && $screen->id !== 'dashboard' && $screen->id !== 'plugins' && $screen->id !== 'options-general' && $screen->id !== 'options'){
 		return;
 	}
-	
+
    $class = 'notice error alm-err-notice';
    $message = '';
    $count = 0;
@@ -347,14 +347,14 @@ function alm_admin_notice_errors() {
 
 	 // Loop each addon
    foreach($addons as $addon){
-	   
-      if (has_action($addon['action'])){	      
+
+      if (has_action($addon['action'])){
          $key = $addon['key']; // Option key
          $status = get_option($addon['status']); // license status
-         
+
          // Check license
          $license_status = alm_license_check($addon['item_id'], get_option($key), $status);
-         
+
          if( !isset($status) || empty($status) || $license_status !== 'valid' ) {
             $count++;
          }
@@ -385,15 +385,15 @@ function alm_license_check($item_id = null, $license = null, $option_status = nu
 	if(!$item_id || !$license || !$option_status){
 		return false;
 	}
-	
+
 	// Get plugin transient for license status
 	if(get_transient( "alm_{$item_id}_{$license}")){
-		
+
 		// Transient exists
 		return get_transient( "alm_{$item_id}_{$license}");
-		
+
 	} else {
-	
+
 		$api_params = array(
 			'edd_action' => 'check_license',
 			'license' => $license,
@@ -404,21 +404,21 @@ function alm_license_check($item_id = null, $license = null, $option_status = nu
 		if ( is_wp_error( $response ) ) {
 			return false;
 		}
-		
+
 		// Get Data
 		$license_data = json_decode( wp_remote_retrieve_body( $response ) );
-		
+
 		// Update the options table
 		update_option( $option_status, $license_data->license);
-		
+
 		// Set transient value to store license status
 		set_transient( "alm_{$item_id}_{$license}", $license_data->license, 168 * HOUR_IN_SECONDS ); // 7 days
-		
+
 		// Return the status
 		return $license_data->license;
-		
+
 	}
-	
+
 }
 
 
@@ -556,7 +556,7 @@ function alm_set_admin_nonce(){
 */
 
 function alm_core_update() {
-	
+
 	// Exit if Repeater Templates are disbaled
 	if(defined('ALM_DISABLE_REPEATER_TEMPLATES') && ALM_DISABLE_REPEATER_TEMPLATES){
 		return false;
@@ -1833,7 +1833,7 @@ function alm_btn_color_callback() {
 		    $html .= '<option value="white" class="alm-color white" ' . $selected6 .'>White</option>';
 		    $html .= '<option value="light-grey" class="alm-color light-grey" ' . $selected13 .'>Light Grey</option>';
 	    $html .= '</optgroup>';
-	
+
 	    $html .= '<optgroup label="'. __('Infinite Scroll (No Button)', 'ajax-load-more') .'">';
 		    $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
 		    $html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
@@ -1844,7 +1844,7 @@ function alm_btn_color_callback() {
 	    $html .= '</optgroup>';
 
    $html .= '</select>';
-    
+
    // Set loading class for infinite type only
 	$loadingClass = (strpos($type, 'infinite') !== false) ? ' loading' : '';
 

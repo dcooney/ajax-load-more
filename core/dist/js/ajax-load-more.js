@@ -190,6 +190,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.parseQuerystring = parseQuerystring;
 exports.buildFilterURL = buildFilterURL;
+exports.createMasonryFiltersPage = createMasonryFiltersPage;
+exports.createMasonryFiltersPages = createMasonryFiltersPages;
 
 var _getQueryVariable = __webpack_require__(/*! ../helpers/getQueryVariable */ "./core/src/js/helpers/getQueryVariable.js");
 
@@ -198,6 +200,8 @@ var _getQueryVariable2 = _interopRequireDefault(_getQueryVariable);
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
+
+var FILTERS_CLASSNAME = 'alm-filters';
 
 /**
  * parseQuerystring
@@ -210,14 +214,14 @@ function _interopRequireDefault(obj) {
 function parseQuerystring(path) {
 	// Get querystring
 	var query = window.location.search.substring(1);
-	var obj = "";
-	var cache_dir = "";
+	var obj = '';
+	var cache_dir = '';
 
 	// Parse querystring into object
 	if (query) {
 		obj = JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
 			// Replace + with - in URL
-			return key === "" ? value : decodeURIComponent(value.replace(/\+/g, "-"));
+			return key === '' ? value : decodeURIComponent(value.replace(/\+/g, '-'));
 		});
 
 		// Remove the following properties from the object as they should not be included in the cache ID
@@ -234,10 +238,10 @@ function parseQuerystring(path) {
 	}
 
 	if (obj) {
-		cache_dir += "/";
+		cache_dir += '/';
 		Object.keys(obj).forEach(function (key, index) {
-			cache_dir += index > 0 ? "--" : "";
-			cache_dir += key + "--" + obj[key];
+			cache_dir += index > 0 ? '--' : '';
+			cache_dir += key + '--' + obj[key];
 		});
 	}
 
@@ -253,7 +257,7 @@ function parseQuerystring(path) {
  * @since 5.3.5
  */
 function buildFilterURL(alm) {
-	var querystring = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "";
+	var querystring = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 	var page = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
 
 	var qs = querystring;
@@ -263,23 +267,102 @@ function buildFilterURL(alm) {
 			// Paged
 			if (qs) {
 				// If already has `pg` in querystring
-				if ((0, _getQueryVariable2.default)("pg")) {
-					qs = querystring.replace(/(pg=)[^\&]+/, "$1" + page);
+				if ((0, _getQueryVariable2.default)('pg')) {
+					qs = querystring.replace(/(pg=)[^\&]+/, '$1' + page);
 				} else {
-					qs = querystring + "&pg=" + page;
+					qs = querystring + '&pg=' + page;
 				}
 			} else {
-				qs = "?pg=" + page;
+				qs = '?pg=' + page;
 			}
 		} else {
 			// Not Paged
-			qs = querystring.replace(/(pg=)[^\&]+/, "");
-			qs = qs === "?" ? "" : qs; // Remove `?` if only symbol in querystring
-			qs = qs[qs.length - 1] === "&" ? qs.slice(0, -1) : qs; // Remove trailing `&` symbols
+			qs = querystring.replace(/(pg=)[^\&]+/, '');
+			qs = qs === '?' ? '' : qs; // Remove `?` if only symbol in querystring
+			qs = qs[qs.length - 1] === '&' ? qs.slice(0, -1) : qs; // Remove trailing `&` symbols
 		}
 	}
 
 	return qs;
+}
+
+/**
+ * Create data attributes for Filters paged results
+ *
+ * @param {Object} alm
+ * @param {Array} elements
+ * @since 5.3.1
+ */
+function createMasonryFiltersPage(alm, element) {
+	if (!alm.addons.filters) {
+		return element;
+	}
+
+	var querystring = window.location.search;
+	var page = alm.page + 1;
+	page = alm.addons.preloaded === 'true' ? page + 1 : page;
+	element = masonryFiltersAtts(alm, element, querystring, page);
+
+	return element;
+}
+
+/**
+ * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
+ *
+ * @param {Object} alm
+ * @param {Array} elements
+ * @since 5.3.1
+ */
+function createMasonryFiltersPages(alm, elements) {
+	if (!alm.addons.filters) {
+		return elements;
+	}
+
+	var pagenum = 1;
+	var page = alm.page;
+	var querystring = window.location.search;
+
+	if (alm.addons.filters_startpage > 1) {
+		// Create pages
+		var posts_per_page = parseInt(alm.posts_per_page);
+		var return_data = [];
+
+		// Slice data array into individual pages
+		for (var i = 0; i < elements.length; i += posts_per_page) {
+			return_data.push(elements.slice(i, posts_per_page + i));
+		}
+
+		// Loop new data array
+		for (var k = 0; k < return_data.length; k++) {
+			var target = k > 0 ? k * posts_per_page : 0;
+			pagenum = k + 1;
+
+			if (elements[target]) {
+				elements[target] = masonryFiltersAtts(alm, elements[target], querystring, pagenum);
+			}
+		}
+	} else {
+		pagenum = page;
+		elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
+	}
+
+	return elements;
+}
+
+// Create the attributes (page, url, classes)  for the masonry items
+function masonryFiltersAtts(alm, element, querystring, pagenum) {
+	element.classList.add(FILTERS_CLASSNAME);
+	element.dataset.page = pagenum;
+	if (pagenum > 1) {
+		element.dataset.url = alm.canonical_url + buildFilterURL(alm, querystring, pagenum);
+	} else {
+		var updatedQS = querystring.replace(/(pg=)[^\&]+/, ''); // Remove `pg` from querysting
+		updatedQS = updatedQS === '?' ? '' : updatedQS; // Remove empty querysting
+
+		element.dataset.url = alm.canonical_url + updatedQS;
+	}
+
+	return element;
 }
 
 /***/ }),
@@ -300,17 +383,15 @@ Object.defineProperty(exports, "__esModule", {
 exports.createMasonrySEOPage = createMasonrySEOPage;
 exports.createMasonrySEOPages = createMasonrySEOPages;
 exports.createSEOAttributes = createSEOAttributes;
-
-/**  
+/**
  * createMasonrySEOPage
  * Create data attributes for SEO paged results
  *
  * @param {Object} alm
  * @param {Array} elements
- * @since 5.3.1 
+ * @since 5.3.1
  */
 function createMasonrySEOPage(alm, element) {
-
 	if (!alm.addons.seo) {
 		return element;
 	}
@@ -319,21 +400,20 @@ function createMasonrySEOPage(alm, element) {
 	var seo_class = 'alm-seo';
 	var page = alm.page + 1;
 	page = alm.addons.preloaded === 'true' ? page + 1 : page;
-	element = createMasonryDataAtts(alm, element, querystring, seo_class, page);
+	element = masonrySEOAtts(alm, element, querystring, seo_class, page);
 
 	return element;
 }
 
-/**  
+/**
  * createMasonrySEOPages
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
  *
  * @param {Object} alm
  * @param {Array} elements
- * @since 5.3.1 
+ * @since 5.3.1
  */
 function createMasonrySEOPages(alm, elements) {
-
 	if (!alm.addons.seo) {
 		return elements;
 	}
@@ -346,7 +426,6 @@ function createMasonrySEOPages(alm, elements) {
 	if (alm.start_page > 1) {
 		// Create pages
 		var posts_per_page = parseInt(alm.posts_per_page);
-		var pages = Math.ceil(elements.length / parseInt(posts_per_page));
 		var return_data = [];
 
 		// Slice data array into individual pages
@@ -359,25 +438,23 @@ function createMasonrySEOPages(alm, elements) {
 			var target = k > 0 ? k * posts_per_page : 0;
 			pagenum = k + 1;
 			if (elements[target]) {
-				elements[target] = createMasonryDataAtts(alm, elements[target], querystring, seo_class, pagenum);
+				elements[target] = masonrySEOAtts(alm, elements[target], querystring, seo_class, pagenum);
 			}
 		}
 	} else {
 		pagenum = page;
-		elements[0] = createMasonryDataAtts(alm, elements[0], querystring, seo_class, pagenum);
+		elements[0] = masonrySEOAtts(alm, elements[0], querystring, seo_class, pagenum);
 	}
 
 	return elements;
 }
 
 // Create the attributes (page, url, classes)  for the masonry items
-function createMasonryDataAtts(alm, element, querystring, seo_class, pagenum) {
-
+function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 	element.classList.add(seo_class);
 	element.dataset.page = pagenum;
 
 	if (alm.addons.seo_permalink === 'default') {
-
 		// Default Permalinks
 		if (pagenum > 1) {
 			element.dataset.url = alm.canonical_url + querystring + '&paged=' + pagenum;
@@ -385,7 +462,6 @@ function createMasonryDataAtts(alm, element, querystring, seo_class, pagenum) {
 			element.dataset.url = alm.canonical_url + querystring;
 		}
 	} else {
-
 		// Pretty Permalinks
 		if (pagenum > 1) {
 			element.dataset.url = alm.canonical_url + alm.addons.seo_leading_slash + 'page/' + pagenum + alm.addons.seo_trailing_slash + querystring;
@@ -397,17 +473,16 @@ function createMasonryDataAtts(alm, element, querystring, seo_class, pagenum) {
 	return element;
 }
 
-/**  
+/**
  * createSEOAttributes
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
  *
  * @param {Object} alm
  * @param {Array} elements
  * ...
- * @since 5.3.1 
+ * @since 5.3.1
  */
 function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
-
 	element.setAttribute('class', 'alm-reveal' + seo_class + alm.tcc);
 	element.dataset.page = pagenum;
 
@@ -2316,6 +2391,7 @@ var alm_is_filtering = false;
 
 										case 2:
 											alm.masonry_init = false;
+
 											alm.AjaxLoadMore.triggerWindowResize();
 											alm.AjaxLoadMore.transitionEnd();
 											if (typeof almComplete === 'function') {
@@ -2432,8 +2508,8 @@ var alm_is_filtering = false;
 							// Filters Add-on
 							window.almFiltersAddonComplete(el);
 						}
-						alm_is_filtering = false;
 					}
+					alm_is_filtering = false;
 
 					// Tabs Complete
 					if (alm.addons.tabs) {
@@ -4712,7 +4788,7 @@ function _toConsumableArray(arr) {
  */
 
 var almFilter = function almFilter(transition, speed, data) {
-	var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : "filter";
+	var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'filter';
 
 	if (data.target) {
 		// if a target has been specified
@@ -4746,7 +4822,6 @@ exports.default = almFilter;
  */
 
 var almFilterTransition = function almFilterTransition(transition, speed, data, el, type) {
-
 	if (transition === 'fade' || transition === 'masonry') {
 		// Fade, Masonry transition
 
@@ -4777,10 +4852,10 @@ var almFilterTransition = function almFilterTransition(transition, speed, data, 
 	}
 };
 
-/**  
+/**
  * almCompleteFilterTransition
  * Complete the filter transition
- * 
+ *
  * @param {*} speed number;
  * @param {*} data obj;
  * @param {*} el element;
@@ -4788,7 +4863,6 @@ var almFilterTransition = function almFilterTransition(transition, speed, data, 
  * @since 3.3
  */
 var almCompleteFilterTransition = function almCompleteFilterTransition(speed, data, el, type) {
-
 	// Get `.alm-btn-wrap` element
 	var btnWrap = el.querySelector('.alm-btn-wrap');
 
@@ -4803,7 +4877,7 @@ var almCompleteFilterTransition = function almCompleteFilterTransition(speed, da
 	// Get Load More button
 	var button = btnWrap.querySelector('.alm-load-more-btn');
 	if (button) {
-		button.classList.remove('done'); // Reset Button 
+		button.classList.remove('done'); // Reset Button
 	}
 
 	// Clear paging navigation
@@ -4906,9 +4980,8 @@ var almSetFilters = function almSetFilters() {
 	}
 
 	switch (type) {
-
 		case 'filter':
-			// Filters Complete (not the add-on)           
+			// Filters Complete (not the add-on)
 			if (typeof almFilterComplete === 'function') {
 				// Standard Filtering
 				almFilterComplete();
@@ -4916,13 +4989,12 @@ var almSetFilters = function almSetFilters() {
 			break;
 
 		case 'tab':
-			// Tabs Complete            
+			// Tabs Complete
 			if (typeof almTabsComplete === 'function') {
 				// Standard Filtering
 				almTabsComplete();
 			}
 			break;
-
 	}
 };
 
@@ -5087,6 +5159,8 @@ var _stripEmptyNodes = __webpack_require__(/*! ../helpers/stripEmptyNodes */ "./
 
 var _stripEmptyNodes2 = _interopRequireDefault(_stripEmptyNodes);
 
+var _filters = __webpack_require__(/*! ../addons/filters */ "./core/src/js/addons/filters.js");
+
 var _seo = __webpack_require__(/*! ../addons/seo */ "./core/src/js/addons/seo.js");
 
 var _setFocus = __webpack_require__(/*! ./setFocus */ "./core/src/js/modules/setFocus.js");
@@ -5102,17 +5176,15 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
 /**
  * almMasonry
  * Function to trigger built-in Ajax Load More Masonry
- * 
+ *
  * @param {object} alm
  * @param {boolean} init
- * @param {boolean} filtering 
+ * @param {boolean} filtering
  * @since 3.1
  * @updated 5.0.2
-*/
+ */
 var almMasonry = function almMasonry(alm, init, filtering) {
-
 	return new Promise(function (resolve) {
-
 		var container = alm.listing;
 		var html = alm.html;
 
@@ -5162,14 +5234,11 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 		horizontalOrder = horizontalOrder === 'true' ? true : false;
 
 		if (!filtering) {
-
 			// First Run
 			if (masonry_init && init) {
-
-				(0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill			
+				(0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill
 
 				imagesLoaded(container, function () {
-
 					var defaults = {
 						itemSelector: selector,
 						transitionDuration: duration,
@@ -5182,38 +5251,48 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 						visibleStyle: {
 							transform: visible,
 							opacity: 1
+						}
+					};
 
-							// Get custom Masonry options (https://masonry.desandro.com/options.html)
-						} };var alm_masonry_vars = window.alm_masonry_vars;
+					// Get custom Masonry options (https://masonry.desandro.com/options.html)
+					var alm_masonry_vars = window.alm_masonry_vars;
 					if (alm_masonry_vars) {
 						Object.keys(alm_masonry_vars).forEach(function (key) {
-							// Loop object	to create key:prop			
+							// Loop object	to create key:prop
 							defaults[key] = alm_masonry_vars[key];
 						});
 					}
 
-					// Create SEO URL, if available
 					var data = container.querySelectorAll(selector);
-					data = (0, _seo.createMasonrySEOPages)(alm, Array.prototype.slice.call(data));
+
+					// Create Filters URL, if required
+					if (alm.addons.filters) {
+						data = (0, _filters.createMasonryFiltersPages)(alm, Array.prototype.slice.call(data));
+					}
+
+					// Create SEO URL, if required
+					if (alm.addons.seo) {
+						data = (0, _seo.createMasonrySEOPages)(alm, Array.prototype.slice.call(data));
+					}
 
 					// Init Masonry, delay to allow time for items to be added to the page
 					setTimeout(function () {
 						alm.msnry = new Masonry(container, defaults);
+
 						// Fade In
-						(0, _fadeIn2.default)(container.parentNode, speed);
+						(0, _fadeIn2.default)(container.parentNode, 125);
+
 						resolve(true);
-					}, 25);
+					}, 1);
 				});
 			}
 
 			// Standard / Append content
 			else {
-
 					// Loop all items and create array of node elements
 					var data = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(html, 'text/html'));
 
 					if (data) {
-
 						// Append elements listing
 						(0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
@@ -5222,22 +5301,27 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 
 						// imagesLoaded & append
 						imagesLoaded(container, function () {
-
 							alm.msnry.appended(data);
 
 							// Set Focus
 							(0, _setFocus2.default)(alm, data, data.length, false);
 
+							// Create Filters URL, if required
+							if (alm.addons.filters) {
+								(0, _filters.createMasonryFiltersPage)(alm, data[0]);
+							}
+
 							// Create SEO URL, if required
-							(0, _seo.createMasonrySEOPage)(alm, data[0]);
+							if (alm.addons.seo) {
+								(0, _seo.createMasonrySEOPage)(alm, data[0]);
+							}
 
 							resolve(true);
 						});
 					}
 				}
 		} else {
-
-			// Reset		
+			// Reset
 			container.parentNode.style.opacity = 0;
 			almMasonry(alm, true, false);
 			resolve(true);

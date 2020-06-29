@@ -13,7 +13,7 @@
 		"private": true
 	},
 	"dependencies": {
-		"@babel/polyfill": "^7.2.5",
+		"@babel/polyfill": "^7.10.1",
 		"es6-promise": "^4.1.1",
 		"focus-options-polyfill": "^1.4.0",
 		"lodash": "^4.17.15",

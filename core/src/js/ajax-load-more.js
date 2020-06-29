@@ -1572,6 +1572,7 @@ let alm_is_filtering = false;
 						(async function () {
 							await almMasonry(alm, alm.init, alm_is_filtering);
 							alm.masonry_init = false;
+
 							alm.AjaxLoadMore.triggerWindowResize();
 							alm.AjaxLoadMore.transitionEnd();
 							if (typeof almComplete === 'function') {
@@ -1684,8 +1685,8 @@ let alm_is_filtering = false;
 							// Filters Add-on
 							window.almFiltersAddonComplete(el);
 						}
-						alm_is_filtering = false;
 					}
+					alm_is_filtering = false;
 
 					// Tabs Complete
 					if (alm.addons.tabs) {
