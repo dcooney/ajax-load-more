@@ -1,20 +1,18 @@
 <?php
-add_action( 'init', 'alm_core_update' ); // Core Update
+add_action( 'init', 'alm_core_update' ); // Core Update.
 add_action( 'admin_init', 'alm_admin_hooks' );
-add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater
-add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater
-add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms
-add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache
-add_action( 'wp_ajax_alm_layouts_dismiss', 'alm_layouts_dismiss' ); // Dismiss Layouts CTA
-add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Activate Add-on
-add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection
-add_action( 'wp_ajax_alm_get_layout', 'alm_get_layout' ); // Get layout
-add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing
-add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient
-add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text'); // Admin menu text
+add_action( 'wp_ajax_alm_save_repeater', 'alm_save_repeater' ); // Ajax Save Repeater.
+add_action( 'wp_ajax_alm_update_repeater', 'alm_update_repeater' ); // Ajax Update Repeater.
+add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' ); // Ajax Get Taxonomy Terms.
+add_action( 'wp_ajax_alm_delete_cache', 'alm_delete_cache' ); // Delete Cache.
+add_action( 'wp_ajax_alm_layouts_dismiss', 'alm_layouts_dismiss' ); // Dismiss Layouts CTA.
+add_action( 'wp_ajax_alm_license_activation', 'alm_license_activation' ); // Activate Add-on.
+add_action( 'alm_get_layouts', 'alm_get_layouts' ); // Add layout selection.
+add_action( 'wp_ajax_alm_get_layout', 'alm_get_layout' ); // Get layout.
+add_action( 'wp_ajax_alm_dismiss_sharing', 'alm_dismiss_sharing' ); // Dismiss sharing.
+add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient.
+add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text' ); // Admin menu text.
 add_action( 'after_plugin_row', 'alm_plugin_row' );
-
-
 
 /**
  * Setup the admin hooks
@@ -25,10 +23,8 @@ function alm_admin_hooks() {
 	require_once( plugin_dir_path( __FILE__ ) . '/classes/class-nag.php' );
 }
 
-
 /**
- *  almCreatePluginUpdateNotifications
- *  Create custom update notifications
+ *  Create custom update notifications.
  *
  *  @since 5.2
  */
@@ -131,30 +127,22 @@ function alm_plugin_row( $plugin_name ) {
 	}
 }
 
-
-
-/*
-*  alm_render_transient_notification
-*  Render a notification in the dashboard
-*
-*  @since 4.0
-*/
-function alm_render_transient_notification(){
-	if(!has_action('alm_pro_installed')){
-
-      $msg = '🔥 Introducing <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">Ajax Load More Pro</a></strong> -  get instant access to all 13 add-ons in a single installation! &nbsp; <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" class="button button-primary">Upgrade Now</a></strong>';
-
-      alm_transient_notification($msg, 'alm_pro_upgrade', 'YEAR_IN_SECONDS', true);
-   }
+/**
+ * Render a notification in the dashboard.
+ *
+ * @since 4.0
+ */
+function alm_render_transient_notification() {
+	if ( ! has_action( 'alm_pro_installed' ) ) {
+		$msg = '🔥 Introducing <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">Ajax Load More Pro</a></strong> -  get instant access to all 13 add-ons in a single installation! &nbsp; <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" class="button button-primary">Upgrade Now</a></strong>';
+		alm_transient_notification( $msg, 'alm_pro_upgrade', 'YEAR_IN_SECONDS', true );
+	}
 }
 
-
-
-/*
-*  alm_transient_notification
-*  Display a notification on pages with transient
-*
-*  @since 4.0
+/**
+ * Display a notification on pages with transient
+ *
+ * @since 4.0
 */
 function alm_transient_notification($message = '', $transient = '', $duration = 'YEAR_IN_SECONDS', $dismissible = true, $type = 'info'){
    if(!empty($transient)){
@@ -169,16 +157,14 @@ function alm_transient_notification($message = '', $transient = '', $duration = 
 }
 
 
-
-/*
-*  alm_set_transient
-*  Set transient via Ajax.
-*
-*  @since 4.0
-*/
+/**
+ * Set transient via Ajax.
+ *
+ * @since 4.0
+ */
 function alm_set_transient(){
 
-   if (current_user_can( 'edit_theme_options' )){
+   if ( current_user_can( 'edit_theme_options' ) ) {
 
 		$nonce = $_POST["nonce"];
 		$transient = $_POST["transient_name"];
@@ -1509,13 +1495,13 @@ function alm_admin_init(){
 		'alm_admin_settings'
 	);
 
-	add_settings_field(  // Hide btn
-		'_alm_hide_btn',
-		__('Editor Button', 'ajax-load-more' ),
-		'alm_hide_btn_callback',
-		'ajax-load-more',
-		'alm_admin_settings'
-	);
+	// add_settings_field(  // Hide btn
+	// 	'_alm_hide_btn',
+	// 	__('Editor Button', 'ajax-load-more' ),
+	// 	'alm_hide_btn_callback',
+	// 	'ajax-load-more',
+	// 	'alm_admin_settings'
+	// );
 
 	add_settings_field(  // Display error notices
 		'_alm_error_notices',
@@ -1652,15 +1638,12 @@ function alm_disable_css_callback(){
 	echo $html;
 }
 
-
-
 /*
-*  alm_hide_btn_callback
-*  Disbale the ALM shortcode button in the WordPress content editor
-*
-*  @since 2.2.1
-*/
-
+ * Disbale the ALM shortcode button in the WordPress content editor.
+ *
+ * @since 2.2.1
+ * @deprecated 5.4.2
+ */
 function alm_hide_btn_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_hide_btn']))
@@ -1671,7 +1654,6 @@ function alm_hide_btn_callback(){
 
 	echo $html;
 }
-
 
 
 /*
@@ -1852,7 +1834,7 @@ function alm_btn_color_callback() {
 	 $html .= '<div class="alm-btn-wrap">';
 		 $html .= '<div class="ajax-load-more-wrap core '.$type.'">';
 		 	$html .='<span>'.__('Click to Preview', 'ajax-load-more') .'</span>';
-			$html .= '<button style="cursor: pointer;" type="button" class="alm-load-more-btn'. $loadingClass .'" id="test-alm-button">'.apply_filters('alm_button_label', __('Older Posts', 'ajax-load-more')).'</button>';
+			$html .= '<button style="cursor: pointer;" type="button" class="alm-load-more-btn'. $loadingClass .'" id="test-alm-button">'.apply_filters('alm_button_label', __('Load More', 'ajax-load-more')).'</button>';
 
 		 $html .= '</div>';
 	$html .= '</div>';

@@ -1,42 +1,55 @@
-.ajax-load-more .header-wrap{
-	overflow: hidden;
-	padding: $gutter $gutter $gutter/2;
-	background: #f7f7f7;
-	border-bottom: 1px solid #e1e1e1;
+.ajax-load-more .header-wrap {
 	position: relative;
 	z-index: 1;
-	box-shadow: 0 1px 12px 2px rgba(0, 0, 0, 0.045);
-	h1{
-		padding: 0 0 0 58px;
+	h1 {
+		padding: $padding $padding $padding 80px;
+		margin: 0;
 		min-height: 48px;
-		padding-top: 0;
-		background: url('../../img/alm-logo-48x48.png') no-repeat 0 0;
-		background: url('../../img/alm-logo-48x48.svg') no-repeat 0 0;
-		font-size: 22px;
-		em{
-	   	display: block;
-	   	position: relative;
-			margin: 1px 0 0; 
-			font-size: 14px;
-			opacity: 0.7;
+		background: #fff url('../../img/alm-logo-48x48.png') no-repeat $padding $padding;
+		background: #fff url('../../img/alm-logo-48x48.svg') no-repeat $padding $padding;
+		font-size: 18px;
+		font-weight: 800;
+		border-bottom: 1px solid $border;
+		@media screen and (min-width: 768px) {
+			font-size: 21px;
+		}
+		em {
+			display: block;
+			position: relative;
+			font-size: 12px;
+			@media screen and (min-width: 768px) {
+				font-size: 14px;
+			}
+			color: #999;
 			font-style: normal;
 			font-weight: 400;
-			line-height: 1.35;
-			padding: 1px 0 $gutter/2;
-		}		
-		strong{
-         font-weight: 700;
-      }
-      span{
-         color: #999;
-         font-weight: 300;
-         background: #fff;
-         padding: 5px 6px;
-         border-radius: 2px;
-         font-size: 0.8em;
-         position: relative;
-         top: -2px;
-         left: 5px;
-      }
-   }
+			line-height: 1.3;
+			padding: 1px 0 0;
+			margin: 0;
+		}
+		strong {
+			font-weight: 600;
+		}
+		span {
+			color: #999;
+			font-weight: 300;
+			font-style: italic;
+			margin: 0 0 0 5px;
+			vertical-align: top;
+			font-size: 12px;
+			@media screen and (min-width: 768px) {
+				font-size: 13px;
+			}
+			background-color: $light_grey;
+			border-radius: 2px;
+			padding: 2px 4px;
+			display: inline-block;
+			line-height: 1.45;
+			position: relative;
+			top: 3px;
+		}
+	}
+	.notice {
+		margin: $padding;
+	}
 }

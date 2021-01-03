@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-
-/**  
+/**
  * createCacheFile
  * Create a single post cache file
  *
@@ -10,14 +9,13 @@ import axios from 'axios';
  * @param {String} type
  * @since 5.3.1
  */
-export function createCacheFile(alm, content, type = 'standard'){
-	
-	if(alm.addons.cache !== 'true' || !content || content === ''){
+export function createCacheFile(alm, content, type = 'standard') {
+	if (alm.addons.cache !== 'true' || !content || content === '') {
 		return false;
 	}
-	
+
 	let name = type === 'single' ? alm.addons.single_post_id : `page-${alm.page + 1}`;
-	
+
 	let formData = new FormData();
 	formData.append('action', 'alm_cache_from_html');
 	formData.append('security', alm_localize.alm_nonce);
@@ -26,18 +24,13 @@ export function createCacheFile(alm, content, type = 'standard'){
 	formData.append('canonical_url', alm.canonical_url);
 	formData.append('name', name);
 	formData.append('html', content.trim());
-	
-	axios.post(alm_localize.ajaxurl, formData)
-	.then(function(response){
-		console.log('Cache created for: ' + alm.canonical_url);
-		//console.log(response);
-	});
 
+	axios.post(alm_localize.ajaxurl, formData).then(function (response) {
+		console.log('Cache created for: ' + alm.canonical_url);
+	});
 }
 
-
-
-/**  
+/**
  * wooCache
  * Create a WooCommerce cache file
  *
@@ -45,12 +38,11 @@ export function createCacheFile(alm, content, type = 'standard'){
  * @param {String} content
  * @since 5.3.1
  */
-export function wooCache(alm, content){
-	
-	if(alm.addons.cache !== 'true' || !content || content === ''){
+export function wooCache(alm, content) {
+	if (alm.addons.cache !== 'true' || !content || content === '') {
 		return false;
 	}
-	
+
 	let formData = new FormData();
 	formData.append('action', 'alm_cache_from_html');
 	formData.append('security', alm_localize.alm_nonce);
@@ -59,11 +51,9 @@ export function wooCache(alm, content){
 	formData.append('canonical_url', alm.canonical_url);
 	formData.append('name', `page-${alm.page}`);
 	formData.append('html', content.trim());
-	
-	axios.post(alm_localize.ajaxurl, formData)
-	.then(function(response){
+
+	axios.post(alm_localize.ajaxurl, formData).then(function (response) {
 		console.log('Cache created for post: ' + alm.canonical_url);
 		//console.log(response);
 	});
-
 }

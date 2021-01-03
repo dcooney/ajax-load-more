@@ -1,4 +1,4 @@
-<li<?php if (! has_post_thumbnail() ) { echo ' class="no-img"'; } ?>>
+<li class="alm-item<?php if (! has_post_thumbnail() ) { echo ' no-img'; } ?>">
    <?php if ( has_post_thumbnail() ) {
       the_post_thumbnail('alm-thumbnail');
    }?>

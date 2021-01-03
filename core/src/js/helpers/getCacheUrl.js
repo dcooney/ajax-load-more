@@ -29,13 +29,7 @@ let getCacheUrl = function (alm) {
 
 		if (alm.init && alm.isPaged) {
 			// First run & Paged
-			cache_url =
-				filtersPath +
-				'/page-' +
-				firstpage +
-				'-' +
-				alm.addons.filters_startpage +
-				ext;
+			cache_url = filtersPath + '/page-' + firstpage + '-' + alm.addons.filters_startpage + ext;
 		} else {
 			let page = alm.page + 1;
 
@@ -56,8 +50,7 @@ let getCacheUrl = function (alm) {
 			nextpage_cache_url = parseInt(alm.page) + 2;
 			if (alm.isPaged) {
 				// If the request a paged URL (/page/3/)
-				nextpage_cache_url =
-					parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
+				nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
 			}
 		}
 
@@ -67,6 +60,12 @@ let getCacheUrl = function (alm) {
 	// Single Post
 	else if (alm.addons.single_post) {
 		cache_url = path + '/' + alm.addons.single_post_id + ext;
+	}
+
+	// Comments & Preloaded
+	else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
+		// When using comments we need to increase the current page by 2
+		cache_url = path + '/page-' + (alm.page + 2) + ext;
 	}
 
 	// Standard URL request

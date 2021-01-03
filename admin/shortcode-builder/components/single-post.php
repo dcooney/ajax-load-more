@@ -1,8 +1,12 @@
-<?php if(has_action('alm_single_post_installed')){ ?>
+<?php
+// @codingStandardsIgnoreStart
+
+if(has_action('alm_single_post_installed')){ ?>
+
 <div class="row input previous-post add-on" id="alm-previous-post">
    <h3 class="heading" tabindex="0"><?php _e('Single Posts', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
-      
+
       <section class="first">
          <div class="shortcode-builder--label">
    		 	<p><?php _e('Enable the infinite scrolling of single posts.', 'ajax-load-more'); ?></p>
@@ -22,8 +26,8 @@
             </div>
          </div>
       </section>
-      
-      <div class="prev_post_options nested-component" style="display: none;">            
+
+      <div class="prev_post_options nested-component" style="display: none;">
 	      <div class="nested-component--inner">
 		      <section>
    	         <div class="shortcode-builder--label">
@@ -35,8 +39,8 @@
    	               <input type="text" value="get_the_ID()" id="pp_id"  class="alm_element disabled-input" disabled="disabled">
    	            </div>
    	         </div>
-		      </section>	         
-		      
+		      </section>
+
 		      <section>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Target', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Repeater Templates are not required when using the Target implementation.', 'ajax-load-more'); ?>"></a></h4>
@@ -50,25 +54,41 @@
 		            </div>
 		         </div>
 		      </section>
-		      
+
 		      <section>
    	         <div class="shortcode-builder--label">
-   	            <h4><?php _e('Post Ordering', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('By default, the Single Posts add-on will use the core WordPress `get_previous_post` function, but you can over ride that here.', 'ajax-load-more'); ?>"></a></h4>
-   	   		 	<p><?php _e('Select the load order of posts while infinite scrolling.', 'ajax-load-more'); ?></p>
+   	            <h4><?php _e('Post Ordering', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('By default, the Single Posts add-on will use the core WordPress `get_previous_post` function, but you can adjust that here.', 'ajax-load-more'); ?>"></a></h4>
+   	   		 	<p><?php _e('Select the posts loading order.', 'ajax-load-more'); ?></p>
    	   		 	<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/#ordering" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a></p>
    	   		 </div>
    	         <div class="shortcode-builder--fields">
    	            <div class="inner">
    	               <select class="alm_element" name="pp-order" id="pp-order">
    		               <option value="previous" selected="selected"><?php _e('Previous Post (by date DESC)', 'ajax-load-more'); ?></option>
-   		               <option value="latest"><?php _e('Latest (Start at most recent post)', 'ajax-load-more'); ?></option>
    		               <option value="next"><?php _e('Next Post (by date ASC)', 'ajax-load-more'); ?></option>
-   		               <option value="post__in"><?php _e('Post ID Array', 'ajax-load-more'); ?></option>
+   		               <option value="latest"><?php _e('Latest Post (Start from most recent)', 'ajax-load-more'); ?></option>
+   		               <option value="post__in"><?php _e('Post IDs (Array)', 'ajax-load-more'); ?></option>
+   		               <option value="custom_query"><?php _e('Custom Query', 'ajax-load-more'); ?></option>
    	               </select>
    	            </div>
    	         </div>
 		      </section>
-	         
+
+	         <div id="pp_custom_query" style="display: none;">
+		         <section>
+   					<div class="shortcode-builder--label">
+   		            <h4><?php _e('Custom Query Order', 'ajax-load-more'); ?></h4>
+							<p><?php _e('Select the post ordering of the custom query.', 'ajax-load-more'); ?></p>
+   	   		 	</div>
+   		         <div class="shortcode-builder--fields">
+   		            <select class="alm_element" name="pp-custom-query" id="pp-custom-query">
+   		               <option value="previous" selected="selected"><?php _e('Previous Post (Continue by date DESC)', 'ajax-load-more'); ?></option>
+   		               <option value="latest"><?php _e('Latest Post (Start from most recent)', 'ajax-load-more'); ?></option>
+   	               </select>
+   		         </div>
+		         </section>
+	         </div>
+
 	         <div id="pp_post__in" style="display: none;">
 		         <section>
    					<div class="shortcode-builder--label">
@@ -82,7 +102,7 @@
    		         </div>
 		         </section>
 	         </div>
-	         
+
 		      <div id="pp_extras">
 		         <section>
    		         <div class="shortcode-builder--label">
@@ -91,31 +111,29 @@
    		   		 </div>
    		         <div class="shortcode-builder--fields">
    		            <div class="inner">
-   		               <?php
-   		            	// Taxonomies
-   		            	$pp_tax_args = array(
-   		            		'public'   => true,
-   		            		'_builtin' => false
-   		            	);
-   		            	$pp_tax_output = 'objects';
-   		            	$pp_taxonomies = get_taxonomies( $pp_tax_args, $pp_tax_output );
+								<?php
+								// Taxonomies
+								$pp_tax_args = array(
+									'public'   => true,
+									'_builtin' => false
+								);
+								$pp_tax_output = 'objects';
+								$pp_taxonomies = get_taxonomies( $pp_tax_args, $pp_tax_output );
    		            	echo '<select class="alm_element" name="pp-taxonomy-select" id="pp-taxonomy-select">';
    		         		echo '<option value="" selected="selected">-- ' . __('Select Taxonomy', 'ajax-load-more') . ' --</option>';
    		         	   echo '<option value="category">' . __('Category', 'ajax-load-more') . '</option>';
    		         	   echo '<option value="post_tag">' . __('Tag', 'ajax-load-more') . '</option>';
    		               if ( $pp_taxonomies ) {
-   		
    		            	   foreach( $pp_taxonomies as $pp_taxonomy ){
    		                     echo '<option name="pp-'.$pp_taxonomy->query_var.'" id="pp-'.$pp_taxonomy->query_var.'" value="'.$pp_taxonomy->query_var.'">'.$pp_taxonomy->label.'</option>';
    		            	   }
-   		
    		            	}
    		            	echo '</select>';
    		            	?>
    		            </div>
    		         </div>
 		         </section>
-		         
+
 		         <section>
    		         <div class="shortcode-builder--label">
    		            <h4><?php _e('Excluded Terms ', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('A comma-separated list of excluded terms by ID.','ajax-load-more'); ?>"></a></h4>
@@ -125,11 +143,11 @@
    		            <div class="inner">
    		               <input type="text" id="pp-term-exclude" class="alm_element numbers-only" value="" placeholder="5, 8, 35">
    		            </div>
-   		         </div> 
+   		         </div>
 		         </section>
-		         
-	         </div> 
-	         
+
+	         </div>
+
 	         <?php if( is_plugin_active( 'elementor-pro/elementor-pro.php' ) ) { ?>
 				<!-- Elementor -->
 				<section>
@@ -154,7 +172,7 @@
 		         </div>
 				</section>
 			   <?php } ?>
-		      
+
 	         <section>
    	         <div class="shortcode-builder--label">
    		         <h4><?php _e('Reading Progress Bar ', 'ajax-load-more'); ?></h4>
@@ -175,14 +193,14 @@
    	            </div>
    	         </div>
 	         </section>
-	         
-		         
+
+
 	         <!-- Reading Progress Bar Options -->
-	         <div class="clear"></div>         
-	         <div id="pp_progressbar_options" class="nested-component" style="display: none;">       
-	   	      
+	         <div class="clear"></div>
+	         <div id="pp_progressbar_options" class="nested-component" style="display: none;">
+
 	   	      <div class="nested-component--inner">
-   	   	      
+
 	   	         <section>
    	   	         <div class="shortcode-builder--label">
    	                  <h4><?php _e('Position', 'ajax-load-more'); ?></h4>
@@ -203,7 +221,7 @@
    	                  </div>
    	               </div>
 	   	         </section>
-	   	         
+
 	   	         <section>
    	               <div class="shortcode-builder--label">
    	                  <h4><?php _e('Height', 'ajax-load-more'); ?></h4>
@@ -215,9 +233,9 @@
    	                  </div>
    	               </div>
 	   	         </section>
-	   	         
+
 	   	         <section>
-   	   	         <div class="shortcode-builder--label"> 
+   	   	         <div class="shortcode-builder--label">
    	   	            <h4><?php _e('Colors', 'ajax-load-more'); ?> </h4>
    	   	   		 	<p><?php _e('Enter the hex color values of the reading progress bar', 'ajax-load-more'); ?>.<br/>
    	   	   		 	<?php _e('Default:', 'ajax-load-more'); ?> #<span>ed7070</span>
@@ -249,17 +267,17 @@
    	   	            </div>
    	   	         </div>
 	   	         </section>
-	   	      </div>	                         
+	   	      </div>
 	         </div>
-	         <!-- END Reading Progress Bar -->	         
-	         
+	         <!-- END Reading Progress Bar -->
+
 	         <div class="clear"></div>
-	         
+
 	         <p class="warning-callout">
 	            <?php _e('You must add the Single Post shortcode directly to your single template file using the <a href="https://developer.wordpress.org/reference/functions/do_shortcode/" target="_blank">do_shortcode</a> method.', 'ajax-load-more'); ?> <a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/" target="_blank"><?php _e('View Docs', 'ajax-load-more'); ?></a>
 	         </p>
 	      </div>
-	      
+
       </div>
    </div>
 </div>

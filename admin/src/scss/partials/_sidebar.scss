@@ -1,21 +1,23 @@
-.ajax-load-more .cnkt-sidebar{
-	width: 33%;
-   float: right;
-   background: #efefef;
-   padding: $gutter;
-   position: absolute;
-   right: 0;
-   top: 0;
-   height: 100%;
-	h3{
-		
+.ajax-load-more .cnkt-sidebar {
+	width: 30%;
+	float: right;
+	padding: $padding;
+	position: absolute;
+	right: 0;
+	top: 0;
+	height: 100%;
+	@media screen and (max-width: 900px) {
+		padding-left: 0;
+		padding-right: 0;
 	}
-	.major-publishing-actions{
-		padding: 15px;
+	.major-publishing-actions {
+		padding: $padding;
 		clear: both;
-		border-top: 1px solid #e1e1e1;
-		background: #f7f7f7;
-		i{
+		border-top: 1px solid $border;
+		box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.025);
+		background: $light_grey;
+		border-radius: 0 0 2px 2px;
+		i {
 			opacity: 0.4;
 			margin: 0 2px 0 0;
 		}

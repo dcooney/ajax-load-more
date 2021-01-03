@@ -17,15 +17,10 @@ export function parseQuerystring(path) {
 
 	// Parse querystring into object
 	if (query) {
-		obj = JSON.parse(
-			'{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
-			function (key, value) {
-				// Replace + with - in URL
-				return key === ''
-					? value
-					: decodeURIComponent(value.replace(/\+/g, '-'));
-			}
-		);
+		obj = JSON.parse('{"' + query.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) {
+			// Replace + with - in URL
+			return key === '' ? value : decodeURIComponent(value.replace(/\+/g, '-'));
+		});
 
 		// Remove the following properties from the object as they should not be included in the cache ID
 
@@ -138,17 +133,14 @@ export function createMasonryFiltersPages(alm, elements) {
 			pagenum = k + 1;
 
 			if (elements[target]) {
-				elements[target] = masonryFiltersAtts(
-					alm,
-					elements[target],
-					querystring,
-					pagenum
-				);
+				elements[target] = masonryFiltersAtts(alm, elements[target], querystring, pagenum);
 			}
 		}
 	} else {
 		pagenum = page;
-		elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
+		if (elements && elements[0]) {
+			elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
+		}
 	}
 
 	return elements;
@@ -159,8 +151,7 @@ function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	element.classList.add(FILTERS_CLASSNAME);
 	element.dataset.page = pagenum;
 	if (pagenum > 1) {
-		element.dataset.url =
-			alm.canonical_url + buildFilterURL(alm, querystring, pagenum);
+		element.dataset.url = alm.canonical_url + buildFilterURL(alm, querystring, pagenum);
 	} else {
 		let updatedQS = querystring.replace(/(pg=)[^\&]+/, ''); // Remove `pg` from querysting
 		updatedQS = updatedQS === '?' ? '' : updatedQS; // Remove empty querysting

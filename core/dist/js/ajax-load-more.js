@@ -111,7 +111,7 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-/**  
+/**
  * createCacheFile
  * Create a single post cache file
  *
@@ -140,11 +140,10 @@ function createCacheFile(alm, content) {
 
 	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
 		console.log('Cache created for: ' + alm.canonical_url);
-		//console.log(response);
 	});
 }
 
-/**  
+/**
  * wooCache
  * Create a WooCommerce cache file
  *
@@ -153,7 +152,6 @@ function createCacheFile(alm, content) {
  * @since 5.3.1
  */
 function wooCache(alm, content) {
-
 	if (alm.addons.cache !== 'true' || !content || content === '') {
 		return false;
 	}
@@ -171,6 +169,405 @@ function wooCache(alm, content) {
 		console.log('Cache created for post: ' + alm.canonical_url);
 		//console.log(response);
 	});
+}
+
+/***/ }),
+
+/***/ "./core/src/js/addons/elementor.js":
+/*!*****************************************!*\
+  !*** ./core/src/js/addons/elementor.js ***!
+  \*****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.elementorInit = elementorInit;
+exports.elementor = elementor;
+exports.elementorGetContent = elementorGetContent;
+exports.elementorCreateParams = elementorCreateParams;
+
+var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/modules/loadItems.js");
+
+var _loadItems2 = _interopRequireDefault(_loadItems);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _asyncToGenerator(fn) {
+	return function () {
+		var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {
+			function step(key, arg) {
+				try {
+					var info = gen[key](arg);var value = info.value;
+				} catch (error) {
+					reject(error);return;
+				}if (info.done) {
+					resolve(value);
+				} else {
+					return Promise.resolve(value).then(function (value) {
+						step("next", value);
+					}, function (err) {
+						step("throw", err);
+					});
+				}
+			}return step("next");
+		});
+	};
+}
+
+/**
+ * Set up the instance on Elementor
+ *
+ * @param {object} alm
+ * @since 5.3.0
+ */
+
+function elementorInit(alm) {
+	if (!alm.addons.elementor || !alm.addons.elementor_type || !alm.addons.elementor_type === 'posts') {
+		return false;
+	}
+	var target = alm.addons.elementor_element;
+
+	if (target) {
+		// Set button data attributes
+		alm.button.dataset.page = alm.addons.elementor_paged;
+
+		// Set button URL
+		var nextPage = alm.addons.elementor_next_page_url;
+		alm.button.dataset.url = nextPage ? nextPage : '';
+
+		// Set a11y attributes
+		target.setAttribute('aria-live', 'polite');
+		target.setAttribute('aria-atomic', 'true');
+
+		alm.listing.removeAttribute('aria-live');
+		alm.listing.removeAttribute('aria-atomic');
+
+		// Set data atts on 1st grid item
+		var item = target.querySelector('.' + alm.addons.elementor_item_class); // Get first `.product` item
+		if (item) {
+			item.classList.add('alm-elementor');
+			item.dataset.url = window.location;
+			item.dataset.page = alm.addons.elementor_paged;
+			item.dataset.pageTitle = document.title;
+		}
+
+		if (alm.addons.elementor_paged > 1) {}
+		// maybe soon
+		//almElementorResultsTextInit(alm);
+
+
+		// Masonry Window Resize. Delay for masonry to be added via Elementor.
+		if (alm.addons.elementor_masonry) {
+			var resizeTimeout = void 0;
+			setTimeout(function () {
+				window.addEventListener('resize', function () {
+					clearTimeout(resizeTimeout);
+					resizeTimeout = setTimeout(function () {
+						positionMasonryItems(alm, '.' + alm.addons.elementor_container_class, '.' + alm.addons.elementor_item_class);
+					}, 100);
+				});
+			}, 250);
+		}
+	}
+}
+
+/**
+ * Core ALM Elementor loader.
+ *
+ * @param {HTMLElement} content
+ * @param {object} alm
+ * @param {String} pageTitle
+ * @since 5.3.0
+ */
+
+function elementor(content, alm) {
+	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
+
+	if (!content || !alm) {
+		return false;
+	}
+
+	return new Promise(function (resolve) {
+		var container = alm.addons.elementor_element.querySelector('.' + alm.addons.elementor_container_class); // Get post container
+		var items = content.querySelectorAll('.' + alm.addons.elementor_item_class); // Get all items in container
+		var url = alm.addons.elementor_current_url; // Current Page URL
+
+		if (container && items && url) {
+			// Convert NodeList to Array
+			items = Array.prototype.slice.call(items);
+
+			// Load the items
+			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+				return regeneratorRuntime.wrap(function _callee$(_context) {
+					while (1) {
+						switch (_context.prev = _context.next) {
+							case 0:
+								_context.next = 2;
+								return (0, _loadItems2.default)(container, items, alm, pageTitle, url, 'alm-elementor');
+
+							case 2:
+								if (alm.addons.elementor_masonry) {
+									setTimeout(function () {
+										positionMasonryItems(alm, '.' + alm.addons.elementor_container_class, '.' + alm.addons.elementor_item_class);
+									}, 125);
+								}
+
+								resolve(true);
+
+							case 4:
+							case 'end':
+								return _context.stop();
+						}
+					}
+				}, _callee, this);
+			}))().catch(function (e) {
+				console.log(e, 'There was an error with Elementor');
+			});
+		} else {
+			resolve(false);
+		}
+	});
+}
+
+/**
+ * Get the content, title and results text from the Ajax response.
+ *
+ * @param {*} response
+ * @param {object} alm
+ * @since 5.4.0
+ */
+function elementorGetContent(response, alm) {
+	var data = {
+		html: '',
+		meta: {
+			postcount: 1,
+			totalposts: alm.localize.total_posts,
+			debug: 'Elementor Query'
+		}
+	};
+	if (response.status === 200 && response.data) {
+		var div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		var title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get Elementor Items HTML
+		var items = div.querySelector(alm.addons.elementor_target + ' .' + alm.addons.elementor_container_class);
+		data.html = items ? items.innerHTML : '';
+
+		// Set Page URL Params
+		alm.addons.elementor_current_url = alm.addons.elementor_next_page_url; // Set current to previous page URL
+		alm.addons.elementor_next_page_url = elementorGetNextPage(div, alm.addons.elementor_pagination_class);
+
+		// Results Text
+		//almElementorResultsText(div, alm);
+	}
+
+	return data;
+}
+
+/**
+ * Create Elementor Params for ALM.
+ *
+ * @param Object alm
+ * @return alm
+ */
+function elementorCreateParams(alm) {
+	// Get Settings
+	alm.addons.elementor_type = 'posts';
+	alm.addons.elementor_settings = JSON.parse(alm.listing.dataset.elementorSettings);
+
+	// Parse Container Settings
+	alm.addons.elementor_target = alm.addons.elementor_settings.target;
+	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-widget-wrap ' + alm.addons.elementor_settings.target) : '';
+	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
+
+	// Masonry
+	alm = setElementorClasses(alm, alm.addons.elementor_widget);
+
+	// Pagination Element
+	alm.addons.elementor_pagination = alm.addons.elementor_element.querySelector(alm.addons.elementor_pagination_class) || alm.addons.elementor_element.querySelector('.' + alm.addons.elementor_settings.pagination_class);
+	alm.addons.elementor_pagination = alm.addons.elementor_pagination ? alm.addons.elementor_pagination : false;
+
+	alm.addons.elementor_controls = alm.addons.elementor_settings.controls;
+	alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
+	alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
+
+	// Set Page & URL params
+	alm.addons.elementor_current_url = window.location.href;
+	alm.addons.elementor_next_page_url = elementorGetNextUrl(alm.addons.elementor_pagination);
+	alm.addons.elementor_paged = alm.addons.elementor_settings.paged ? parseInt(alm.addons.elementor_settings.paged) : 1;
+	alm.page = parseInt(alm.page) + alm.addons.elementor_paged;
+
+	// Masonry
+	alm = parseMasonryConfig(alm);
+
+	if (!alm.addons.elementor_element) {
+		console.warn("Ajax Load More: Unable to locate Elementor Widget. Are you sure you've set up your target parameter correctly?");
+	}
+	if (!alm.addons.elementor_pagination) {
+		console.warn('Ajax Load More: Unable to locate Elementor pagination. There are either no results or p Ajax Load More is unable to locate the pagination widget?');
+	}
+	return alm;
+}
+
+/**
+ * Set the required classnames for parsing data and injecting content into the Elementor listing
+ *
+ * @param {*} alm
+ * @param {*} type
+ */
+function setElementorClasses(alm) {
+	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'posts';
+
+	// Container Class
+	alm.addons.elementor_container_class = type === 'woocommerce' ? alm.addons.elementor_settings.woo_container_class : alm.addons.elementor_settings.posts_container_class;
+
+	// Item Class
+	alm.addons.elementor_item_class = type === 'woocommerce' ? alm.addons.elementor_settings.woo_item_class : alm.addons.elementor_settings.posts_item_class;
+
+	// Pagination Class
+	alm.addons.elementor_pagination_class = type === 'woocommerce' ? '.' + alm.addons.elementor_settings.woo_pagination_class : '.' + alm.addons.elementor_settings.posts_pagination_class;
+
+	return alm;
+}
+
+/**
+ * Parse Masonry Settings from Elementor Data atts
+ *
+ * @param {*} alm
+ */
+function parseMasonryConfig(alm) {
+	if (!alm.addons.elementor_element) {
+		return alm; // Exit if not found.
+	}
+
+	var target = alm.addons.elementor_element;
+
+	var settings = target.dataset.settings ? JSON.parse(target.dataset.settings) : '';
+	if (!settings) {
+		return alm; // Exit if not found.
+	}
+
+	alm.addons.elementor_masonry = settings.hasOwnProperty('cards_masonry') || settings.hasOwnProperty('classic_masonry');
+	if (alm.addons.elementor_masonry) {
+		alm.addons.elementor_masonry_columns = parseInt(settings.cards_columns) || parseInt(settings.classic_columns);
+		alm.addons.elementor_masonry_columns_mobile = parseInt(settings.cards_columns_mobile) || parseInt(settings.classic_columns_mobile);
+		alm.addons.elementor_masonry_columns_tablet = parseInt(settings.cards_columns_tablet) || parseInt(settings.classic_columns_tablet);
+		alm.addons.elementor_masonry_gap = parseInt(settings.cards_row_gap.size);
+	}
+
+	return alm;
+}
+
+/**
+ * Position Elementor Masonry Items
+ *
+ * @param {*} alm
+ * @param {*} container_class
+ * @param {*} item_class
+ */
+function positionMasonryItems(alm, container_class, item_class) {
+	var heights = [];
+
+	// Get Elementor Settings
+	var columnsCount = alm.addons.elementor_masonry_columns;
+	var columnsCountTablet = alm.addons.elementor_masonry_columns_tablet;
+	var columnsCountMobile = alm.addons.elementor_masonry_columns_mobile;
+	var verticalSpaceBetween = alm.addons.elementor_masonry_gap;
+	var columns = columnsCount;
+
+	// Get Elementor Breakpoints
+	var breakpoints = window.elementorFrontendConfig && window.elementorFrontendConfig.breakpoints ? window.elementorFrontendConfig.breakpoints : 0;
+	var windowW = window.innerWidth;
+
+	// Set Columns
+	if (windowW > breakpoints.lg) {
+		columns = columnsCount;
+	} else if (windowW > breakpoints.md) {
+		columns = columnsCountTablet;
+	} else {
+		columns = columnsCountMobile;
+	}
+
+	// Get Containers
+	var container = document.querySelector(container_class);
+	if (!container) {
+		return false;
+	}
+	var items = container.querySelectorAll(item_class);
+	if (!items) {
+		return false;
+	}
+
+	// Loop items
+	items.forEach(function (item, index) {
+		var row = Math.floor(index / columns);
+		var itemHeight = item.getBoundingClientRect().height + verticalSpaceBetween;
+
+		if (row) {
+			var itemPosition = jQuery(item).position();
+			var indexAtRow = index % columns;
+			var pullHeight = Math.round(itemPosition.top) - heights[indexAtRow];
+
+			pullHeight *= -1;
+			item.style.marginTop = Math.round(pullHeight) + 'px';
+			heights[indexAtRow] += itemHeight;
+		} else {
+			heights.push(itemHeight);
+		}
+	});
+}
+
+/**
+ * Determine the type of elementor widget (woocommerce || posts)
+ *
+ * @param {*} target
+ * @param {*} classname
+ */
+function elementorGetWidgetType(target) {
+	if (!target) {
+		return false;
+	}
+	// If container contains the woocommerce elementor class
+	var type = target.classList.contains('elementor-wc-products') ? 'woocommerce' : 'posts';
+	return type;
+}
+
+/**
+ * Get the upcoming URL from the a.next link from the HTML
+ *
+ * @param {HTMLElement} element
+ * @param {String} classname
+ * @return {string} href
+ */
+function elementorGetNextPage(element, classname) {
+	var pagination = element.querySelector(classname);
+	var href = pagination ? elementorGetNextUrl(pagination) : '';
+
+	return href;
+}
+
+/**
+ * Get the URL of the next page to load from the a.next href
+ *
+ * @param {HTMLElement} element
+ * @return {String} url
+ */
+function elementorGetNextUrl(element) {
+	if (!element) {
+		return '';
+	}
+	return element.querySelector('a.next') ? element.querySelector('a.next').href : '';
 }
 
 /***/ }),
@@ -343,7 +740,9 @@ function createMasonryFiltersPages(alm, elements) {
 		}
 	} else {
 		pagenum = page;
-		elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
+		if (elements && elements[0]) {
+			elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
+		}
 	}
 
 	return elements;
@@ -560,18 +959,18 @@ exports.default = singlePostHTML;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.wooGetContent = wooGetContent;
 exports.wooInit = wooInit;
 exports.woocommerce = woocommerce;
-exports.wooGetURL = wooGetURL;
+exports.wooReset = wooReset;
+exports.wooGetContent = wooGetContent;
 
-var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
+var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
-var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
+var _axios2 = _interopRequireDefault(_axios);
 
-var _setFocus = __webpack_require__(/*! ../modules/setFocus */ "./core/src/js/modules/setFocus.js");
+var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/modules/loadItems.js");
 
-var _setFocus2 = _interopRequireDefault(_setFocus);
+var _loadItems2 = _interopRequireDefault(_loadItems);
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
@@ -599,65 +998,21 @@ function _asyncToGenerator(fn) {
 	};
 }
 
-var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-
-/**  
- * wooGetContent
- * Get the content, title and results text from the Ajax response
- *
- * @param {object} alm
- * @since 5.3.0 
- */
-function wooGetContent(response, alm) {
-
-	var data = {
-		html: '',
-		meta: {
-			postcount: 1,
-			totalposts: alm.localize.total_posts,
-			debug: 'WooCommerce Query'
-		}
-	};
-	if (response.status === 200 && response.data) {
-
-		var div = document.createElement("div");
-		div.innerHTML = response.data;
-
-		// Get Page Title
-		var title = div.querySelector('title').innerHTML;
-		data.pageTitle = title;
-
-		// Get Products HTML
-		var products = div.querySelector(alm.addons.woocommerce_classes.container);
-		data.html = products ? products.innerHTML : '';
-
-		// Results Text 
-		almWooCommerceResultsText(div, alm);
-	}
-
-	return data;
-}
-
-/**  
- * wooInit
+/**
  * Set up the instance of ALM WooCommerce
  *
  * @param {object} alm
- * @since 5.3.0 
+ * @since 5.3.0
  */
 function wooInit(alm) {
-
 	if (!alm || !alm.addons.woocommerce) {
 		return false;
 	}
 
-	// Set button data attributes
-
-	// Page
-	alm.button.dataset.page = alm.addons.woocommerce_paged + 1;
+	alm.button.dataset.page = alm.addons.woocommerce_settings.paged + 1; // Page
 
 	// URL
-	var nextPage = alm.addons.woocommerce_paged_urls[alm.addons.woocommerce_paged];
+	var nextPage = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged];
 	if (nextPage) {
 		alm.button.dataset.url = nextPage;
 	} else {
@@ -665,39 +1020,37 @@ function wooInit(alm) {
 	}
 
 	// Set up URL and class parameters on first item in product listing
-	var products = document.querySelector(alm.addons.woocommerce_classes.container); // Get `ul.products`
+	var products = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 	if (products) {
-
 		products.setAttribute('aria-live', 'polite');
 		products.setAttribute('aria-atomic', 'true');
 
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
-		var product = products.querySelector(alm.addons.woocommerce_classes.products); // Get first `.product` item
+		var product = products.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
 		if (product) {
 			product.classList.add('alm-woocommerce');
-			product.dataset.url = alm.addons.woocommerce_paged_urls[alm.addons.woocommerce_paged - 1];
+			product.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
 			product.dataset.page = alm.page;
 			product.dataset.pageTitle = document.title;
 		}
 
-		if (alm.addons.woocommerce_paged > 1) {
-			// maybe soon
+		if (alm.addons.woocommerce_settings.paged > 1) {
 			almWooCommerceResultsTextInit(alm);
 		}
 	}
 }
 
-/**  
- * woocommerce
- * Core ALM WooCommerce Product Loader
+/**
+ * Core ALM WooCommerce product loader
  *
  * @param {HTMLElement} content
  * @param {object} alm
  * @param {String} pageTitle
- * @since 5.3.0 
+ * @since 5.3.0
  */
+
 function woocommerce(content, alm) {
 	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
 
@@ -706,13 +1059,11 @@ function woocommerce(content, alm) {
 	}
 
 	return new Promise(function (resolve) {
+		var container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
+		var products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
+		var url = alm.addons.woocommerce_settings.paged_urls[alm.page];
 
-		var container = document.querySelector(alm.addons.woocommerce_classes.container); // Get `ul.products`
-		var products = content.querySelectorAll(alm.addons.woocommerce_classes.products); // Get all `.products`
-		var columns = alm.addons.woocommerce_columns; // Count columns
-
-		if (container && products) {
-
+		if (container && products && url) {
 			// Convert NodeList to Array
 			products = Array.prototype.slice.call(products);
 
@@ -723,7 +1074,7 @@ function woocommerce(content, alm) {
 						switch (_context.prev = _context.next) {
 							case 0:
 								_context.next = 2;
-								return loadProducts(container, products, columns, alm, pageTitle);
+								return (0, _loadItems2.default)(container, products, alm, pageTitle, url, 'alm-woocommerce');
 
 							case 2:
 								resolve(true);
@@ -742,133 +1093,67 @@ function woocommerce(content, alm) {
 }
 
 /**
- * loadProducts
- * Load all products
+ * Reset a WooCommerce Instance by hitting the updated site URL
  *
- * @param {HTMLElement} container
- * @param {HTMLElement} products
- * @param {String} columns
- * @param {Object} alm
- * @param {String} pageTitle
+ * @since 5.3.8
  */
-var loadProducts = function loadProducts(container, products, columns, alm, pageTitle) {
-
+function wooReset() {
 	return new Promise(function (resolve) {
+		var url = window.location;
+		_axios2.default.get(url).then(function (response) {
+			if (response.status === 200 && response.data) {
+				var div = document.createElement('div');
+				div.innerHTML = response.data; // Add data to div
 
-		var total = products.length;
-		var index = 0;
-		var count = 1;
-
-		function loadProduct() {
-
-			if (count <= total) {
-
-				_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-					return regeneratorRuntime.wrap(function _callee2$(_context2) {
-						while (1) {
-							switch (_context2.prev = _context2.next) {
-								case 0:
-
-									//products[index].classList.remove('first');
-									//products[index].classList.remove('last');
-									products[index].style.opacity = 0;
-
-									// First item only
-									if (count == 1) {
-										products[index].classList.add('alm-woocommerce');
-
-										// Get URL from localized variables
-										products[index].dataset.url = alm.addons.woocommerce_paged_urls[alm.page];
-
-										// Set page num
-										products[index].dataset.page = alm.page + 1;
-
-										// Set page title
-										products[index].dataset.pageTitle = pageTitle;
-									}
-
-									_context2.next = 4;
-									return loadProductImage(container, products[index], alm.ua);
-
-								case 4:
-
-									count++;
-									index++;
-
-									loadProduct();
-
-								case 7:
-								case 'end':
-									return _context2.stop();
-							}
-						}
-					}, _callee2, this);
-				}))().catch(function (e) {
-
-					console.log('There was an error with WooCommerce');
-				});
+				var alm = div.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
+				var settings = alm ? alm.dataset.wooSettings : ''; // Get settings data
+				resolve(settings);
 			} else {
-
-				resolve(true);
-				products.map(function (product) {
-					product.style.opacity = 1;
-				});
-				if (products[0]) {
-					(0, _setFocus2.default)(alm, products[0], null, false);
-				}
+				resolve(false);
 			}
-		}
-
-		loadProduct();
-	});
-};
-
-/**
- * loadProductImage
- * Load the product image with imagesLoaded
- *
- * @param {HTMLElement} container
- * @param {HTMLElement} product
- * @param {String} ua
- */
-var loadProductImage = function loadProductImage(container, product, ua) {
-	return new Promise(function (resolve) {
-		imagesLoaded(product, function () {
-			// Add CSS transition
-			product.style.transition = 'all 0.3s ease';
-			// Append to container
-			container.appendChild(product);
-			// Run srcset fix
-			(0, _srcsetPolyfill2.default)(product, ua);
-			// Send await callback
-			resolve(true);
+		}).catch(function (error) {
+			resolve(false);
 		});
 	});
-};
-
-/**  
- * wooGetURL
- * Get the next URL for Load More button
- *
- * @param {object} alm
- * @since 5.3.0 
- */
-function wooGetURL(alm) {
-	if (!alm || !alm.trigger) {
-		return false;
-	}
-
-	// Get Button
-	var button = alm.trigger.querySelector('button');
-	var url = button.dataset.url;
-
-	return url ? url : '';
 }
 
-/**  
- *  almWooCommerceResultsText 
+/**
+ * Get the content, title and results text from the Ajax response
+ *
+ * @param {object} alm
+ * @since 5.3.0
+ */
+function wooGetContent(response, alm) {
+	var data = {
+		html: '',
+		meta: {
+			postcount: 1,
+			totalposts: alm.localize.total_posts,
+			debug: 'WooCommerce Query'
+		}
+	};
+	if (response.status === 200 && response.data) {
+		var div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		var title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get Products HTML
+		var products = div.querySelector(alm.addons.woocommerce_settings.container);
+		data.html = products ? products.innerHTML : '';
+
+		// Results Text
+		almWooCommerceResultsText(div, alm);
+	}
+
+	return data;
+}
+
+/**
  *  Set results text for WooCommerce Add-on.
- * 
+ *
  *  @param {HTMLElement} target
  *  @param {Object} alm
  *  @since 5.3
@@ -877,42 +1162,59 @@ function almWooCommerceResultsText() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 	var alm = arguments[1];
 
-	if (target && alm && alm.addons.woocommerce_results_text) {
-		var currentResults = target.querySelector(alm.addons.woocommerce_classes.results);
-		if (currentResults) {
-			var resultText = currentResults.innerHTML;
-			alm.addons.woocommerce_results_text.forEach(function (element) {
-				if (alm.localize.woocommerce.settings.previous_page_link) {
-					resultText = resultText + alm.localize.woocommerce.settings.previous_page_link;
+	if (target && alm && alm.addons.woocommerce_settings.results_text) {
+		var currentResults = target.querySelector(alm.addons.woocommerce_settings.results);
+		var link = alm.addons.woocommerce_settings.settings.previous_page_link;
+		var label = alm.addons.woocommerce_settings.settings.previous_page_label;
+		var sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
+
+		if (alm.addons.woocommerce_settings.results_text) {
+			alm.addons.woocommerce_settings.results_text.forEach(function (element) {
+				if (link && label) {
+					element.innerHTML = returnButton(currentResults, link, label, sep);
+				} else {
+					element.innerHTML = currentResults.innerHTML;
 				}
-				element.innerHTML = resultText;
 			});
 		}
 	}
 }
 
-/**  
- *  almWooCommerceResultsTextInit 
+/**
  *  Initiate Results text.
- * 
+ *
  *  @param {Object} alm
  *  @since 5.3
  */
 function almWooCommerceResultsTextInit(alm) {
-	if (alm && alm.addons.woocommerce_results_text) {
-		var results = document.querySelectorAll(alm.addons.woocommerce_classes.results);
+	if (alm && alm.addons.woocommerce_settings.results_text) {
+		var results = document.querySelectorAll(alm.addons.woocommerce_settings.results);
 		if (results.length < 1) {
 			return false;
 		}
+		var link = alm.addons.woocommerce_settings.settings.previous_page_link;
+		var label = alm.addons.woocommerce_settings.settings.previous_page_label;
+		var sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 		// Loop all result text elements
 		results.forEach(function (element) {
-			if (alm.localize.woocommerce.settings.previous_page_link) {
-				var newText = element.innerHTML;
-				newText = newText + alm.localize.woocommerce.settings.previous_page_link;
-				element.innerHTML = newText;
+			if (link && label) {
+				element.innerHTML = returnButton(element, link, label, sep);
 			}
 		});
 	}
+}
+
+/**
+ * Create button text for returning to the first page
+ *
+ * @param {*} text
+ * @param {*} link
+ * @param {*} label
+ * @param {*} seperator
+ */
+function returnButton(text, link, label, seperator) {
+	var button = ' ' + seperator + ' <a href="' + link + '">' + label + '</a>';
+	return text.innerHTML + button;
 }
 
 /***/ }),
@@ -930,7 +1232,7 @@ function almWooCommerceResultsTextInit(alm) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tracking = exports.tab = exports.filter = undefined;
+exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tracking = exports.tab = exports.reset = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -988,6 +1290,10 @@ var _setFocus = __webpack_require__(/*! ./modules/setFocus */ "./core/src/js/mod
 
 var _setFocus2 = _interopRequireDefault(_setFocus);
 
+var _getButtonURL = __webpack_require__(/*! ./modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
+
+var _getButtonURL2 = _interopRequireDefault(_getButtonURL);
+
 var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
 var _masonry2 = _interopRequireDefault(_masonry);
@@ -1027,6 +1333,8 @@ var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/j
 var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
 
 var _woocommerce = __webpack_require__(/*! ./addons/woocommerce */ "./core/src/js/addons/woocommerce.js");
+
+var _elementor = __webpack_require__(/*! ./addons/elementor */ "./core/src/js/addons/elementor.js");
 
 var _filters = __webpack_require__(/*! ./addons/filters */ "./core/src/js/addons/filters.js");
 
@@ -1146,7 +1454,6 @@ var alm_is_filtering = false;
 		alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
 		alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
 
-		alm.main = el;
 		alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance
 		el.classList.add('alm-' + e); // Add unique classname
 		el.setAttribute('data-alm-id', e); // Add unique data id
@@ -1155,7 +1462,7 @@ var alm_is_filtering = false;
 		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
 		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
 
-		// Main ALM Containers
+		// ALM Element Containers
 		alm.main = el; // Top level DOM element
 		alm.listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
 		alm.content = alm.listing;
@@ -1190,11 +1497,14 @@ var alm_is_filtering = false;
 
 		alm.button_label = alm.listing.dataset.buttonLabel;
 		alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
+		alm.button_done_label = alm.listing.dataset.buttonDoneLabel;
+
 		alm.placeholder = alm.main.querySelector('.alm-placeholder');
 
 		alm.scroll_distance = alm.listing.dataset.scrollDistance;
 		alm.scroll_distance = alm.scroll_distance ? alm.scroll_distance : 100;
 		alm.scroll_container = alm.listing.dataset.scrollContainer;
+		alm.scroll_direction = alm.listing.dataset.scrollDirection;
 		alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
 		alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
 		alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
@@ -1209,23 +1519,23 @@ var alm_is_filtering = false;
 		alm.offset = alm.listing.dataset.offset ? parseInt(alm.listing.dataset.offset) : 0;
 		alm.integration.woocommerce = alm.listing.dataset.woocommerce ? alm.listing.dataset.woocommerce : false;
 		alm.integration.woocommerce = alm.integration.woocommerce === 'true' ? true : false;
+		alm.is_search = alm.is_search === undefined ? false : alm.is_search;
+		alm.search_value = alm.is_search === 'true' ? alm.slug : ''; // Convert to value of slug for appending to seo url
 
-		// Addon Shortcode Params
+		// Add-on Shortcode Params
 
-		// Woocommerce add-on
-		alm.addons.woocommerce = alm.localize && alm.localize.woocommerce ? true : false;
-		if (alm.addons.woocommerce) {
-			alm.addons.woocommerce_columns = alm.localize.woocommerce.columns ? parseInt(alm.localize.woocommerce.columns) : 3; // Woocommerce columns
-			alm.addons.woocommerce_paged = alm.localize.woocommerce.paged ? parseInt(alm.localize.woocommerce.paged) : 1; // Woocommerce Paged
-			alm.addons.woocommerce_paged_urls = alm.localize.woocommerce.paged_urls;
-			alm.addons.woocommerce_pages = parseInt(alm.localize.woocommerce.pages);
-			alm.addons.woocommerce_classes = {};
-			alm.addons.woocommerce_classes.container = alm.localize.woocommerce.container;
-			alm.addons.woocommerce_classes.products = alm.localize.woocommerce.products;
-			alm.addons.woocommerce_classes.results = alm.localize.woocommerce.results;
-			alm.addons.woocommerce_results_text = document.querySelectorAll(alm.addons.woocommerce_classes.results);
-			alm.addons.woocommerce_settings = alm.localize.woocommerce.settings;
-			alm.page = parseInt(alm.page) + alm.addons.woocommerce_paged;
+		// Elementor add-on
+		alm.addons.elementor = alm.listing.dataset.elementor === 'posts' && alm.listing.dataset.elementorSettings ? true : false;
+		if (alm.addons.elementor) {
+			alm = (0, _elementor.elementorCreateParams)(alm);
+		}
+
+		// WooCommerce add-on
+		alm.addons.woocommerce = alm.listing.dataset.woo && alm.listing.dataset.woo === 'true' ? true : false;
+		if (alm.addons.woocommerce && alm.listing.dataset.wooSettings) {
+			alm.addons.woocommerce_settings = JSON.parse(alm.listing.dataset.wooSettings);
+			alm.addons.woocommerce_settings.results_text = document.querySelectorAll(alm.addons.woocommerce_settings.results); // Add Results Text
+			alm.page = parseInt(alm.page) + parseInt(alm.addons.woocommerce_settings.paged);
 		}
 
 		// Cache add-on
@@ -1239,7 +1549,7 @@ var alm_is_filtering = false;
 		}
 
 		// CTA add-on
-		alm.addons.cta = alm.listing.dataset.cta;
+		alm.addons.cta = alm.listing.dataset.cta ? alm.listing.dataset.cta : false;
 		if (alm.addons.cta === 'true') {
 			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
 			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
@@ -1260,6 +1570,7 @@ var alm_is_filtering = false;
 		alm.addons.single_post = alm.listing.dataset.singlePost;
 		if (alm.addons.single_post === 'true') {
 			alm.addons.single_post_id = alm.listing.dataset.singlePostId;
+			alm.addons.single_post_query = alm.listing.dataset.singlePostQuery;
 			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder;
 			alm.addons.single_post_init_id = alm.listing.dataset.singlePostId;
 			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy;
@@ -1269,7 +1580,7 @@ var alm_is_filtering = false;
 		}
 
 		// Comments add-on
-		alm.addons.comments = alm.listing.dataset.comments;
+		alm.addons.comments = alm.listing.dataset.comments ? alm.listing.dataset.comments : false;
 		if (alm.addons.comments === 'true') {
 			alm.addons.comments_post_id = alm.listing.dataset.comments_post_id; // current post id
 			alm.addons.comments_per_page = alm.listing.dataset.comments_per_page;
@@ -1430,13 +1741,13 @@ var alm_is_filtering = false;
 		/* SEO */
 		alm.addons.seo = alm.addons.seo === undefined ? false : alm.addons.seo;
 		alm.addons.seo = alm.addons.seo === 'true' ? true : alm.addons.seo;
-		alm.is_search = alm.is_search === undefined ? false : alm.is_search;
-		alm.search_value = alm.is_search === 'true' ? alm.slug : ''; // Convert to value of slug for appending to seo url
 
-		alm.addons.seo_permalink = alm.listing.dataset.seoPermalink;
-		alm.addons.seo_pageview = alm.listing.dataset.seoPageview;
-		alm.addons.seo_trailing_slash = alm.listing.dataset.seoTrailingSlash === 'false' ? '' : '/';
-		alm.addons.seo_leading_slash = alm.listing.dataset.seoLeadingSlash === 'true' ? '/' : '';
+		if (alm.addons.seo) {
+			alm.addons.seo_permalink = alm.listing.dataset.seoPermalink;
+			alm.addons.seo_pageview = alm.listing.dataset.seoPageview;
+			alm.addons.seo_trailing_slash = alm.listing.dataset.seoTrailingSlash === 'false' ? '' : '/';
+			alm.addons.seo_leading_slash = alm.listing.dataset.seoLeadingSlash === 'true' ? '/' : '';
+		}
 		alm.start_page = alm.listing.dataset.seoStartPage;
 
 		if (alm.start_page) {
@@ -1461,27 +1772,28 @@ var alm_is_filtering = false;
 		if (alm.addons.nextpage === 'true') {
 			alm.addons.nextpage = true;
 			alm.posts_per_page = 1;
+
+			if (alm.addons.nextpage_urls === undefined) {
+				alm.addons.nextpage_urls = 'true';
+			}
+			if (alm.addons.nextpage_scroll === undefined) {
+				alm.addons.nextpage_scroll = 'false:30';
+			}
+			if (alm.addons.nextpage_pageviews === undefined) {
+				alm.addons.nextpage_pageviews = 'true';
+			}
+			if (alm.addons.nextpage_post_id === undefined) {
+				alm.addons.nextpage = false;
+				alm.addons.nextpage_post_id = null;
+			}
+			if (alm.addons.nextpage_startpage === undefined) {
+				alm.addons.nextpage_startpage = 1;
+			}
+			if (alm.addons.nextpage_startpage > 1) {
+				alm.isPaged = true;
+			}
 		} else {
 			alm.addons.nextpage = false;
-		}
-		if (alm.addons.nextpage_urls === undefined) {
-			alm.addons.nextpage_urls = 'true';
-		}
-		if (alm.addons.nextpage_scroll === undefined) {
-			alm.addons.nextpage_scroll = 'false:30';
-		}
-		if (alm.addons.nextpage_pageviews === undefined) {
-			alm.addons.nextpage_pageviews = 'true';
-		}
-		if (alm.addons.nextpage_post_id === undefined) {
-			alm.addons.nextpage = false;
-			alm.addons.nextpage_post_id = null;
-		}
-		if (alm.addons.nextpage_startpage === undefined) {
-			alm.addons.nextpage_startpage = 1;
-		}
-		if (alm.addons.nextpage_startpage > 1) {
-			alm.isPaged = true;
 		}
 		/* End Nextpage  */
 
@@ -1491,26 +1803,26 @@ var alm_is_filtering = false;
 			alm.addons.single_post_permalink = '';
 			alm.addons.single_post_title = '';
 			alm.addons.single_post_slug = '';
+			alm.addons.single_post_order = alm.addons.single_post_order === undefined ? 'previous' : alm.addons.single_post_order;
+			alm.addons.single_post_taxonomy = alm.addons.single_post_taxonomy === undefined ? '' : alm.addons.single_post_taxonomy;
+			alm.addons.single_post_excluded_terms = alm.addons.single_post_excluded_terms === undefined ? '' : alm.addons.single_post_excluded_terms;
+			alm.addons.single_post_progress_bar = alm.addons.single_post_progress_bar === undefined ? '' : alm.addons.single_post_progress_bar;
+			alm.addons.single_post_target = alm.addons.single_post_target === undefined ? '' : alm.addons.single_post_target;
+			alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
+			alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
+			alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
+			alm.addons.single_post_pageview = alm.listing.dataset.singlePostPageview;
+			alm.addons.single_post_scroll = alm.listing.dataset.singlePostScroll;
+			alm.addons.single_post_scroll_speed = alm.listing.dataset.singlePostScrollSpeed;
+			alm.addons.single_post_scroll_top = alm.listing.dataset.singlePostScrolltop;
+			alm.addons.single_post_controls = alm.listing.dataset.singlePostControls;
 		} else {
 			alm.addons.single_post = false;
 		}
-		if (alm.addons.single_post_id === undefined) {
+		if (alm.addons.single_post && alm.addons.single_post_id === undefined) {
 			alm.addons.single_post_id = '';
 			alm.addons.single_post_init_id = '';
 		}
-		alm.addons.single_post_order = alm.addons.single_post_order === undefined ? 'previous' : alm.addons.single_post_order;
-		alm.addons.single_post_taxonomy = alm.addons.single_post_taxonomy === undefined ? '' : alm.addons.single_post_taxonomy;
-		alm.addons.single_post_excluded_terms = alm.addons.single_post_excluded_terms === undefined ? '' : alm.addons.single_post_excluded_terms;
-		alm.addons.single_post_progress_bar = alm.addons.single_post_progress_bar === undefined ? '' : alm.addons.single_post_progress_bar;
-		alm.addons.single_post_target = alm.addons.single_post_target === undefined ? '' : alm.addons.single_post_target;
-		alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
-		alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
-		alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
-		alm.addons.single_post_pageview = alm.listing.dataset.singlePostPageview;
-		alm.addons.single_post_scroll = alm.listing.dataset.singlePostScroll;
-		alm.addons.single_post_scroll_speed = alm.listing.dataset.singlePostScrollSpeed;
-		alm.addons.single_post_scroll_top = alm.listing.dataset.singlePostScrolltop;
-		alm.addons.single_post_controls = alm.listing.dataset.singlePostControls;
 		/* End Single Post */
 
 		/* Pause */
@@ -1553,6 +1865,9 @@ var alm_is_filtering = false;
 		/* Scroll Container */
 		alm.scroll_container = alm.scroll_container === undefined ? '' : alm.scroll_container;
 
+		/* Scroll Direction */
+		alm.scroll_direction = alm.scroll_direction === undefined ? 'vertical' : alm.scroll_direction;
+
 		/* Transition */
 		alm.transition = alm.transition === undefined ? 'fade' : alm.transition;
 
@@ -1564,7 +1879,7 @@ var alm_is_filtering = false;
 		if (alm.transition === 'masonry') {
 			alm.masonry_init = true;
 			if (alm.msnry) {
-				alm.msnry.destroy(); // destroy masonry if currently exists
+				alm.msnry.destroy(); // destroy masonry if it currently exists
 			} else {
 				alm.msnry = '';
 			}
@@ -1592,8 +1907,9 @@ var alm_is_filtering = false;
 		alm.transition_container = alm.transition_container === undefined || alm.transition_container === 'true' ? true : false;
 
 		/* Button Labels */
-		alm.button_label = alm.button_label === undefined ? 'Older Posts' : alm.button_label;
+		alm.button_label = alm.button_label === undefined ? 'Load More' : alm.button_label;
 		alm.button_loading_label = alm.button_loading_label === undefined ? false : alm.button_loading_label;
+		alm.button_done_label = alm.button_done_label === undefined ? false : alm.button_done_label;
 
 		/* Paging */
 		if (alm.addons.paging) {
@@ -1852,13 +2168,19 @@ var alm_is_filtering = false;
 			// Single Posts Add-on
 			// If has `single_post_target`, adjust the Ajax URL to the post URL.
 			if (alm.addons.single_post && alm.addons.single_post_target) {
-				ajaxURL = alm.addons.single_post_permalink;
+				ajaxURL = alm.addons.single_post_permalink + '?id=' + alm.addons.single_post_id + '&alm_page=' + (parseInt(alm.page) + 1);
 				params = '';
 			}
 
 			// WooCommerce Add-on
 			if (alm.addons.woocommerce) {
-				ajaxURL = (0, _woocommerce.wooGetURL)(alm);
+				ajaxURL = (0, _getButtonURL2.default)(alm);
+				params = '';
+			}
+
+			// Elementor Add-on
+			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
+				ajaxURL = (0, _getButtonURL2.default)(alm);
 				params = '';
 			}
 
@@ -1875,6 +2197,10 @@ var alm_is_filtering = false;
 					// WooCommerce
 					data = (0, _woocommerce.wooGetContent)(response, alm);
 					(0, _cache.createCacheFile)(alm, data.html, 'woocommerce');
+				} else if (alm.addons.elementor) {
+					// Elementor
+					data = (0, _elementor.elementorGetContent)(response, alm);
+					(0, _cache.createCacheFile)(alm, data.html, 'elementor');
 				} else {
 					// Get data from response
 					data = response.data;
@@ -2159,7 +2485,11 @@ var alm_is_filtering = false;
 						// Single Posts
 						reveal.setAttribute('class', 'alm-reveal alm-single-post post-' + alm.addons.single_post_id + alm.tcc);
 						reveal.dataset.url = alm.addons.single_post_permalink;
-						reveal.dataset.page = alm.page;
+						if (alm.addons.single_post_target) {
+							reveal.dataset.page = parseInt(alm.page) + 1;
+						} else {
+							reveal.dataset.page = alm.page;
+						}
 						reveal.dataset.id = alm.addons.single_post_id;
 						reveal.dataset.title = alm.addons.single_post_title;
 						reveal.innerHTML = alm.html;
@@ -2314,7 +2644,7 @@ var alm_is_filtering = false;
 											// Set button data attributes
 
 											alm.button.dataset.page = nextPageNum; // Page
-											nextPage = alm.addons.woocommerce_paged_urls[nextPageNum - 1]; // URL
+											nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // URL
 
 											alm.button.dataset.url = nextPage ? nextPage : '';
 
@@ -2326,7 +2656,7 @@ var alm_is_filtering = false;
 											}
 
 											// ALM Done
-											if (nextPageNum > parseInt(alm.addons.woocommerce_pages)) {
+											if (nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
 												alm.AjaxLoadMore.triggerDone();
 											}
 
@@ -2339,6 +2669,55 @@ var alm_is_filtering = false;
 						}))().catch(function (e) {
 							console.log(e);
 							console.log('There was an error loading woocommerce products');
+						});
+
+						alm.init = false;
+
+						return;
+					}
+
+					// Elementor Add-on
+					if (alm.addons.elementor) {
+						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+							var nextPageNum, nextPage;
+							return regeneratorRuntime.wrap(function _callee3$(_context3) {
+								while (1) {
+									switch (_context3.prev = _context3.next) {
+										case 0:
+											_context3.next = 2;
+											return (0, _elementor.elementor)(reveal, alm, data.pageTitle);
+
+										case 2:
+											nextPageNum = alm.page + 1;
+
+											// Set button data attributes
+
+											alm.button.dataset.page = nextPageNum; // Page
+											nextPage = alm.addons.elementor_next_page_url; // URL
+
+											alm.button.dataset.url = nextPage ? nextPage : '';
+
+											alm.AjaxLoadMore.transitionEnd();
+
+											// almComplete
+											if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+												window.almComplete(alm);
+											}
+
+											// ALM Done
+											if (!nextPage) {
+												alm.AjaxLoadMore.triggerDone();
+											}
+
+										case 9:
+										case 'end':
+											return _context3.stop();
+									}
+								}
+							}, _callee3, this);
+						}))().catch(function (e) {
+							console.log(e);
+							console.log('There was an error loading Elementor Post Widget items');
 						});
 
 						alm.init = false;
@@ -2381,12 +2760,12 @@ var alm_is_filtering = false;
 						alm.el = alm.listing;
 
 						// Wrap almMasonry in anonymous async/await function
-						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-							return regeneratorRuntime.wrap(function _callee3$(_context3) {
+						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+							return regeneratorRuntime.wrap(function _callee4$(_context4) {
 								while (1) {
-									switch (_context3.prev = _context3.next) {
+									switch (_context4.prev = _context4.next) {
 										case 0:
-											_context3.next = 2;
+											_context4.next = 2;
 											return (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
 
 										case 2:
@@ -2400,10 +2779,10 @@ var alm_is_filtering = false;
 
 										case 6:
 										case 'end':
-											return _context3.stop();
+											return _context4.stop();
 									}
 								}
-							}, _callee3, this);
+							}, _callee4, this);
 						}))().catch(function (e) {
 							console.log('There was an error with ALM Masonry');
 						});
@@ -2623,6 +3002,11 @@ var alm_is_filtering = false;
 				}
 			}
 
+			// Masonry, clear `alm-listing` height
+			if (alm.transition === 'masonry') {
+				alm.content.style.height = 'auto';
+			}
+
 			alm.AjaxLoadMore.triggerDone(); // ALM Done
 		};
 
@@ -2752,12 +3136,10 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   *  fetchingPreviousPost
-   *  Get the previous post ID via ajax
+   *  Get the Single Posts post ID via ajax.
    *
    *  @since 2.7.4
    */
-
 		if (alm.addons.single_post_id) {
 			alm.fetchingPreviousPost = false;
 			alm.addons.single_post_init = true;
@@ -2790,7 +3172,6 @@ var alm_is_filtering = false;
 			// Send HTTP request via Axios
 			_axios2.default.get(ajaxURL, { params: params }).then(function (response) {
 				// Success
-
 				var data = response.data; // Get data from response
 
 				if (data.has_previous_post) {
@@ -2811,16 +3192,14 @@ var alm_is_filtering = false;
 				alm.addons.single_post_init = false;
 			}).catch(function (error) {
 				// Error
-
 				alm.AjaxLoadMore.error(error, 'getSinglePost');
 				alm.fetchingPreviousPost = false;
 			});
 		};
 
 		/**
-   * triggerAddons
-   *
    * Triggers various add-on functions (if available) after load complete.
+   *
    * @since 2.14.0
    */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
@@ -2836,33 +3215,45 @@ var alm_is_filtering = false;
 				// WooCommerce
 				window.almWooCommerce(alm);
 			}
+			if (typeof almElementor === 'function') {
+				// Elementor
+				window.almElementor(alm);
+			}
 		};
 
 		/**
-   * triggerDone
+   * Fires a set of actions and functions when ALM has no other posts to load.
    *
-   * Fires the almDone() function (if available).
    * @since 2.11.3
    */
 		alm.AjaxLoadMore.triggerDone = function () {
 			alm.loading = false;
 			alm.finished = true;
+			(0, _placeholder.hidePlaceholder)(alm);
+
 			if (!alm.addons.paging) {
+				// Update button text
+				if (alm.button_done_label !== false) {
+					setTimeout(function () {
+						alm.button.innerHTML = alm.button_done_label;
+					}, 75);
+				}
+
 				alm.button.classList.add('done');
 				alm.button.disabled = true;
 			}
+
+			// almDone
 			if (typeof almDone === 'function') {
 				// Delay done until animations complete
 				setTimeout(function () {
 					window.almDone(alm);
-					(0, _placeholder.hidePlaceholder)(alm);
 				}, alm.speed + 10);
 			}
 		};
 
 		/**
-   * resetBtnText
-   * Resets the loading button text after loading has completed
+   * Resets the loading button text after loading has completed.
    *
    * @since 2.8.4
    */
@@ -2874,8 +3265,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * Ajax Error
-   * Error function after failed data
+   * Error function after failed data attempt.
    *
    * @since 2.6.0
    */
@@ -2916,8 +3306,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * click
-   * Button click handler to load posts
+   * Button click handler to load posts.
    *
    * @since 4.2.0
    */
@@ -2933,27 +3322,25 @@ var alm_is_filtering = false;
 				alm.page++;
 				alm.AjaxLoadMore.loadPosts();
 			}
+			button.blur(); // Remove button focus
 		};
 
 		/**
-   * Button Click Event
-   * Load more button click event
+   * Load More button click event handler.
    *
    * @since 1.0.0
    */
-
 		if (!alm.addons.paging && !alm.fetchingPreviousPost) {
 			alm.button.onclick = alm.AjaxLoadMore.click;
 		}
 
 		/**
-   * Window Resize
-   * Add resize function for Paging, Scroll Distance Percentage & Tabs.
+   * Window resize functions for Paging, Scroll Distance Percentage, Tabs etc.
    *
    * @since 2.1.2
    * @updated 5.2
    */
-		if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc) {
+		if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc || alm.scroll_direction === 'horizontal') {
 			var resize = void 0;
 			alm.window.onresize = function () {
 				clearTimeout(resize);
@@ -2973,13 +3360,15 @@ var alm_is_filtering = false;
 					if (alm.scroll_distance_perc) {
 						alm.scroll_distance = (0, _getScrollPercentage2.default)(alm);
 					}
+					if (alm.scroll_direction === 'horizontal') {
+						alm.AjaxLoadMore.horizontal();
+					}
 				}, alm.speed);
 			};
 		}
 
 		/**
-   * isVisible
-   * Check to see if element is visible before loading posts
+   * Check to see if element is visible before loading posts.
    *
    * @since 2.1.2
    */
@@ -2990,8 +3379,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * triggerWindowResize
-   * Trigger a window resize browser function
+   * Trigger a window resize browser function.
    *
    * @since 5.3.1
    */
@@ -3008,13 +3396,11 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * scroll
-   * Load posts as user scrolls the page
+   * Load posts as user scrolls the page.
    *
    * @since 1.0
    * @updated 4.2.0
    */
-
 		alm.AjaxLoadMore.scroll = function () {
 			if (alm.timer) {
 				clearTimeout(alm.timer);
@@ -3028,10 +3414,20 @@ var alm_is_filtering = false;
 
 					// Scroll Container
 					if (alm.window !== window) {
-						var scrollInstance = alm.window.querySelector('.ajax-load-more-wrap'); // ALM inside the container
-						var scrollHeight = scrollInstance.offsetHeight; // ALM height
-						var scrollPosition = Math.round(alm.window.scrollTop + alm.window.offsetHeight - alm.scroll_distance); // How far user has scrolled
-						scrollTrigger = scrollHeight <= scrollPosition ? true : false;
+						var scrollHeight = alm.main.offsetHeight; // ALM height
+						var scrollWidth = alm.main.offsetWidth; // ALM Width
+						var scrollPosition = '';
+
+						if (alm.scroll_direction === 'horizontal') {
+							// Left/Right
+							alm.AjaxLoadMore.horizontal();
+							scrollPosition = Math.round(alm.window.scrollLeft + alm.window.offsetWidth - alm.scroll_distance); // How far user has scrolled
+							scrollTrigger = scrollWidth <= scrollPosition ? true : false;
+						} else {
+							// Up/Down
+							scrollPosition = Math.round(alm.window.scrollTop + alm.window.offsetHeight - alm.scroll_distance); // How far user has scrolled
+							scrollTrigger = scrollHeight <= scrollPosition ? true : false;
+						}
 					}
 
 					// If Pause && Pause Override
@@ -3049,12 +3445,20 @@ var alm_is_filtering = false;
 			}, 25);
 		};
 
-		// Add scroll eventlisteners, only when needed
+		/**
+   * Add scroll eventlisteners, only when needed.
+   *
+   * @since 5.2.0
+   */
 		alm.AjaxLoadMore.scrollSetup = function () {
 			if (alm.scroll && !alm.addons.paging) {
 				if (alm.scroll_container !== '') {
 					// Scroll Container
 					alm.window = document.querySelector(alm.scroll_container) ? document.querySelector(alm.scroll_container) : alm.window;
+					setTimeout(function () {
+						// Delay to allow for ALM container to resize on load.
+						alm.AjaxLoadMore.horizontal();
+					}, 500);
 				}
 				alm.window.addEventListener('scroll', alm.AjaxLoadMore.scroll); // Scroll
 				alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
@@ -3079,8 +3483,18 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * destroyed
-   * Destroy Ajax Load More functionality
+   * Configure horizontal scroll settings.
+   *
+   * @since 5.3.6
+   */
+		alm.AjaxLoadMore.horizontal = function () {
+			if (alm.scroll_direction === 'horizontal') {
+				alm.main.style.width = alm.listing.offsetWidth + 'px';
+			}
+		};
+
+		/**
+   * Destroy Ajax Load More functionality.
    *
    * @since 3.4.2
    */
@@ -3096,8 +3510,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * transitionEnd
-   * Set variables after loading transiton completes
+   * Set variables after loading transiton completes.
    *
    * @since 3.5
    */
@@ -3112,13 +3525,12 @@ var alm_is_filtering = false;
 						alm.loading = false; // Delay to prevent loading to fast
 					}, alm.speed * 3);
 				}
-			}, 100);
+			}, 50);
 			(0, _placeholder.hidePlaceholder)(alm);
 		};
 
 		/**
-   * setLocalizedVar
-   * Set induvidual localized variable
+   * Set individual localized variable.
    *
    * @param {string} name
    * @param {string} value
@@ -3135,8 +3547,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * Init Ajax load More
-   * Load posts as user scrolls the page
+   * Init Ajax load More functionality and add-ons.
    *
    * @since 2.0
    */
@@ -3160,10 +3571,15 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Previous Post Add-on
+			// Single Post Add-on
 			if (alm.addons.single_post) {
 				alm.AjaxLoadMore.getSinglePost(); // Set next post on load
 				alm.loading = false;
+
+				// Trigger done if custom query and no posts to render
+				if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
+					alm.AjaxLoadMore.triggerDone();
+				}
 
 				/*
      *  Display tableOfContents
@@ -3248,13 +3664,19 @@ var alm_is_filtering = false;
 				// Initiate WooCommerce
 				(0, _woocommerce.wooInit)(alm);
 
-				// Set Results Text
-				if (alm.resultsText) {}
-				//resultsText.almInitResultsText(alm, 'woocommerce');
+				// Trigger `Done` if `paged is less than `pages`
+				if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
+					alm.AjaxLoadMore.triggerDone();
+				}
+			}
 
+			// Elementor Add-on
+			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
+				// Initiate Elementor
+				(0, _elementor.elementorInit)(alm);
 
-				// Trigger Done if productsLoaded is less than woocommerce_total_posts
-				if (alm.addons.woocommerce_paged >= parseInt(alm.addons.woocommerce_pages)) {
+				// Trigger `Done` if `elementor_next_page_url` is empty
+				if (alm.addons.elementor_next_page_url === '') {
 					alm.AjaxLoadMore.triggerDone();
 				}
 			}
@@ -3263,12 +3685,12 @@ var alm_is_filtering = false;
 			alm.window.addEventListener('load', function () {
 				if (alm.is_masonry_preloaded) {
 					// Wrap almMasonry in anonymous async/await function
-					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-						return regeneratorRuntime.wrap(function _callee4$(_context4) {
+					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+						return regeneratorRuntime.wrap(function _callee5$(_context5) {
 							while (1) {
-								switch (_context4.prev = _context4.next) {
+								switch (_context5.prev = _context5.next) {
 									case 0:
-										_context4.next = 2;
+										_context5.next = 2;
 										return (0, _masonry2.default)(alm, true, false);
 
 									case 2:
@@ -3276,10 +3698,10 @@ var alm_is_filtering = false;
 
 									case 3:
 									case 'end':
-										return _context4.stop();
+										return _context5.stop();
 								}
 							}
-						}, _callee4, this);
+						}, _callee5, this);
 					}))().catch(function (e) {
 						console.log('There was an error with ALM Masonry');
 					});
@@ -3290,18 +3712,8 @@ var alm_is_filtering = false;
 			});
 		};
 
-		// Flag to prevent loading of posts on initial page load.
-		setTimeout(function () {
-			alm.proceed = true;
-			alm.AjaxLoadMore.scrollSetup();
-		}, 500);
-
-		// Init Ajax Load More
-		alm.AjaxLoadMore.init();
-
 		/**
-   * almUpdateCurrentPage
-   * Update current page - triggered from paging add-on
+   * Update current page - triggered from paging add-on.
    *
    * @since 2.7.0
    */
@@ -3340,8 +3752,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * almGetParentContainer
-   * return the parent ALM container
+   * Get the parent ALM container.
    *
    * @since 2.7.0
    * @return element
@@ -3351,8 +3762,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * almGetObj
-   * Returns the current ALM obj
+   * Returns the current ALM obj.
    *
    * @param {string} specific obj
    * @since 2.7.0
@@ -3369,20 +3779,27 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * almTriggerClick
-   * Trigger ajaxloadmore from any element on page
+   * Trigger ajaxloadmore from any element on page.
    *
    * @since 2.12.0
    */
 		window.almTriggerClick = function () {
 			alm.button.click();
 		};
+
+		// Flag to prevent loading of posts on initial page load.
+		setTimeout(function () {
+			alm.proceed = true;
+			alm.AjaxLoadMore.scrollSetup();
+		}, 500);
+
+		// Init Ajax Load More
+		alm.AjaxLoadMore.init();
 	};
 
 	// End ajaxloadmore
 
 	/**
-  *  almInit
   *  Initiate instance of Ajax load More
   *
   *  @since 5.0
@@ -3395,9 +3812,9 @@ var alm_is_filtering = false;
 
 	/**
   * Initiate Ajax load More if div is present on screen
+  *
   * @since 2.1.2
   */
-
 	var alm_instances = document.querySelectorAll('.ajax-load-more-wrap');
 	if (alm_instances.length) {
 		[].concat(_toConsumableArray(alm_instances)).forEach(function (alm, e) {
@@ -3407,8 +3824,7 @@ var alm_is_filtering = false;
 })();
 
 /**
- * filter
- * Filter an Ajax Load More instance
+ * Filter an Ajax Load More instance.
  *
  * @since 5.0
  * @param {*} transition
@@ -3429,8 +3845,63 @@ var filter = function filter() {
 exports.filter = filter;
 
 /**
- * tab
- * Tabbed content for Ajax Load More instance
+ * Reset an Ajax Load More instance.
+ *
+ * @since 5.3.8
+ * @param {*} target
+ */
+
+var reset = function reset() {
+	var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+	var data = {};
+	alm_is_filtering = true;
+
+	if (props && props.target) {
+		data = {
+			target: target
+		};
+	}
+
+	if (props && props.type === 'woocommerce') {
+		// WooCommerce
+		_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+			var instance, settings;
+			return regeneratorRuntime.wrap(function _callee6$(_context6) {
+				while (1) {
+					switch (_context6.prev = _context6.next) {
+						case 0:
+							instance = document.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
+
+							_context6.next = 3;
+							return (0, _woocommerce.wooReset)();
+
+						case 3:
+							settings = _context6.sent;
+							// Get WooCommerce `settings` via Ajax
+							if (settings) {
+								instance.dataset.wooSettings = settings; // Update data atts
+								(0, _filtering2.default)('fade', '100', data, 'filter');
+							}
+
+						case 5:
+						case 'end':
+							return _context6.stop();
+					}
+				}
+			}, _callee6, this);
+		}))().catch(function (e) {
+			console.log('There was an resetting the Ajax Load More instance.');
+		});
+	} else {
+		// Standard ALM
+		(0, _filtering2.default)('fade', '200', data, 'filter');
+	}
+};
+exports.reset = reset;
+
+/**
+ * Tabbed content for Ajax Load More instance.
  *
  * @since 5.2
  * @param {*} data
@@ -3454,8 +3925,7 @@ var tab = function tab() {
 exports.tab = tab;
 
 /**
- * tracking
- * Track Page Views in Google Analytics
+ * Track Page Views in Google Analytics.
  *
  * @since 5.0
  * @param {*} path
@@ -3494,8 +3964,7 @@ var tracking = function tracking(path) {
 exports.tracking = tracking;
 
 /**
- * start
- * Trigger Ajax Load More from other events
+ * Trigger Ajax Load More from other events.
  *
  * @since 5.0
  * @param {*} el
@@ -3510,8 +3979,7 @@ var start = function start(el) {
 exports.start = start;
 
 /**
- *  almScroll
- *  Scroll window to position (global function)
+ *  Scroll window to position (global function).
  *
  *  @since 5.0
  *  @param {*} position
@@ -3529,7 +3997,6 @@ var almScroll = function almScroll(position) {
 exports.almScroll = almScroll;
 
 /**
- *  getOffset
  *  Get the current top/left coordinates of an element relative to the document.
  *
  *  @since 5.0
@@ -3550,10 +4017,9 @@ var getOffset = function getOffset() {
 exports.getOffset = getOffset;
 
 /**
- *  render
+ *  ALM Render (in progress)
  *
  *  @since 5.0
- *  @param {*} position
  */
 
 var render = function render(el) {
@@ -3777,10 +4243,16 @@ var getCacheUrl = function getCacheUrl(alm) {
 					cache_url = path + '/' + alm.addons.single_post_id + ext;
 				}
 
-				// Standard URL request
-				else {
-						cache_url = path + '/page-' + (alm.page + 1) + ext;
+				// Comments & Preloaded
+				else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
+						// When using comments we need to increase the current page by 2
+						cache_url = path + '/page-' + (alm.page + 2) + ext;
 					}
+
+					// Standard URL request
+					else {
+							cache_url = path + '/page-' + (alm.page + 1) + ext;
+						}
 
 	return cache_url;
 };
@@ -4250,229 +4722,232 @@ if (!document.documentElement.dataset && (
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 exports.almGetAjaxParams = almGetAjaxParams;
 exports.almGetRestParams = almGetRestParams;
 /**
  * almGetAjaxParams
  * Build the data object to send with the Ajax request
- * 
+ *
  * @param alm            object
  * @param action         string
- * @param queryType      string  
+ * @param queryType      string
  * @since 3.6
  */
 
 function almGetAjaxParams(alm, action, queryType) {
+	// Defaults
+	var data = {
+		id: alm.id,
+		post_id: alm.post_id,
+		slug: alm.slug,
+		canonical_url: encodeURIComponent(alm.canonical_url),
+		posts_per_page: alm.posts_per_page,
+		page: alm.page,
+		offset: alm.offset,
+		post_type: alm.post_type,
+		repeater: alm.repeater,
+		seo_start_page: alm.start_page
+	};
 
-   // Defaults
-   var data = {
-      id: alm.id,
-      post_id: alm.post_id,
-      slug: alm.slug,
-      canonical_url: encodeURIComponent(alm.canonical_url),
-      posts_per_page: alm.posts_per_page,
-      page: alm.page,
-      offset: alm.offset,
-      post_type: alm.post_type,
-      repeater: alm.repeater,
-      seo_start_page: alm.start_page
-   };
+	// Addons & Extensions
 
-   // Addons & Extensions
+	if (alm.theme_repeater) {
+		data.theme_repeater = alm.theme_repeater;
+	}
+	if (alm.addons.filters) {
+		data.filters = alm.addons.filters;
+		data.filters_startpage = alm.addons.filters_startpage;
+	}
+	if (alm.addons.paging) {
+		data.paging = alm.addons.paging;
+	}
+	if (alm.addons.preloaded) {
+		data.preloaded = alm.addons.preloaded;
+		data.preloaded_amount = alm.addons.preloaded_amount;
+	}
+	if (alm.addons.cache === 'true') {
+		data.cache_id = alm.addons.cache_id;
+		data.cache_logged_in = alm.addons.cache_logged_in;
+	}
+	if (alm.acf_array) {
+		data.acf = alm.acf_array;
+	}
+	if (alm.term_query_array) {
+		data.term_query = alm.term_query_array;
+	}
+	if (alm.cta_array) {
+		data.cta = alm.cta_array;
+	}
+	if (alm.comments_array) {
+		data.comments = alm.comments_array;
+	}
+	if (alm.nextpage_array) {
+		data.nextpage = alm.nextpage_array;
+	}
+	if (alm.single_post_array) {
+		data.single_post = alm.single_post_array;
+	}
+	if (alm.users_array) {
+		data.users = alm.users_array;
+	}
 
-   if (alm.theme_repeater) {
-      data.theme_repeater = alm.theme_repeater;
-   }
-   if (alm.addons.filters) {
-      data.filters = alm.addons.filters;
-      data.filters_startpage = alm.addons.filters_startpage;
-   }
-   if (alm.addons.paging) {
-      data.paging = alm.addons.paging;
-   }
-   if (alm.addons.preloaded) {
-      data.preloaded = alm.addons.preloaded;
-      data.preloaded_amount = alm.addons.preloaded_amount;
-   }
-   if (alm.addons.cache === 'true') {
-      data.cache_id = alm.addons.cache_id;
-      data.cache_logged_in = alm.addons.cache_logged_in;
-   }
-   if (alm.acf_array) {
-      data.acf = alm.acf_array;
-   }
-   if (alm.term_query_array) {
-      data.term_query = alm.term_query_array;
-   }
-   if (alm.cta_array) {
-      data.cta = alm.cta_array;
-   }
-   if (alm.comments_array) {
-      data.comments = alm.comments_array;
-   }
-   if (alm.nextpage_array) {
-      data.nextpage = alm.nextpage_array;
-   }
-   if (alm.single_post_array) {
-      data.single_post = alm.single_post_array;
-   }
-   if (alm.users_array) {
-      data.users = alm.users_array;
-   }
+	// Query data
+	if (alm.listing.dataset.lang) {
+		data.lang = alm.listing.dataset.lang;
+	}
+	if (alm.listing.dataset.stickyPosts) {
+		data.sticky_posts = alm.listing.dataset.stickyPosts;
+	}
+	if (alm.listing.dataset.postFormat) {
+		data.post_format = alm.listing.dataset.postFormat;
+	}
+	if (alm.listing.dataset.category) {
+		data.category = alm.listing.dataset.category;
+	}
+	if (alm.listing.dataset.categoryAnd) {
+		data.category__and = alm.listing.dataset.categoryAnd;
+	}
+	if (alm.listing.dataset.categoryNotIn) {
+		data.category__not_in = alm.listing.dataset.categoryNotIn;
+	}
+	if (alm.listing.dataset.tag) {
+		data.tag = alm.listing.dataset.tag;
+	}
+	if (alm.listing.dataset.tagAnd) {
+		data.tag__and = alm.listing.dataset.tagAnd;
+	}
+	if (alm.listing.dataset.tagNotIn) {
+		data.tag__not_in = alm.listing.dataset.tagNotIn;
+	}
+	if (alm.listing.dataset.taxonomy) {
+		data.taxonomy = alm.listing.dataset.taxonomy;
+	}
+	if (alm.listing.dataset.taxonomyTerms) {
+		data.taxonomy_terms = alm.listing.dataset.taxonomyTerms;
+	}
+	if (alm.listing.dataset.taxonomyOperator) {
+		data.taxonomy_operator = alm.listing.dataset.taxonomyOperator;
+	}
+	if (alm.listing.dataset.taxonomyRelation) {
+		data.taxonomy_relation = alm.listing.dataset.taxonomyRelation;
+	}
+	if (alm.listing.dataset.metaKey) {
+		data.meta_key = alm.listing.dataset.metaKey;
+	}
+	if (alm.listing.dataset.metaValue) {
+		data.meta_value = alm.listing.dataset.metaValue;
+	}
+	if (alm.listing.dataset.metaCompare) {
+		data.meta_compare = alm.listing.dataset.metaCompare;
+	}
+	if (alm.listing.dataset.metaRelation) {
+		data.meta_relation = alm.listing.dataset.metaRelation;
+	}
+	if (alm.listing.dataset.metaType) {
+		data.meta_type = alm.listing.dataset.metaType;
+	}
+	if (alm.listing.dataset.author) {
+		data.author = alm.listing.dataset.author;
+	}
+	if (alm.listing.dataset.year) {
+		data.year = alm.listing.dataset.year;
+	}
+	if (alm.listing.dataset.month) {
+		data.month = alm.listing.dataset.month;
+	}
+	if (alm.listing.dataset.day) {
+		data.day = alm.listing.dataset.day;
+	}
+	if (alm.listing.dataset.order) {
+		data.order = alm.listing.dataset.order;
+	}
+	if (alm.listing.dataset.orderby) {
+		data.orderby = alm.listing.dataset.orderby;
+	}
+	if (alm.listing.dataset.postStatus) {
+		data.post_status = alm.listing.dataset.postStatus;
+	}
+	if (alm.listing.dataset.postIn) {
+		data.post__in = alm.listing.dataset.postIn;
+	}
+	if (alm.listing.dataset.postNotIn) {
+		data.post__not_in = alm.listing.dataset.postNotIn;
+	}
+	if (alm.listing.dataset.exclude) {
+		data.exclude = alm.listing.dataset.exclude;
+	}
+	if (alm.listing.dataset.search) {
+		data.search = alm.listing.dataset.search;
+	}
+	if (alm.listing.dataset.s) {
+		data.search = alm.listing.dataset.s;
+	}
+	if (alm.listing.dataset.customArgs) {
+		data.custom_args = escape(alm.listing.dataset.customArgs);
+	}
+	if (alm.listing.dataset.vars) {
+		data.vars = escape(alm.listing.dataset.vars);
+	}
 
-   // Query data   
-   if (alm.listing.dataset.lang) {
-      data.lang = alm.listing.dataset.lang;
-   }
-   if (alm.listing.dataset.stickyPosts) {
-      data.sticky_posts = alm.listing.dataset.stickyPosts;
-   }
-   if (alm.listing.dataset.postFormat) {
-      data.post_format = alm.listing.dataset.postFormat;
-   }
-   if (alm.listing.dataset.category) {
-      data.category = alm.listing.dataset.category;
-   }
-   if (alm.listing.dataset.categoryAnd) {
-      data.category__and = alm.listing.dataset.categoryAnd;
-   }
-   if (alm.listing.dataset.categoryNotIn) {
-      data.category__not_in = alm.listing.dataset.categoryNotIn;
-   }
-   if (alm.listing.dataset.tag) {
-      data.tag = alm.listing.dataset.tag;
-   }
-   if (alm.listing.dataset.tagAnd) {
-      data.tag__and = alm.listing.dataset.tagAnd;
-   }
-   if (alm.listing.dataset.tagNotIn) {
-      data.tag__not_in = alm.listing.dataset.tagNotIn;
-   }
-   if (alm.listing.dataset.taxonomy) {
-      data.taxonomy = alm.listing.dataset.taxonomy;
-   }
-   if (alm.listing.dataset.taxonomyTerms) {
-      data.taxonomy_terms = alm.listing.dataset.taxonomyTerms;
-   }
-   if (alm.listing.dataset.taxonomyOperator) {
-      data.taxonomy_operator = alm.listing.dataset.taxonomyOperator;
-   }
-   if (alm.listing.dataset.taxonomyRelation) {
-      data.taxonomy_relation = alm.listing.dataset.taxonomyRelation;
-   }
-   if (alm.listing.dataset.metaKey) {
-      data.meta_key = alm.listing.dataset.metaKey;
-   }
-   if (alm.listing.dataset.metaValue) {
-      data.meta_value = alm.listing.dataset.metaValue;
-   }
-   if (alm.listing.dataset.metaCompare) {
-      data.meta_compare = alm.listing.dataset.metaCompare;
-   }
-   if (alm.listing.dataset.metaRelation) {
-      data.meta_relation = alm.listing.dataset.metaRelation;
-   }
-   if (alm.listing.dataset.metaType) {
-      data.meta_type = alm.listing.dataset.metaType;
-   }
-   if (alm.listing.dataset.author) {
-      data.author = alm.listing.dataset.author;
-   }
-   if (alm.listing.dataset.year) {
-      data.year = alm.listing.dataset.year;
-   }
-   if (alm.listing.dataset.month) {
-      data.month = alm.listing.dataset.month;
-   }
-   if (alm.listing.dataset.day) {
-      data.day = alm.listing.dataset.day;
-   }
-   if (alm.listing.dataset.order) {
-      data.order = alm.listing.dataset.order;
-   }
-   if (alm.listing.dataset.orderby) {
-      data.orderby = alm.listing.dataset.orderby;
-   }
-   if (alm.listing.dataset.postStatus) {
-      data.post_status = alm.listing.dataset.postStatus;
-   }
-   if (alm.listing.dataset.postIn) {
-      data.post__in = alm.listing.dataset.postIn;
-   }
-   if (alm.listing.dataset.postNotIn) {
-      data.post__not_in = alm.listing.dataset.postNotIn;
-   }
-   if (alm.listing.dataset.exclude) {
-      data.exclude = alm.listing.dataset.exclude;
-   }
-   if (alm.listing.dataset.search) {
-      data.search = alm.listing.dataset.search;
-   }
-   if (alm.listing.dataset.s) {
-      data.search = alm.listing.dataset.s;
-   }
-   if (alm.listing.dataset.customArgs) {
-      data.custom_args = alm.listing.dataset.customArgs;
-   }
+	data.action = action;
+	data.query_type = queryType;
 
-   data.action = action;
-   data.query_type = queryType;
-
-   return data;
+	return data;
 }
 
 /**
  * almGetRestParams
  * Build the REST API data object to send with REST API request
- * 
+ *
  * @param alm            object
  * @since 3.6
  */
 function almGetRestParams(alm) {
-   var data = {
-      id: alm.id,
-      post_id: alm.post_id,
-      posts_per_page: alm.posts_per_page,
-      page: alm.page,
-      offset: alm.offset,
-      slug: alm.slug,
-      canonical_url: encodeURIComponent(alm.canonical_url),
-      post_type: alm.post_type,
-      post_format: alm.listing.dataset.postFormat,
-      category: alm.listing.dataset.category,
-      category__not_in: alm.listing.dataset.categoryNotIn,
-      tag: alm.listing.dataset.tag,
-      tag__not_in: alm.listing.dataset.tagNotIn,
-      taxonomy: alm.listing.dataset.taxonomy,
-      taxonomy_terms: alm.listing.dataset.taxonomyTerms,
-      taxonomy_operator: alm.listing.dataset.taxonomyOperator,
-      taxonomy_relation: alm.listing.dataset.taxonomyRelation,
-      meta_key: alm.listing.dataset.metaKey,
-      meta_value: alm.listing.dataset.metaValue,
-      meta_compare: alm.listing.dataset.metaCompare,
-      meta_relation: alm.listing.dataset.metaRelation,
-      meta_type: alm.listing.dataset.metaType,
-      author: alm.listing.dataset.author,
-      year: alm.listing.dataset.year,
-      month: alm.listing.dataset.month,
-      day: alm.listing.dataset.day,
-      post_status: alm.listing.dataset.postStatus,
-      order: alm.listing.dataset.order,
-      orderby: alm.listing.dataset.orderby,
-      post__in: alm.listing.dataset.postIn,
-      post__not_in: alm.listing.dataset.postNotIn,
-      search: alm.listing.dataset.search,
-      s: alm.listing.dataset.s,
-      custom_args: alm.listing.dataset.customArgs,
-      lang: alm.lang,
-      preloaded: alm.addons.preloaded,
-      preloaded_amount: alm.addons.preloaded_amount,
-      seo_start_page: alm.start_page
-   };
+	var data = {
+		id: alm.id,
+		post_id: alm.post_id,
+		posts_per_page: alm.posts_per_page,
+		page: alm.page,
+		offset: alm.offset,
+		slug: alm.slug,
+		canonical_url: encodeURIComponent(alm.canonical_url),
+		post_type: alm.post_type,
+		post_format: alm.listing.dataset.postFormat,
+		category: alm.listing.dataset.category,
+		category__not_in: alm.listing.dataset.categoryNotIn,
+		tag: alm.listing.dataset.tag,
+		tag__not_in: alm.listing.dataset.tagNotIn,
+		taxonomy: alm.listing.dataset.taxonomy,
+		taxonomy_terms: alm.listing.dataset.taxonomyTerms,
+		taxonomy_operator: alm.listing.dataset.taxonomyOperator,
+		taxonomy_relation: alm.listing.dataset.taxonomyRelation,
+		meta_key: alm.listing.dataset.metaKey,
+		meta_value: alm.listing.dataset.metaValue,
+		meta_compare: alm.listing.dataset.metaCompare,
+		meta_relation: alm.listing.dataset.metaRelation,
+		meta_type: alm.listing.dataset.metaType,
+		author: alm.listing.dataset.author,
+		year: alm.listing.dataset.year,
+		month: alm.listing.dataset.month,
+		day: alm.listing.dataset.day,
+		post_status: alm.listing.dataset.postStatus,
+		order: alm.listing.dataset.order,
+		orderby: alm.listing.dataset.orderby,
+		post__in: alm.listing.dataset.postIn,
+		post__not_in: alm.listing.dataset.postNotIn,
+		search: alm.listing.dataset.search,
+		s: alm.listing.dataset.s,
+		custom_args: alm.listing.dataset.customArgs,
+		vars: alm.listing.dataset.vars,
+		lang: alm.lang,
+		preloaded: alm.addons.preloaded,
+		preloaded_amount: alm.addons.preloaded_amount,
+		seo_start_page: alm.start_page
+	};
 
-   return data;
+	return data;
 }
 
 /***/ }),
@@ -5000,6 +5475,39 @@ var almSetFilters = function almSetFilters() {
 
 /***/ }),
 
+/***/ "./core/src/js/modules/getButtonURL.js":
+/*!*********************************************!*\
+  !*** ./core/src/js/modules/getButtonURL.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Get the next URL for Load More button
+ *
+ * @param {object} alm
+ * @since 5.4.0
+ */
+
+var getButtonURL = function getButtonURL(alm) {
+	if (!alm || !alm.trigger) {
+		return false;
+	}
+	var button = alm.trigger.querySelector('button');
+	var url = button ? button.dataset.url : '';
+
+	return url ? url : '';
+};
+exports.default = getButtonURL;
+
+/***/ }),
+
 /***/ "./core/src/js/modules/getScrollPercentage.js":
 /*!****************************************************!*\
   !*** ./core/src/js/modules/getScrollPercentage.js ***!
@@ -5122,6 +5630,187 @@ var insertScript = {
 
 };
 exports.default = insertScript;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/loadImage.js":
+/*!******************************************!*\
+  !*** ./core/src/js/modules/loadImage.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
+
+var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
+/**
+ * Load the image with imagesLoaded
+ *
+ * @param {HTMLElement} container
+ * @param {HTMLElement} item
+ * @param {String} ua
+ */
+var loadImage = function loadImage(container, item, ua) {
+	return new Promise(function (resolve) {
+		imagesLoaded(item, function () {
+			// Add CSS transition
+			item.style.transition = 'all 0.4s ease';
+			// Append to container
+			container.appendChild(item);
+			// Run srcset fix
+			(0, _srcsetPolyfill2.default)(item, ua);
+			// Send await callback
+			resolve(true);
+		});
+	});
+};
+exports.default = loadImage;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/loadItems.js":
+/*!******************************************!*\
+  !*** ./core/src/js/modules/loadItems.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _loadImage = __webpack_require__(/*! ./loadImage */ "./core/src/js/modules/loadImage.js");
+
+var _loadImage2 = _interopRequireDefault(_loadImage);
+
+var _setFocus = __webpack_require__(/*! ./setFocus */ "./core/src/js/modules/setFocus.js");
+
+var _setFocus2 = _interopRequireDefault(_setFocus);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _asyncToGenerator(fn) {
+	return function () {
+		var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {
+			function step(key, arg) {
+				try {
+					var info = gen[key](arg);var value = info.value;
+				} catch (error) {
+					reject(error);return;
+				}if (info.done) {
+					resolve(value);
+				} else {
+					return Promise.resolve(value).then(function (value) {
+						step("next", value);
+					}, function (err) {
+						step("throw", err);
+					});
+				}
+			}return step("next");
+		});
+	};
+}
+
+/**
+ * Load all items
+ *
+ * @param {HTMLElement} container
+ * @param {HTMLElement} items
+ * @param {Object} alm
+ * @param {String} pageTitle
+ * @param {String} url
+ * @param {String} className
+ */
+var loadItems = function loadItems(container, items, alm, pageTitle) {
+	var url = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : window.location;
+	var className = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+
+	return new Promise(function (resolve) {
+		var total = items.length;
+		var index = 0;
+		var count = 1;
+
+		function loadItem() {
+			if (count <= total) {
+				_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+					return regeneratorRuntime.wrap(function _callee$(_context) {
+						while (1) {
+							switch (_context.prev = _context.next) {
+								case 0:
+									items[index].style.opacity = 0;
+
+									// First item only
+									if (count == 1) {
+										items[index].classList.add(className);
+
+										// Set URL
+										items[index].dataset.url = url;
+
+										// Set page num
+										items[index].dataset.page = alm.page + 1;
+
+										// Set page title
+										items[index].dataset.pageTitle = pageTitle;
+									}
+
+									_context.next = 4;
+									return (0, _loadImage2.default)(container, items[index], alm.ua);
+
+								case 4:
+
+									count++;
+									index++;
+
+									loadItem();
+
+								case 7:
+								case 'end':
+									return _context.stop();
+							}
+						}
+					}, _callee, this);
+				}))().catch(function (e) {
+					console.log('There was an error loading the items');
+				});
+			} else {
+				// Delay for effect only
+				setTimeout(function () {
+					items.map(function (item) {
+						item.style.opacity = 1;
+					});
+					if (items[0]) {
+						(0, _setFocus2.default)(alm, items[0], null, false);
+					}
+				}, 50);
+
+				resolve(true);
+			}
+		}
+
+		loadItem();
+	});
+};
+
+exports.default = loadItems;
 
 /***/ }),
 
@@ -5606,7 +6295,7 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * setFocus
  * Set user focus to improve accessibility after load events
- * 
+ *
  * @param {Object} alm
  * @param {HTMLElement} preloaded
  * @param {Number} total
@@ -5624,7 +6313,7 @@ var setFocus = function setFocus(alm) {
 	}
 
 	// WooCommerce Add-on
-	if (alm.addons.woocommerce) {
+	if (alm.addons.woocommerce || alm.addons.elementor) {
 		moveFocus(false, false, element, false, alm.isSafari);
 		return;
 	}
@@ -5642,7 +6331,7 @@ var setFocus = function setFocus(alm) {
 			moveFocus(alm.init, alm.addons.preloaded, element, is_filtering, alm.isSafari);
 		}
 	} else if (!alm.transition_container) {
-		// Table Layout, no transition container 
+		// Table Layout, no transition container
 		moveFocus(alm.init, alm.addons.preloaded, element[0], is_filtering, alm.isSafari);
 	}
 };
@@ -5651,7 +6340,7 @@ exports.default = setFocus;
 /**
  * moveFocus
  * Move user focus to alm-reveal div
- * 
+ *
  * @param {Boolean} init
  * @param {String} preloaded
  * @param {HTMLElement} element
@@ -5676,9 +6365,9 @@ var moveFocus = function moveFocus() {
 	// Check if element is an array.
 	// If `transition_container="false"`, `element` will be an array.
 	/*
- let is_array = Array.isArray(element);
- element = (is_array) ? element[0] : element;
- */
+   let is_array = Array.isArray(element);
+   element = (is_array) ? element[0] : element;
+   */
 
 	// Set tabIndex and style on element
 	element.setAttribute('tabIndex', '-1');
@@ -5691,7 +6380,7 @@ var moveFocus = function moveFocus() {
 	// Scroll Container
 	var scrollContainer = parent.dataset.scrollContainer;
 
-	// If scroll container, move it, not the window.	
+	// If scroll container, move it, not the window.
 	if (scrollContainer) {
 		var container = document.querySelector(scrollContainer);
 		if (container) {
@@ -5699,7 +6388,7 @@ var moveFocus = function moveFocus() {
 			//let top = container.scrollTop;
 			//element.focus();
 			//container.scrollLeft = left;
-			//container.scrollTop = top;	
+			//container.scrollTop = top;
 			setTimeout(function () {
 				element.focus({ preventScroll: true });
 			}, 50);
@@ -5708,7 +6397,6 @@ var moveFocus = function moveFocus() {
 
 	// Move window
 	else {
-
 			setTimeout(function () {
 				element.focus({ preventScroll: true });
 			}, 50);
@@ -5853,25 +6541,24 @@ function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-/**  
+/**
  * Create a numbered table of contents navigation
  *
  * @param {object} alm
  * @param {boolean} init
- * @since 5.2 
+ * @since 5.2
  */
 function tableOfContents(alm) {
 	var init = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 	var from_preloaded = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-	var totalPosts = alm.localize.post_count ? parseInt(alm.localize.post_count) : 0;
+	var totalPosts = alm.localize && alm.localize.post_count ? parseInt(alm.localize.post_count) : 0;
 	if (totalPosts == 0 && !alm.addons.single_post) {
 		// Exit if zero posts and not single posts
 		return false;
 	}
 
 	if (alm && alm.tableofcontents && alm.transition_container && alm.transition !== 'masonry') {
-
 		var offset = alm.tableofcontents.dataset.offset ? parseInt(alm.tableofcontents.dataset.offset) : 30;
 		var startPage = alm.start_page ? parseInt(alm.start_page) : 0;
 		var filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
@@ -5916,7 +6603,6 @@ function tableOfContents(alm) {
 				}
 			}, 100);
 		} else {
-
 			// Preloaded
 			if (preloaded) {
 				if (alm.addons.seo && startPage > 0) {
@@ -5943,22 +6629,27 @@ function clearTOC() {
 
 // Create Standard Page Button
 function createTOCButton(alm, page, offset) {
-
 	if (!alm.tableofcontents) {
 		return false;
 	}
 
 	var button = document.createElement('button');
-	button.type = "button";
+	button.type = 'button';
 
 	page = parseInt(page) + 1;
 	button.innerHTML = getTOCLabel(alm, page);
-	button.dataset.page = page;
+	button.dataset.page = alm.addons.single_post_target && alm.init ? page - 1 : page;
 	alm.tableofcontents.appendChild(button);
 
 	button.addEventListener('click', function (e) {
 		var page = this.dataset.page;
 		var target = document.querySelector('.alm-reveal:nth-child(' + page + ')') || document.querySelector('.alm-nextpage:nth-child(' + page + ')');
+
+		// Single Posts
+		if (alm.addons.single_post_target) {
+			target = document.querySelector('.alm-reveal.alm-single-post[data-page="' + page + '"]');
+		}
+
 		if (!target) {
 			return false;
 		}
@@ -5974,12 +6665,26 @@ function createTOCButton(alm, page, offset) {
 
 // Get Button Label
 function getTOCLabel(alm, page) {
-
 	var label = page;
 
 	// Single Posts
 	if (alm.addons.single_post) {
-		var element = document.querySelector('.alm-reveal.alm-single-post[data-page="' + (page - 1) + '"]');
+		var thePage = page - 1;
+		var element = void 0;
+		if (alm.addons.single_post_target) {
+			// Special functionality for Single Post with a loading target type
+			if (alm.init) {
+				thePage = thePage;
+			} else {
+				thePage = thePage + 1;
+			}
+			var posts = document.querySelectorAll('.alm-reveal.alm-single-post');
+			if (posts) {
+				element = posts[thePage];
+			}
+		} else {
+			element = document.querySelector('.alm-reveal.alm-single-post[data-page=' + (page - 1) + ']');
+		}
 		label = element ? element.dataset.title : label;
 	}
 
@@ -16785,6 +17490,15 @@ return EvEmitter;
     focusElem.focus(
       Object.defineProperty({}, "preventScroll", {
         get: function() {
+          // Edge v18 gives a false positive for supporting inputs
+          if (
+            navigator &&
+            typeof navigator.userAgent !== 'undefined' &&
+            navigator.userAgent &&
+            navigator.userAgent.match(/Edge\/1[7-8]/)) {
+              return supportsPreventScrollOption = false
+          }
+
           supportsPreventScrollOption = true;
         }
       })
@@ -16833,8 +17547,16 @@ return EvEmitter;
     var patchedFocus = function(args) {
       if (args && args.preventScroll) {
         var evScrollableElements = calcScrollableElements(this);
-        this.nativeFocus();
-        restoreScrollPosition(evScrollableElements);
+        if (typeof setTimeout === 'function') {
+          var thisElem = this;
+          setTimeout(function () {
+            thisElem.nativeFocus();
+            restoreScrollPosition(evScrollableElements);
+          }, 0);
+        } else {
+          this.nativeFocus();
+          restoreScrollPosition(evScrollableElements);
+        }
       }
       else {
         this.nativeFocus();
@@ -18340,6 +19062,24 @@ var runtime = (function (exports) {
   var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
   var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
 
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
   function wrap(innerFn, outerFn, self, tryLocsList) {
     // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
     var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
@@ -18410,16 +19150,19 @@ var runtime = (function (exports) {
     Generator.prototype = Object.create(IteratorPrototype);
   GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
   GeneratorFunctionPrototype.constructor = GeneratorFunction;
-  GeneratorFunctionPrototype[toStringTagSymbol] =
-    GeneratorFunction.displayName = "GeneratorFunction";
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
 
   // Helper for defining the .next, .throw, and .return methods of the
   // Iterator interface in terms of a single ._invoke method.
   function defineIteratorMethods(prototype) {
     ["next", "throw", "return"].forEach(function(method) {
-      prototype[method] = function(arg) {
+      define(prototype, method, function(arg) {
         return this._invoke(method, arg);
-      };
+      });
     });
   }
 
@@ -18438,9 +19181,7 @@ var runtime = (function (exports) {
       Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
     } else {
       genFun.__proto__ = GeneratorFunctionPrototype;
-      if (!(toStringTagSymbol in genFun)) {
-        genFun[toStringTagSymbol] = "GeneratorFunction";
-      }
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
     }
     genFun.prototype = Object.create(Gp);
     return genFun;
@@ -18710,7 +19451,7 @@ var runtime = (function (exports) {
   // unified ._invoke helper method.
   defineIteratorMethods(Gp);
 
-  Gp[toStringTagSymbol] = "Generator";
+  define(Gp, toStringTagSymbol, "Generator");
 
   // A Generator should always return itself as the iterator object when the
   // @@iterator function is called on it. Some browsers' implementations of the

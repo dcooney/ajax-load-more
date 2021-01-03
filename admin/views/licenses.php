@@ -4,7 +4,8 @@
 ?>
 <div class="admin ajax-load-more" id="alm-licenses">
 	<div class="wrap main-cnkt-wrap">
-      <header class="header-wrap">
+
+		<header class="header-wrap">
          <h1>
             <?php echo ALM_TITLE; ?>: <strong><?php echo $pg_title; ?></strong>
             <em><?php echo $pg_desc; ?>.</em>
@@ -150,14 +151,13 @@
                <p><?php _e('You do not have any Ajax Load More add-ons installed', 'ajax-load-more'); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e('Browse Add-ons', 'ajax-load-more'); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e('Go Pro', 'ajax-load-more'); ?></strong></a></p>
             </div>
             <?php endif; ?>
-
    	   </div>
 
    	   <aside class="cnkt-sidebar">
       	   <div id="cnkt-sticky-wrapper">
 	      	   <div id="cnkt-sticky">
-	         	   <div class="cta">
-	                  <h3><?php _e('About Licenses', 'ajax-load-more'); ?></h3>
+						<div class="cta">
+							<h3><?php _e('About Licenses', 'ajax-load-more'); ?></h3>
 	                  <div class="cta-inner">
 	                     <ul>
 	                        <li><?php _e('License keys are found in the purchase receipt email that was sent immediately after purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more');?></li>
@@ -166,19 +166,20 @@
 	                        <strong><?php _e('Are you having issues updating an add-on?', 'ajax-load-more'); ?></strong><br/>
 	                        <?php _e('Please try deactivating and then re-activating each license. Once you\'ve done that, try running the update again.', 'ajax-load-more'); ?></li>
 	                     </ul>
-	                  </div>
+							</div>
 	                  <div class="major-publishing-actions">
 	      	            <a class="button button-primary" target="_blank" href="https://connekthq.com/account/">
 	      		            <?php _e('Your Account', 'ajax-load-more'); ?>
 	                     </a>
-	                  </div>
-	               </div>
+							</div>
+						</div>
 	      	   </div>
       	   </div>
-   	   </div>
+				<div class="clear"></div>
+			</aside>
 
 			<div class="clear"></div>
-      </aside>
 
+		</div>
 	</div>
 </div>

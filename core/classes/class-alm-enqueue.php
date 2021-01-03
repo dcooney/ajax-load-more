@@ -1,12 +1,12 @@
 <?php
 /**
- * Ajax Load More Enqueue
+ * Ajax Load More Enqueue scripts class.
  *
- * Enqueue scripts.
- *
- * @author   Darren Cooney
+ * @package  ajaxloadmore
  * @since    2.10.1
  */
+
+// @codingStandardsIgnoreStart
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -15,8 +15,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 if( !class_exists('ALM_ENQUEUE') ):
 
    class ALM_ENQUEUE {
-
-
 
       /**
    	 * alm_enqueue_css
@@ -56,9 +54,9 @@ if( !class_exists('ALM_ENQUEUE') ):
       	// Enqueue $file
       	wp_enqueue_style( $name, $file );
       }
-      
-      
-      
+
+
+
       /**
    	 * alm_inline_css
    	 *
@@ -67,12 +65,12 @@ if( !class_exists('ALM_ENQUEUE') ):
    	 *
    	 * @param $name  Enqueue filename
    	 * @param $file Path to file
-   	 * @param $url_path URL to plugin directory 
+   	 * @param $url_path URL to plugin directory
    	 * @since 2.3.1
    	 * @return $contents
    	 */
       public static function alm_inline_css($name, $file, $url_path){
-	      
+
          $css        = '';
       	$css_path   = '';
       	$dir        = 'alm';
@@ -100,27 +98,27 @@ if( !class_exists('ALM_ENQUEUE') ):
          		$file = $css_path;
          		$core_alm_css = false;
          	}
-      	}  
-      	    	
-      	if(file_exists($file)){    	
+      	}
+
+      	if(file_exists($file)){
 				$css_file = file_get_contents( $file );
-				
+
 				// If using core CSS, replace the `../..` path in the CSS file.
 				if($core_alm_css){
-					
+
 				   $new_img_path = $url_path .'/core';
-				   
+
 				   // Find and replace strings in CSS
                $css_file = str_replace('../..', $new_img_path, $css_file);
-               
+
 				}
-				
+
 				$contents = '<style type="text/css">' . $css_file . '</style>';
 			}
-			
+
 			return $contents;
-						
-      }      
+
+      }
 
    }
 
