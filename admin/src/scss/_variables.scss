@@ -1,16 +1,30 @@
 $gutter: 25px;
-$padding: 15px;
-$grey: #555;
+$padding: 20px;
+$padding_sm: 15px;
 $green: #8ed074;
 $green_hover: #57bda4;
+$blue: #3784c2;
+$blue_hover: #58a1de;
 $yellow: #ffffe8;
 $yellow_dark: #e4e4c8;
-$red: #e06464;
+$red: #e84648;
+$red_alert: #c71316;
+$grey: #393d41;
+$paragraph: #6a7178;
+$grey_text: #999;
 $light_grey: #f7f7f7;
+$lighter_grey: #fcfcfc;
 $light_border: #f1f1f1;
 $grey_blue: #f8f9fb;
 $border: #e1e1e1;
 $border_hover: #ccc;
+$shadow: 0 0 4px 1px rgba($blue, 0.15);
 $radius: 3px;
-
 $small: 480px;
+$desktop: 620px;
+
+@mixin ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

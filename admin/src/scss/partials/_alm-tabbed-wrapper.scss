@@ -1,0 +1,142 @@
+.ajax-load-more .alm-tabbed-wrapper {
+	width: 100%;
+	@media screen and (min-width: $desktop) {
+		display: flex;
+		flex-wrap: nowrap;
+	}
+
+	// Section Titles
+	h2 {
+		padding: $padding 0 0;
+		margin: 0 0 15px;
+		display: block;
+		font-size: 20px;
+		color: $grey;
+		font-weight: 700;
+		+ p {
+			position: relative;
+			top: -3px;
+		}
+	}
+
+	// Navigation.
+	&--nav {
+		border: 1px solid $border;
+		margin-bottom: $padding;
+		padding: 10px;
+		background: #fff;
+		@media screen and (min-width: $desktop) {
+			width: 165px;
+			background-color: $light_grey;
+			padding: 0;
+			border: 1px solid $border;
+			border-right: none;
+			border-bottom: none;
+			border-radius: $radius $radius 0 0;
+			position: relative;
+			z-index: 1;
+			margin: 0;
+		}
+		ul {
+			margin: 0;
+			padding: 0 0 35px;
+			@media screen and (max-width: $desktop) {
+				padding: 0;
+				border: 1px solid $border;
+			}
+			li {
+				width: 100% !important;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				&:first-of-type {
+					@media screen and (min-width: $desktop) {
+						position: relative;
+						top: -1px;
+						button {
+							border-top: 1px solid $border;
+							border-radius: $radius 0 0 0;
+						}
+					}
+				}
+				&:last-of-type {
+					button {
+						@media screen and (max-width: $desktop) {
+							border: none;
+						}
+					}
+				}
+			}
+			&.attached {
+				@media screen and (min-width: $desktop) {
+					position: fixed;
+					width: auto;
+					top: 70px;
+					li:first-of-type button {
+						border-radius: 0;
+					}
+				}
+			}
+		}
+		button {
+			display: block;
+			width: 100%;
+			border: none;
+			background: none;
+			line-height: 1.4;
+			padding: 12px 10px;
+			text-align: left;
+			font-weight: 400;
+			@include ellipsis;
+			background: $light_grey;
+			border-bottom: 1px solid $border;
+			cursor: pointer;
+			color: $grey;
+			&:hover,
+			&:focus {
+				background-color: #efefef;
+			}
+			i {
+				opacity: 0.65;
+				width: 18px;
+				&.fa-handshake-o {
+					position: relative;
+					left: -2px;
+				}
+			}
+			&.active {
+				font-weight: 600;
+				background-color: #fff;
+				color: $red;
+				cursor: default;
+				i {
+					color: $grey;
+				}
+				@media screen and (min-width: $desktop) {
+					width: calc(100% + 1px);
+				}
+			}
+		}
+	}
+
+	// Sections Column
+	&--sections {
+		flex: 1;
+
+		padding: 0 20px 20px;
+		display: block;
+		background: #fff;
+		border: 1px solid $border;
+		@media screen and (min-width: $desktop) {
+			border-bottom: none;
+			border-radius: 0 $radius 0 0;
+		}
+	}
+
+	&--section {
+		display: none;
+		&.active {
+			display: block;
+		}
+	}
+}

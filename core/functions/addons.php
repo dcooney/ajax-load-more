@@ -230,7 +230,7 @@ function alm_get_addons(){
       ),
       array(
          'name' => __(' Theme Repeaters', 'ajax-load-more' ),
-         'intro' => __(' Manage repeater templates within your current theme directory.', 'ajax-load-more' ),
+         'intro' => __(' Manage Repeater Templates within your current theme directory.', 'ajax-load-more' ),
          'desc' => __(' The Theme Repeater add-on will allow you load, edit and maintain templates from your current theme directory.', 'ajax-load-more' ),
          'action' => 'alm_theme_repeaters_installed',
          'key' => 'alm_theme_repeaters_license_key',

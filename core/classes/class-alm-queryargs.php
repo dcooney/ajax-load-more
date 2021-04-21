@@ -1,6 +1,6 @@
 <?php
 /**
- * Generate args that pass into the ALM WP_Query
+ * Generate args that pass into the ALM WP_Query.
  *
  * @package  ajaxloadmore
  * @since    3.7
@@ -14,10 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if(!class_exists('ALM_QUERY_ARGS')):
 
+	/**
+	 * Ajax Load More Query Args class.
+	 */
    class ALM_QUERY_ARGS {
 
       /**
-	    * alm_build_queryargs
 	    * This function will return a generated $args array.
    	 *
    	 * @since         3.7
@@ -149,7 +151,6 @@ if(!class_exists('ALM_QUERY_ARGS')):
 		         }
 	         }
          }
-
 
       	// Create $args array
    		$args = array(
@@ -385,10 +386,9 @@ if(!class_exists('ALM_QUERY_ARGS')):
             }
          }
 
-         /*
+         /**
 		    * Custom `alm_id` query parameter in the WP_Query
 			 * This allows pre_get_posts to parse based on ALM ID
-			 * print_r($query->query);
 			 */
 			$args['alm_id'] = $id;
 

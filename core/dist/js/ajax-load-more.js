@@ -786,8 +786,8 @@ exports.createSEOAttributes = createSEOAttributes;
  * createMasonrySEOPage
  * Create data attributes for SEO paged results
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm
+ * @param {array} elements
  * @since 5.3.1
  */
 function createMasonrySEOPage(alm, element) {
@@ -808,8 +808,8 @@ function createMasonrySEOPage(alm, element) {
  * createMasonrySEOPages
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm
+ * @param {array} elements
  * @since 5.3.1
  */
 function createMasonrySEOPages(alm, elements) {
@@ -848,7 +848,16 @@ function createMasonrySEOPages(alm, elements) {
 	return elements;
 }
 
-// Create the attributes (page, url, classes)  for the masonry items
+/**
+ * Create the attributes (page, url, classes) for the masonry items.
+ *
+ * @param {object} alm
+ * @param {object} element
+ * @param {string} querystring
+ * @param {string} seo_class
+ * @param {int} pagenum
+ * @returns
+ */
 function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 	element.classList.add(seo_class);
 	element.dataset.page = pagenum;
@@ -873,12 +882,11 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 }
 
 /**
- * createSEOAttributes
- * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
+ * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
- * @param {Object} alm
- * @param {Array} elements
- * ...
+ * @param {object} alm
+ * @param {array} elements
+ *
  * @since 5.3.1
  */
 function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
@@ -912,9 +920,8 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.singlePostHTML = singlePostHTML;
-/**  
- * singlePostHTML
- * Create the HTML for loading Single Posts
+/**
+ * Create the HTML for loading Single Posts.
  *
  * @param {Object} response Query response
  * @param {HTMLElement} target The target div
@@ -931,18 +938,70 @@ function singlePostHTML(response) {
 			debug: 'Single Posts Query'
 		}
 	};
+
 	if (response.status === 200 && response.data && target) {
-		var div = document.createElement("div");
+		// Create temp div to hold Ajax response data.
+		var div = document.createElement('div');
 		div.innerHTML = response.data;
-		var htmlTarget = div.querySelector(target);
-		if (htmlTarget) {
-			data.html = htmlTarget.innerHTML;
+
+		// Get target element.
+		var html = div.querySelector(target);
+
+		// Get any custom target elements.
+		var customElements = window && window.almSinglePostsCustomElements;
+		if (customElements) {
+			html.appendChild(singlePostsGetCustomElements(div, customElements));
+		}
+
+		if (html) {
+			data.html = html.innerHTML;
+		} else {
+			console.warn('Ajax Load More: Unable to find ' + target + ' element.');
 		}
 	}
 	return data;
 }
-
 exports.default = singlePostHTML;
+
+/**
+ * Collect custom target elements and append them to the returned HTML.
+ *
+ * This function is useful to get elements from outside the ALM target and bring them into the returned HTML.
+ * Useful for when CSS or JS may be loaded in the <head/> and we need it brought into the HTML for Single Posts.
+ *
+ * e.g. window.almSinglePostsCustomElements = ['#woocommerce-inline-inline-css', '#wc-block-style-css'];
+ *
+ * @param {object} content The HTML element.
+ * @param {array|string} customElements The elements to search for in content.
+ * @return {object} HTML elements.
+ */
+
+function singlePostsGetCustomElements() {
+	var content = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	var customElements = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+	// Create container element to hold elements.
+	var container = document.createElement('div');
+	container.classList.add('alm-custom-elements');
+
+	// Exit if empty.
+	if (!content || !customElements) {
+		return container;
+	}
+
+	// Convert customElements to an Array.
+	customElements = !Array.isArray(customElements) ? [customElements] : customElements;
+
+	// Loop Array to extract elements and append to container.
+	for (var i = 0; i < customElements.length; i++) {
+		var element = content.querySelector(customElements[i]);
+		if (element) {
+			container.appendChild(element);
+		}
+	}
+
+	return container;
+}
 
 /***/ }),
 
@@ -1020,25 +1079,36 @@ function wooInit(alm) {
 	}
 
 	// Set up URL and class parameters on first item in product listing
-	var products = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
-	if (products) {
-		products.setAttribute('aria-live', 'polite');
-		products.setAttribute('aria-atomic', 'true');
+	var container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
+	if (container) {
+		var count = getContainerCount(alm.addons.woocommerce_settings.container);
+
+		if (count > 1) {
+			// Display warning if multiple containers were found.
+			console.warn('ALM WooCommerce: Multiple containers with the same classname or ID found. The WooCommerce add-on requires a single container to be defined. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/');
+		}
+
+		container.setAttribute('aria-live', 'polite');
+		container.setAttribute('aria-atomic', 'true');
 
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
-		var product = products.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
-		if (product) {
-			product.classList.add('alm-woocommerce');
-			product.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
-			product.dataset.page = alm.page;
-			product.dataset.pageTitle = document.title;
+		var products = container.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
+		if (products) {
+			products.classList.add('alm-woocommerce');
+			products.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
+			products.dataset.page = alm.page;
+			products.dataset.pageTitle = document.title;
+		} else {
+			console.warn('ALM WooCommerce: Unable to locate products. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_products');
 		}
 
 		if (alm.addons.woocommerce_settings.paged > 1) {
 			almWooCommerceResultsTextInit(alm);
 		}
+	} else {
+		console.warn('ALM WooCommerce: Unable to locate container element. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_container');
 	}
 }
 
@@ -1217,6 +1287,23 @@ function returnButton(text, link, label, seperator) {
 	return text.innerHTML + button;
 }
 
+/**
+ * Get total count of WooCommerce containers
+ *
+ * @param {*} container
+ */
+function getContainerCount(container) {
+	if (!container) {
+		return 0;
+	}
+	var containers = document.querySelectorAll(container); // Get all containers.
+	if (containers) {
+		return containers.length;
+	} else {
+		return 0;
+	}
+}
+
 /***/ }),
 
 /***/ "./core/src/js/ajax-load-more.js":
@@ -1296,8 +1383,6 @@ var _getButtonURL2 = _interopRequireDefault(_getButtonURL);
 
 var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
-var _masonry2 = _interopRequireDefault(_masonry);
-
 var _fadeIn = __webpack_require__(/*! ./modules/fadeIn */ "./core/src/js/modules/fadeIn.js");
 
 var _fadeIn2 = _interopRequireDefault(_fadeIn);
@@ -1327,6 +1412,10 @@ var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./cor
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
 var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
+
+var _lazyImages = __webpack_require__(/*! ./modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
+
+var _lazyImages2 = _interopRequireDefault(_lazyImages);
 
 var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/js/addons/singleposts.js");
 
@@ -1404,6 +1493,8 @@ __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfil
 // External Modules
 var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
+_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // Smooth scrolling polyfill
 _smoothscrollPolyfill2.default.polyfill();
 
@@ -1517,6 +1608,7 @@ var alm_is_filtering = false;
 		alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
 		alm.posts_per_page = alm.listing.dataset.postsPerPage;
 		alm.offset = alm.listing.dataset.offset ? parseInt(alm.listing.dataset.offset) : 0;
+		alm.lazy_images = alm.listing.dataset.lazyImages ? alm.listing.dataset.lazyImages : false;
 		alm.integration.woocommerce = alm.listing.dataset.woocommerce ? alm.listing.dataset.woocommerce : false;
 		alm.integration.woocommerce = alm.integration.woocommerce === 'true' ? true : false;
 		alm.is_search = alm.is_search === undefined ? false : alm.is_search;
@@ -1564,6 +1656,7 @@ var alm_is_filtering = false;
 			alm.addons.nextpage_pageviews = alm.listing.dataset.nextpagePageviews;
 			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
 			alm.addons.nextpage_startpage = alm.listing.dataset.nextpageStartpage;
+			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
 		}
 
 		// Single Posts add-on
@@ -1571,12 +1664,22 @@ var alm_is_filtering = false;
 		if (alm.addons.single_post === 'true') {
 			alm.addons.single_post_id = alm.listing.dataset.singlePostId;
 			alm.addons.single_post_query = alm.listing.dataset.singlePostQuery;
-			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder;
+			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder === undefined ? 'previous' : alm.listing.dataset.singlePostOrder;
 			alm.addons.single_post_init_id = alm.listing.dataset.singlePostId;
-			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy;
-			alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms;
-			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar;
-			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget;
+			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy === undefined ? '' : alm.listing.dataset.singlePostTaxonomy;
+			alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms === undefined ? '' : alm.listing.dataset.singlePostExcludedTerms;
+			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar === undefined ? '' : alm.listing.dataset.singlePostProgressBar;
+			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget === undefined ? '' : alm.listing.dataset.singlePostTarget;
+			alm.addons.single_post_preview = alm.listing.dataset.singlePostPreview === undefined ? false : true;
+			if (alm.addons.single_post_preview) {
+				var singlePostPreviewData = alm.listing.dataset.singlePostPreview.split(':');
+				alm.addons.single_post_preview_data = {
+					button_label: singlePostPreviewData[0] ? singlePostPreviewData[0] : 'Continue Reading',
+					height: singlePostPreviewData[1] ? singlePostPreviewData[1] : 500,
+					element: singlePostPreviewData[2] ? singlePostPreviewData[2] : 'default',
+					className: 'alm-single-post--preview'
+				};
+			}
 		}
 
 		// Comments add-on
@@ -1592,9 +1695,7 @@ var alm_is_filtering = false;
 		}
 
 		alm.addons.tabs = alm.listing.dataset.tabs;
-
 		alm.addons.filters = alm.listing.dataset.filters;
-
 		alm.addons.seo = alm.listing.dataset.seo;
 
 		// Preloaded
@@ -1611,6 +1712,8 @@ var alm_is_filtering = false;
 		}
 
 		// Extension Shortcode Params
+
+		// REST API.
 		alm.extensions.restapi = alm.listing.dataset.restapi; // REST API
 		alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
 		alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
@@ -1618,7 +1721,8 @@ var alm_is_filtering = false;
 		alm.extensions.restapi_template_id = alm.listing.dataset.restapiTemplateId;
 		alm.extensions.restapi_debug = alm.listing.dataset.restapiDebug;
 
-		alm.extensions.acf = alm.listing.dataset.acf; // ACF
+		// ACF.
+		alm.extensions.acf = alm.listing.dataset.acf;
 		alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 		alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 		alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
@@ -1629,14 +1733,14 @@ var alm_is_filtering = false;
 			alm.extensions.acf = false;
 		}
 
-		// Term Query
+		// Term Query.
 		alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
 		alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
 		alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
 		alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
 		alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
 
-		// Paging
+		// Paging.
 		alm.addons.paging = alm.listing.dataset.paging; // Paging add-on
 		if (alm.addons.paging === 'true') {
 			alm.addons.paging = true;
@@ -1659,19 +1763,23 @@ var alm_is_filtering = false;
 		} else {
 			alm.addons.paging = false;
 		}
-		/* End Paging  */
 
-		/* Filters */
+		// Filters
 		if (alm.addons.filters === 'true') {
 			alm.addons.filters = true;
-
 			alm.addons.filters_url = alm.listing.dataset.filtersUrl === 'true' ? true : false;
+			alm.addons.filters_target = alm.listing.dataset.filtersTarget ? alm.listing.dataset.filtersTarget : false;
 			alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
 			alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
 			alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
 			alm.addons.filters_analtyics = alm.listing.dataset.filtersAnalytics;
 			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
 			alm.addons.filters_startpage = 0;
+
+			// Display warning if `filters_target` parameter is missing.
+			if (!alm.addons.filters_target) {
+				console.warn('Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More.');
+			}
 
 			// Get Paged Querystring Val
 			var page = (0, _getParameterByName2.default)('pg');
@@ -1685,9 +1793,8 @@ var alm_is_filtering = false;
 		} else {
 			alm.addons.filters = false;
 		}
-		/* End Filters  */
 
-		/* TABS */
+		// Tabs.
 		if (alm.addons.tabs === 'true') {
 			alm.addons.tabs = true;
 			alm.addons.tab_template = alm.listing.dataset.tabTemplate ? alm.listing.dataset.tabTemplate : '';
@@ -1710,7 +1817,7 @@ var alm_is_filtering = false;
 		} else {
 			alm.addons.tabs = false;
 		}
-		/* End TABS  */
+		/* End Tabs  */
 
 		/* REST API */
 		if (alm.extensions.restapi === 'true') {
@@ -1792,6 +1899,7 @@ var alm_is_filtering = false;
 			if (alm.addons.nextpage_startpage > 1) {
 				alm.isPaged = true;
 			}
+			alm.addons.nextpage_postTitle = alm.listing.dataset.nextpagePostTitle;
 		} else {
 			alm.addons.nextpage = false;
 		}
@@ -1803,11 +1911,6 @@ var alm_is_filtering = false;
 			alm.addons.single_post_permalink = '';
 			alm.addons.single_post_title = '';
 			alm.addons.single_post_slug = '';
-			alm.addons.single_post_order = alm.addons.single_post_order === undefined ? 'previous' : alm.addons.single_post_order;
-			alm.addons.single_post_taxonomy = alm.addons.single_post_taxonomy === undefined ? '' : alm.addons.single_post_taxonomy;
-			alm.addons.single_post_excluded_terms = alm.addons.single_post_excluded_terms === undefined ? '' : alm.addons.single_post_excluded_terms;
-			alm.addons.single_post_progress_bar = alm.addons.single_post_progress_bar === undefined ? '' : alm.addons.single_post_progress_bar;
-			alm.addons.single_post_target = alm.addons.single_post_target === undefined ? '' : alm.addons.single_post_target;
 			alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
 			alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
 			alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
@@ -1847,7 +1950,7 @@ var alm_is_filtering = false;
 		alm.theme_repeater = alm.theme_repeater === undefined ? false : alm.theme_repeater;
 
 		/* Max Pages (while scrolling) */
-		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 10000 : alm.max_pages;
+		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 9999 : alm.max_pages;
 
 		/* Scroll Distance */
 		alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
@@ -1875,23 +1978,8 @@ var alm_is_filtering = false;
 		alm.tcc = alm.tcc === undefined ? '' : alm.tcc;
 
 		/* Masonry */
-		alm.is_masonry_preloaded = false;
 		if (alm.transition === 'masonry') {
-			alm.masonry_init = true;
-			if (alm.msnry) {
-				alm.msnry.destroy(); // destroy masonry if it currently exists
-			} else {
-				alm.msnry = '';
-			}
-			alm.masonry_selector = alm.listing.dataset.masonrySelector;
-			alm.masonry_columnwidth = alm.listing.dataset.masonryColumnwidth;
-			alm.masonry_animation = alm.listing.dataset.masonryAnimation;
-			alm.masonry_animation = alm.masonry_animation === undefined ? 'standard' : alm.masonry_animation;
-			alm.masonry_horizontalorder = alm.listing.dataset.masonryHorizontalorder;
-			alm.masonry_horizontalorder = alm.masonry_horizontalorder === undefined ? 'true' : alm.masonry_horizontalorder;
-			alm.transition_container = false;
-			alm.images_loaded = false;
-			alm.is_masonry_preloaded = alm.addons.preloaded === 'true' ? true : alm.is_masonry_preloaded;
+			alm = (0, _masonry.almMasonryConfig)(alm);
 		}
 
 		/* Scroll */
@@ -1968,11 +2056,10 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   *  LoadPosts()
    *  The function to get posts via Ajax
+   *
    *  @since 2.0.0
    */
-
 		alm.AjaxLoadMore.loadPosts = function () {
 			if (typeof almOnChange === 'function') {
 				window.almOnChange(alm);
@@ -2014,13 +2101,12 @@ var alm_is_filtering = false;
 			}
 		};
 
-		/*  ajax()
-   *  Ajax Load Moe Ajax function
+		/**
+   * Ajax Load Moe Ajax function
    *
-   *  @param queryType The type of Ajax request (standard/totalposts)
-   *  @since 2.6.0
+   * @param {string} queryType The type of Ajax request (standard/totalposts).
+   * @since 2.6.0
    */
-
 		alm.AjaxLoadMore.ajax = function (queryType) {
 			// Default ALM action
 			var action = 'alm_get_posts';
@@ -2063,7 +2149,8 @@ var alm_is_filtering = false;
 					scroll: alm.addons.nextpage_scroll,
 					pageviews: alm.addons.nextpage_pageviews,
 					post_id: alm.addons.nextpage_post_id,
-					startpage: alm.addons.nextpage_startpage
+					startpage: alm.addons.nextpage_startpage,
+					nested: alm.nested
 				};
 			}
 
@@ -2134,7 +2221,6 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * adminajax
    * Send request to the admin-ajax.php
    *
    * @param {*} alm | ALm object
@@ -2213,6 +2299,7 @@ var alm_is_filtering = false;
 					// Next Page and Paging
 					if (typeof almBuildPagination === 'function') {
 						window.almBuildPagination(data.totalpages, alm);
+						alm.totalpages = data.totalpages;
 					}
 				} else if (queryType === 'totalposts' && alm.addons.paging) {
 					// Paging
@@ -2227,8 +2314,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * tabs
-   * Send request to the WP REST API
+   * Send request to the WP REST API.
    *
    * @param {*} alm | ALm object
    * @since 5.2.0
@@ -2280,7 +2366,6 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * restapi
    * Send request to the WP REST API
    *
    * @param {*} alm | ALm object
@@ -2309,11 +2394,11 @@ var alm_is_filtering = false;
 			_axios2.default.get(alm_rest_url, { params: params }).then(function (response) {
 				// Success
 				var results = response.data; // Get data from response
-				var data = '',
-				    html = results.html,
-				    meta = results.meta,
-				    postcount = meta.postcount,
-				    totalposts = meta.totalposts;
+				var data = '';
+				var html = results.html;
+				var meta = results.meta;
+				var postcount = meta && meta.postcount ? meta.postcount : 0;
+				var totalposts = meta && meta.totalposts ? meta.totalposts : 0;
 
 				// loop results to get data from each
 				for (var i = 0; i < html.length; i++) {
@@ -2350,11 +2435,10 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   * success
-   * Success function after loading data
+   * Success function after loading data.
    *
-   * @param data     The results of the Ajax request
-   * @param is_cache Are results of the Ajax request coming from cache
+   * @param {object} data      The results of the Ajax request.
+   * @param {boolean} is_cache Are results of the Ajax request coming from cache?
    * @since 2.6.0
    */
 		alm.AjaxLoadMore.success = function (data, is_cache) {
@@ -2378,7 +2462,9 @@ var alm_is_filtering = false;
 			// Paging container
 			var pagingContent = alm.listing.querySelector('.alm-paging-content');
 
-			var html, meta, total, totalLoaded;
+			var html = void 0,
+			    meta = void 0,
+			    total = void 0;
 
 			if (is_cache) {
 				// If Cache, do not look for json data as we won't be querying the DB.
@@ -2387,11 +2473,17 @@ var alm_is_filtering = false;
 				// Standard ALM query results
 				html = data.html;
 				meta = data.meta;
-				alm.posts = alm.addons.paging ? meta.postcount : alm.posts + meta.postcount;
-				total = meta.postcount;
-				alm.totalposts = meta.totalposts;
-				alm.totalposts = alm.addons.preloaded === 'true' ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
+				total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
+
+				var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
+				alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
+				alm.posts = alm.addons.paging ? total : alm.posts + total;
 				alm.debug = meta.debug ? meta.debug : '';
+
+				if (!meta) {
+					// Display warning if `meta` is missing.
+					console.warn('Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.');
+				}
 			}
 
 			// Set alm.html as plain text return
@@ -2481,9 +2573,9 @@ var alm_is_filtering = false;
 				// We have results!
 
 				if (!alm.addons.paging) {
+					// Single Posts.
 					if (alm.addons.single_post) {
-						// Single Posts
-						reveal.setAttribute('class', 'alm-reveal alm-single-post post-' + alm.addons.single_post_id + alm.tcc);
+						reveal.setAttribute('class', 'alm-reveal alm-single-post post-' + alm.addons.single_post_id + (alm.tcc ? ' ' + alm.tcc : ''));
 						reveal.dataset.url = alm.addons.single_post_permalink;
 						if (alm.addons.single_post_target) {
 							reveal.dataset.page = parseInt(alm.page) + 1;
@@ -2493,15 +2585,19 @@ var alm_is_filtering = false;
 						reveal.dataset.id = alm.addons.single_post_id;
 						reveal.dataset.title = alm.addons.single_post_title;
 						reveal.innerHTML = alm.html;
+
+						// Single Post Preview
+						if (alm.addons.single_post_preview && alm.addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
+							var singlePreview = window.almSinglePostCreatePreview(reveal, alm.addons.single_post_id, alm.addons.single_post_preview_data);
+							reveal.replaceChildren(singlePreview ? singlePreview : reveal);
+						}
 					} else {
 						if (!alm.transition_container) {
 							// No transition container
-
 							alm.el = alm.html;
 							reveal = alm.container_type === 'table' ? (0, _tableWrap2.default)(alm.html) : (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html, 'text/html'));
 						} else {
 							// Standard container
-
 							var pagenum = void 0;
 							var querystring = window.location.search;
 							var seo_class = alm.addons.seo ? ' alm-seo' : '';
@@ -2521,7 +2617,7 @@ var alm_is_filtering = false;
 								// Call to Actions
 								if (alm.addons.cta === 'true') {
 									posts_per_page = posts_per_page + 1; // Add 1 to posts_per_page for CTAs
-									pages = Math.ceil(total / posts_per_page); // Update pages var with new posts_per_page
+									pages = Math.ceil(total / posts_per_page); // Update pages let with new posts_per_page
 									total = pages + total; // Get new total w/ CTAs added
 								}
 
@@ -2655,12 +2751,14 @@ var alm_is_filtering = false;
 												window.almComplete(alm);
 											}
 
+											(0, _lazyImages2.default)(alm);
+
 											// ALM Done
 											if (nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
 												alm.AjaxLoadMore.triggerDone();
 											}
 
-										case 9:
+										case 10:
 										case 'end':
 											return _context2.stop();
 									}
@@ -2704,12 +2802,14 @@ var alm_is_filtering = false;
 												window.almComplete(alm);
 											}
 
+											(0, _lazyImages2.default)(alm);
+
 											// ALM Done
 											if (!nextPage) {
 												alm.AjaxLoadMore.triggerDone();
 											}
 
-										case 9:
+										case 10:
 										case 'end':
 											return _context3.stop();
 									}
@@ -2727,10 +2827,10 @@ var alm_is_filtering = false;
 
 					// Append `reveal` div to ALM Listing container
 					// Do not append when transtion == masonry OR init and !preloaded
-					if (alm.transition !== 'masonry' || alm.init && !alm.is_masonry_preloaded) {
+					if (alm.transition !== 'masonry' || alm.init && alm.addons.preloaded !== 'true') {
 						if (!isPaged) {
 							if (!alm.transition_container) {
-								// No transition container
+								// No transition container.
 								if (alm.images_loaded === 'true') {
 									imagesLoaded(reveal, function () {
 										(0, _almAppendChildren2.default)(alm.listing, reveal);
@@ -2741,11 +2841,11 @@ var alm_is_filtering = false;
 								} else {
 									(0, _almAppendChildren2.default)(alm.listing, reveal);
 
-									// Run srcSet polyfill
+									// Run srcSet polyfill.
 									(0, _srcsetPolyfill2.default)(alm.listing, alm.ua);
 								}
 							} else {
-								// Standard container
+								// Standard container.
 								alm.listing.appendChild(reveal);
 							}
 						}
@@ -2766,18 +2866,21 @@ var alm_is_filtering = false;
 									switch (_context4.prev = _context4.next) {
 										case 0:
 											_context4.next = 2;
-											return (0, _masonry2.default)(alm, alm.init, alm_is_filtering);
+											return (0, _masonry.almMasonry)(alm, alm.init, alm_is_filtering);
 
 										case 2:
-											alm.masonry_init = false;
+											alm.masonry.init = false;
 
 											alm.AjaxLoadMore.triggerWindowResize();
 											alm.AjaxLoadMore.transitionEnd();
+
 											if (typeof almComplete === 'function') {
 												window.almComplete(alm);
 											}
 
-										case 6:
+											(0, _lazyImages2.default)(alm);
+
+										case 7:
 										case 'end':
 											return _context4.stop();
 									}
@@ -2789,7 +2892,7 @@ var alm_is_filtering = false;
 					}
 
 					// None
-					else if (alm.transition === 'none') {
+					else if (alm.transition === 'none' && alm.transition_container) {
 							if (alm.images_loaded === 'true') {
 								imagesLoaded(reveal, function () {
 									(0, _fadeIn2.default)(reveal, 0);
@@ -2801,7 +2904,7 @@ var alm_is_filtering = false;
 							}
 						}
 
-						// Default(Fade)
+						// Default (Fade)
 						else {
 								if (alm.images_loaded === 'true') {
 									imagesLoaded(reveal, function () {
@@ -2880,6 +2983,8 @@ var alm_is_filtering = false;
 					if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
 						window.almComplete(alm);
 					}
+
+					(0, _lazyImages2.default)(alm);
 
 					// Filters Add-on Complete
 					if (alm_is_filtering && alm.addons.filters) {
@@ -3127,7 +3232,7 @@ var alm_is_filtering = false;
 			if (!reveal || !alm.transition_container) {
 				return false; // Exit if not `transition_container`
 			}
-			var nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances from jQuery obj
+			var nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances
 			if (nested) {
 				nested.forEach(function (element) {
 					window.almInit(element);
@@ -3151,10 +3256,9 @@ var alm_is_filtering = false;
 			if (alm.fetchingPreviousPost) {
 				return false;
 			}
-
 			alm.fetchingPreviousPost = true;
 
-			// Get admin-ajax.php URL
+			// Get Ajax URL.
 			var ajaxURL = alm_localize.ajaxurl;
 
 			// Get data params
@@ -3203,19 +3307,19 @@ var alm_is_filtering = false;
    * @since 2.14.0
    */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
-			if (typeof almSetNextPage === 'function') {
+			if (typeof almSetNextPage === 'function' && alm.addons.nextpage) {
 				// Next Page
 				window.almSetNextPage(alm);
 			}
-			if (typeof almSEO === 'function') {
+			if (typeof almSEO === 'function' && alm.addons.seo) {
 				// SEO
 				window.almSEO(alm, false);
 			}
-			if (typeof almWooCommerce === 'function') {
+			if (typeof almWooCommerce === 'function' && alm.addons.woocommerce) {
 				// WooCommerce
 				window.almWooCommerce(alm);
 			}
-			if (typeof almElementor === 'function') {
+			if (typeof almElementor === 'function' && alm.addons.elementor) {
 				// Elementor
 				window.almElementor(alm);
 			}
@@ -3471,7 +3575,7 @@ var alm_is_filtering = false;
 				});
 				alm.window.addEventListener('keyup', function (e) {
 					// End, Page Down
-					var code = e.keyCode ? e.keyCode : e.which;
+					var code = e.key ? e.key : e.code;
 					switch (code) {
 						case 35:
 						case 34:
@@ -3562,8 +3666,10 @@ var alm_is_filtering = false;
 					alm.finished = true;
 					alm.button.classList.add('done');
 				} else {
+					// Set button label.
+					alm.button.innerHTML = alm.button_label;
+					// If Pause.
 					if (alm.pause === 'true') {
-						alm.button.innerHTML = alm.button_label;
 						alm.loading = false;
 					} else {
 						alm.AjaxLoadMore.loadPosts();
@@ -3581,10 +3687,7 @@ var alm_is_filtering = false;
 					alm.AjaxLoadMore.triggerDone();
 				}
 
-				/*
-     *  Display tableOfContents
-     */
-
+				// Display Table of Contents
 				(0, _tableofcontents.tableOfContents)(alm, true, true);
 			}
 
@@ -3624,10 +3727,7 @@ var alm_is_filtering = false;
 					resultsText.almInitResultsText(alm, 'preloaded');
 				}
 
-				/*
-     *  Display tableOfContents
-     */
-
+				// Display Table of Contents
 				(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
 			}
 
@@ -3639,7 +3739,7 @@ var alm_is_filtering = false;
 
 					if (nextpage_pages) {
 						var nextpage_first = nextpage_pages[0];
-						var nextpage_total = alm.localize.total_posts ? parseInt(alm.localize.total_posts) : nextpage_first.dataset.totalPosts;
+						var nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
 
 						// Disable if last page loaded
 						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
@@ -3648,31 +3748,27 @@ var alm_is_filtering = false;
 					}
 				}
 
+				// Results Text.
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'nextpage');
 				}
 
-				/*
-     *  Display tableOfContents
-     */
-
+				// Display Table of Contents
 				(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
 			}
 
-			// WooCommerce Add-on
+			// WooCommerce Add-on.
 			if (alm.addons.woocommerce) {
-				// Initiate WooCommerce
 				(0, _woocommerce.wooInit)(alm);
 
-				// Trigger `Done` if `paged is less than `pages`
+				// Trigger `Done` if `paged is less than `pages`.
 				if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
 					alm.AjaxLoadMore.triggerDone();
 				}
 			}
 
-			// Elementor Add-on
+			// Elementor Add-on.
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
-				// Initiate Elementor
 				(0, _elementor.elementorInit)(alm);
 
 				// Trigger `Done` if `elementor_next_page_url` is empty
@@ -3681,9 +3777,9 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Window Load (Masonry + Preloaded)
+			// Window Load (Masonry + Preloaded).
 			alm.window.addEventListener('load', function () {
-				if (alm.is_masonry_preloaded) {
+				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
 					// Wrap almMasonry in anonymous async/await function
 					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
 						return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -3691,10 +3787,10 @@ var alm_is_filtering = false;
 								switch (_context5.prev = _context5.next) {
 									case 0:
 										_context5.next = 2;
-										return (0, _masonry2.default)(alm, true, false);
+										return (0, _masonry.almMasonry)(alm, true, false);
 
 									case 2:
-										alm.masonry_init = false;
+										alm.masonry.init = false;
 
 									case 3:
 									case 'end':
@@ -3713,7 +3809,8 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * Update current page - triggered from paging add-on.
+   * Update Current Page.
+   * Callback function triggered from paging add-on.
    *
    * @since 2.7.0
    */
@@ -3890,8 +3987,8 @@ var reset = function reset() {
 					}
 				}
 			}, _callee6, this);
-		}))().catch(function (e) {
-			console.log('There was an resetting the Ajax Load More instance.');
+		}))().catch(function () {
+			console.warn('Ajax Load More: There was an resetting the Ajax Load More instance.');
 		});
 	} else {
 		// Standard ALM
@@ -5633,6 +5730,50 @@ exports.default = insertScript;
 
 /***/ }),
 
+/***/ "./core/src/js/modules/lazyImages.js":
+/*!*******************************************!*\
+  !*** ./core/src/js/modules/lazyImages.js ***!
+  \*******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Lazy load images helper.
+ * When a plugin or 3rd party script has hooked into WP Post Thumbnails to provide a lazy load solution, images will not load via Ajax.
+ * This helper provides a fix by grabbing the dataset value and making it the src.
+ *
+ * @param {Object} alm The Ajax Load More object.
+ */
+var lazyImages = function lazyImages(alm) {
+	if (!alm || !alm.lazy_images) {
+		return;
+	}
+	var images = alm.el.getElementsByTagName('img');
+	if (images) {
+		// Loop all images.
+		Array.prototype.forEach.call(images, function (img) {
+			if (img) {
+				if (img.dataset.src) {
+					img.src = img.dataset.src;
+				}
+				if (img.dataset.srcset) {
+					img.srcset = img.dataset.srcset;
+				}
+			}
+		});
+	}
+};
+
+exports.default = lazyImages;
+
+/***/ }),
+
 /***/ "./core/src/js/modules/loadImage.js":
 /*!******************************************!*\
   !*** ./core/src/js/modules/loadImage.js ***!
@@ -5731,7 +5872,7 @@ function _asyncToGenerator(fn) {
 }
 
 /**
- * Load all items
+ * Load all items.
  *
  * @param {HTMLElement} container
  * @param {HTMLElement} items
@@ -5827,6 +5968,8 @@ exports.default = loadItems;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.almMasonry = almMasonry;
+exports.almMasonryConfig = almMasonryConfig;
 
 var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
 
@@ -5863,8 +6006,7 @@ function _interopRequireDefault(obj) {
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
 
 /**
- * almMasonry
- * Function to trigger built-in Ajax Load More Masonry
+ * Function to trigger built-in Ajax Load More Masonry.
  *
  * @param {object} alm
  * @param {boolean} init
@@ -5872,17 +6014,21 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
  * @since 3.1
  * @updated 5.0.2
  */
-var almMasonry = function almMasonry(alm, init, filtering) {
+function almMasonry(alm, init, filtering) {
+	if (!alm.masonry) {
+		console.warn('Ajax Load More: Unable to locate Masonry settings.');
+	}
+
 	return new Promise(function (resolve) {
 		var container = alm.listing;
 		var html = alm.html;
 
-		var selector = alm.masonry_selector;
-		var columnWidth = alm.masonry_columnwidth;
-		var animation = alm.masonry_animation;
-		var horizontalOrder = alm.masonry_horizontalorder;
+		var selector = alm.masonry.selector;
+		var columnWidth = alm.masonry.columnwidth;
+		var animation = alm.masonry.animation;
+		var horizontalOrder = alm.masonry.horizontalorder;
 		var speed = alm.speed;
-		var masonry_init = alm.masonry_init;
+		var masonry_init = alm.masonry.init;
 
 		var duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
 		var hidden = 'scale(0.5)';
@@ -5923,9 +6069,10 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 		horizontalOrder = horizontalOrder === 'true' ? true : false;
 
 		if (!filtering) {
-			// First Run
+			// First Run.
 			if (masonry_init && init) {
-				(0, _srcsetPolyfill2.default)(container, alm.ua); // Run srcSet polyfill
+				// Run srcSet polyfill.
+				(0, _srcsetPolyfill2.default)(container, alm.ua);
 
 				imagesLoaded(container, function () {
 					var defaults = {
@@ -5943,7 +6090,7 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 						}
 					};
 
-					// Get custom Masonry options (https://masonry.desandro.com/options.html)
+					// Get custom Masonry options (https://masonry.desandro.com/options.html).
 					var alm_masonry_vars = window.alm_masonry_vars;
 					if (alm_masonry_vars) {
 						Object.keys(alm_masonry_vars).forEach(function (key) {
@@ -5954,17 +6101,17 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 
 					var data = container.querySelectorAll(selector);
 
-					// Create Filters URL, if required
+					// Create Filters URL, if required.
 					if (alm.addons.filters) {
 						data = (0, _filters.createMasonryFiltersPages)(alm, Array.prototype.slice.call(data));
 					}
 
-					// Create SEO URL, if required
+					// Create SEO URL, if required.
 					if (alm.addons.seo) {
 						data = (0, _seo.createMasonrySEOPages)(alm, Array.prototype.slice.call(data));
 					}
 
-					// Init Masonry, delay to allow time for items to be added to the page
+					// Init Masonry, delay to allow time for items to be added to the page.
 					setTimeout(function () {
 						alm.msnry = new Masonry(container, defaults);
 
@@ -5976,31 +6123,31 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 				});
 			}
 
-			// Standard / Append content
+			// Standard / Append content.
 			else {
 					// Loop all items and create array of node elements
 					var data = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(html, 'text/html'));
 
 					if (data) {
-						// Append elements listing
+						// Append elements listing.
 						(0, _almAppendChildren2.default)(alm.listing, data, 'masonry');
 
-						// Run srcSet polyfill
+						// Run srcSet polyfill.
 						(0, _srcsetPolyfill2.default)(container, alm.ua);
 
-						// imagesLoaded & append
+						// imagesLoaded & append.
 						imagesLoaded(container, function () {
 							alm.msnry.appended(data);
 
-							// Set Focus
+							// Set Focus.
 							(0, _setFocus2.default)(alm, data, data.length, false);
 
-							// Create Filters URL, if required
+							// Create Filters URL, if required.
 							if (alm.addons.filters) {
 								(0, _filters.createMasonryFiltersPage)(alm, data[0]);
 							}
 
-							// Create SEO URL, if required
+							// Create SEO URL, if required.
 							if (alm.addons.seo) {
 								(0, _seo.createMasonrySEOPage)(alm, data[0]);
 							}
@@ -6016,9 +6163,37 @@ var almMasonry = function almMasonry(alm, init, filtering) {
 			resolve(true);
 		}
 	});
-};
+}
 
-exports.default = almMasonry;
+/**
+ * Set up initial Masonry Configuration.
+ *
+ * @param {*} alm
+ * @return object
+ */
+function almMasonryConfig(alm) {
+	alm.masonry = {};
+	alm.masonry.init = true;
+	if (alm.msnry) {
+		// destroy masonry if it currently exists.
+		alm.msnry.destroy();
+	} else {
+		alm.msnry = '';
+	}
+	var masonry_config = JSON.parse(alm.listing.dataset.masonryConfig);
+	if (masonry_config) {
+		alm.masonry.selector = masonry_config.selector;
+		alm.masonry.columnwidth = masonry_config.columnwidth;
+		alm.masonry.animation = masonry_config.animation === '' ? 'standard' : masonry_config.animation;
+		alm.masonry.horizontalorder = masonry_config.horizontalorder === '' ? 'true' : masonry_config.horizontalorder;
+		alm.transition_container = false;
+		alm.images_loaded = false;
+	} else {
+		console.warn('Ajax Load More: Unable to locate Masonry configuration settings.');
+	}
+
+	return alm;
+}
 
 /***/ }),
 
@@ -6071,7 +6246,7 @@ exports.default = almNoResults;
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 exports.showPlaceholder = showPlaceholder;
 exports.hidePlaceholder = hidePlaceholder;
@@ -6085,29 +6260,29 @@ var _fadeOut = __webpack_require__(/*! ./fadeOut */ "./core/src/js/modules/fadeO
 var _fadeOut2 = _interopRequireDefault(_fadeOut);
 
 function _interopRequireDefault(obj) {
-   return obj && obj.__esModule ? obj : { default: obj };
+	return obj && obj.__esModule ? obj : { default: obj };
 }
 
 function showPlaceholder(alm) {
-   if (!alm || !alm.main || alm.addons.paging) {
-      return false;
-   }
-   if (alm.placeholder) {
-      alm.placeholder.style.display = 'block';
-      (0, _fadeIn2.default)(alm.placeholder, 75);
-   }
+	if (!alm || !alm.main || alm.addons.paging) {
+		return false;
+	}
+	if (alm.placeholder) {
+		alm.placeholder.style.display = 'block';
+		(0, _fadeIn2.default)(alm.placeholder, 150);
+	}
 }
 
 function hidePlaceholder(alm) {
-   if (!alm || !alm.main || alm.addons.paging) {
-      return false;
-   }
-   if (alm.placeholder) {
-      (0, _fadeOut2.default)(alm.placeholder, 75);
-      setTimeout(function () {
-         alm.placeholder.style.display = 'none';
-      }, 75);
-   }
+	if (!alm || !alm.main || alm.addons.paging) {
+		return false;
+	}
+	if (alm.placeholder) {
+		(0, _fadeOut2.default)(alm.placeholder, 150);
+		setTimeout(function () {
+			alm.placeholder.style.display = 'none';
+		}, 75);
+	}
 }
 
 /***/ }),
@@ -6774,7 +6949,9 @@ module.exports = __webpack_require__(/*! ./lib/axios */ "./node_modules/axios/li
 
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
 var settle = __webpack_require__(/*! ./../core/settle */ "./node_modules/axios/lib/core/settle.js");
+var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
 var buildURL = __webpack_require__(/*! ./../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
+var buildFullPath = __webpack_require__(/*! ../core/buildFullPath */ "./node_modules/axios/lib/core/buildFullPath.js");
 var parseHeaders = __webpack_require__(/*! ./../helpers/parseHeaders */ "./node_modules/axios/lib/helpers/parseHeaders.js");
 var isURLSameOrigin = __webpack_require__(/*! ./../helpers/isURLSameOrigin */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
 var createError = __webpack_require__(/*! ../core/createError */ "./node_modules/axios/lib/core/createError.js");
@@ -6793,11 +6970,12 @@ module.exports = function xhrAdapter(config) {
     // HTTP basic authentication
     if (config.auth) {
       var username = config.auth.username || '';
-      var password = config.auth.password || '';
+      var password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
       requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
     }
 
-    request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
+    var fullPath = buildFullPath(config.baseURL, config.url);
+    request.open(config.method.toUpperCase(), buildURL(fullPath, config.params, config.paramsSerializer), true);
 
     // Set the request timeout in MS
     request.timeout = config.timeout;
@@ -6834,6 +7012,18 @@ module.exports = function xhrAdapter(config) {
       request = null;
     };
 
+    // Handle browser request cancellation (as opposed to a manual cancellation)
+    request.onabort = function handleAbort() {
+      if (!request) {
+        return;
+      }
+
+      reject(createError('Request aborted', config, 'ECONNABORTED', request));
+
+      // Clean up request
+      request = null;
+    };
+
     // Handle low level network errors
     request.onerror = function handleError() {
       // Real errors are hidden from us by the browser
@@ -6846,7 +7036,11 @@ module.exports = function xhrAdapter(config) {
 
     // Handle timeout
     request.ontimeout = function handleTimeout() {
-      reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
+      var timeoutErrorMessage = 'timeout of ' + config.timeout + 'ms exceeded';
+      if (config.timeoutErrorMessage) {
+        timeoutErrorMessage = config.timeoutErrorMessage;
+      }
+      reject(createError(timeoutErrorMessage, config, 'ECONNABORTED',
         request));
 
       // Clean up request
@@ -6857,12 +7051,10 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(/*! ./../helpers/cookies */ "./node_modules/axios/lib/helpers/cookies.js");
-
       // Add xsrf header
-      var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-          cookies.read(config.xsrfCookieName) :
-          undefined;
+      var xsrfValue = (config.withCredentials || isURLSameOrigin(fullPath)) && config.xsrfCookieName ?
+        cookies.read(config.xsrfCookieName) :
+        undefined;
 
       if (xsrfValue) {
         requestHeaders[config.xsrfHeaderName] = xsrfValue;
@@ -6883,8 +7075,8 @@ module.exports = function xhrAdapter(config) {
     }
 
     // Add withCredentials to request if needed
-    if (config.withCredentials) {
-      request.withCredentials = true;
+    if (!utils.isUndefined(config.withCredentials)) {
+      request.withCredentials = !!config.withCredentials;
     }
 
     // Add responseType to request if needed
@@ -6924,7 +7116,7 @@ module.exports = function xhrAdapter(config) {
       });
     }
 
-    if (requestData === undefined) {
+    if (!requestData) {
       requestData = null;
     }
 
@@ -6949,6 +7141,7 @@ module.exports = function xhrAdapter(config) {
 var utils = __webpack_require__(/*! ./utils */ "./node_modules/axios/lib/utils.js");
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
 var Axios = __webpack_require__(/*! ./core/Axios */ "./node_modules/axios/lib/core/Axios.js");
+var mergeConfig = __webpack_require__(/*! ./core/mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
 var defaults = __webpack_require__(/*! ./defaults */ "./node_modules/axios/lib/defaults.js");
 
 /**
@@ -6978,7 +7171,7 @@ axios.Axios = Axios;
 
 // Factory for creating new instances
 axios.create = function create(instanceConfig) {
-  return createInstance(utils.merge(defaults, instanceConfig));
+  return createInstance(mergeConfig(axios.defaults, instanceConfig));
 };
 
 // Expose Cancel & CancelToken
@@ -6991,6 +7184,9 @@ axios.all = function all(promises) {
   return Promise.all(promises);
 };
 axios.spread = __webpack_require__(/*! ./helpers/spread */ "./node_modules/axios/lib/helpers/spread.js");
+
+// Expose isAxiosError
+axios.isAxiosError = __webpack_require__(/*! ./helpers/isAxiosError */ "./node_modules/axios/lib/helpers/isAxiosError.js");
 
 module.exports = axios;
 
@@ -7127,10 +7323,11 @@ module.exports = function isCancel(value) {
 "use strict";
 
 
-var defaults = __webpack_require__(/*! ./../defaults */ "./node_modules/axios/lib/defaults.js");
 var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/utils.js");
+var buildURL = __webpack_require__(/*! ../helpers/buildURL */ "./node_modules/axios/lib/helpers/buildURL.js");
 var InterceptorManager = __webpack_require__(/*! ./InterceptorManager */ "./node_modules/axios/lib/core/InterceptorManager.js");
 var dispatchRequest = __webpack_require__(/*! ./dispatchRequest */ "./node_modules/axios/lib/core/dispatchRequest.js");
+var mergeConfig = __webpack_require__(/*! ./mergeConfig */ "./node_modules/axios/lib/core/mergeConfig.js");
 
 /**
  * Create a new instance of Axios
@@ -7154,13 +7351,22 @@ Axios.prototype.request = function request(config) {
   /*eslint no-param-reassign:0*/
   // Allow for axios('example/url'[, config]) a la fetch API
   if (typeof config === 'string') {
-    config = utils.merge({
-      url: arguments[0]
-    }, arguments[1]);
+    config = arguments[1] || {};
+    config.url = arguments[0];
+  } else {
+    config = config || {};
   }
 
-  config = utils.merge(defaults, {method: 'get'}, this.defaults, config);
-  config.method = config.method.toLowerCase();
+  config = mergeConfig(this.defaults, config);
+
+  // Set config.method
+  if (config.method) {
+    config.method = config.method.toLowerCase();
+  } else if (this.defaults.method) {
+    config.method = this.defaults.method.toLowerCase();
+  } else {
+    config.method = 'get';
+  }
 
   // Hook up interceptors middleware
   var chain = [dispatchRequest, undefined];
@@ -7181,13 +7387,19 @@ Axios.prototype.request = function request(config) {
   return promise;
 };
 
+Axios.prototype.getUri = function getUri(config) {
+  config = mergeConfig(this.defaults, config);
+  return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
+};
+
 // Provide aliases for supported request methods
 utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
-      url: url
+      url: url,
+      data: (config || {}).data
     }));
   };
 });
@@ -7195,7 +7407,7 @@ utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData
 utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
   /*eslint func-names:0*/
   Axios.prototype[method] = function(url, data, config) {
-    return this.request(utils.merge(config || {}, {
+    return this.request(mergeConfig(config || {}, {
       method: method,
       url: url,
       data: data
@@ -7272,6 +7484,38 @@ module.exports = InterceptorManager;
 
 /***/ }),
 
+/***/ "./node_modules/axios/lib/core/buildFullPath.js":
+/*!******************************************************!*\
+  !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var isAbsoluteURL = __webpack_require__(/*! ../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
+var combineURLs = __webpack_require__(/*! ../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
+
+/**
+ * Creates a new URL by combining the baseURL with the requestedURL,
+ * only when the requestedURL is not already an absolute URL.
+ * If the requestURL is absolute, this function returns the requestedURL untouched.
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} requestedURL Absolute or relative URL to combine
+ * @returns {string} The combined full path
+ */
+module.exports = function buildFullPath(baseURL, requestedURL) {
+  if (baseURL && !isAbsoluteURL(requestedURL)) {
+    return combineURLs(baseURL, requestedURL);
+  }
+  return requestedURL;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/lib/core/createError.js":
 /*!****************************************************!*\
   !*** ./node_modules/axios/lib/core/createError.js ***!
@@ -7316,8 +7560,6 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 var transformData = __webpack_require__(/*! ./transformData */ "./node_modules/axios/lib/core/transformData.js");
 var isCancel = __webpack_require__(/*! ../cancel/isCancel */ "./node_modules/axios/lib/cancel/isCancel.js");
 var defaults = __webpack_require__(/*! ../defaults */ "./node_modules/axios/lib/defaults.js");
-var isAbsoluteURL = __webpack_require__(/*! ./../helpers/isAbsoluteURL */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
-var combineURLs = __webpack_require__(/*! ./../helpers/combineURLs */ "./node_modules/axios/lib/helpers/combineURLs.js");
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -7337,11 +7579,6 @@ function throwIfCancellationRequested(config) {
 module.exports = function dispatchRequest(config) {
   throwIfCancellationRequested(config);
 
-  // Support baseURL config
-  if (config.baseURL && !isAbsoluteURL(config.url)) {
-    config.url = combineURLs(config.baseURL, config.url);
-  }
-
   // Ensure headers exist
   config.headers = config.headers || {};
 
@@ -7356,7 +7593,7 @@ module.exports = function dispatchRequest(config) {
   config.headers = utils.merge(
     config.headers.common || {},
     config.headers[config.method] || {},
-    config.headers || {}
+    config.headers
   );
 
   utils.forEach(
@@ -7425,9 +7662,129 @@ module.exports = function enhanceError(error, config, code, request, response) {
   if (code) {
     error.code = code;
   }
+
   error.request = request;
   error.response = response;
+  error.isAxiosError = true;
+
+  error.toJSON = function toJSON() {
+    return {
+      // Standard
+      message: this.message,
+      name: this.name,
+      // Microsoft
+      description: this.description,
+      number: this.number,
+      // Mozilla
+      fileName: this.fileName,
+      lineNumber: this.lineNumber,
+      columnNumber: this.columnNumber,
+      stack: this.stack,
+      // Axios
+      config: this.config,
+      code: this.code
+    };
+  };
   return error;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/axios/lib/core/mergeConfig.js":
+/*!****************************************************!*\
+  !*** ./node_modules/axios/lib/core/mergeConfig.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(/*! ../utils */ "./node_modules/axios/lib/utils.js");
+
+/**
+ * Config-specific merge-function which creates a new config-object
+ * by merging two configuration objects together.
+ *
+ * @param {Object} config1
+ * @param {Object} config2
+ * @returns {Object} New object resulting from merging config2 to config1
+ */
+module.exports = function mergeConfig(config1, config2) {
+  // eslint-disable-next-line no-param-reassign
+  config2 = config2 || {};
+  var config = {};
+
+  var valueFromConfig2Keys = ['url', 'method', 'data'];
+  var mergeDeepPropertiesKeys = ['headers', 'auth', 'proxy', 'params'];
+  var defaultToConfig2Keys = [
+    'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
+    'timeout', 'timeoutMessage', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
+    'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'decompress',
+    'maxContentLength', 'maxBodyLength', 'maxRedirects', 'transport', 'httpAgent',
+    'httpsAgent', 'cancelToken', 'socketPath', 'responseEncoding'
+  ];
+  var directMergeKeys = ['validateStatus'];
+
+  function getMergedValue(target, source) {
+    if (utils.isPlainObject(target) && utils.isPlainObject(source)) {
+      return utils.merge(target, source);
+    } else if (utils.isPlainObject(source)) {
+      return utils.merge({}, source);
+    } else if (utils.isArray(source)) {
+      return source.slice();
+    }
+    return source;
+  }
+
+  function mergeDeepProperties(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  }
+
+  utils.forEach(valueFromConfig2Keys, function valueFromConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    }
+  });
+
+  utils.forEach(mergeDeepPropertiesKeys, mergeDeepProperties);
+
+  utils.forEach(defaultToConfig2Keys, function defaultToConfig2(prop) {
+    if (!utils.isUndefined(config2[prop])) {
+      config[prop] = getMergedValue(undefined, config2[prop]);
+    } else if (!utils.isUndefined(config1[prop])) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  utils.forEach(directMergeKeys, function merge(prop) {
+    if (prop in config2) {
+      config[prop] = getMergedValue(config1[prop], config2[prop]);
+    } else if (prop in config1) {
+      config[prop] = getMergedValue(undefined, config1[prop]);
+    }
+  });
+
+  var axiosKeys = valueFromConfig2Keys
+    .concat(mergeDeepPropertiesKeys)
+    .concat(defaultToConfig2Keys)
+    .concat(directMergeKeys);
+
+  var otherKeys = Object
+    .keys(config1)
+    .concat(Object.keys(config2))
+    .filter(function filterAxiosKeys(key) {
+      return axiosKeys.indexOf(key) === -1;
+    });
+
+  utils.forEach(otherKeys, mergeDeepProperties);
+
+  return config;
 };
 
 
@@ -7454,7 +7811,6 @@ var createError = __webpack_require__(/*! ./createError */ "./node_modules/axios
  */
 module.exports = function settle(resolve, reject, response) {
   var validateStatus = response.config.validateStatus;
-  // Note: status is not exposed by XDomainRequest
   if (!response.status || !validateStatus || validateStatus(response.status)) {
     resolve(response);
   } else {
@@ -7531,7 +7887,7 @@ function getDefaultAdapter() {
   if (typeof XMLHttpRequest !== 'undefined') {
     // For browsers use XHR adapter
     adapter = __webpack_require__(/*! ./adapters/xhr */ "./node_modules/axios/lib/adapters/xhr.js");
-  } else if (typeof process !== 'undefined') {
+  } else if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
     // For node use HTTP adapter
     adapter = __webpack_require__(/*! ./adapters/http */ "./node_modules/axios/lib/adapters/xhr.js");
   }
@@ -7542,6 +7898,7 @@ var defaults = {
   adapter: getDefaultAdapter(),
 
   transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Accept');
     normalizeHeaderName(headers, 'Content-Type');
     if (utils.isFormData(data) ||
       utils.isArrayBuffer(data) ||
@@ -7586,6 +7943,7 @@ var defaults = {
   xsrfHeaderName: 'X-XSRF-TOKEN',
 
   maxContentLength: -1,
+  maxBodyLength: -1,
 
   validateStatus: function validateStatus(status) {
     return status >= 200 && status < 300;
@@ -7649,7 +8007,6 @@ var utils = __webpack_require__(/*! ./../utils */ "./node_modules/axios/lib/util
 
 function encode(val) {
   return encodeURIComponent(val).
-    replace(/%40/gi, '@').
     replace(/%3A/gi, ':').
     replace(/%24/g, '$').
     replace(/%2C/gi, ',').
@@ -7704,6 +8061,11 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   }
 
   if (serializedParams) {
+    var hashmarkIndex = url.indexOf('#');
+    if (hashmarkIndex !== -1) {
+      url = url.slice(0, hashmarkIndex);
+    }
+
     url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
   }
 
@@ -7755,50 +8117,50 @@ module.exports = (
   utils.isStandardBrowserEnv() ?
 
   // Standard browser envs support document.cookie
-  (function standardBrowserEnv() {
-    return {
-      write: function write(name, value, expires, path, domain, secure) {
-        var cookie = [];
-        cookie.push(name + '=' + encodeURIComponent(value));
+    (function standardBrowserEnv() {
+      return {
+        write: function write(name, value, expires, path, domain, secure) {
+          var cookie = [];
+          cookie.push(name + '=' + encodeURIComponent(value));
 
-        if (utils.isNumber(expires)) {
-          cookie.push('expires=' + new Date(expires).toGMTString());
+          if (utils.isNumber(expires)) {
+            cookie.push('expires=' + new Date(expires).toGMTString());
+          }
+
+          if (utils.isString(path)) {
+            cookie.push('path=' + path);
+          }
+
+          if (utils.isString(domain)) {
+            cookie.push('domain=' + domain);
+          }
+
+          if (secure === true) {
+            cookie.push('secure');
+          }
+
+          document.cookie = cookie.join('; ');
+        },
+
+        read: function read(name) {
+          var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
+          return (match ? decodeURIComponent(match[3]) : null);
+        },
+
+        remove: function remove(name) {
+          this.write(name, '', Date.now() - 86400000);
         }
-
-        if (utils.isString(path)) {
-          cookie.push('path=' + path);
-        }
-
-        if (utils.isString(domain)) {
-          cookie.push('domain=' + domain);
-        }
-
-        if (secure === true) {
-          cookie.push('secure');
-        }
-
-        document.cookie = cookie.join('; ');
-      },
-
-      read: function read(name) {
-        var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-        return (match ? decodeURIComponent(match[3]) : null);
-      },
-
-      remove: function remove(name) {
-        this.write(name, '', Date.now() - 86400000);
-      }
-    };
-  })() :
+      };
+    })() :
 
   // Non standard browser env (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return {
-      write: function write() {},
-      read: function read() { return null; },
-      remove: function remove() {}
-    };
-  })()
+    (function nonStandardBrowserEnv() {
+      return {
+        write: function write() {},
+        read: function read() { return null; },
+        remove: function remove() {}
+      };
+    })()
 );
 
 
@@ -7830,6 +8192,29 @@ module.exports = function isAbsoluteURL(url) {
 
 /***/ }),
 
+/***/ "./node_modules/axios/lib/helpers/isAxiosError.js":
+/*!********************************************************!*\
+  !*** ./node_modules/axios/lib/helpers/isAxiosError.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Determines whether the payload is an error thrown by Axios
+ *
+ * @param {*} payload The value to test
+ * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
+ */
+module.exports = function isAxiosError(payload) {
+  return (typeof payload === 'object') && (payload.isAxiosError === true);
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/axios/lib/helpers/isURLSameOrigin.js":
 /*!***********************************************************!*\
   !*** ./node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
@@ -7847,64 +8232,64 @@ module.exports = (
 
   // Standard browser envs have full support of the APIs needed to test
   // whether the request URL is of the same origin as current location.
-  (function standardBrowserEnv() {
-    var msie = /(msie|trident)/i.test(navigator.userAgent);
-    var urlParsingNode = document.createElement('a');
-    var originURL;
+    (function standardBrowserEnv() {
+      var msie = /(msie|trident)/i.test(navigator.userAgent);
+      var urlParsingNode = document.createElement('a');
+      var originURL;
 
-    /**
+      /**
     * Parse a URL to discover it's components
     *
     * @param {String} url The URL to be parsed
     * @returns {Object}
     */
-    function resolveURL(url) {
-      var href = url;
+      function resolveURL(url) {
+        var href = url;
 
-      if (msie) {
+        if (msie) {
         // IE needs attribute set twice to normalize properties
+          urlParsingNode.setAttribute('href', href);
+          href = urlParsingNode.href;
+        }
+
         urlParsingNode.setAttribute('href', href);
-        href = urlParsingNode.href;
+
+        // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
+        return {
+          href: urlParsingNode.href,
+          protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
+          host: urlParsingNode.host,
+          search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
+          hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
+          hostname: urlParsingNode.hostname,
+          port: urlParsingNode.port,
+          pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
+            urlParsingNode.pathname :
+            '/' + urlParsingNode.pathname
+        };
       }
 
-      urlParsingNode.setAttribute('href', href);
+      originURL = resolveURL(window.location.href);
 
-      // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-      return {
-        href: urlParsingNode.href,
-        protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-        host: urlParsingNode.host,
-        search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-        hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-        hostname: urlParsingNode.hostname,
-        port: urlParsingNode.port,
-        pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                  urlParsingNode.pathname :
-                  '/' + urlParsingNode.pathname
-      };
-    }
-
-    originURL = resolveURL(window.location.href);
-
-    /**
+      /**
     * Determine if a URL shares the same origin as the current location
     *
     * @param {String} requestURL The URL to test
     * @returns {boolean} True if URL shares the same origin, otherwise false
     */
-    return function isURLSameOrigin(requestURL) {
-      var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-      return (parsed.protocol === originURL.protocol &&
+      return function isURLSameOrigin(requestURL) {
+        var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
+        return (parsed.protocol === originURL.protocol &&
             parsed.host === originURL.host);
-    };
-  })() :
+      };
+    })() :
 
   // Non standard browser envs (web workers, react-native) lack needed support.
-  (function nonStandardBrowserEnv() {
-    return function isURLSameOrigin() {
-      return true;
-    };
-  })()
+    (function nonStandardBrowserEnv() {
+      return function isURLSameOrigin() {
+        return true;
+      };
+    })()
 );
 
 
@@ -8049,7 +8434,6 @@ module.exports = function spread(callback) {
 
 
 var bind = __webpack_require__(/*! ./helpers/bind */ "./node_modules/axios/lib/helpers/bind.js");
-var isBuffer = __webpack_require__(/*! is-buffer */ "./node_modules/is-buffer/index.js");
 
 /*global toString:true*/
 
@@ -8065,6 +8449,27 @@ var toString = Object.prototype.toString;
  */
 function isArray(val) {
   return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is a Buffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Buffer, otherwise false
+ */
+function isBuffer(val) {
+  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor)
+    && typeof val.constructor.isBuffer === 'function' && val.constructor.isBuffer(val);
 }
 
 /**
@@ -8124,16 +8529,6 @@ function isNumber(val) {
 }
 
 /**
- * Determine if a value is undefined
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-function isUndefined(val) {
-  return typeof val === 'undefined';
-}
-
-/**
  * Determine if a value is an Object
  *
  * @param {Object} val The value to test
@@ -8141,6 +8536,21 @@ function isUndefined(val) {
  */
 function isObject(val) {
   return val !== null && typeof val === 'object';
+}
+
+/**
+ * Determine if a value is a plain Object
+ *
+ * @param {Object} val The value to test
+ * @return {boolean} True if value is a plain Object, otherwise false
+ */
+function isPlainObject(val) {
+  if (toString.call(val) !== '[object Object]') {
+    return false;
+  }
+
+  var prototype = Object.getPrototypeOf(val);
+  return prototype === null || prototype === Object.prototype;
 }
 
 /**
@@ -8225,9 +8635,13 @@ function trim(str) {
  *
  * react-native:
  *  navigator.product -> 'ReactNative'
+ * nativescript
+ *  navigator.product -> 'NativeScript' or 'NS'
  */
 function isStandardBrowserEnv() {
-  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+  if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
+                                           navigator.product === 'NativeScript' ||
+                                           navigator.product === 'NS')) {
     return false;
   }
   return (
@@ -8295,8 +8709,12 @@ function forEach(obj, fn) {
 function merge(/* obj1, obj2, obj3, ... */) {
   var result = {};
   function assignValue(val, key) {
-    if (typeof result[key] === 'object' && typeof val === 'object') {
+    if (isPlainObject(result[key]) && isPlainObject(val)) {
       result[key] = merge(result[key], val);
+    } else if (isPlainObject(val)) {
+      result[key] = merge({}, val);
+    } else if (isArray(val)) {
+      result[key] = val.slice();
     } else {
       result[key] = val;
     }
@@ -8327,6 +8745,19 @@ function extend(a, b, thisArg) {
   return a;
 }
 
+/**
+ * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
+ *
+ * @param {string} content with BOM
+ * @return {string} content value without BOM
+ */
+function stripBOM(content) {
+  if (content.charCodeAt(0) === 0xFEFF) {
+    content = content.slice(1);
+  }
+  return content;
+}
+
 module.exports = {
   isArray: isArray,
   isArrayBuffer: isArrayBuffer,
@@ -8336,6 +8767,7 @@ module.exports = {
   isString: isString,
   isNumber: isNumber,
   isObject: isObject,
+  isPlainObject: isPlainObject,
   isUndefined: isUndefined,
   isDate: isDate,
   isFile: isFile,
@@ -8347,7 +8779,8 @@ module.exports = {
   forEach: forEach,
   merge: merge,
   extend: extend,
-  trim: trim
+  trim: trim,
+  stripBOM: stripBOM
 };
 
 
@@ -9431,7 +9864,7 @@ module.exports = function (NAME, wrapper, methods, common, IS_MAP, IS_WEAK) {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-var core = module.exports = { version: '2.6.11' };
+var core = module.exports = { version: '2.6.12' };
 if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 
 
@@ -11435,7 +11868,7 @@ var store = global[SHARED] || (global[SHARED] = {});
 })('versions', []).push({
   version: core.version,
   mode: __webpack_require__(/*! ./_library */ "./node_modules/core-js/modules/_library.js") ? 'pure' : 'global',
-  copyright: '© 2019 Denis Pushkarev (zloirock.ru)'
+  copyright: '© 2020 Denis Pushkarev (zloirock.ru)'
 });
 
 
@@ -17947,28 +18380,6 @@ return ImagesLoaded;
 
 /***/ }),
 
-/***/ "./node_modules/is-buffer/index.js":
-/*!*****************************************!*\
-  !*** ./node_modules/is-buffer/index.js ***!
-  \*****************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-/*!
- * Determine if an object is a Buffer
- *
- * @author   Feross Aboukhadijeh <https://feross.org>
- * @license  MIT
- */
-
-module.exports = function isBuffer (obj) {
-  return obj != null && obj.constructor != null &&
-    typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-}
-
-
-/***/ }),
-
 /***/ "./node_modules/process/browser.js":
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
@@ -18177,27 +18588,24 @@ process.umask = function() { return 0; };
 var replace = String.prototype.replace;
 var percentTwenties = /%20/g;
 
-var util = __webpack_require__(/*! ./utils */ "./node_modules/qs/lib/utils.js");
-
 var Format = {
     RFC1738: 'RFC1738',
     RFC3986: 'RFC3986'
 };
 
-module.exports = util.assign(
-    {
-        'default': Format.RFC3986,
-        formatters: {
-            RFC1738: function (value) {
-                return replace.call(value, percentTwenties, '+');
-            },
-            RFC3986: function (value) {
-                return String(value);
-            }
+module.exports = {
+    'default': Format.RFC3986,
+    formatters: {
+        RFC1738: function (value) {
+            return replace.call(value, percentTwenties, '+');
+        },
+        RFC3986: function (value) {
+            return String(value);
         }
     },
-    Format
-);
+    RFC1738: Format.RFC1738,
+    RFC3986: Format.RFC3986
+};
 
 
 /***/ }),
@@ -18375,7 +18783,7 @@ var parseObject = function (chain, val, options, valuesParsed) {
             }
         }
 
-        leaf = obj; // eslint-disable-line no-param-reassign
+        leaf = obj;
     }
 
     return leaf;
@@ -18569,6 +18977,7 @@ var stringify = function stringify(
     sort,
     allowDots,
     serializeDate,
+    format,
     formatter,
     encodeValuesOnly,
     charset
@@ -18584,12 +18993,12 @@ var stringify = function stringify(
                 return serializeDate(value);
             }
             return value;
-        }).join(',');
+        });
     }
 
     if (obj === null) {
         if (strictNullHandling) {
-            return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key') : prefix;
+            return encoder && !encodeValuesOnly ? encoder(prefix, defaults.encoder, charset, 'key', format) : prefix;
         }
 
         obj = '';
@@ -18597,8 +19006,8 @@ var stringify = function stringify(
 
     if (isNonNullishPrimitive(obj) || utils.isBuffer(obj)) {
         if (encoder) {
-            var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key');
-            return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value'))];
+            var keyValue = encodeValuesOnly ? prefix : encoder(prefix, defaults.encoder, charset, 'key', format);
+            return [formatter(keyValue) + '=' + formatter(encoder(obj, defaults.encoder, charset, 'value', format))];
         }
         return [formatter(prefix) + '=' + formatter(String(obj))];
     }
@@ -18610,7 +19019,10 @@ var stringify = function stringify(
     }
 
     var objKeys;
-    if (isArray(filter)) {
+    if (generateArrayPrefix === 'comma' && isArray(obj)) {
+        // we need to join elements in
+        objKeys = [{ value: obj.length > 0 ? obj.join(',') || null : undefined }];
+    } else if (isArray(filter)) {
         objKeys = filter;
     } else {
         var keys = Object.keys(obj);
@@ -18619,7 +19031,7 @@ var stringify = function stringify(
 
     for (var i = 0; i < objKeys.length; ++i) {
         var key = objKeys[i];
-        var value = obj[key];
+        var value = typeof key === 'object' && key.value !== undefined ? key.value : obj[key];
 
         if (skipNulls && value === null) {
             continue;
@@ -18640,6 +19052,7 @@ var stringify = function stringify(
             sort,
             allowDots,
             serializeDate,
+            format,
             formatter,
             encodeValuesOnly,
             charset
@@ -18687,6 +19100,7 @@ var normalizeStringifyOptions = function normalizeStringifyOptions(opts) {
         encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,
         encodeValuesOnly: typeof opts.encodeValuesOnly === 'boolean' ? opts.encodeValuesOnly : defaults.encodeValuesOnly,
         filter: filter,
+        format: format,
         formatter: formatter,
         serializeDate: typeof opts.serializeDate === 'function' ? opts.serializeDate : defaults.serializeDate,
         skipNulls: typeof opts.skipNulls === 'boolean' ? opts.skipNulls : defaults.skipNulls,
@@ -18752,6 +19166,7 @@ module.exports = function (object, opts) {
             options.sort,
             options.allowDots,
             options.serializeDate,
+            options.format,
             options.formatter,
             options.encodeValuesOnly,
             options.charset
@@ -18786,6 +19201,8 @@ module.exports = function (object, opts) {
 
 "use strict";
 
+
+var formats = __webpack_require__(/*! ./formats */ "./node_modules/qs/lib/formats.js");
 
 var has = Object.prototype.hasOwnProperty;
 var isArray = Array.isArray;
@@ -18907,7 +19324,7 @@ var decode = function (str, decoder, charset) {
     }
 };
 
-var encode = function encode(str, defaultEncoder, charset) {
+var encode = function encode(str, defaultEncoder, charset, kind, format) {
     // This code was originally written by Brian White (mscdex) for the io.js core querystring library.
     // It has been adapted here for stricter adherence to RFC 3986
     if (str.length === 0) {
@@ -18939,6 +19356,7 @@ var encode = function encode(str, defaultEncoder, charset) {
             || (c >= 0x30 && c <= 0x39) // 0-9
             || (c >= 0x41 && c <= 0x5A) // a-z
             || (c >= 0x61 && c <= 0x7A) // A-Z
+            || (format === formats.RFC1738 && (c === 0x28 || c === 0x29)) // ( )
         ) {
             out += string.charAt(i);
             continue;

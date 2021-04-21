@@ -23,25 +23,42 @@ export function wooInit(alm) {
 	}
 
 	// Set up URL and class parameters on first item in product listing
-	let products = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
-	if (products) {
-		products.setAttribute('aria-live', 'polite');
-		products.setAttribute('aria-atomic', 'true');
+	let container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
+	if (container) {
+		let count = getContainerCount(alm.addons.woocommerce_settings.container);
+
+		if (count > 1) {
+			// Display warning if multiple containers were found.
+			console.warn(
+				'ALM WooCommerce: Multiple containers with the same classname or ID found. The WooCommerce add-on requires a single container to be defined. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/'
+			);
+		}
+
+		container.setAttribute('aria-live', 'polite');
+		container.setAttribute('aria-atomic', 'true');
 
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
-		let product = products.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
-		if (product) {
-			product.classList.add('alm-woocommerce');
-			product.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
-			product.dataset.page = alm.page;
-			product.dataset.pageTitle = document.title;
+		let products = container.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
+		if (products) {
+			products.classList.add('alm-woocommerce');
+			products.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
+			products.dataset.page = alm.page;
+			products.dataset.pageTitle = document.title;
+		} else {
+			console.warn(
+				'ALM WooCommerce: Unable to locate products. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_products'
+			);
 		}
 
 		if (alm.addons.woocommerce_settings.paged > 1) {
 			almWooCommerceResultsTextInit(alm);
 		}
+	} else {
+		console.warn(
+			'ALM WooCommerce: Unable to locate container element. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_container'
+		);
 	}
 }
 
@@ -202,4 +219,21 @@ function almWooCommerceResultsTextInit(alm) {
 function returnButton(text, link, label, seperator) {
 	let button = ` ${seperator} <a href="${link}">${label}</a>`;
 	return text.innerHTML + button;
+}
+
+/**
+ * Get total count of WooCommerce containers
+ *
+ * @param {*} container
+ */
+function getContainerCount(container) {
+	if (!container) {
+		return 0;
+	}
+	const containers = document.querySelectorAll(container); // Get all containers.
+	if (containers) {
+		return containers.length;
+	} else {
+		return 0;
+	}
 }

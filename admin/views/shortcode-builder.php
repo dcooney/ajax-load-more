@@ -22,13 +22,8 @@
    	   </div>
 
    	   <aside class="cnkt-sidebar">
-	   	   <div id="cnkt-sticky-wrapper" class="table-of-contents">
+	   	   <div id="cnkt-sticky-wrapper">
 		   	   <div id="cnkt-sticky">
-	      	   	<div class="cta">
-	         	   	<div class="cta-inner">
-	      	   	      <select class="toc"></select>
-	         	   	</div>
-	      	   	</div>
 	      	   	<div class="cta">
 	      				<h3><?php _e('Shortcode Output', 'ajax-load-more'); ?></h3>
 	      				<div class="cta-inner">

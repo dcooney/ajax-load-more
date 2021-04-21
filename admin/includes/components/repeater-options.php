@@ -6,15 +6,15 @@
 	</a>
 	<div class="alm-dropdown">
 	   <div class="alm-drop-inner">
-   	   <ul>	   	   
-	   	   <?php if($repeater_options['type'] !== 'theme-repeater'){ ?>
+   	   <ul>
+	   	   <?php if( $repeater_options['type'] !== 'theme-repeater' ) { ?>
    	      <li class="option option-update">
    	      	<a href="javascript:void(0);" title="<?php _e('Update Template from Database', 'ajax-load-more'); ?>"><i class="fa fa-pencil"></i> <?php _e('Update from Database', 'ajax-load-more'); ?></a>
-   	      </li>   
+   	      </li>
    	      <?php } ?>
-   	      
-   	      <?php 
-	   	     	if(isset($repeater_options['path'])){ 
+
+   	      <?php
+	   	     	if(isset($repeater_options['path'])){
 	   	      $path = str_replace('/', '_', $repeater_options['path']);
    	      	?>
    	      <li class="option download">
@@ -25,12 +25,12 @@
 						</a>
    	      	</form>
    	      </li>
-   	      <?php } ?>   	      
+   	      <?php } ?>
    	      <li class="option copy">
    	      	<a href="javascript:void(0);" title="<?php _e('Copy Template Data', 'ajax-load-more'); ?>"><i class="fa fa-file"></i> <?php _e('Copy Template Data', 'ajax-load-more'); ?></a>
    	      </li>
-   	      	    
-   	   </ul>   	   
+
+   	   </ul>
 	   </div>
 	</div>
 </div>

@@ -2,8 +2,8 @@
  * createMasonrySEOPage
  * Create data attributes for SEO paged results
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm
+ * @param {array} elements
  * @since 5.3.1
  */
 export function createMasonrySEOPage(alm, element) {
@@ -24,8 +24,8 @@ export function createMasonrySEOPage(alm, element) {
  * createMasonrySEOPages
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm
+ * @param {array} elements
  * @since 5.3.1
  */
 export function createMasonrySEOPages(alm, elements) {
@@ -53,30 +53,27 @@ export function createMasonrySEOPages(alm, elements) {
 			let target = k > 0 ? k * posts_per_page : 0;
 			pagenum = k + 1;
 			if (elements[target]) {
-				elements[target] = masonrySEOAtts(
-					alm,
-					elements[target],
-					querystring,
-					seo_class,
-					pagenum
-				);
+				elements[target] = masonrySEOAtts(alm, elements[target], querystring, seo_class, pagenum);
 			}
 		}
 	} else {
 		pagenum = page;
-		elements[0] = masonrySEOAtts(
-			alm,
-			elements[0],
-			querystring,
-			seo_class,
-			pagenum
-		);
+		elements[0] = masonrySEOAtts(alm, elements[0], querystring, seo_class, pagenum);
 	}
 
 	return elements;
 }
 
-// Create the attributes (page, url, classes)  for the masonry items
+/**
+ * Create the attributes (page, url, classes) for the masonry items.
+ *
+ * @param {object} alm
+ * @param {object} element
+ * @param {string} querystring
+ * @param {string} seo_class
+ * @param {int} pagenum
+ * @returns
+ */
 function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 	element.classList.add(seo_class);
 	element.dataset.page = pagenum;
@@ -84,21 +81,14 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 	if (alm.addons.seo_permalink === 'default') {
 		// Default Permalinks
 		if (pagenum > 1) {
-			element.dataset.url =
-				alm.canonical_url + querystring + '&paged=' + pagenum;
+			element.dataset.url = alm.canonical_url + querystring + '&paged=' + pagenum;
 		} else {
 			element.dataset.url = alm.canonical_url + querystring;
 		}
 	} else {
 		// Pretty Permalinks
 		if (pagenum > 1) {
-			element.dataset.url =
-				alm.canonical_url +
-				alm.addons.seo_leading_slash +
-				'page/' +
-				pagenum +
-				alm.addons.seo_trailing_slash +
-				querystring;
+			element.dataset.url = alm.canonical_url + alm.addons.seo_leading_slash + 'page/' + pagenum + alm.addons.seo_trailing_slash + querystring;
 		} else {
 			element.dataset.url = alm.canonical_url + querystring;
 		}
@@ -108,40 +98,25 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 }
 
 /**
- * createSEOAttributes
- * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
+ * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
- * @param {Object} alm
- * @param {Array} elements
- * ...
+ * @param {object} alm
+ * @param {array} elements
+ *
  * @since 5.3.1
  */
-export function createSEOAttributes(
-	alm,
-	element,
-	querystring,
-	seo_class,
-	pagenum
-) {
+export function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
 	element.setAttribute('class', 'alm-reveal' + seo_class + alm.tcc);
 	element.dataset.page = pagenum;
 
 	if (alm.addons.seo_permalink === 'default') {
 		// Default Permalinks
-		element.dataset.url =
-			pagenum > 1
-				? alm.canonical_url + querystring + '&paged=' + pagenum
-				: alm.canonical_url + querystring;
+		element.dataset.url = pagenum > 1 ? alm.canonical_url + querystring + '&paged=' + pagenum : alm.canonical_url + querystring;
 	} else {
 		// Pretty Permalinks
 		element.dataset.url =
 			pagenum > 1
-				? alm.canonical_url +
-				  alm.addons.seo_leading_slash +
-				  'page/' +
-				  pagenum +
-				  alm.addons.seo_trailing_slash +
-				  querystring
+				? alm.canonical_url + alm.addons.seo_leading_slash + 'page/' + pagenum + alm.addons.seo_trailing_slash + querystring
 				: alm.canonical_url + querystring;
 	}
 

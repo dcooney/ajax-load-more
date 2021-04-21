@@ -3,17 +3,13 @@ import almAppendChildren from '../helpers/almAppendChildren';
 import almDomParser from '../helpers/almDomParser';
 import srcsetPolyfill from '../helpers/srcsetPolyfill';
 import stripEmptyNodes from '../helpers/stripEmptyNodes';
-import {
-	createMasonryFiltersPages,
-	createMasonryFiltersPage,
-} from '../addons/filters';
+import { createMasonryFiltersPages, createMasonryFiltersPage } from '../addons/filters';
 import { createMasonrySEOPages, createMasonrySEOPage } from '../addons/seo';
 import setFocus from './setFocus';
 let imagesLoaded = require('imagesloaded');
 
 /**
- * almMasonry
- * Function to trigger built-in Ajax Load More Masonry
+ * Function to trigger built-in Ajax Load More Masonry.
  *
  * @param {object} alm
  * @param {boolean} init
@@ -21,17 +17,21 @@ let imagesLoaded = require('imagesloaded');
  * @since 3.1
  * @updated 5.0.2
  */
-let almMasonry = (alm, init, filtering) => {
+export function almMasonry(alm, init, filtering) {
+	if (!alm.masonry) {
+		console.warn('Ajax Load More: Unable to locate Masonry settings.');
+	}
+
 	return new Promise((resolve) => {
 		let container = alm.listing;
 		let html = alm.html;
 
-		let selector = alm.masonry_selector;
-		let columnWidth = alm.masonry_columnwidth;
-		let animation = alm.masonry_animation;
-		let horizontalOrder = alm.masonry_horizontalorder;
+		let selector = alm.masonry.selector;
+		let columnWidth = alm.masonry.columnwidth;
+		let animation = alm.masonry.animation;
+		let horizontalOrder = alm.masonry.horizontalorder;
 		let speed = alm.speed;
-		let masonry_init = alm.masonry_init;
+		let masonry_init = alm.masonry.init;
 
 		let duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
 		let hidden = 'scale(0.5)';
@@ -72,9 +72,10 @@ let almMasonry = (alm, init, filtering) => {
 		horizontalOrder = horizontalOrder === 'true' ? true : false;
 
 		if (!filtering) {
-			// First Run
+			// First Run.
 			if (masonry_init && init) {
-				srcsetPolyfill(container, alm.ua); // Run srcSet polyfill
+				// Run srcSet polyfill.
+				srcsetPolyfill(container, alm.ua);
 
 				imagesLoaded(container, function () {
 					let defaults = {
@@ -92,7 +93,7 @@ let almMasonry = (alm, init, filtering) => {
 						},
 					};
 
-					// Get custom Masonry options (https://masonry.desandro.com/options.html)
+					// Get custom Masonry options (https://masonry.desandro.com/options.html).
 					let alm_masonry_vars = window.alm_masonry_vars;
 					if (alm_masonry_vars) {
 						Object.keys(alm_masonry_vars).forEach(function (key) {
@@ -103,23 +104,17 @@ let almMasonry = (alm, init, filtering) => {
 
 					let data = container.querySelectorAll(selector);
 
-					// Create Filters URL, if required
+					// Create Filters URL, if required.
 					if (alm.addons.filters) {
-						data = createMasonryFiltersPages(
-							alm,
-							Array.prototype.slice.call(data)
-						);
+						data = createMasonryFiltersPages(alm, Array.prototype.slice.call(data));
 					}
 
-					// Create SEO URL, if required
+					// Create SEO URL, if required.
 					if (alm.addons.seo) {
-						data = createMasonrySEOPages(
-							alm,
-							Array.prototype.slice.call(data)
-						);
+						data = createMasonrySEOPages(alm, Array.prototype.slice.call(data));
 					}
 
-					// Init Masonry, delay to allow time for items to be added to the page
+					// Init Masonry, delay to allow time for items to be added to the page.
 					setTimeout(function () {
 						alm.msnry = new Masonry(container, defaults);
 
@@ -131,31 +126,31 @@ let almMasonry = (alm, init, filtering) => {
 				});
 			}
 
-			// Standard / Append content
+			// Standard / Append content.
 			else {
 				// Loop all items and create array of node elements
 				let data = stripEmptyNodes(almDomParser(html, 'text/html'));
 
 				if (data) {
-					// Append elements listing
+					// Append elements listing.
 					almAppendChildren(alm.listing, data, 'masonry');
 
-					// Run srcSet polyfill
+					// Run srcSet polyfill.
 					srcsetPolyfill(container, alm.ua);
 
-					// imagesLoaded & append
+					// imagesLoaded & append.
 					imagesLoaded(container, function () {
 						alm.msnry.appended(data);
 
-						// Set Focus
+						// Set Focus.
 						setFocus(alm, data, data.length, false);
 
-						// Create Filters URL, if required
+						// Create Filters URL, if required.
 						if (alm.addons.filters) {
 							createMasonryFiltersPage(alm, data[0]);
 						}
 
-						// Create SEO URL, if required
+						// Create SEO URL, if required.
 						if (alm.addons.seo) {
 							createMasonrySEOPage(alm, data[0]);
 						}
@@ -171,6 +166,34 @@ let almMasonry = (alm, init, filtering) => {
 			resolve(true);
 		}
 	});
-};
+}
 
-export default almMasonry;
+/**
+ * Set up initial Masonry Configuration.
+ *
+ * @param {*} alm
+ * @return object
+ */
+export function almMasonryConfig(alm) {
+	alm.masonry = {};
+	alm.masonry.init = true;
+	if (alm.msnry) {
+		// destroy masonry if it currently exists.
+		alm.msnry.destroy();
+	} else {
+		alm.msnry = '';
+	}
+	const masonry_config = JSON.parse(alm.listing.dataset.masonryConfig);
+	if (masonry_config) {
+		alm.masonry.selector = masonry_config.selector;
+		alm.masonry.columnwidth = masonry_config.columnwidth;
+		alm.masonry.animation = masonry_config.animation === '' ? 'standard' : masonry_config.animation;
+		alm.masonry.horizontalorder = masonry_config.horizontalorder === '' ? 'true' : masonry_config.horizontalorder;
+		alm.transition_container = false;
+		alm.images_loaded = false;
+	} else {
+		console.warn('Ajax Load More: Unable to locate Masonry configuration settings.');
+	}
+
+	return alm;
+}

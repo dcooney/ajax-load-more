@@ -7,15 +7,16 @@ Text Domain: ajax-load-more
 Author: Darren Cooney
 Twitter: @KaptonKaos
 Author URI: https://connekthq.com
-Version: 5.4.2
+Version: 5.4.5
 License: GPL
 Copyright: Darren Cooney & Connekt Media
+
 */
 
 // @codingStandardsIgnoreStart
 
-define( 'ALM_VERSION', '5.4.2' );
-define( 'ALM_RELEASE', 'January 3, 2021' );
+define( 'ALM_VERSION', '5.4.5' );
+define( 'ALM_RELEASE', 'April 20, 2021' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
@@ -40,7 +41,6 @@ function alm_install( $network_wide ) {
 }
 register_activation_hook( __FILE__, 'alm_install' );
 add_action( 'wpmu_new_blog', 'alm_install' );
-
 
 
 /**
@@ -88,8 +88,6 @@ function alm_create_table() {
 	}
 }
 
-
-
 /**
  * Render Ajax Load More public function
  *
@@ -131,12 +129,10 @@ if ( !class_exists('AjaxLoadMore') ) :
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'alm_action_links' ) );
 			add_filter( 'plugin_row_meta', array( &$this, 'alm_plugin_meta_links' ), 10, 2 );
 			add_shortcode( 'ajax_load_more', array( &$this, 'alm_shortcode' ) );
-			add_filter( 'widget_text', 'do_shortcode' ); // Allow shortcodes in widget areas.
-			load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' ); //load text domain.
+			add_filter( 'widget_text', 'do_shortcode' );
+			load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 
 		}
-
-
 
 		/**
 		 * Define plugin constants.
@@ -182,7 +178,7 @@ if ( !class_exists('AjaxLoadMore') ) :
 		 */
 		public function alm_noscript( $args, $container_element, $css_classes = '', $transition_container_classes = '' ) {
 			if ( is_admin() || apply_filters( 'alm_disable_noscript', false ) ) {
-				return false;
+				return;
 			}
 			include_once ALM_PATH . 'core/classes/class-alm-noscript.php'; // Load Noscript Class.
 			$noscript = ALM_NOSCRIPT::alm_get_noscript( $args, $container_element, $css_classes, $transition_container_classes );
@@ -190,7 +186,7 @@ if ( !class_exists('AjaxLoadMore') ) :
 		}
 
 		/**
-		 * This function will build an pagination for users without JS enabled.
+		 * This function will build pagination for users without JS enabled.
 		 *
 		 * @param array $query
 		 * @return $return string
@@ -198,7 +194,7 @@ if ( !class_exists('AjaxLoadMore') ) :
 		 */
 		public function alm_noscript_pagination( $query ) {
 			if ( is_admin() || apply_filters( 'alm_disable_noscript', false ) ) {
-				return false;
+				return;
 			}
 			include_once ALM_PATH . 'core/classes/class-alm-noscript.php'; // Load Noscript Class.
 			$noscript = ALM_NOSCRIPT::build_noscript_paging( $query );
@@ -352,7 +348,9 @@ if ( !class_exists('AjaxLoadMore') ) :
 					'results_text'    => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
 					'no_results_text' => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
 					'alm_debug'       => apply_filters( 'alm_debug', false ),
-					'a11y_focus'      => apply_filters( 'alm_a11y_focus', true )
+					'a11y_focus'      => apply_filters( 'alm_a11y_focus', true ),
+					'site_title'      => get_bloginfo( 'name' ),
+					'site_tagline'    => get_bloginfo( 'description' ),
 				)
 			);
    	}
@@ -589,7 +587,7 @@ if ( !class_exists('AjaxLoadMore') ) :
 
 					   // Call to Action [Before].
 						if($cta && has_action('alm_cta_inc') && $cta_pos === 'before' && in_array($alm_current, $cta_array)){
-			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false);
+			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args);
 			   	   	$alm_has_cta = true;
 					   }
 
@@ -598,7 +596,7 @@ if ( !class_exists('AjaxLoadMore') ) :
 
 						// Call to Action [After].
 						if($cta && has_action('alm_cta_inc') && $cta_pos === 'after' && in_array($alm_current, $cta_array)){
-			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false);
+			   	   	do_action('alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args);
 			   	   	$alm_has_cta = true;
 					   }
 

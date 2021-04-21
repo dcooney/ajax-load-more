@@ -2,7 +2,7 @@ import loadImage from './loadImage';
 import setFocus from './setFocus';
 
 /**
- * Load all items
+ * Load all items.
  *
  * @param {HTMLElement} container
  * @param {HTMLElement} items

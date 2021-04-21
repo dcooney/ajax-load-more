@@ -16,17 +16,19 @@ if(!class_exists('ALM_NOSCRIPT')):
 
    class ALM_NOSCRIPT {
 
+		/**
+		 * Element tag.
+		 */
 	   static $element = 'noscript';
 
 
       /**
-	    * alm_get_noscript
 	    * This function will return a generated query for the noscript.
    	 *
-   	 * @since            1.8
-   	 * @param $q  		   array
-   	 * @param $container string
-   	 * @return           <noscript>
+   	 * @since 1.8
+   	 * @param array $q
+   	 * @param string $container
+   	 * @return HTMLElement
    	 */
       public static function alm_get_noscript($q, $container = 'ul', $css_classes = '', $transition_container_classes = ''){
 
@@ -38,7 +40,6 @@ if(!class_exists('ALM_NOSCRIPT')):
             	// SEO does not support comments at this time
             }
          }
-
 
          // Users
          elseif($q['users']){
@@ -61,7 +62,6 @@ if(!class_exists('ALM_NOSCRIPT')):
 
          }
 
-
          // Advanced Custom Fields (Repeater, Gallery, Flex Content
          elseif($q['acf'] && ($q['acf_field_type'] !== 'relationship')){
             if(has_action('alm_acf_installed') && $q['acf']){
@@ -76,14 +76,11 @@ if(!class_exists('ALM_NOSCRIPT')):
             }
          }
 
-
          // Standard ALM
          else {
 
-
             // Build the $args array to use with this WP_Query
             $query_args = ALM_QUERY_ARGS::alm_build_queryargs($q, false);
-
 
             /*
          	 *	alm_query_args_[id]
@@ -136,15 +133,12 @@ if(!class_exists('ALM_NOSCRIPT')):
 
       }
 
-
-
 		/**
-		 * alm_paging_no_script
-		 * Create paging navigation
+		 * Create paging navigation.
 		 *
-		 * @return html;
-		 * @updated 3.7
 		 * @since 2.8.3
+		 * @param array $query The current query array.
+		 * @return HTMLElement
 		 */
 		public static function build_noscript_paging($query){
 
@@ -194,37 +188,31 @@ if(!class_exists('ALM_NOSCRIPT')):
 
 		}
 
-
-
       /**
-	    * render
-	    * This function will return the HTML output of the <noscript/>
+	    * This function will return the HTML output of the <noscript/>.
    	 *
-   	 * @since            1.8
-   	 * @param $output    string
-   	 * @param $container string
-   	 * @param $paging		string
-   	 * @return           <noscript>
+   	 * @since 1.8
+   	 * @param string $output
+   	 * @param string $container
+   	 * @param string $paging
+   	 * @return HTMLElement
    	 */
-      public static function render($output, $container, $paging = '', $css_classes, $transition_container_classes){
-	      return (!empty($output)) ? '<'. self::$element .'><'. $container .' class="alm-listing alm-noscript'. $css_classes .'"><div class="alm-reveal'. $transition_container_classes .'">'. $output .'</div></'. $container .'>'. $paging .'</'. self::$element .'>' : '';
+      public static function render( $output, $container, $paging, $css_classes, $transition_container_classes){
+	      return ( ! empty( $output ) ) ? '<' . self::$element . '><' . $container . ' class="alm-listing alm-noscript' . $css_classes . '"><div class="alm-reveal' . $transition_container_classes . '">' . $output . '</div></' . $container . '>' . $paging . '</' . self::$element . '>' : '';
       }
 
-
-
       /**
-	    * set_offset
 	    * This function will set the offset of the noscript query
    	 *
-   	 * @since         	1.8
-   	 * @param $paged 		string
-   	 * @param $per_page 	string
-   	 * @param $offset 	string
-   	 * @return        	int
+   	 * @since 1.8
+   	 * @param string $paged
+   	 * @param string $per_page
+   	 * @param string $offset
+   	 * @return int
    	 */
       public static function set_offset($paged, $per_page, $offset){
 	      return ($paged * $per_page) - $per_page + $offset;
-      }
+		}
 
    }
 

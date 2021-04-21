@@ -2,18 +2,16 @@
 // @codingStandardsIgnoreStart
 include_once ALM_PATH . 'core/functions/addons.php';
 include_once ALM_PATH . 'core/functions/masonry.php';
+include_once ALM_PATH . 'core/functions/deprecated.php';
 
-
-
-/*
-*  alm_progress_css
-*  If progress bar, add the CSS styles for the bar.
-*
-*  @param $counter              int
-*  @param $progress_bar         string
-*  @param $progress_bar_color   string
-*  @since 3.1.0
-*/
+/**
+ * If progress bar, add the CSS styles for the bar.
+ *
+ * @param $counter              int
+ * @param $progress_bar         string
+ * @param $progress_bar_color   string
+ * @since 3.1.0
+ */
 function alm_progress_css($counter, $progress_bar, $progress_bar_color){
 	if($counter == 1 && $progress_bar === 'true'){
 		$style = '
@@ -46,7 +44,6 @@ function alm_css_disabled($setting) {
 /**
  * Load ALM CSS inline.
  *
- *
  * @param $setting name of the setting field
  * @return boolean
  * @since 3.3.1
@@ -69,27 +66,27 @@ function alm_do_inline_css($setting) {
 /**
  * This function will return HTML of a looped item.
  *
- * @param string  $repeater
- * @param string  $type
- * @param string  $theme_repeater
- * @param string  $alm_found_posts
- * @param string  $alm_page
- * @param string  $alm_item
- * @param string  $alm_current
- * @param array   $args
+ * @param string $repeater
+ * @param string $type
+ * @param string $theme_repeater
+ * @param string $alm_found_posts
+ * @param string $alm_page
+ * @param string $alm_item
+ * @param string $alm_current
+ * @param array  $args
  * @param boolean $ob
  * @return $html
  * @since 3.7
 */
-function alm_loop($repeater, $type, $theme_repeater, $alm_found_posts = '', $alm_page = '', $alm_item = '', $alm_current = '', $args, $ob = true){
+function alm_loop($repeater, $type, $theme_repeater, $alm_found_posts = '', $alm_page = '', $alm_item = '', $alm_current = '', $args = [], $ob = true){
 
 	if ( $ob ) { // If Output Buffer is true.
 		ob_start();
 	}
 
-   // Theme Repeater.
+   // Theme Repeaters.
 	if ( $theme_repeater !== 'null' && has_filter( 'alm_get_theme_repeater' ) ) {
-		do_action( 'alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current );
+		do_action( 'alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, $args );
 	}
 	// Standard Repeater Templates.
 	else {
@@ -106,7 +103,7 @@ function alm_loop($repeater, $type, $theme_repeater, $alm_found_posts = '', $alm
 
 
 /**
- * Get the current repeater template file
+ * Get the current repeater template file.
  *
  * @param string $repeater current repater name
  * @param string $type Type of template *
@@ -129,10 +126,10 @@ function alm_get_current_repeater($repeater, $type) {
 
 	}
 
-   // Custom Repeaters v2
+   // Custom Repeaters v2.
 	elseif( $type == 'template_' && has_action('alm_unlimited_installed' )){
 
-   	// Custom Repeaters 2.5+
+   	// Custom Repeaters 2.5+.
    	if(ALM_UNLIMITED_VERSION >= '2.5'){
       	// Get path to repeater (alm_templates)
 			$base_dir = AjaxLoadMore::alm_get_repeater_path();
@@ -146,17 +143,18 @@ function alm_get_current_repeater($repeater, $type) {
 
 		}
 
-		if(!file_exists($include)){ //confirm file exists
+		if(!file_exists($include)){ // Confirm file exists.
 		   $include = alm_get_default_repeater();
 		}
 	}
 	// Default repeater
 	else{
 		$include = alm_get_default_repeater();
+
 	}
 
-	// Security check
-	// Confirm $template does NOT contains relative path
+	// Security check.
+	// Confirm $template does NOT contains relative path.
 	if ( false !== strpos( $template, './' ) ) {
 	   $include = alm_get_default_repeater();
 	}
@@ -164,10 +162,8 @@ function alm_get_current_repeater($repeater, $type) {
 	return $include;
 }
 
-
-
 /**
- * Get the default repeater template for current blog
+ * Get the default repeater template for current blog.
  *
  * @return $include (file path)
  * @since 2.5.0
@@ -206,38 +202,12 @@ function alm_get_default_repeater() {
 	return $file;
 }
 
-
-
 /**
- * Query by custom taxonomy values.
+ * Query by post format.
  *
- * @return $args = array();
  * @since 2.5.0
- * @deprecated in 2.5.0
+ * @return array
  */
-function alm_get_taxonomy($taxonomy, $taxonomy_terms, $taxonomy_operator){
-   if(!empty($taxonomy) && !empty($taxonomy_terms) && !empty($taxonomy_operator)){
-      $the_terms = explode(",", $taxonomy_terms);
-      $args = array(
-		   'taxonomy' => $taxonomy,
-			'field' => 'slug',
-			'terms' => $the_terms,
-			'operator' => $taxonomy_operator,
-		);
-		return $args;
-	}
-}
-
-
-
-/*
-*  alm_get_post_format
-*  Query by post format
-*
-*  @return $args = array();
-*  @since 2.5.0
-*  @updated 2.8.5
-*/
 function alm_get_post_format($post_format){
    if(!empty($post_format)){
 	   $format = "post-format-$post_format";
@@ -266,15 +236,12 @@ function alm_get_post_format($post_format){
 	}
 }
 
-
-
-/*
-*  alm_get_taxonomy_query
-*  Query for custom taxonomy
-*
-*  @return $args = array();
-*  @since 2.8.5
-*/
+/**
+ * Query for custom taxonomy.
+ *
+ * @since 2.8.5
+ * @return array
+ */
 function alm_get_taxonomy_query($taxonomy, $taxonomy_terms, $taxonomy_operator){
    if(!empty($taxonomy) && !empty($taxonomy_terms)){
       $taxonomy_term_values = alm_parse_tax_terms($taxonomy_terms);
@@ -288,172 +255,85 @@ function alm_get_taxonomy_query($taxonomy, $taxonomy_terms, $taxonomy_operator){
    }
 }
 
-
-
 /**
  * Parse the taxonomy terms for multiple vals.
  *
- * @helper function @alm_get_taxonomy_query()
- * @return array;
  * @since 2.8.5
+ * @param string $terms The taxonomy terms.
+ * @return array
  */
-function alm_parse_tax_terms($taxonomy_terms){
-	// Remove all whitespace for $taxonomy_terms because it needs to be an exact match
-	$taxonomy_terms = preg_replace('/\s+/', ' ', $taxonomy_terms); // Trim whitespace
-	$taxonomy_terms = str_replace(', ', ',', $taxonomy_terms); // Replace [term, term] with [term,term]
-	$taxonomy_terms = explode(",", $taxonomy_terms);
-   return $taxonomy_terms;
-}
-
-
-
-/**
- * Query by custom taxonomy values.
- *
- * @return $args = array();
- * @since 2.5.0
- * @deprecated in 2.8.5
-*/
-function alm_get_tax_query($post_format, $taxonomy, $taxonomy_terms, $taxonomy_operator){
-
-   // Taxonomy [ONLY]
-   if(!empty($taxonomy) && !empty($taxonomy_terms) && !empty($taxonomy_operator) && empty($post_format)){
-      $the_terms = explode(",", $taxonomy_terms);
-      $args = array(
-		   'taxonomy' => $taxonomy,
-			'field' => 'slug',
-			'terms' => $the_terms,
-			'operator' => $taxonomy_operator,
-		);
-		return $args;
-	}
-
-	// Post Format [ONLY]
-   if(!empty($post_format) && empty($taxonomy)){
-	   $format = "post-format-$post_format";
-
-	   //If query is for standard then we need to filter by NOT IN
-	   if($format == 'post-format-standard'){
-      	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
-            $terms = array();
-            foreach ($post_formats[0] as $format) {
-               $terms[] = 'post-format-'.$format;
-            }
-         }
-	      $args = array(
-            'taxonomy' => 'post_format',
-            'terms' => $terms,
-            'field' => 'slug',
-            'operator' => 'NOT IN',
-         );
-	   }else{
-			$args = array(
-			   'taxonomy' => 'post_format',
-			   'field' => 'slug',
-			   'terms' => array($format),
-			);
-		}
-		return $args;
-	}
-
-	// Taxonomy && Post Format [COMBINED]
-	if(!empty($post_format) && !empty($taxonomy) && !empty($taxonomy_terms) && !empty($taxonomy_operator)){
-   	$the_terms = explode(",", $taxonomy_terms);
-	   $args = array(
-			'taxonomy' => $taxonomy,
-			'field' => 'slug',
-			'terms' => $the_terms,
-			'operator' => $taxonomy_operator,
-		);
-	   $format = "post-format-$post_format";
-		//If query is for standard then we need to filter by NOT IN
-	   if($format == 'post-format-standard'){
-      	if (($post_formats = get_theme_support('post-formats')) && is_array($post_formats[0]) && count($post_formats[0])) {
-            $terms = array();
-            foreach ($post_formats[0] as $format) {
-               $terms[] = 'post-format-'.$format;
-            }
-         }
-	      $format_args = array(
-            'taxonomy' => 'post_format',
-            'terms' => $terms,
-            'field' => 'slug',
-            'operator' => 'NOT IN',
-         );
-	   }else{
-			$format_args = array(
-			   'taxonomy' => 'post_format',
-			   'field' => 'slug',
-			   'terms' => array($format),
-			);
-		}
-		$args[] = $format_args; // Combined format and tax $args
-		return $args;
-	}
+function alm_parse_tax_terms($terms){
+	// Remove all whitespace for $taxonomy_terms because it needs to be an exact match.
+	$terms = preg_replace('/\s+/', ' ', $terms);
+	// Remove all spaces by replacing [term, term] with [term,term].
+	$terms = str_replace(', ', ',', $terms);
+	// Create array from string.
+	$terms = explode(",", $terms);
+   return $terms;
 }
 
 /**
  * Query by custom field values.
  *
- * @return $args = array();
  * @since 2.5.0
+ * @return array
  */
-function alm_get_meta_query($meta_key, $meta_value, $meta_compare, $meta_type){
+function alm_get_meta_query( $meta_key, $meta_value, $meta_compare, $meta_type ){
 
-   if ( !empty( $meta_key ) ) {
-      // do_shortcode fixes (shortcode was rendering as HTML when using < OR  <==)
-      $meta_compare = ($meta_compare === 'lessthan') ? '<' : $meta_compare;
-      $meta_compare = ($meta_compare === 'lessthanequalto') ? '<=' : $meta_compare;
-      $meta_compare = ($meta_compare === 'greaterthan') ? '>' : $meta_compare;
-      $meta_compare = ($meta_compare === 'greatthanequalto') ? '>=' : $meta_compare;
+   if ( ! empty( $meta_key ) ) {
+      // do_shortcode fixes (shortcode was rendering as HTML when using < OR  <==).
+      $meta_compare = $meta_compare === 'lessthan' ? '<' : $meta_compare;
+      $meta_compare = $meta_compare === 'lessthanequalto' ? '<=' : $meta_compare;
+      $meta_compare = $meta_compare === 'greaterthan' ? '>' : $meta_compare;
+      $meta_compare = $meta_compare === 'greatthanequalto' ? '>=' : $meta_compare;
 
-      // Get optimized `meta_value` parameter
-      $meta_values = alm_parse_meta_value($meta_value, $meta_compare);
+      // Get optimized `meta_value` parameter.
+      $meta_values = alm_parse_meta_value( $meta_value, $meta_compare );
 
-      // Unset `$meta_values` if empty
-      if($meta_values === ''){
-         unset($meta_values);
+      // Unset `$meta_values` if empty.
+      if ( $meta_values === '' ) {
+         unset( $meta_values );
       }
 
-      if(isset($meta_values)){
+      if ( isset( $meta_values ) ) {
          $return = array(
-            'key' => $meta_key,
-            'value' => $meta_values,
+            'key'     => $meta_key,
+            'value'   => $meta_values,
             'compare' => $meta_compare,
-            'type' => $meta_type
+            'type'    => $meta_type
          );
-      }else{
-         // If $meta_values is empty, don't query for 'value'
+
+      } else {
+         // If $meta_values is empty, don't query for 'value'.
          $return = array(
-            'key' => $meta_key,
+            'key'     => $meta_key,
             'compare' => $meta_compare,
-            'type' => $meta_type
+            'type'    => $meta_type
          );
+
       }
       return $return;
    }
 }
 
+/**
+ * Parse the meta value for multiple values.
+ *
+ * @since 2.6.4
+ * @param string $meta_value The meta value.
+ * @param string $meta_compare The compare operator.
+ * @return array
+ */
+function alm_parse_meta_value( $meta_value, $meta_compare ) {
 
+   // Meta Query Docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query).
+   $meta_array = array( 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' );
 
-/*
-*  alm_parse_meta_value
-*  Parse the meta value for multiple vals
-*
-*  @helper function @alm_get_meta_query()
-*  @return array;
-*  @since 2.6.4
-*/
-function alm_parse_meta_value($meta_value, $meta_compare){
-
-   // Meta Query Docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query)
-   $meta_array = array('IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN');
-
-   if(in_array($meta_compare, $meta_array)){
-   	// Remove all whitespace for meta_value because it needs to be an exact match
-   	$mv_trimmed = preg_replace('/\s+/', ' ', $meta_value); // Trim whitespace
-   	$meta_values = str_replace(', ', ',', $mv_trimmed); // Replace [term, term] with [term,term]
-   	$meta_values = ($meta_values === '') ? '' : explode(",", $meta_values);
+   if ( in_array( $meta_compare, $meta_array ) ) {
+   	// Remove all whitespace for meta_value because it needs to be an exact match.
+   	$mv_trimmed  = preg_replace( '/\s+/', ' ', $meta_value ); // Trim whitespace.
+   	$meta_values = str_replace( ', ', ',', $mv_trimmed ); // Replace [term, term] with [term,term].
+   	$meta_values = ( $meta_values === '' ) ? '' : explode( ",", $meta_values );
    }else{
    	$meta_values = $meta_value;
    }
@@ -463,8 +343,8 @@ function alm_parse_meta_value($meta_value, $meta_compare){
 /**
  * Get type of repeater.
  *
- * @return $type;
  * @since 2.9
+ * @return string
  */
 function alm_get_repeater_type($repeater){
 	$type = preg_split('/(?=\d)/', $repeater, 2); // split $repeater value at number to determine type
@@ -473,10 +353,10 @@ function alm_get_repeater_type($repeater){
 }
 
 /**
- * Get current page base URL
+ * Get current page base URL.
  *
- * @return $canonicalURL;
  * @since 2.12
+ * @return string
  */
 function alm_get_canonical_url(){
 
@@ -485,9 +365,9 @@ function alm_get_canonical_url(){
 	// Date
    if(is_date()){
       // Is archive page
-      $archive_year = get_the_date('Y');
+      $archive_year  = get_the_date('Y');
       $archive_month = get_the_date('m');
-      $archive_day = get_the_date('d');
+      $archive_day   = get_the_date('d');
       if(is_year()){
         $canonicalURL = get_year_link( $archive_year );
       }
@@ -512,31 +392,31 @@ function alm_get_canonical_url(){
    }
    // Category
    elseif(is_category()){
-      $cat_id = get_query_var( 'cat' );
+      $cat_id       = get_query_var( 'cat' );
       $canonicalURL = get_category_link($cat_id);
    }
    // Tag
    elseif(is_tag()){
-      $tag_id = get_query_var('tag_id');
+      $tag_id       = get_query_var('tag_id');
       $canonicalURL = get_tag_link($tag_id);
    }
    // Author
    elseif(is_author()){
-      $author_id = get_the_author_meta('ID');
+      $author_id    = get_the_author_meta('ID');
       $canonicalURL = get_author_posts_url($author_id);
    }
    // Taxonomy
    elseif(is_tax()){
 		$tax_term = get_term_by('slug', get_query_var('term'), get_query_var('taxonomy' ));
 		if($tax_term){
-      	$tax_id = $tax_term->term_id;
+      	$tax_id       = $tax_term->term_id;
       	$canonicalURL = get_term_link($tax_id);
       }
    }
    // Post Type
    elseif(is_post_type_archive()){
       $post_type_archive = get_post_type();
-      $canonicalURL = get_post_type_archive_link($post_type_archive);
+      $canonicalURL      = get_post_type_archive_link($post_type_archive);
    }
    // Search
    elseif(is_search()){
@@ -552,21 +432,24 @@ function alm_get_canonical_url(){
 /**
  * Get current page slug
  *
- * @return slug;
  * @since 2.13.0
+ * @param array $post_id The current Post ID.
+ * @return string
  */
-function alm_get_page_slug($post){
+function alm_get_page_slug( $post ) {
 
-   // Exit if admin
-   if(is_admin()) return false;
+   // Exit if admin.
+   if ( is_admin() ) {
+		return false;
+	}
 
-	if(!is_archive()){
+	if ( ! is_archive() ) {
    	// If not archive, set the post slug
-		if(is_front_page() || is_home()){
+		if( is_front_page() || is_home() ){
 			$slug = 'home';
-		}else{
+		} else {
    		// Search
-   		if(is_search()){
+   		if ( is_search() ) {
       		$search_query = get_search_query();
       		if($search_query){
          		$slug = "?s=$search_query";
@@ -577,31 +460,31 @@ function alm_get_page_slug($post){
 		      $slug = $post->post_name;
 		   }
       }
-	}else{
+	} else {
 		// Tax
-		if(is_tax()){
+		if ( is_tax() ) {
 			$queried_object = get_queried_object();
 			$slug = $queried_object->slug;
 		}
 		// Category
-		elseif(is_category()){
+		elseif ( is_category() ) {
 	      $cat = get_query_var('cat');
 			$category = get_category($cat);
 			$slug = $category->slug;
 	   }
 	   // Tag
-	   elseif(is_tag()){
+	   elseif ( is_tag() ) {
 	      $slug = get_query_var('tag');
 	   }
 		// Author
-		elseif(is_author()){
+		elseif ( is_author() ) {
 	      $slug = get_the_author_meta('ID');
 	   }
 		// Post Type Archive
-		elseif(is_post_type_archive()){
+		elseif ( is_post_type_archive() ) {
 			$slug = get_post_type();
 		}
-		elseif(is_date()){
+		elseif ( is_date() ) {
 			// Is archive page
 	      $archive_year = get_the_date('Y');
 	      $archive_month = get_the_date('m');
@@ -609,10 +492,10 @@ function alm_get_page_slug($post){
 	      if(is_year()){
 	        $slug = $archive_year;
 	      }
-	      if(is_month()){
+	      if ( is_month() ) {
 	        $slug = $archive_year.'-'.$archive_month;
 	      }
-	      if(is_day()){
+	      if ( is_day() ) {
 	        $slug = $archive_year.'-'.$archive_month.'-'.$archive_day;
 	      }
 		}
@@ -626,15 +509,18 @@ function alm_get_page_slug($post){
 
 
 /**
- * Get current page ID
+ * Get current page ID.
  *
- * @return $post_id;
  * @since 3.0.1
+ * @param array $post_id The current Post ID.
+ * @return string
  */
 function alm_get_page_id($post){
 
-   // Exit if admin
-   if(is_admin()) return false;
+   // Exit if admin.
+   if(is_admin()) {
+		return false;
+	}
 
    $post_id = '';
 
@@ -688,15 +574,16 @@ function alm_get_page_id($post){
 }
 
 /**
- * Get query param of start page (paged, page)
+ * Get query param of start page (paged, page).
  *
  * @since 2.14.0
+ * @return string
  */
-function alm_get_startpage(){
-   if ( get_query_var('paged') ) {
-      $start_page = get_query_var('paged');
-   } elseif ( get_query_var('page') ) {
-      $start_page = get_query_var('page');
+function alm_get_startpage() {
+   if ( get_query_var( 'paged' ) ) {
+      $start_page = get_query_var( 'paged' );
+   } elseif ( get_query_var( 'page' ) ) {
+      $start_page = get_query_var( 'page' );
    } else {
       $start_page = 1;
    }
@@ -707,11 +594,12 @@ function alm_get_startpage(){
  * Debug helper for printing variables to screen.
  *
  * @since 3.7
+ * @param array $query
  */
-function alm_pretty_print($query){
-	if($query){
+function alm_pretty_print( $query ){
+	if ( $query ) {
 		echo '<pre>';
-		print_r($query);
+		print_r( $query );
 		echo '</pre>';
 	}
 }
@@ -719,7 +607,7 @@ function alm_pretty_print($query){
 /**
  * Convert dashes to underscores.
  *
- * @param $string string
+ * @param string $string
  * @return string
  * @since 3.7
  */
@@ -730,8 +618,8 @@ function alm_convert_dashes_to_underscore($string = ''){
 /**
  * Remove posts if post__not_in is set in the ALM shortcode.
  *
- * @param $ids    array
- * @param $not_in array
+ * @param array $ids
+ * @param array $not_in
  * @return array
  * @since 3.7
  */

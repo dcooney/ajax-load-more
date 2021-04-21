@@ -1,17 +1,17 @@
 jQuery(document).ready(function ($) {
-	'use strict';
+	('use strict');
 
 	var _alm = {},
 		output_div = $('.ajax-load-more.shortcode-builder #shortcode_output'),
 		output = '[ajax_load_more]';
 
-	output_div.text(output); //Init the shortcode output
+	//Init the shortcode output.
+	output_div.text(output);
 
-	/*
-	 *  _alm.select2
-	 *  Init Select2 select replacement
+	/**
+	 * Init Select2 select replacement
 	 *
-	 *  @since 2.5.0
+	 * @since 2.5.0
 	 */
 	_alm.select2 = function () {
 		// Default Select2
@@ -354,7 +354,8 @@ jQuery(document).ready(function ($) {
 				nextpage_url = $('input#next-page-url:checked').val(),
 				nextpage_pageviews = $('input#next-page-pageviews:checked').val(),
 				nextpage_scroll = $('select#next-page-scroll').val(),
-				nextpage_scrolltop = $('input#next-page-scroll-top').val();
+				nextpage_scrolltop = $('input#next-page-scroll-top').val(),
+				nextpage_title_template = $('input#next-page-title-template').val();
 
 			$('.next-page-content').slideDown(250, 'alm_easeInOutQuad');
 
@@ -366,6 +367,9 @@ jQuery(document).ready(function ($) {
 			}
 			if (nextpage_pageviews !== 'true') {
 				output += ' nextpage_pageviews="false"';
+			}
+			if (nextpage_title_template) {
+				output += ' nextpage_title_template="' + nextpage_title_template + '"';
 			}
 
 			output += ' nextpage_scroll="' + nextpage_scroll + ':' + nextpage_scrolltop + '"';
@@ -505,7 +509,7 @@ jQuery(document).ready(function ($) {
 		// ---------------------------
 
 		var previous = $('.previous-post input[name=prev-post]:checked').val();
-		if (previous !== 'false' && previous != undefined) {
+		if (previous !== 'false' && previous !== undefined) {
 			var pp_id = $('#pp_id').val(),
 				pp_order = $('#pp-order').val(),
 				pp_query_order = $('#pp-custom-query').val(),
@@ -514,6 +518,7 @@ jQuery(document).ready(function ($) {
 				pp_excluded_terms = $('#pp-term-exclude').val(),
 				pp_elementor = $('.previous-post input[name=elementor-single]:checked').val(),
 				pp_progress_bar = $('.previous-post input[name=prev-post-progress]:checked').val(),
+				pp_preview = $('.previous-post input[name=prev-post-preview]:checked').val(),
 				pp_target = $('.previous-post input#pp-target').val();
 
 			$('.prev_post_options').slideDown(250, 'alm_easeInOutQuad');
@@ -558,6 +563,18 @@ jQuery(document).ready(function ($) {
 
 			output += pp_target !== '' ? ' single_post_target="' + pp_target + '"' : '';
 			output += pp_elementor === 't' ? ' elementor="true"' : '';
+
+			// Post Preview
+			if (pp_preview === 'true') {
+				$('#pp_preview_options').slideDown(250, 'alm_easeInOutQuad');
+				var pp_preview_label = $('#pp-preview-label').val();
+				var pp_preview_height = $('#pp-preview-height').val();
+				var pp_preview_element = $('#pp-preview-element').val();
+				pp_preview_element = !pp_preview_element || pp_preview_element === 'default' ? '' : ':' + pp_preview_element;
+				output += ' single_post_preview="' + pp_preview_label + ':' + pp_preview_height + pp_preview_element + '"';
+			} else {
+				$('#pp_preview_options').slideUp(250, 'alm_easeInOutQuad');
+			}
 
 			// Reading Progress Bar
 			if (pp_progress_bar === 'true') {
@@ -754,19 +771,19 @@ jQuery(document).ready(function ($) {
 
 		// IN
 		var cat = $('.categories #category-select').val();
-		if (cat !== '' && cat.length > 0 && cat !== undefined && cat !== null) {
+		if (cat !== '' && cat !== undefined && cat !== null && cat.length > 0) {
 			output += ' category="' + cat + '"';
 		}
 
 		// AND
 		var cat__and = $('.categories #category--and-select').val();
-		if (cat__and !== '' && cat__and.length > 0 && cat__and !== undefined && cat__and !== null) {
+		if (cat__and !== '' && cat__and !== undefined && cat__and !== null && cat__and.length > 0) {
 			output += ' category__and="' + cat__and + '"';
 		}
 
 		// NOT_IN
 		var cat_not_in = $('.categories #category-exclude-select').val();
-		if (cat_not_in !== '' && cat_not_in.length > 0 && cat_not_in !== undefined && cat_not_in !== null) output += ' category__not_in="' + cat_not_in + '"';
+		if (cat_not_in !== '' && cat_not_in !== undefined && cat_not_in !== null && cat_not_in.length > 0) output += ' category__not_in="' + cat_not_in + '"';
 
 		// ---------------------------
 		// - Tags
@@ -795,19 +812,19 @@ jQuery(document).ready(function ($) {
 
 		// IN
 		var tag = $('.tags #tag-select').val();
-		if (tag !== '' && tag.length > 0 && tag !== undefined && tag !== null) {
+		if (tag !== '' && tag !== undefined && tag !== null && tag.length > 0) {
 			output += ' tag="' + tag + '"';
 		}
 
 		// AND
 		var tag__and = $('.tags #tag--and-select').val();
-		if (tag__and !== '' && tag__and.length > 0 && tag__and !== undefined && tag__and !== null) {
+		if (tag__and !== '' && tag__and !== undefined && tag__and !== null && tag__and.length > 0) {
 			output += ' tag__and="' + tag__and + '"';
 		}
 
 		// NOT_IN
 		var tag_not_in = $('.tags #tag-exclude-select').val();
-		if (tag_not_in !== '' && tag_not_in.length > 0 && tag_not_in !== undefined && tag_not_in !== null) output += ' tag__not_in="' + tag_not_in + '"';
+		if (tag_not_in !== '' && tag_not_in !== undefined && tag_not_in !== null && tag_not_in.length > 0) output += ' tag__not_in="' + tag_not_in + '"';
 
 		// ---------------------------
 		// - Taxonomy Query
@@ -1013,7 +1030,7 @@ jQuery(document).ready(function ($) {
 		// ---------------------------
 
 		var author = $('.authors #author-select').val();
-		if (author !== '' && author.length > 0 && author !== undefined && author !== null) output += ' author="' + author + '"';
+		if (author !== '' && author !== undefined && author !== null && author.length > 0) output += ' author="' + author + '"';
 
 		// ---------------------------
 		// - Posts
@@ -1294,7 +1311,6 @@ jQuery(document).ready(function ($) {
 		var no_results = $('.alm-instance-options textarea#no_results_text').val();
 		if (no_results !== '') {
 			no_results = no_results.replace(/"/g, "'");
-
 			output += ' no_results_text="' + no_results + '"';
 		}
 
@@ -1393,13 +1409,12 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  Jump to section, Table of contents [Repeater Templates, Shortcode Builder]
+	/**
+	 * Jump to section, Table of contents [Repeater Templates, Shortcode Builder]
 	 *
-	 *  @since 2.0.0
-	 *  Updated v2.13.0
+	 * @since 2.0.0
+	 * @updated v2.13.0
 	 */
-
 	var jumpMenuOptions = '';
 	function almBuildJumpMenu(type) {
 		if (type === 'repeaters') {
@@ -1444,8 +1459,7 @@ jQuery(document).ready(function ($) {
 		almBuildJumpMenu('repeaters'); // repeater templates
 	}
 
-	/* Jump Menu */
-
+	// Jump Menu.
 	$('select.jump-menu').append(jumpMenuOptions);
 	$('select.jump-menu').change(function () {
 		var pos = $(this).val();
@@ -1483,11 +1497,10 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  get_tax_terms
-	 *  Get taxonomy terms via ajax
+	/**
+	 * Get taxonomy terms via ajax
 	 *
-	 *  @since 2.1.0
+	 * @since 2.1.0
 	 */
 	function get_tax_terms(tax, parent, index) {
 		var placement = $('.tax-terms-container', parent);
@@ -1512,90 +1525,33 @@ jQuery(document).ready(function ($) {
 		});
 	}
 
-	/*
-	 *  _alm.alm_easeInOutQuad
-	 *  Ajax Load More easing
-	 *
-	 *  @since 2.0.0
-	 */
-
+	// Ajax Load More easing.
 	$.easing.alm_easeInOutQuad = function (x, t, b, c, d) {
 		if ((t /= d / 2) < 1) return (c / 2) * t * t + b;
 		return (-c / 2) * (--t * (t - 2) - 1) + b;
 	};
 
-	/*
-	 *  _alm.SelectText
-	 *  Click to select text
-	 *
-	 *  @since 2.0.0
-	 */
-
-	_alm.SelectText = function (element) {
-		var doc = document,
-			text = doc.getElementById(element),
-			range,
-			selection;
-		if (doc.body.createTextRange) {
-			range = document.body.createTextRange();
-			range.moveToElementText(text);
-			range.select();
-		} else if (window.getSelection) {
-			selection = window.getSelection();
-			range = document.createRange();
-			range.selectNodeContents(text);
-			selection.removeAllRanges();
-			selection.addRange(range);
-		}
-	};
-	$('#shortcode_output').click(function () {
-		_alm.SelectText('shortcode_output');
-	});
-
-	/*
-	 *  Reset shortcode builder
-	 *
-	 *  @since 2.5.0
-	 */
-
+	// Reset shortcode builder.
 	$(document).on('click', '.reset-shortcode-builder a', function () {
 		$('#alm-shortcode-builder-form').trigger('reset');
 		_alm.reset_select2();
-		//total_tax_query = 0;
-		//$('.ajax-load-more .taxonomy-wrap').hide();
 		_alm.buildShortcode();
 	});
 
-	/*
-	 *  _alm.generateUniqueID
-	 *  Generate Unique Cache ID
-	 *
-	 *  @since 2.6.0
-	 */
-
+	// Generate Unique Cache ID.
 	_alm.generateUniqueID = function (length, el) {
 		var id = Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
 		$(el).val(id);
-		//_alm.buildShortcode();
 	};
 
-	/*
-   *  Option toggle click events
-   8
-   *  @since 5.2.0
-   */
+	// Option toggle click events.
 	$('.builder-option-toggle--buttons button').on('click', function () {
 		var siblings = $(this).siblings('button').removeClass('active');
 		$(this).addClass('active');
 		_alm.buildShortcode();
 	});
 
-	/*
-	 *  Generate Unique/Cache ID
-	 *
-	 *  @since 2.6.0
-	 */
-
+	// Generate Unique/Cache ID.
 	$(document).on('click', '.generate-id a', function () {
 		var id = $(this).data('id'),
 			el = $('#' + id);
@@ -1610,6 +1566,44 @@ jQuery(document).ready(function ($) {
 			$(this).addClass('loading');
 		} else {
 			$(this).toggleClass('loading');
+		}
+	});
+
+	// Create anchor links for shortcode builder items.
+	$('.shortcode-parameter-wrap.alm-tabbed-wrapper--section').each(function () {
+		var section = this;
+		var ul = section.querySelector('ul.section-anchor-nav');
+		var headings = section.querySelectorAll('h3.heading');
+		if (headings && headings.length > 2) {
+			var list = '';
+			$(headings).each(function () {
+				var title = $(this).text();
+				list += '<li><a role="button" href="javascript: void(0);">' + title + '</a></li>';
+			});
+			ul.innerHTML = list;
+
+			var anchors = ul.querySelectorAll('a');
+			if (anchors) {
+				$(anchors).each(function () {
+					$(this).on('click', function () {
+						var element = this;
+						var text = element.innerHTML;
+						var target = $('h3.heading:contains(' + text + ')', section);
+						if (target) {
+							$('html, body').animate(
+								{
+									scrollTop: target.offset().top - 45,
+								},
+								350,
+								function () {
+									// Set focus on the element scrolled to.
+									target.get(0).focus({ preventScroll: true });
+								}
+							);
+						}
+					});
+				});
+			}
 		}
 	});
 });

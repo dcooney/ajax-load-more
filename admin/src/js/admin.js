@@ -29,9 +29,84 @@ jQuery(document).ready(function ($) {
 		});
 	}
 
-	/*
-	 *  Save Repeater Templates with cmd + s and ctrl + s
-	 *  @since 5.1
+	/**
+	 * Tabbed Navigation Elements
+	 *
+	 * @since 5.4
+	 */
+	const ACTIVE_TAB_CLASS = 'active';
+	function openTabbedItem(button, index, almTabbedWrapper) {
+		// Get Currently Active Button.
+		let activeBtn = document.querySelector('.alm-tabbed-wrapper--nav button.active');
+		if (activeBtn) {
+			activeBtn.classList.remove(ACTIVE_TAB_CLASS);
+		}
+
+		// Add Button Active Class.
+		button.classList.add(ACTIVE_TAB_CLASS);
+
+		// Activate Current Section
+		if (almTabbedWrapper) {
+			let currentActive = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section.' + ACTIVE_TAB_CLASS);
+			let sections = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--section');
+			if (currentActive && sections) {
+				currentActive.classList.remove(ACTIVE_TAB_CLASS);
+				if (sections[index]) {
+					sections[index].classList.add(ACTIVE_TAB_CLASS);
+					sections[index].focus({ preventScroll: true });
+					$('html, body').animate(
+						{
+							scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45,
+						},
+						350,
+						function () {
+							var section = parseInt(index) + 1;
+							window.location.hash = 'alm-section-' + section;
+						}
+					);
+				}
+			}
+		}
+	}
+
+	let almTabbedWrapper = document.querySelector('.alm-tabbed-wrapper');
+	if (almTabbedWrapper) {
+		let current = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section');
+		if (current) {
+			current.classList.add(ACTIVE_TAB_CLASS);
+		}
+		let tabbedNav = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--nav button');
+		if (tabbedNav) {
+			tabbedNav.forEach(function (item, index) {
+				item.addEventListener('click', function () {
+					openTabbedItem(this, index, almTabbedWrapper);
+				});
+			});
+		}
+
+		// Open hash
+		let hash = window.location.hash;
+		if (hash && hash.indexOf('alm-section') !== -1) {
+			hash = hash.replace('#', '');
+			let openSection = hash.replace('alm-section-', '');
+			openSection = parseInt(openSection) - 1;
+			// Get button from nodelist.
+			let nodeItem = tabbedNav.item(openSection);
+			if (nodeItem) {
+				// trigger a click.
+				nodeItem.click();
+			}
+		} else {
+			if (tabbedNav) {
+				tabbedNav[0].classList.add(ACTIVE_TAB_CLASS);
+			}
+		}
+	}
+
+	/**
+	 * Save Repeater Templates with cmd + s and ctrl + s
+	 *
+	 * @since 5.1
 	 */
 	document.addEventListener(
 		'keydown',
@@ -65,13 +140,11 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  _alm.saveSettings
-	 *  Setting panel save actions
+	/**
+	 * Setting panel save actions
 	 *
-	 *  @since 3.2.0
+	 * @since 3.2.0
 	 */
-
 	let almSettings = $('#alm_OptionsForm'),
 		savingSettings = false,
 		settingsForm = document.querySelector('#alm_OptionsForm'),
@@ -137,25 +210,24 @@ jQuery(document).ready(function ($) {
 		}, 500);
 	});
 
-	/*
-	 *  Download Repeater Template
-	 *  Trigger the download of a repeater template from the admin
+	/**
+	 * Download Repeater Template
+	 * Trigger the download of a repeater template from the admin
 	 *
-	 *  @since 3.6
+	 * @since 3.6
 	 */
-
-	$('.download-repeater').on('click', function (e) {
+	$('.download-repeater').on('click', function () {
 		let el = this;
 		el.closest('form').submit();
 	});
 
-	/*
-	 *  Tooltipster
-	 *  http://iamceege.github.io/tooltipster/
+	/**
+	 * Tooltipster
 	 *
-	 *  @since 2.8.4
+	 * @see http://iamceege.github.io/tooltipster/
+	 * @since 2.8.4
 	 */
-	$('body').on('mouseenter', '.tooltip:not(.tooltipstered)', function () {
+	$('.ajax-load-more-inner-wrapper').on('mouseenter', '.tooltip:not(.tooltipstered)', function () {
 		$(this)
 			.tooltipster({
 				delay: 100,
@@ -165,24 +237,24 @@ jQuery(document).ready(function ($) {
 			.tooltipster('show');
 	});
 
-	/*
-	 *  Button preview pane
-	 *  Found on Settings and Shortcode Builder
+	/**
+	 * Button preview pane
+	 * Found on Settings and Shortcode Builder.
 	 *
-	 *  @since 2.8.4
+	 * @since 2.8.4
 	 */
-
-	$('select#alm_settings_btn_color').change(function () {
+	$('select#alm_settings_btn_color').on('change', function () {
 		var color = jQuery(this).val();
 		// Remove other colors
-
-		$('.alm-btn-wrap .ajax-load-more-wrap').attr('class', 'ajax-load-more-wrap');
-		$('.alm-btn-wrap .ajax-load-more-wrap').addClass(color);
-		$('.alm-btn-wrap .ajax-load-more-wrap #test-alm-button').removeClass('loading');
+		var wrap = $('.ajax-load-more-wrap');
+		wrap.attr('class', '');
+		wrap.addClass('ajax-load-more-wrap');
+		wrap.addClass(color);
+		$('#test-alm-button', wrap).removeClass('loading');
 
 		// Add loading class if Infinite loading style
 		if (color.indexOf('infinite') >= 0) {
-			$('.alm-btn-wrap .ajax-load-more-wrap #test-alm-button').addClass('loading');
+			$('#test-alm-button', wrap).addClass('loading');
 		}
 	});
 
@@ -236,6 +308,10 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
+	_alm.copyToClipboard = function (text) {
+		window.prompt('Copy link to your clipboard: Press Ctrl + C then hit Enter to copy.', text);
+	};
+
 	// Copy link on repeater templates
 	$('.alm-dropdown .copy a').click(function () {
 		var container = $(this).closest('.repeater-wrap'), // find closet wrap
@@ -251,22 +327,6 @@ jQuery(document).ready(function ($) {
 	 *
 	 *  @since 2.0.0
 	 */
-
-	$(document).on('click', 'h2.shortcode-title', function () {
-		var el = $(this);
-		var parent = el.closest('.shortcode-parameter-wrap');
-		if (el.hasClass('open')) {
-			el.next('.section-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad', function () {
-				el.removeClass('open');
-				parent.removeClass('closed');
-			});
-		} else {
-			el.next('.section-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad', function () {
-				el.addClass('open');
-				parent.addClass('closed');
-			});
-		}
-	});
 
 	$(document).on('click', 'h3.heading', function () {
 		var el = $(this);
@@ -285,20 +345,18 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
+	// Toggle Links.
 	$(document).on('click', '.toggle-all', function () {
-		var el = $(this),
-			type = el.data('id');
+		var el = $(this);
 		if (el.hasClass('closed')) {
 			el.removeClass('closed');
 
-			$('h2.shortcode-title').closest('.shortcode-parameter-wrap').removeClass('closed');
 			$('h3.heading, h2.shortcode-title').removeClass('open');
 			$('.section-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');
 			$('.expand-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');
 		} else {
 			el.addClass('closed');
 
-			$('h2.shortcode-title').closest('.shortcode-parameter-wrap').addClass('closed');
 			$('h3.heading, h2.shortcode-title').addClass('open');
 			$('.section-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
 			$('.expand-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
@@ -306,7 +364,7 @@ jQuery(document).ready(function ($) {
 	});
 
 	// Trigger click events on enter/return
-	$('h3.heading, h2.shortcode-title').keypress(function (e) {
+	$('h3.heading, h2.shortcode-title').on('keypress', function (e) {
 		var key = e.which;
 		if (key == 13) {
 			// the enter key code

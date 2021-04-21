@@ -1,19 +1,21 @@
-.ajax-load-more .builder-option-toggle{
+.ajax-load-more .builder-option-toggle {
 	display: flex;
 	flex-wrap: nowrap;
-	input{
+	input {
 		border-radius: $radius 0 0 $radius;
 		margin: 0;
 		width: auto;
 		flex: 1;
 	}
-	&--buttons{
+	&--buttons {
 		border-radius: 0 $radius $radius 0;
 		padding: 3px;
 		width: auto;
-		border: 1px solid $border;
+		border: 1px solid #ccc;
+		background-color: $lighter_grey;
 		border-left: none;
-		button{
+		display: flex;
+		button {
 			height: 100%;
 			border: 1px solid $border;
 			border-left-width: 0;
@@ -21,7 +23,6 @@
 			font-weight: 600;
 			font-size: 11px;
 			text-transform: uppercase;
-			float: left;
 			cursor: pointer;
 			padding: 0;
 			margin: 0;
@@ -32,18 +33,18 @@
 			color: $grey;
 			background-color: transparent;
 			&:hover,
-			&:focus{
+			&:focus {
 				color: #222;
 				border-color: #ccc;
 			}
-			&:first-child{
+			&:first-child {
 				border-radius: $radius 0 0 $radius;
 				border-left-width: 1px;
 			}
-			&:last-child{
+			&:last-child {
 				border-radius: 0 $radius $radius 0;
 			}
-			&.active{
+			&.active {
 				border-color: $grey;
 				background-color: $grey;
 				color: #fff;

@@ -15,6 +15,7 @@ require('./helpers/polyfills.js');
 let qs = require('qs');
 let imagesLoaded = require('imagesloaded');
 import axios from 'axios';
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import smoothscroll from 'smoothscroll-polyfill'; // Smooth scrolling polyfill
 smoothscroll.polyfill();
 
@@ -34,7 +35,7 @@ import setLocalizedVars from './modules/setLocalizedVars';
 import insertScript from './modules/insertScript';
 import setFocus from './modules/setFocus';
 import getButtonURL from './modules/getButtonURL';
-import almMasonry from './modules/masonry';
+import { almMasonryConfig, almMasonry } from './modules/masonry';
 import almFadeIn from './modules/fadeIn';
 import almFadeOut from './modules/fadeOut';
 import almFilter from './modules/filtering';
@@ -43,6 +44,7 @@ import almDebug from './modules/almDebug';
 import getScrollPercentage from './modules/getScrollPercentage';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 import { showPlaceholder, hidePlaceholder } from './modules/placeholder';
+import lazyImages from './modules/lazyImages';
 import { singlePostHTML } from './addons/singleposts';
 import { createCacheFile } from './addons/cache';
 import { wooInit, woocommerce, wooGetContent, wooReset } from './addons/woocommerce';
@@ -154,6 +156,7 @@ let alm_is_filtering = false;
 		alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
 		alm.posts_per_page = alm.listing.dataset.postsPerPage;
 		alm.offset = alm.listing.dataset.offset ? parseInt(alm.listing.dataset.offset) : 0;
+		alm.lazy_images = alm.listing.dataset.lazyImages ? alm.listing.dataset.lazyImages : false;
 		alm.integration.woocommerce = alm.listing.dataset.woocommerce ? alm.listing.dataset.woocommerce : false;
 		alm.integration.woocommerce = alm.integration.woocommerce === 'true' ? true : false;
 		alm.is_search = alm.is_search === undefined ? false : alm.is_search;
@@ -201,6 +204,7 @@ let alm_is_filtering = false;
 			alm.addons.nextpage_pageviews = alm.listing.dataset.nextpagePageviews;
 			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
 			alm.addons.nextpage_startpage = alm.listing.dataset.nextpageStartpage;
+			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
 		}
 
 		// Single Posts add-on
@@ -208,12 +212,22 @@ let alm_is_filtering = false;
 		if (alm.addons.single_post === 'true') {
 			alm.addons.single_post_id = alm.listing.dataset.singlePostId;
 			alm.addons.single_post_query = alm.listing.dataset.singlePostQuery;
-			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder;
+			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder === undefined ? 'previous' : alm.listing.dataset.singlePostOrder;
 			alm.addons.single_post_init_id = alm.listing.dataset.singlePostId;
-			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy;
-			alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms;
-			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar;
-			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget;
+			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy === undefined ? '' : alm.listing.dataset.singlePostTaxonomy;
+			alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms === undefined ? '' : alm.listing.dataset.singlePostExcludedTerms;
+			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar === undefined ? '' : alm.listing.dataset.singlePostProgressBar;
+			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget === undefined ? '' : alm.listing.dataset.singlePostTarget;
+			alm.addons.single_post_preview = alm.listing.dataset.singlePostPreview === undefined ? false : true;
+			if (alm.addons.single_post_preview) {
+				const singlePostPreviewData = alm.listing.dataset.singlePostPreview.split(':');
+				alm.addons.single_post_preview_data = {
+					button_label: singlePostPreviewData[0] ? singlePostPreviewData[0] : 'Continue Reading',
+					height: singlePostPreviewData[1] ? singlePostPreviewData[1] : 500,
+					element: singlePostPreviewData[2] ? singlePostPreviewData[2] : 'default',
+					className: 'alm-single-post--preview',
+				};
+			}
 		}
 
 		// Comments add-on
@@ -229,9 +243,7 @@ let alm_is_filtering = false;
 		}
 
 		alm.addons.tabs = alm.listing.dataset.tabs;
-
 		alm.addons.filters = alm.listing.dataset.filters;
-
 		alm.addons.seo = alm.listing.dataset.seo;
 
 		// Preloaded
@@ -248,6 +260,8 @@ let alm_is_filtering = false;
 		}
 
 		// Extension Shortcode Params
+
+		// REST API.
 		alm.extensions.restapi = alm.listing.dataset.restapi; // REST API
 		alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
 		alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
@@ -255,7 +269,8 @@ let alm_is_filtering = false;
 		alm.extensions.restapi_template_id = alm.listing.dataset.restapiTemplateId;
 		alm.extensions.restapi_debug = alm.listing.dataset.restapiDebug;
 
-		alm.extensions.acf = alm.listing.dataset.acf; // ACF
+		// ACF.
+		alm.extensions.acf = alm.listing.dataset.acf;
 		alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 		alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 		alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
@@ -266,14 +281,14 @@ let alm_is_filtering = false;
 			alm.extensions.acf = false;
 		}
 
-		// Term Query
+		// Term Query.
 		alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
 		alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
 		alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
 		alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
 		alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
 
-		// Paging
+		// Paging.
 		alm.addons.paging = alm.listing.dataset.paging; // Paging add-on
 		if (alm.addons.paging === 'true') {
 			alm.addons.paging = true;
@@ -296,19 +311,23 @@ let alm_is_filtering = false;
 		} else {
 			alm.addons.paging = false;
 		}
-		/* End Paging  */
 
-		/* Filters */
+		// Filters
 		if (alm.addons.filters === 'true') {
 			alm.addons.filters = true;
-
 			alm.addons.filters_url = alm.listing.dataset.filtersUrl === 'true' ? true : false;
+			alm.addons.filters_target = alm.listing.dataset.filtersTarget ? alm.listing.dataset.filtersTarget : false;
 			alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
 			alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
 			alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
 			alm.addons.filters_analtyics = alm.listing.dataset.filtersAnalytics;
 			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
 			alm.addons.filters_startpage = 0;
+
+			// Display warning if `filters_target` parameter is missing.
+			if (!alm.addons.filters_target) {
+				console.warn('Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More.');
+			}
 
 			// Get Paged Querystring Val
 			let page = getParameterByName('pg');
@@ -322,9 +341,8 @@ let alm_is_filtering = false;
 		} else {
 			alm.addons.filters = false;
 		}
-		/* End Filters  */
 
-		/* TABS */
+		// Tabs.
 		if (alm.addons.tabs === 'true') {
 			alm.addons.tabs = true;
 			alm.addons.tab_template = alm.listing.dataset.tabTemplate ? alm.listing.dataset.tabTemplate : '';
@@ -347,7 +365,7 @@ let alm_is_filtering = false;
 		} else {
 			alm.addons.tabs = false;
 		}
-		/* End TABS  */
+		/* End Tabs  */
 
 		/* REST API */
 		if (alm.extensions.restapi === 'true') {
@@ -429,6 +447,7 @@ let alm_is_filtering = false;
 			if (alm.addons.nextpage_startpage > 1) {
 				alm.isPaged = true;
 			}
+			alm.addons.nextpage_postTitle = alm.listing.dataset.nextpagePostTitle;
 		} else {
 			alm.addons.nextpage = false;
 		}
@@ -440,11 +459,6 @@ let alm_is_filtering = false;
 			alm.addons.single_post_permalink = '';
 			alm.addons.single_post_title = '';
 			alm.addons.single_post_slug = '';
-			alm.addons.single_post_order = alm.addons.single_post_order === undefined ? 'previous' : alm.addons.single_post_order;
-			alm.addons.single_post_taxonomy = alm.addons.single_post_taxonomy === undefined ? '' : alm.addons.single_post_taxonomy;
-			alm.addons.single_post_excluded_terms = alm.addons.single_post_excluded_terms === undefined ? '' : alm.addons.single_post_excluded_terms;
-			alm.addons.single_post_progress_bar = alm.addons.single_post_progress_bar === undefined ? '' : alm.addons.single_post_progress_bar;
-			alm.addons.single_post_target = alm.addons.single_post_target === undefined ? '' : alm.addons.single_post_target;
 			alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
 			alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
 			alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
@@ -484,7 +498,7 @@ let alm_is_filtering = false;
 		alm.theme_repeater = alm.theme_repeater === undefined ? false : alm.theme_repeater;
 
 		/* Max Pages (while scrolling) */
-		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 10000 : alm.max_pages;
+		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 9999 : alm.max_pages;
 
 		/* Scroll Distance */
 		alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
@@ -512,23 +526,8 @@ let alm_is_filtering = false;
 		alm.tcc = alm.tcc === undefined ? '' : alm.tcc;
 
 		/* Masonry */
-		alm.is_masonry_preloaded = false;
 		if (alm.transition === 'masonry') {
-			alm.masonry_init = true;
-			if (alm.msnry) {
-				alm.msnry.destroy(); // destroy masonry if it currently exists
-			} else {
-				alm.msnry = '';
-			}
-			alm.masonry_selector = alm.listing.dataset.masonrySelector;
-			alm.masonry_columnwidth = alm.listing.dataset.masonryColumnwidth;
-			alm.masonry_animation = alm.listing.dataset.masonryAnimation;
-			alm.masonry_animation = alm.masonry_animation === undefined ? 'standard' : alm.masonry_animation;
-			alm.masonry_horizontalorder = alm.listing.dataset.masonryHorizontalorder;
-			alm.masonry_horizontalorder = alm.masonry_horizontalorder === undefined ? 'true' : alm.masonry_horizontalorder;
-			alm.transition_container = false;
-			alm.images_loaded = false;
-			alm.is_masonry_preloaded = alm.addons.preloaded === 'true' ? true : alm.is_masonry_preloaded;
+			alm = almMasonryConfig(alm);
 		}
 
 		/* Scroll */
@@ -605,11 +604,10 @@ let alm_is_filtering = false;
 		}
 
 		/**
-		 *  LoadPosts()
 		 *  The function to get posts via Ajax
+		 *
 		 *  @since 2.0.0
 		 */
-
 		alm.AjaxLoadMore.loadPosts = function () {
 			if (typeof almOnChange === 'function') {
 				window.almOnChange(alm);
@@ -654,13 +652,12 @@ let alm_is_filtering = false;
 			}
 		};
 
-		/*  ajax()
-		 *  Ajax Load Moe Ajax function
+		/**
+		 * Ajax Load Moe Ajax function
 		 *
-		 *  @param queryType The type of Ajax request (standard/totalposts)
-		 *  @since 2.6.0
+		 * @param {string} queryType The type of Ajax request (standard/totalposts).
+		 * @since 2.6.0
 		 */
-
 		alm.AjaxLoadMore.ajax = function (queryType) {
 			// Default ALM action
 			let action = 'alm_get_posts';
@@ -704,6 +701,7 @@ let alm_is_filtering = false;
 					pageviews: alm.addons.nextpage_pageviews,
 					post_id: alm.addons.nextpage_post_id,
 					startpage: alm.addons.nextpage_startpage,
+					nested: alm.nested,
 				};
 			}
 
@@ -774,7 +772,6 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * adminajax
 		 * Send request to the admin-ajax.php
 		 *
 		 * @param {*} alm | ALm object
@@ -855,6 +852,7 @@ let alm_is_filtering = false;
 						// Next Page and Paging
 						if (typeof almBuildPagination === 'function') {
 							window.almBuildPagination(data.totalpages, alm);
+							alm.totalpages = data.totalpages;
 						}
 					} else if (queryType === 'totalposts' && alm.addons.paging) {
 						// Paging
@@ -870,8 +868,7 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * tabs
-		 * Send request to the WP REST API
+		 * Send request to the WP REST API.
 		 *
 		 * @param {*} alm | ALm object
 		 * @since 5.2.0
@@ -926,7 +923,6 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * restapi
 		 * Send request to the WP REST API
 		 *
 		 * @param {*} alm | ALm object
@@ -957,11 +953,11 @@ let alm_is_filtering = false;
 				.then(function (response) {
 					// Success
 					let results = response.data; // Get data from response
-					let data = '',
-						html = results.html,
-						meta = results.meta,
-						postcount = meta.postcount,
-						totalposts = meta.totalposts;
+					let data = '';
+					let html = results.html;
+					let meta = results.meta;
+					let postcount = meta && meta.postcount ? meta.postcount : 0;
+					let totalposts = meta && meta.totalposts ? meta.totalposts : 0;
 
 					// loop results to get data from each
 					for (let i = 0; i < html.length; i++) {
@@ -999,11 +995,10 @@ let alm_is_filtering = false;
 		}
 
 		/**
-		 * success
-		 * Success function after loading data
+		 * Success function after loading data.
 		 *
-		 * @param data     The results of the Ajax request
-		 * @param is_cache Are results of the Ajax request coming from cache
+		 * @param {object} data      The results of the Ajax request.
+		 * @param {boolean} is_cache Are results of the Ajax request coming from cache?
 		 * @since 2.6.0
 		 */
 		alm.AjaxLoadMore.success = function (data, is_cache) {
@@ -1025,7 +1020,7 @@ let alm_is_filtering = false;
 			// Paging container
 			let pagingContent = alm.listing.querySelector('.alm-paging-content');
 
-			var html, meta, total, totalLoaded;
+			let html, meta, total;
 
 			if (is_cache) {
 				// If Cache, do not look for json data as we won't be querying the DB.
@@ -1034,11 +1029,19 @@ let alm_is_filtering = false;
 				// Standard ALM query results
 				html = data.html;
 				meta = data.meta;
-				alm.posts = alm.addons.paging ? meta.postcount : alm.posts + meta.postcount;
-				total = meta.postcount;
-				alm.totalposts = meta.totalposts;
-				alm.totalposts = alm.addons.preloaded === 'true' ? alm.totalposts - alm.addons.preloaded_amount : alm.totalposts;
+				total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
+
+				let totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
+				alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
+				alm.posts = alm.addons.paging ? total : alm.posts + total;
 				alm.debug = meta.debug ? meta.debug : '';
+
+				if (!meta) {
+					// Display warning if `meta` is missing.
+					console.warn(
+						'Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.'
+					);
+				}
 			}
 
 			// Set alm.html as plain text return
@@ -1116,9 +1119,9 @@ let alm_is_filtering = false;
 				// We have results!
 
 				if (!alm.addons.paging) {
+					// Single Posts.
 					if (alm.addons.single_post) {
-						// Single Posts
-						reveal.setAttribute('class', 'alm-reveal alm-single-post post-' + alm.addons.single_post_id + alm.tcc);
+						reveal.setAttribute('class', `alm-reveal alm-single-post post-${alm.addons.single_post_id}${alm.tcc ? ` ${alm.tcc}` : ''}`);
 						reveal.dataset.url = alm.addons.single_post_permalink;
 						if (alm.addons.single_post_target) {
 							reveal.dataset.page = parseInt(alm.page) + 1;
@@ -1128,15 +1131,19 @@ let alm_is_filtering = false;
 						reveal.dataset.id = alm.addons.single_post_id;
 						reveal.dataset.title = alm.addons.single_post_title;
 						reveal.innerHTML = alm.html;
+
+						// Single Post Preview
+						if (alm.addons.single_post_preview && alm.addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
+							const singlePreview = window.almSinglePostCreatePreview(reveal, alm.addons.single_post_id, alm.addons.single_post_preview_data);
+							reveal.replaceChildren(singlePreview ? singlePreview : reveal);
+						}
 					} else {
 						if (!alm.transition_container) {
 							// No transition container
-
 							alm.el = alm.html;
 							reveal = alm.container_type === 'table' ? tableWrap(alm.html) : stripEmptyNodes(almDomParser(alm.html, 'text/html'));
 						} else {
 							// Standard container
-
 							let pagenum;
 							let querystring = window.location.search;
 							let seo_class = alm.addons.seo ? ' alm-seo' : '';
@@ -1156,7 +1163,7 @@ let alm_is_filtering = false;
 								// Call to Actions
 								if (alm.addons.cta === 'true') {
 									posts_per_page = posts_per_page + 1; // Add 1 to posts_per_page for CTAs
-									pages = Math.ceil(total / posts_per_page); // Update pages var with new posts_per_page
+									pages = Math.ceil(total / posts_per_page); // Update pages let with new posts_per_page
 									total = pages + total; // Get new total w/ CTAs added
 								}
 
@@ -1281,6 +1288,8 @@ let alm_is_filtering = false;
 								window.almComplete(alm);
 							}
 
+							lazyImages(alm);
+
 							// ALM Done
 							if (nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
 								alm.AjaxLoadMore.triggerDone();
@@ -1314,6 +1323,8 @@ let alm_is_filtering = false;
 								window.almComplete(alm);
 							}
 
+							lazyImages(alm);
+
 							// ALM Done
 							if (!nextPage) {
 								alm.AjaxLoadMore.triggerDone();
@@ -1330,10 +1341,10 @@ let alm_is_filtering = false;
 
 					// Append `reveal` div to ALM Listing container
 					// Do not append when transtion == masonry OR init and !preloaded
-					if (alm.transition !== 'masonry' || (alm.init && !alm.is_masonry_preloaded)) {
+					if (alm.transition !== 'masonry' || (alm.init && alm.addons.preloaded !== 'true')) {
 						if (!isPaged) {
 							if (!alm.transition_container) {
-								// No transition container
+								// No transition container.
 								if (alm.images_loaded === 'true') {
 									imagesLoaded(reveal, function () {
 										almAppendChildren(alm.listing, reveal);
@@ -1344,11 +1355,11 @@ let alm_is_filtering = false;
 								} else {
 									almAppendChildren(alm.listing, reveal);
 
-									// Run srcSet polyfill
+									// Run srcSet polyfill.
 									srcsetPolyfill(alm.listing, alm.ua);
 								}
 							} else {
-								// Standard container
+								// Standard container.
 								alm.listing.appendChild(reveal);
 							}
 						}
@@ -1365,20 +1376,23 @@ let alm_is_filtering = false;
 						// Wrap almMasonry in anonymous async/await function
 						(async function () {
 							await almMasonry(alm, alm.init, alm_is_filtering);
-							alm.masonry_init = false;
+							alm.masonry.init = false;
 
 							alm.AjaxLoadMore.triggerWindowResize();
 							alm.AjaxLoadMore.transitionEnd();
+
 							if (typeof almComplete === 'function') {
 								window.almComplete(alm);
 							}
+
+							lazyImages(alm);
 						})().catch((e) => {
 							console.log('There was an error with ALM Masonry');
 						});
 					}
 
 					// None
-					else if (alm.transition === 'none') {
+					else if (alm.transition === 'none' && alm.transition_container) {
 						if (alm.images_loaded === 'true') {
 							imagesLoaded(reveal, function () {
 								almFadeIn(reveal, 0);
@@ -1390,7 +1404,7 @@ let alm_is_filtering = false;
 						}
 					}
 
-					// Default(Fade)
+					// Default (Fade)
 					else {
 						if (alm.images_loaded === 'true') {
 							imagesLoaded(reveal, function () {
@@ -1470,6 +1484,8 @@ let alm_is_filtering = false;
 						window.almComplete(alm);
 					}
 
+					lazyImages(alm);
+
 					// Filters Add-on Complete
 					if (alm_is_filtering && alm.addons.filters) {
 						if (typeof almFiltersAddonComplete === 'function') {
@@ -1524,7 +1540,7 @@ let alm_is_filtering = false;
 
 			// Destroy After
 			if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
-				var currentPage = alm.page + 1; // Add 1 because alm.page starts at 0
+				let currentPage = alm.page + 1; // Add 1 because alm.page starts at 0
 				currentPage = alm.addons.preloaded === 'true' ? currentPage++ : currentPage; // Add 1 for preloaded
 				if (currentPage == alm.destroy_after) {
 					// Disable ALM if page = alm.destroy_after val
@@ -1714,7 +1730,7 @@ let alm_is_filtering = false;
 			if (!reveal || !alm.transition_container) {
 				return false; // Exit if not `transition_container`
 			}
-			let nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances from jQuery obj
+			let nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances
 			if (nested) {
 				nested.forEach(function (element) {
 					window.almInit(element);
@@ -1738,10 +1754,9 @@ let alm_is_filtering = false;
 			if (alm.fetchingPreviousPost) {
 				return false;
 			}
-
 			alm.fetchingPreviousPost = true;
 
-			// Get admin-ajax.php URL
+			// Get Ajax URL.
 			let ajaxURL = alm_localize.ajaxurl;
 
 			// Get data params
@@ -1793,19 +1808,19 @@ let alm_is_filtering = false;
 		 * @since 2.14.0
 		 */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
-			if (typeof almSetNextPage === 'function') {
+			if (typeof almSetNextPage === 'function' && alm.addons.nextpage) {
 				// Next Page
 				window.almSetNextPage(alm);
 			}
-			if (typeof almSEO === 'function') {
+			if (typeof almSEO === 'function' && alm.addons.seo) {
 				// SEO
 				window.almSEO(alm, false);
 			}
-			if (typeof almWooCommerce === 'function') {
+			if (typeof almWooCommerce === 'function' && alm.addons.woocommerce) {
 				// WooCommerce
 				window.almWooCommerce(alm);
 			}
-			if (typeof almElementor === 'function') {
+			if (typeof almElementor === 'function' && alm.addons.elementor) {
 				// Elementor
 				window.almElementor(alm);
 			}
@@ -1977,7 +1992,7 @@ let alm_is_filtering = false;
 				window.dispatchEvent(new Event('resize'));
 			} else {
 				//This will be executed on old browsers and especially IE
-				var resizeEvent = window.document.createEvent('UIEvents');
+				let resizeEvent = window.document.createEvent('UIEvents');
 				resizeEvent.initUIEvent('resize', true, false, window, 0);
 				window.dispatchEvent(resizeEvent);
 			}
@@ -2067,7 +2082,7 @@ let alm_is_filtering = false;
 				});
 				alm.window.addEventListener('keyup', function (e) {
 					// End, Page Down
-					let code = e.keyCode ? e.keyCode : e.which;
+					let code = e.key ? e.key : e.code;
 					switch (code) {
 						case 35:
 						case 34:
@@ -2155,8 +2170,10 @@ let alm_is_filtering = false;
 					alm.finished = true;
 					alm.button.classList.add('done');
 				} else {
+					// Set button label.
+					alm.button.innerHTML = alm.button_label;
+					// If Pause.
 					if (alm.pause === 'true') {
-						alm.button.innerHTML = alm.button_label;
 						alm.loading = false;
 					} else {
 						alm.AjaxLoadMore.loadPosts();
@@ -2174,10 +2191,7 @@ let alm_is_filtering = false;
 					alm.AjaxLoadMore.triggerDone();
 				}
 
-				/*
-				 *  Display tableOfContents
-				 */
-
+				// Display Table of Contents
 				tableOfContents(alm, true, true);
 			}
 
@@ -2217,10 +2231,7 @@ let alm_is_filtering = false;
 					resultsText.almInitResultsText(alm, 'preloaded');
 				}
 
-				/*
-				 *  Display tableOfContents
-				 */
-
+				// Display Table of Contents
 				tableOfContents(alm, alm.init, true);
 			}
 
@@ -2232,7 +2243,7 @@ let alm_is_filtering = false;
 
 					if (nextpage_pages) {
 						let nextpage_first = nextpage_pages[0];
-						let nextpage_total = alm.localize.total_posts ? parseInt(alm.localize.total_posts) : nextpage_first.dataset.totalPosts;
+						let nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
 
 						// Disable if last page loaded
 						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
@@ -2241,31 +2252,27 @@ let alm_is_filtering = false;
 					}
 				}
 
+				// Results Text.
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'nextpage');
 				}
 
-				/*
-				 *  Display tableOfContents
-				 */
-
+				// Display Table of Contents
 				tableOfContents(alm, alm.init, true);
 			}
 
-			// WooCommerce Add-on
+			// WooCommerce Add-on.
 			if (alm.addons.woocommerce) {
-				// Initiate WooCommerce
 				wooInit(alm);
 
-				// Trigger `Done` if `paged is less than `pages`
+				// Trigger `Done` if `paged is less than `pages`.
 				if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
 					alm.AjaxLoadMore.triggerDone();
 				}
 			}
 
-			// Elementor Add-on
+			// Elementor Add-on.
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
-				// Initiate Elementor
 				elementorInit(alm);
 
 				// Trigger `Done` if `elementor_next_page_url` is empty
@@ -2274,13 +2281,13 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Window Load (Masonry + Preloaded)
+			// Window Load (Masonry + Preloaded).
 			alm.window.addEventListener('load', function () {
-				if (alm.is_masonry_preloaded) {
+				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
 					// Wrap almMasonry in anonymous async/await function
 					(async function () {
 						await almMasonry(alm, true, false);
-						alm.masonry_init = false;
+						alm.masonry.init = false;
 					})().catch((e) => {
 						console.log('There was an error with ALM Masonry');
 					});
@@ -2292,7 +2299,8 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * Update current page - triggered from paging add-on.
+		 * Update Current Page.
+		 * Callback function triggered from paging add-on.
 		 *
 		 * @since 2.7.0
 		 */
@@ -2440,8 +2448,8 @@ let reset = function (props = {}) {
 				instance.dataset.wooSettings = settings; // Update data atts
 				almFilter('fade', '100', data, 'filter');
 			}
-		})().catch((e) => {
-			console.log('There was an resetting the Ajax Load More instance.');
+		})().catch(() => {
+			console.warn('Ajax Load More: There was an resetting the Ajax Load More instance.');
 		});
 	} else {
 		// Standard ALM

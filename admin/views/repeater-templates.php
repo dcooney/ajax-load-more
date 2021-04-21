@@ -1,4 +1,5 @@
 <?php
+	// @codingStandardsIgnoreStart
 	$theme_repeaters = false;
 	if ( isset( $_GET['theme-repeaters'] ) ) {
 		$theme_repeaters = ( 'true' === $_GET['theme-repeaters'] ) ? true : false;
@@ -10,8 +11,8 @@
 
 		<header class="header-wrap">
 			<h1>
-				<?php echo ALM_TITLE; ?>: <strong><?php _e('Repeater Templates', 'ajax-load-more'); ?></strong>
-				<em><?php _e('The library of editable templates for use within your theme', 'ajax-load-more'); ?></em>
+				<?php echo ALM_TITLE; ?>: <strong><?php _e( 'Repeater Templates', 'ajax-load-more' ); ?></strong>
+				<em><?php _e( 'The library of editable templates for use within your theme', 'ajax-load-more' ); ?></em>
 			</h1>
 			<?php alm_render_transient_notification(); ?>
 		</header>
@@ -58,10 +59,9 @@
 								$file = realpath( $file );
 								$link = substr( $file, strlen( $dir ) + 1 );
 
-								$file_extension = strtolower(substr(basename($file), strrpos(basename($file), '.') + 1));
-								$file_directory = get_option('stylesheet') .'/'. strtolower(substr(basename($dir), strrpos(basename($dir), '/')));
-
-								$id = preg_replace( '/\\.[^.\\s]{3,4}$/', '', $link );
+								$file_extension = strtolower( substr( basename( $file ), strrpos( basename( $file ), '.' ) + 1 ) );
+								$file_directory = get_option( 'stylesheet' ) . '/' . strtolower( substr( basename( $dir ), strrpos( basename( $dir ), '/' ) ) );
+								$id             = preg_replace( '/\\.[^.\\s]{3,4}$/', '', $link );
 
 								// Only display .php files files.
 								if ( 'php' === $file_extension ) {
@@ -155,17 +155,19 @@
 							<?php } ?>
 
 						<?php } else {
-								$tr_extend_cta = alm_get_addon( 'theme-repeaters' );
-								if ( $tr_extend_cta ) {
-									echo alm_display_featured_addon( $tr_extend_cta, 'Upgrade Now');
-								}
+							// Display Theme Repeaters CTA.
+							$tr_extend_cta = alm_get_addon( 'theme-repeaters' );
+							if ( $tr_extend_cta ) {
+								echo alm_display_featured_addon( $tr_extend_cta, 'Upgrade Now');
+							}
 						} ?>
 
 					<?php } else { ?>
 
 					<!-- Repeaters -->
+
 			      <?php
-	            if (has_action('alm_custom_repeaters') || has_action('alm_unlimited_repeaters')){ ?>
+	            if ( has_action( 'alm_custom_repeaters') || has_action( 'alm_unlimited_repeaters' ) ) { ?>
 					<span class="toggle-all" role="button" tabindex="0">
 						<span class="inner-wrap">
 							<em class="collapse"><?php _e('Collapse All', 'ajax-load-more'); ?></em>
@@ -475,7 +477,6 @@
 		   </div>
 
 		   <aside class="cnkt-sidebar">
-
 	   	   <div id="cnkt-sticky-wrapper">
 		   	   <div id="cnkt-sticky">
 
@@ -501,16 +502,13 @@
 								<a class="button button-primary" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank"><?php _e('Learn More', 'ajax-load-more'); ?></a>
 							</div>
 						</div>
-
 		            <?php
 		               if(!$theme_repeaters){
-		                  include_once( ALM_PATH . 'admin/includes/cta/writeable.php');
+		                  include_once ALM_PATH . 'admin/includes/cta/writeable.php';
 		               }
 		            ?>
-
 		   	   </div>
 	   	   </div>
-
 		   </aside>
 
 		   <div class="clear"></div>

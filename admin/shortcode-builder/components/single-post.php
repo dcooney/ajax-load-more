@@ -29,7 +29,8 @@ if(has_action('alm_single_post_installed')){ ?>
 
       <div class="prev_post_options nested-component" style="display: none;">
 	      <div class="nested-component--inner">
-		      <section>
+
+				<section>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Post ID', 'ajax-load-more'); ?></h4>
    	   		 	<p><?php _e('The ID of the current single post.', 'ajax-load-more'); ?></p>
@@ -104,7 +105,7 @@ if(has_action('alm_single_post_installed')){ ?>
 	         </div>
 
 		      <div id="pp_extras">
-		         <section>
+					<section>
    		         <div class="shortcode-builder--label">
    		            <h4><?php _e('Taxonomy', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Selecting a taxonomy means only previous posts from the same taxonomy term will be returned. If a post has multiple terms attached, each term will be considered using an OR relationship query.','ajax-load-more'); ?>"></a></h4>
    		   		 	<p><?php _e('Query previous posts from the same taxonomy term(s).', 'ajax-load-more'); ?></p>
@@ -145,55 +146,78 @@ if(has_action('alm_single_post_installed')){ ?>
    		            </div>
    		         </div>
 		         </section>
-
 	         </div>
-
-	         <?php if( is_plugin_active( 'elementor-pro/elementor-pro.php' ) ) { ?>
-				<!-- Elementor -->
-				<section>
-		         <div class="shortcode-builder--label">
-			         <h4><?php _e('Elementor', 'ajax-load-more'); ?></h4>
-		   		 	<p><?php _e('Set Elementor <b>true</b> if you are using Elementor templates to build single posts.', 'ajax-load-more'); ?></p>
-		   		 	<p><a class="button-small" href="https://connekthq.com/elementor-infinite-scrolling/" target="_blank"><?php _e('View Blog Post', 'ajax-load-more'); ?></a></p>
-		   		</div>
-		         <div class="shortcode-builder--fields">
-			         <div class="inner">
-		               <ul>
-		                  <li>
-		                     <input class="alm_element" type="radio" name="elementor-single" value="t" id="elementor_t">
-		                     <label for="elementor_t"><?php _e('True', 'ajax-load-more'); ?></label>
-		                  </li>
-		                  <li>
-		                     <input class="alm_element" type="radio" name="elementor-single" value="f" id="elementor_f" checked="checked">
-		                     <label for="elementor_f"><?php _e('False', 'ajax-load-more'); ?></label>
-		                  </li>
-		               </ul>
-			         </div>
-		         </div>
-				</section>
-			   <?php } ?>
 
 	         <section>
    	         <div class="shortcode-builder--label">
-   		         <h4><?php _e('Reading Progress Bar ', 'ajax-load-more'); ?></h4>
-   	   		 	<p><?php _e('Display a reading progress bar indicator at the top or bottom of the browser window.', 'ajax-load-more'); ?></p>
+   		         <h4><?php _e('Post Preview', 'ajax-load-more'); ?></h4>
+   	   		 	<p><?php _e('Show a preview of Ajax loaded posts and have the user click to load the remainder of the post.', 'ajax-load-more'); ?></p>
+						 <p><a class="button-small" href="https://connekthq.com/accessibility-and-ajax-load-more/?showpreview=true" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
    	   		 </div>
    	         <div class="shortcode-builder--fields">
    	            <div class="inner">
    	               <ul>
    	                   <li>
-   	                    <input class="alm_element" type="radio" name="prev-post-progress" value="true" id="prev-post-progress-true">
-   	                    <label for="prev-post-progress-true"><?php _e('True', 'ajax-load-more'); ?></label>
+   	                    <input class="alm_element" type="radio" name="prev-post-preview" value="true" id="prev-post-preview-true">
+   	                    <label for="prev-post-preview-true"><?php _e('True', 'ajax-load-more'); ?></label>
    	                   </li>
    	                   <li>
-   	                    <input class="alm_element" type="radio" name="prev-post-progress" value="false" id="prev-post-progress-false" checked="checked">
-   	                    <label for="prev-post-progress-false"><?php _e('False', 'ajax-load-more'); ?></label>
+   	                    <input class="alm_element" type="radio" name="prev-post-preview" value="false" id="prev-post-preview-false" checked="checked">
+   	                    <label for="prev-post-preview-false"><?php _e('False', 'ajax-load-more'); ?></label>
    	                   </li>
    	               </ul>
    	            </div>
    	         </div>
 	         </section>
 
+				<!-- Preview Options -->
+	         <div class="clear"></div>
+				<div id="pp_preview_options" class="nested-component" style="display: none;">
+					<section>
+						<div class="shortcode-builder--label">
+							<h4><?php _e('Button Label', 'ajax-load-more'); ?></h4>
+							<p><?php _e('Enter a label for the preview button.', 'ajax-load-more'); ?></p>
+						</div>
+						<div class="shortcode-builder--fields">
+							<div class="inner">
+								<input type="text" id="pp-preview-label" class="alm_element" value="<?php echo apply_filters( 'alm_single_post_preview_button_label', 'Continue Reading' ); ?>" placeholder="<?php echo apply_filters( 'alm_single_post_preview_button_label', 'Continue Reading' ); ?>">
+							</div>
+						</div>
+					</section>
+					<section>
+						<div class="shortcode-builder--label">
+							<h4><?php _e('Height', 'ajax-load-more'); ?></h4>
+							<p><?php _e('Set the initial height of the preview in pixels.', 'ajax-load-more'); ?></p>
+						</div>
+						<div class="shortcode-builder--fields">
+							<div class="inner">
+								<input type="number" class="alm_element numbers-only" name="pp-preview-height" id="pp-preview-height" step="1" min="1" value="<?php echo apply_filters( 'alm_single_post_preview_height', 700 ); ?>">
+							</div>
+						</div>
+					</section>
+				</div>
+
+	         <section>
+					<div class="shortcode-builder--label">
+						<h4><?php _e('Reading Progress Bar', 'ajax-load-more'); ?></h4>
+						<p><?php _e('Display a reading progress bar indicator at the top or bottom of the browser window.', 'ajax-load-more'); ?></p>
+						 <p><a class="button-small" href="https://connekthq.com/accessibility-and-ajax-load-more/?progressbar=true" target="_blank"><?php _e('View Example', 'ajax-load-more'); ?></a></p>
+					</div>
+   	         <div class="shortcode-builder--fields">
+   	            <div class="inner">
+   	               <ul>
+								<li>
+									<input class="alm_element" type="radio" name="prev-post-progress" value="true" id="prev-post-progress-true">
+									<label for="prev-post-progress-true"><?php _e('True', 'ajax-load-more'); ?></label>
+								</li>
+								<li>
+									<input class="alm_element" type="radio" name="prev-post-progress" value="false" id="prev-post-progress-false" checked="checked">
+									<label for="prev-post-progress-false"><?php _e('False', 'ajax-load-more'); ?></label>
+								</li>
+   	               </ul>
+   	            </div>
+   	         </div>
+	         </section>
 
 	         <!-- Reading Progress Bar Options -->
 	         <div class="clear"></div>
@@ -270,6 +294,31 @@ if(has_action('alm_single_post_installed')){ ?>
 	   	      </div>
 	         </div>
 	         <!-- END Reading Progress Bar -->
+
+	         <?php if( is_plugin_active( 'elementor-pro/elementor-pro.php' ) ) { ?>
+				<!-- Elementor -->
+				<section>
+		         <div class="shortcode-builder--label">
+			         <h4><?php _e('Elementor', 'ajax-load-more'); ?></h4>
+		   		 	<p><?php _e('Set Elementor <b>true</b> if you are using Elementor templates to build single posts.', 'ajax-load-more'); ?></p>
+		   		 	<p><a class="button-small" href="https://connekthq.com/elementor-infinite-scrolling/" target="_blank"><?php _e('View Blog Post', 'ajax-load-more'); ?></a></p>
+		   		</div>
+		         <div class="shortcode-builder--fields">
+			         <div class="inner">
+		               <ul>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="elementor-single" value="t" id="elementor_t">
+		                     <label for="elementor_t"><?php _e('True', 'ajax-load-more'); ?></label>
+		                  </li>
+		                  <li>
+		                     <input class="alm_element" type="radio" name="elementor-single" value="f" id="elementor_f" checked="checked">
+		                     <label for="elementor_f"><?php _e('False', 'ajax-load-more'); ?></label>
+		                  </li>
+		               </ul>
+			         </div>
+		         </div>
+				</section>
+			   <?php } ?>
 
 	         <div class="clear"></div>
 

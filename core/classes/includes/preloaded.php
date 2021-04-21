@@ -12,16 +12,13 @@
 $preloaded_output = '';
 $preload_offset   = $offset;
 
-
 // .alm-reveal default
 $alm_reveal = '<div class="alm-reveal alm-preloaded'. $transition_container_classes .'">';
-
 
 // If $seo or $filters, set $preloaded_amount to `$posts_per_page`.
 if ( ( has_action( 'alm_seo_installed' ) && $seo === 'true' && ! $users ) || $filters ) {
 	$preloaded_amount = $posts_per_page;
 }
-
 
 // Paging Add-on
 // Set $preloaded_amount to $posts_per_page
@@ -29,7 +26,6 @@ if($paging === 'true'){
    $preloaded_amount = $posts_per_page;
    $preload_offset = ($query_args['paged'] > 1) ? $preloaded_amount * ($query_args['paged'] - 1) : $preload_offset;
 }
-
 
 // CTA Add-on
 // Parse $cta_position
@@ -42,18 +38,15 @@ if($cta){
    }
 }
 
-
 // Modify $query_args with new offset and posts_per_page
 $query_args['offset'] = $preload_offset;
 $query_args['posts_per_page'] = $preloaded_amount;
 
-
 // Get Repeater Template Type
 $type = alm_get_repeater_type($repeater);
 
-
 // Tabs
-if($tabs){
+if ( $tabs ) {
 
 	/*
 	 *	alm_tabs_preloaded
@@ -69,7 +62,7 @@ if($tabs){
 }
 
 // Comments
-elseif($comments){
+elseif ( $comments ) {
 
 	if(has_action('alm_comments_installed') && $comments){
 
@@ -103,7 +96,7 @@ elseif($comments){
 }
 
 // Users
-elseif($users){
+elseif ( $users ) {
 
    if(has_action('alm_users_preloaded') && $users){
 
@@ -154,7 +147,7 @@ elseif($users){
 }
 
 // Term Query
-elseif($term_query){
+elseif ( $term_query ) {
 
    if(has_action('alm_terms_preloaded') && $term_query){
 
@@ -196,8 +189,8 @@ elseif($term_query){
 	}
 }
 
-// Advanced Custom Fields (Repeater, Gallery, Flex Content
-elseif($acf && ($acf_field_type !== 'relationship')){
+// Advanced Custom Fields (Repeater, Gallery, Flex Content)
+elseif ( $acf && ( $acf_field_type !== 'relationship' ) ) {
 
 	if(has_action('alm_acf_installed') && $acf){
 
@@ -299,6 +292,7 @@ else {
 		}
 
 		while ( $alm_preload_query->have_posts() ) :
+
 			$alm_preload_query->the_post();
 
 			$alm_item++;
@@ -306,7 +300,7 @@ else {
 
 			// Call to Action [Before].
 			if( $cta === 'true' && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' ) {
-				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true ) : '';
+				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
 			}
 
 			// Repeater Template.
@@ -314,7 +308,7 @@ else {
 
 			// Call to Action [After].
 			if ( $cta === 'true' && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' ) {
-				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true ) : '';
+				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
 			}
 
 		endwhile;
@@ -325,9 +319,16 @@ else {
 			$output .= apply_filters( 'alm_filters_reveal_close', '</div>' );
 		}
 
-		// SEO, create noscript pagination.
+		/**
+		 * SEO - create <noscript/> pagination of current query.
+		 * ALM Core Filter Hook
+		 *
+		 * @return html;
+		 */
 		if ( has_action( 'alm_seo_installed') && $seo === 'true' ) {
-			$noscript_pagingnav = apply_filters('alm_noscript_pagination', $alm_preload_query);
+			if ( ! apply_filters( 'alm_disable_noscript_' . $id, false ) ) {
+				$noscript_pagingnav = apply_filters( 'alm_noscript_pagination', $alm_preload_query );
+			}
 		}
 
 	endif;

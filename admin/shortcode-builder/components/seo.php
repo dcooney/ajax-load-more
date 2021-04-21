@@ -1,9 +1,9 @@
 <?php if(has_action('alm_seo_installed')){ ?>
 <!-- SEO -->
 <div class="row input seo add-on" id="alm-seo">
-   <h3 class="heading" tabindex="0"><?php _e('SEO (Search Engine Optimization)', 'ajax-load-more'); ?></h3>
+   <h3 class="heading" tabindex="0"><?php _e('Search Engine Optimization', 'ajax-load-more'); ?></h3>
    <div class="expand-wrap">
-      <section>
+      <section class="first">
          <div class="shortcode-builder--label">
    		 	<p><?php _e('Enable address bar URL rewrites as users page through ajax loaded content.', 'ajax-load-more'); ?></p>
    		 </div>

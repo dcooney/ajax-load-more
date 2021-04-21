@@ -49,7 +49,7 @@
 
    		   <?php } else {
       		   // Examples
-      		   include_once( ALM_PATH . 'admin/includes/components/example-list.php');
+      		   include_once ALM_PATH . 'admin/includes/components/example-list.php';
 
    		   } ?>
 
@@ -57,10 +57,10 @@
 
    	   <aside class="cnkt-sidebar">
       	   <?php
-            if(!$examples){
+            if ( ! $examples ) {
                // Implementation Guide
-         	   include_once( ALM_PATH . 'admin/includes/cta/resources.php');
-         	   include_once( ALM_PATH . 'admin/includes/cta/dyk.php');
+         	   include_once ALM_PATH . 'admin/includes/cta/resources.php';
+         	   include_once ALM_PATH . 'admin/includes/cta/dyk.php';
 
             } else {
                // Examples
@@ -68,15 +68,15 @@
             <div class="cta">
                <h3><?php _e('Example Library', 'ajax-load-more'); ?></h3>
                <div class="cta-inner">
-                  <p style="padding-bottom: 10px;"><?php _e('We have a collection of over 20 real world Ajax Load More <a href="https://connekthq.com/plugins/ajax-load-more/examples/" target="_blank">examples</a> available on the plugin website', 'ajax-load-more'); ?>.</p>
+                  <p style="padding-bottom: 10px;"><?php _e('View the collection of over 30 real world Ajax Load More <a href="https://connekthq.com/plugins/ajax-load-more/examples/" target="_blank">examples</a> available on the plugin website', 'ajax-load-more'); ?>.</p>
                </div>
                <div class="major-publishing-actions">
                   <a href="https://connekthq.com/plugins/ajax-load-more/examples/" class="button button-primary" target="_blank"><?php _e('View All Examples', 'ajax-load-more'); ?></a>
                </div>
             </div>
             <?php
-         	   include_once( ALM_PATH . 'admin/includes/cta/dyk.php');
-         	   include_once( ALM_PATH . 'admin/includes/cta/resources.php');
+         	   include_once ALM_PATH . 'admin/includes/cta/dyk.php';
+         	   include_once ALM_PATH . 'admin/includes/cta/resources.php';
             }
             ?>
    	   </aside>

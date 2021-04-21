@@ -1,83 +1,92 @@
 .ajax-load-more .CodeMirror {
-   height: auto;
-   border-radius: $radius;
-   padding: 0;
-   background: $light_grey;
-   border: 1px solid $border;
-   color: #999;
-   line-height: 1.5;
-   font-size: 13px;
-   &.CodeMirror-focused{
-		border-color: #bbbbbb;
-		box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
-   }
+	height: auto;
+	border-radius: $radius;
+	padding: 0;
+	background: $light_grey;
+	border: 1px solid $border;
+	color: $grey_text;
+	line-height: 1.5;
+	font-size: 13px;
+	&.CodeMirror-focused {
+		border-color: $blue;
+		box-shadow: $shadow;
+	}
 }
-.ajax-load-more .cm-readonly .CodeMirror{
-   opacity: 0.8;
+.ajax-load-more .cm-readonly .CodeMirror {
+	opacity: 0.8;
 }
-.ajax-load-more .cm-readonly .CodeMirror pre{
-   cursor: default !important;
+.ajax-load-more .cm-readonly .CodeMirror pre {
+	cursor: default !important;
 }
-.ajax-load-more .CodeMirror pre{
+.ajax-load-more .CodeMirror pre {
 	padding: 0 10px;
-} 
-.CodeMirror-lines{
+}
+.CodeMirror-lines {
 	padding: 10px !important;
 }
-.CodeMirror-linenumber{
+.CodeMirror-linenumber {
 	padding: 0 10px !important;
 	line-height: 1.25 !important;
 	color: #ccc !important;
 }
 .CodeMirror-linenumber.CodeMirror-gutter-elt {
-    padding: 0 20px 0 0 !important;
+	padding: 0 20px 0 0 !important;
 }
-.ajax-load-more .cm-readonly.sm-margin .CodeMirror{
-   margin: 0 0 10px;
+.ajax-load-more .cm-readonly.sm-margin .CodeMirror {
+	margin: 0 0 10px;
 }
-   .ajax-load-more .cm-readonly p.warning-callout{
-      margin: 0 0 10px;
-   }
-   .ajax-load-more .CodeMirror.loading {
-      background: $light_grey url("../../img/loader-unlimited.gif") no-repeat center center;
-      opacity: 0.6;
-   }
-   .ajax-load-more .cm-s-pastel-on-dark.CodeMirror{ /* Bkg color */
-      background: #333;
-   }
-   .ajax-load-more .CodeMirror-gutters{ /* Line Number color */
-      background: #fff;
-      border-right: 1px solid $border;
-      border-radius: 2px;
-   }
-   .ajax-load-more .CodeMirror-scroll {
-     overflow-y: hidden;
-     overflow-x: auto;
-   }
+.ajax-load-more .cm-readonly p.warning-callout {
+	margin: 0 0 10px;
+}
+.ajax-load-more .CodeMirror.loading {
+	background: $light_grey url('../../img/loader-unlimited.gif') no-repeat center center;
+	opacity: 0.6;
+}
+.ajax-load-more .cm-s-pastel-on-dark.CodeMirror {
+	/* Bkg color */
+	background: #333;
+}
+.ajax-load-more .CodeMirror-gutters {
+	/* Line Number color */
+	background: #fff;
+	border-right: 1px solid $border;
+	border-radius: 2px;
+}
+.ajax-load-more .CodeMirror-scroll {
+	overflow-y: hidden;
+	overflow-x: auto;
+}
 
-   .ajax-load-more .cm-tag{ /* <li> <h2> html elements */
-      color: #0a4b83 !important;
-   }
-   .ajax-load-more .cm-string{  /* Elements in " " */
-      color: #c75050 !important;
-   }
-   .ajax-load-more .cm-attribute{ /* class names */
-      color: #008080 !important;
-   }
-   .ajax-load-more .cm-keyword{ /* if, array, echo */
-      color: #ae5fb3 !important;
-   }
-   .ajax-load-more span.CodeMirror-matchingbracket{
-      color: #ff0000 !important;
-   }
-   .ajax-load-more .CodeMirror span.cm-meta{ /* <?php */
-      color: #999;
-   }
-   .ajax-load-more .CodeMirror span.cm-variable{ /* Function names */
-      color: #111;
-      font-weight: 500;
-      padding: 0 1px;
-   }
-  .ajax-load-more .CodeMirror span.cm-number{ /* Numbers */
-      color: #009999 !important;
-   }
+.ajax-load-more .cm-tag {
+	/* <li> <h2> html elements */
+	color: #0a4b83 !important;
+}
+.ajax-load-more .cm-string {
+	/* Elements in " " */
+	color: #c75050 !important;
+}
+.ajax-load-more .cm-attribute {
+	/* class names */
+	color: #008080 !important;
+}
+.ajax-load-more .cm-keyword {
+	/* if, array, echo */
+	color: #ae5fb3 !important;
+}
+.ajax-load-more span.CodeMirror-matchingbracket {
+	color: #ff0000 !important;
+}
+.ajax-load-more .CodeMirror span.cm-meta {
+	/* <?php */
+	color: $grey_text;
+}
+.ajax-load-more .CodeMirror span.cm-variable {
+	/* Function names */
+	color: #111;
+	font-weight: 500;
+	padding: 0 1px;
+}
+.ajax-load-more .CodeMirror span.cm-number {
+	/* Numbers */
+	color: #009999 !important;
+}

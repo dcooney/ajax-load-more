@@ -2,7 +2,7 @@
  * Ajax Load More
  * http://wordpress.org/plugins/ajax-load-more/
  *
- * Copyright 2015-2020 Connekt Media - https://connekthq.com
+ * Copyright 2015-2021 Connekt Media - https://connekthq.com
  * Free to use under the GPLv2 license.
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -201,7 +201,7 @@
     background-color: #888; }
 
 /* Infinite */
-.ajax-load-more-wrap.infinite .alm-load-more-btn {
+.ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn {
   width: 100%;
   background-color: transparent !important;
   background-position: center center;
@@ -217,28 +217,28 @@
   text-indent: -9999px;
   cursor: default !important;
   outline: none !important; }
-  .ajax-load-more-wrap.infinite .alm-load-more-btn:before {
+  .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:before {
     display: none !important; }
-  .ajax-load-more-wrap.infinite .alm-load-more-btn:focus, .ajax-load-more-wrap.infinite .alm-load-more-btn:active {
+  .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:focus, .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:active {
     outline: none; }
-  .ajax-load-more-wrap.infinite .alm-load-more-btn.done {
+  .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn.done {
     opacity: 0; }
-  .ajax-load-more-wrap.infinite .alm-load-more-btn.loading {
+  .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn.loading {
     opacity: 1; }
 
-.ajax-load-more-wrap.infinite.skype .alm-load-more-btn {
+.ajax-load-more-wrap.infinite.skype > .alm-btn-wrap .alm-load-more-btn {
   background-image: url("../../img/spinner-skype.gif"); }
 
-.ajax-load-more-wrap.infinite.ring .alm-load-more-btn {
+.ajax-load-more-wrap.infinite.ring > .alm-btn-wrap .alm-load-more-btn {
   background-image: url("../../img/spinner-ring.gif"); }
 
-.ajax-load-more-wrap.infinite.fading-blocks .alm-load-more-btn {
+.ajax-load-more-wrap.infinite.fading-blocks > .alm-btn-wrap .alm-load-more-btn {
   background-image: url("../../img/loader-fading-blocks.gif"); }
 
-.ajax-load-more-wrap.infinite.fading-circles .alm-load-more-btn {
+.ajax-load-more-wrap.infinite.fading-circles > .alm-btn-wrap .alm-load-more-btn {
   background-image: url("../../img/loader-fading-circles.gif"); }
 
-.ajax-load-more-wrap.infinite.chasing-arrows .alm-load-more-btn {
+.ajax-load-more-wrap.infinite.chasing-arrows > .alm-btn-wrap .alm-load-more-btn {
   background-image: url("../../img/spinner-chasing-arrows.gif"); }
 
 .ajax-load-more-wrap.alm-horizontal .alm-btn-wrap {
@@ -265,7 +265,6 @@
     display: table;
     clear: both;
     height: 0;
-    width: 100%;
     content: ''; }
 
 .alm-listing {
