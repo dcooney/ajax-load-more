@@ -30,7 +30,7 @@ if(!class_exists('ALM_LOCALIZE')):
 		 */
 		public static function add_localized_var($key = '', $value = '', $id = 'ajax-load-more', $position = ''){
 
-			if($position){
+			if ( $position ) {
 				self::$vars[$id][$position][$key] = $value; // Add key & val
 			} else {
 				self::$vars[$id][$key] = $value; // Add key & val
@@ -46,7 +46,7 @@ if(!class_exists('ALM_LOCALIZE')):
 		 *  @since 3.7
 		 */
 		public static function create_script_vars($id){
-			if(!empty(self::$vars) && isset(self::$vars[$id]) && is_array(self::$vars[$id])){
+			if ( ! empty( self::$vars ) && isset( self::$vars[$id] ) && is_array( self::$vars[$id] ) ) {
 
 				// Render wp_localize_script vars with 'ajax-load-more' script handle.
 				wp_localize_script( 'ajax-load-more', alm_convert_dashes_to_underscore($id) .'_vars', self::$vars[$id] );

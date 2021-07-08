@@ -21,7 +21,6 @@
     display: table;
     clear: both;
     height: 0;
-    width: 100%;
     content: ''; }
   .alm-btn-wrap .alm-load-more-btn {
     font-size: 15px;
@@ -66,7 +65,7 @@
               box-shadow: none;
       text-decoration: none; }
     .alm-btn-wrap .alm-load-more-btn.loading {
-      cursor: default;
+      cursor: wait;
       outline: none;
       padding-left: 44px; }
     .alm-btn-wrap .alm-load-more-btn.done {
@@ -254,6 +253,65 @@
     margin: 0; }
     .ajax-load-more-wrap.alm-horizontal .alm-btn-wrap button.done {
       display: none; }
+
+.alm-btn-wrap--prev {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  clear: both;
+  padding: 0;
+  margin: 0; }
+  .alm-btn-wrap--prev:after {
+    display: table;
+    clear: both;
+    height: 0;
+    content: ''; }
+  .alm-btn-wrap--prev a.alm-load-more-btn--prev {
+    line-height: 1;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px;
+    display: inline-block;
+    position: relative;
+    margin: 0 0 15px;
+    text-decoration: none; }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev:hover, .alm-btn-wrap--prev a.alm-load-more-btn--prev:focus {
+      text-decoration: underline; }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading, .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:focus {
+      cursor: wait;
+      text-decoration: none; }
+      .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:before, .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:focus:before {
+        content: '';
+        display: block;
+        position: absolute;
+        left: -18px;
+        top: 50%;
+        -webkit-transform: translateY(-50%);
+            -ms-transform: translateY(-50%);
+                transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        background: url("../../img/ajax-loader-lg.gif") no-repeat left center;
+        background-size: 16px 16px; }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.skype.loading:before {
+      background-image: url("../../img/spinner-skype.gif"); }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.ring.loading:before {
+      background-image: url("../../img/spinner-ring.gif"); }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.fading-blocks.loading:before {
+      background-image: url("../../img/spinner-fading-blocks.gif"); }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.circles.loading:before {
+      background-image: url("../../img/spinner-circles.gif"); }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.chasing-arrows.loading:before {
+      background-image: url("../../img/spinner-chasing-arrows.gif"); }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev:not(.disabled),
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev button:not([disabled]) {
+      cursor: pointer; }
+    .alm-btn-wrap--prev a.alm-load-more-btn--prev.done {
+      display: none !important; }
 
 /**
  *  Generic alm-listing Styles

@@ -95,14 +95,11 @@ function alm_prefix_plugin_update_message( $data, $response ) {
 	}
 }
 
-
-
-/*
-*  alm_plugin_row
-*  Create a notification in the plugin row
-*
-*  @since 5.2
-*/
+/**
+ * Create a notification in the plugin row
+ *
+ * @since 5.2
+ */
 function alm_plugin_row( $plugin_name ) {
 
 	$addons = alm_get_addons();

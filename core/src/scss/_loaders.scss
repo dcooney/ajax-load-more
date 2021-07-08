@@ -8,7 +8,6 @@
 		display: table;
 		clear: both;
 		height: 0;
-		width: 100%;
 		content: '';
 	}
 	.alm-load-more-btn {
@@ -46,7 +45,7 @@
 
 		/* Loading */
 		&.loading {
-			cursor: default;
+			cursor: wait;
 			outline: none;
 			padding-left: 44px;
 		}

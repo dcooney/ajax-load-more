@@ -2,7 +2,7 @@ import almFadeIn from './fadeIn';
 import almFadeOut from './fadeOut';
 
 export function showPlaceholder(alm) {
-	if (!alm || !alm.main || alm.addons.paging) {
+	if (!alm || !alm.main || alm.addons.paging || alm.rel === 'prev') {
 		return false;
 	}
 	if (alm.placeholder) {

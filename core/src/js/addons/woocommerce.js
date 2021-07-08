@@ -1,5 +1,9 @@
 import axios from 'axios';
+import dispatchScrollEvent from '../helpers/dispatchScrollEvent';
+import { setButtonAtts } from '../modules/getButtonURL';
+import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
+import { createLoadPreviousButton } from '../modules/loadPrevious';
 
 /**
  * Set up the instance of ALM WooCommerce
@@ -25,7 +29,8 @@ export function wooInit(alm) {
 	// Set up URL and class parameters on first item in product listing
 	let container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 	if (container) {
-		let count = getContainerCount(alm.addons.woocommerce_settings.container);
+		const count = getContainerCount(alm.addons.woocommerce_settings.container);
+		const currentPage = alm.addons.woocommerce_settings.paged;
 
 		if (count > 1) {
 			// Display warning if multiple containers were found.
@@ -52,8 +57,15 @@ export function wooInit(alm) {
 			);
 		}
 
-		if (alm.addons.woocommerce_settings.paged > 1) {
-			almWooCommerceResultsTextInit(alm);
+		// Paged URL: Create previous button.
+		if (currentPage > 1) {
+			// almWooCommerceResultsTextInit(alm);
+
+			if (alm.addons.woocommerce_settings.settings.previous_products) {
+				const prevURL = alm.addons.woocommerce_settings.paged_urls[currentPage - 2];
+				const label = alm.addons.woocommerce_settings.settings.previous_products;
+				createLoadPreviousButton(alm, container, currentPage - 1, prevURL, label);
+			}
 		}
 	} else {
 		console.warn(
@@ -70,16 +82,16 @@ export function wooInit(alm) {
  * @param {String} pageTitle
  * @since 5.3.0
  */
-
 export function woocommerce(content, alm, pageTitle = document.title) {
 	if (!content || !alm) {
 		return false;
 	}
 
 	return new Promise((resolve) => {
-		let container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
+		const container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 		let products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
-		let url = alm.addons.woocommerce_settings.paged_urls[alm.page];
+		const page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
+		const url = alm.addons.woocommerce_settings.paged_urls[page];
 
 		if (container && products && url) {
 			// Convert NodeList to Array
@@ -97,7 +109,47 @@ export function woocommerce(content, alm, pageTitle = document.title) {
 }
 
 /**
- * Reset a WooCommerce Instance by hitting the updated site URL
+ * Handle WooCommerce loaded functionality and dispatch actions.
+ *
+ * @param {object} alm
+ * @since 5.5.0
+ */
+export function woocommerceLoaded(alm) {
+	let nextPageNum = alm.page + 2;
+	let nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // Get URL.
+
+	// Set button data attributes.
+	if (alm.rel === 'prev' && alm.buttonPrev) {
+		let prevPageNum = alm.pagePrev - 1;
+		let prevPage = alm.addons.woocommerce_settings.paged_urls[alm.pagePrev - 2];
+		setButtonAtts(alm.buttonPrev, prevPageNum, prevPage);
+		dispatchScrollEvent(true);
+	} else {
+		setButtonAtts(alm.button, nextPageNum, nextPage);
+	}
+
+	// Lazy load images if necessary.
+	lazyImages(alm);
+
+	// Trigger almComplete.
+	if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+		window.almComplete(alm);
+	}
+
+	// End transitions.
+	alm.AjaxLoadMore.transitionEnd();
+
+	// ALM Done.
+	if (alm.rel === 'prev' && alm.pagePrev <= 1) {
+		alm.AjaxLoadMore.triggerDonePrev();
+	}
+	if (alm.rel === 'next' && nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
+		alm.AjaxLoadMore.triggerDone();
+	}
+}
+
+/**
+ * Reset a WooCommerce Instance by hitting the updated site URL.
  *
  * @since 5.3.8
  */
@@ -127,7 +179,7 @@ export function wooReset() {
 /**
  * Get the content, title and results text from the Ajax response
  *
- * @param {object} alm
+ * @param {object} alm The Ajax Load More object.
  * @since 5.3.0
  */
 export function wooGetContent(response, alm) {
@@ -136,7 +188,7 @@ export function wooGetContent(response, alm) {
 		meta: {
 			postcount: 1,
 			totalposts: alm.localize.total_posts,
-			debug: 'WooCommerce Query',
+			debug: false,
 		},
 	};
 	if (response.status === 200 && response.data) {
@@ -162,33 +214,35 @@ export function wooGetContent(response, alm) {
  *  Set results text for WooCommerce Add-on.
  *
  *  @param {HTMLElement} target
- *  @param {Object} alm
+ *  @param {Object} alm The Ajax Load More object.
  *  @since 5.3
  */
 function almWooCommerceResultsText(target = '', alm) {
 	if (target && alm && alm.addons.woocommerce_settings.results_text) {
 		let currentResults = target.querySelector(alm.addons.woocommerce_settings.results);
-		let link = alm.addons.woocommerce_settings.settings.previous_page_link;
-		let label = alm.addons.woocommerce_settings.settings.previous_page_label;
-		let sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 
 		if (alm.addons.woocommerce_settings.results_text) {
+			//let link = alm.addons.woocommerce_settings.settings.previous_page_link;
+			//let label = alm.addons.woocommerce_settings.settings.previous_page_label;
+			//let sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 			alm.addons.woocommerce_settings.results_text.forEach((element) => {
-				if (link && label) {
-					element.innerHTML = returnButton(currentResults, link, label, sep);
-				} else {
-					element.innerHTML = currentResults.innerHTML;
-				}
+				element.innerHTML = currentResults.innerHTML;
+				// if (link && label) {
+				// 	element.innerHTML = returnButton(currentResults, link, label, sep);
+				// } else {
+				// 	element.innerHTML = currentResults.innerHTML;
+				// }
 			});
 		}
 	}
 }
 
 /**
- *  Initiate Results text.
+ * Initiate Results text.
  *
- *  @param {Object} alm
- *  @since 5.3
+ * @param {Object} alm The Ajax Load More object.
+ * @since 5.3
+ * @deprecated 5.5
  */
 function almWooCommerceResultsTextInit(alm) {
 	if (alm && alm.addons.woocommerce_settings.results_text) {
@@ -222,9 +276,9 @@ function returnButton(text, link, label, seperator) {
 }
 
 /**
- * Get total count of WooCommerce containers
+ * Get total count of WooCommerce containers.
  *
- * @param {*} container
+ * @param {string} container The container class.
  */
 function getContainerCount(container) {
 	if (!container) {

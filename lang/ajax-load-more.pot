@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Ajax Load More\n"
-"POT-Creation-Date: 2021-04-20 19:43-0400\n"
+"POT-Creation-Date: 2021-07-08 09:54-0400\n"
 "PO-Revision-Date: 2018-06-20 13:05-0500\n"
 "Last-Translator: Darren Cooney <darren@connekthq.com>\n"
 "Language-Team: \n"
@@ -50,29 +50,29 @@ msgid ""
 "target=\"_blank\">license</a> to update."
 msgstr ""
 
-#: admin/admin.php:123
+#: admin/admin.php:120
 #, php-format
 msgid ""
 "%sRegister%s your copy of %s to receive access to automatic upgrades and "
 "support. Need a license key? %sPurchase one now%s."
 msgstr ""
 
-#: admin/admin.php:179 admin/admin.php:1260
+#: admin/admin.php:176 admin/admin.php:1257
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:170
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:241
 msgid "Error - unable to verify nonce, please try again."
 msgstr ""
 
-#: admin/admin.php:183
+#: admin/admin.php:180
 msgid "Transient set successfully"
 msgstr ""
 
-#: admin/admin.php:301 admin/admin.php:461 admin/admin.php:1125
-#: admin/admin.php:1171 admin/admin.php:1221
+#: admin/admin.php:298 admin/admin.php:458 admin/admin.php:1122
+#: admin/admin.php:1168 admin/admin.php:1218
 msgid "You don't belong here."
 msgstr ""
 
-#: admin/admin.php:327
+#: admin/admin.php:324
 msgid ""
 "You have an invalid or expired <a href=\"admin.php?page=ajax-load-more"
 "\"><b>Ajax Load More Pro</b></a> license key - please visit the <a href="
@@ -81,272 +81,272 @@ msgid ""
 "\"_blank\">purchase</a> one now."
 msgstr ""
 
-#: admin/admin.php:331
+#: admin/admin.php:328
 msgid ""
 "You have invalid or expired <a href=\"admin.php?page=ajax-load-more"
 "\"><b>Ajax Load More</b></a> license keys - please visit the <a href=\"admin."
 "php?page=ajax-load-more-licenses\">Licenses</a> section and input your keys."
 msgstr ""
 
-#: admin/admin.php:485 core/integration/elementor/elementor.php:13
+#: admin/admin.php:482 core/integration/elementor/elementor.php:13
 msgid "Ajax Load More"
 msgstr ""
 
-#: admin/admin.php:486 admin/editor/editor-build.php:69
+#: admin/admin.php:483 admin/editor/editor-build.php:69
 #: admin/views/licenses.php:94
 msgid "Active"
 msgstr ""
 
-#: admin/admin.php:487 admin/editor/editor-build.php:70
+#: admin/admin.php:484 admin/editor/editor-build.php:70
 #: admin/views/licenses.php:102
 msgid "Inactive"
 msgstr ""
 
-#: admin/admin.php:488 admin/editor/editor-build.php:71
+#: admin/admin.php:485 admin/editor/editor-build.php:71
 msgid "Applying layout"
 msgstr ""
 
-#: admin/admin.php:489 admin/editor/editor-build.php:72
+#: admin/admin.php:486 admin/editor/editor-build.php:72
 #: admin/views/repeater-templates.php:448
 msgid "Template Updated"
 msgstr ""
 
-#: admin/admin.php:491 admin/editor/editor-build.php:75
+#: admin/admin.php:488 admin/editor/editor-build.php:75
 msgid "Select Author(s)"
 msgstr ""
 
-#: admin/admin.php:492 admin/editor/editor-build.php:76
+#: admin/admin.php:489 admin/editor/editor-build.php:76
 msgid "Select Categories"
 msgstr ""
 
-#: admin/admin.php:493 admin/editor/editor-build.php:77
+#: admin/admin.php:490 admin/editor/editor-build.php:77
 msgid "Select Tags"
 msgstr ""
 
-#: admin/admin.php:494 admin/editor/editor-build.php:74
+#: admin/admin.php:491 admin/editor/editor-build.php:74
 msgid "Select"
 msgstr ""
 
-#: admin/admin.php:495 admin/editor/editor-build.php:41
+#: admin/admin.php:492 admin/editor/editor-build.php:41
 #: admin/editor/editor-build.php:78
 msgid "Jump to Option"
 msgstr ""
 
-#: admin/admin.php:496 admin/editor/editor-build.php:79
+#: admin/admin.php:493 admin/editor/editor-build.php:79
 msgid "Jump to Template"
 msgstr ""
 
-#: admin/admin.php:497
+#: admin/admin.php:494
 msgid "Are you sure you want to install this Ajax Load More extension?"
 msgstr ""
 
-#: admin/admin.php:498
+#: admin/admin.php:495
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:51
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:379
 msgid "Install Now"
 msgstr ""
 
-#: admin/admin.php:499
+#: admin/admin.php:496
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:90
 #: vendor/connekt-plugin-installer/class-connekt-plugin-installer.php:380
 msgid "Activate"
 msgstr ""
 
-#: admin/admin.php:500
+#: admin/admin.php:497
 msgid "Saving Settings"
 msgstr ""
 
-#: admin/admin.php:501
+#: admin/admin.php:498
 msgid "Settings Saved Successfully"
 msgstr ""
 
-#: admin/admin.php:502
+#: admin/admin.php:499
 msgid "Error Saving Settings"
 msgstr ""
 
-#: admin/admin.php:503
+#: admin/admin.php:500
 msgid ""
 "There is a maximum of 3 tax_query objects while using the shortcode builder"
 msgstr ""
 
-#: admin/admin.php:600
+#: admin/admin.php:597
 msgid ""
 "[Ajax Load More] Error opening default repeater template - Please check your "
 "file path and ensure your server is configured to allow Ajax Load More to "
 "read and write files within the /ajax-load-more/core/repeater directory"
 msgstr ""
 
-#: admin/admin.php:604
+#: admin/admin.php:601
 msgid ""
 "[Ajax Load More] Error updating default repeater template - Please check "
 "your file path and ensure your server is configured to allow Ajax Load More "
 "to read and write files within the /ajax-load-more/core/repeater directory."
 msgstr ""
 
-#: admin/admin.php:640 admin/admin.php:641 ajax-load-more.php:274
+#: admin/admin.php:637 admin/admin.php:638 ajax-load-more.php:370
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:649 admin/admin.php:650
+#: admin/admin.php:646 admin/admin.php:647
 #: admin/views/repeater-templates.php:14
 msgid "Repeater Templates"
 msgstr ""
 
-#: admin/admin.php:658 admin/admin.php:659 admin/views/shortcode-builder.php:9
+#: admin/admin.php:655 admin/admin.php:656 admin/views/shortcode-builder.php:9
 msgid "Shortcode Builder"
 msgstr ""
 
-#: admin/admin.php:668 admin/admin.php:669
+#: admin/admin.php:665 admin/admin.php:666
 #: admin/shortcode-builder/shortcode-builder.php:18
 #: admin/shortcode-builder/shortcode-builder.php:38 admin/views/add-ons.php:6
 msgid "Add-ons"
 msgstr ""
 
-#: admin/admin.php:678 admin/admin.php:679
+#: admin/admin.php:675 admin/admin.php:676
 #: admin/shortcode-builder/shortcode-builder.php:21
 #: admin/shortcode-builder/shortcode-builder.php:68
 #: admin/views/extensions.php:5
 msgid "Extensions"
 msgstr ""
 
-#: admin/admin.php:687 admin/admin.php:688 admin/views/help.php:18
+#: admin/admin.php:684 admin/admin.php:685 admin/views/help.php:18
 msgid "Help"
 msgstr ""
 
-#: admin/admin.php:694
+#: admin/admin.php:691
 msgid "License"
 msgstr ""
 
-#: admin/admin.php:694 admin/views/licenses.php:2
+#: admin/admin.php:691 admin/views/licenses.php:2
 msgid "Licenses"
 msgstr ""
 
-#: admin/admin.php:712 admin/admin.php:713 admin/admin.php:721
+#: admin/admin.php:709 admin/admin.php:710 admin/admin.php:718
 #: admin/views/go-pro.php:5
 msgid "Pro"
 msgstr ""
 
-#: admin/admin.php:722 admin/views/licenses.php:151
+#: admin/admin.php:719 admin/views/licenses.php:151
 msgid "Go Pro"
 msgstr ""
 
-#: admin/admin.php:733 admin/admin.php:734
+#: admin/admin.php:730 admin/admin.php:731
 #: admin/shortcode-builder/components/cache.php:3
 msgid "Cache"
 msgstr ""
 
-#: admin/admin.php:753 admin/admin.php:754
+#: admin/admin.php:750 admin/admin.php:751
 #: admin/shortcode-builder/components/filters.php:3
 msgid "Filters"
 msgstr ""
 
-#: admin/admin.php:774 admin/admin.php:775
+#: admin/admin.php:771 admin/admin.php:772
 msgid "WooCommerce"
 msgstr ""
 
-#: admin/admin.php:1081
+#: admin/admin.php:1078
 msgid "[Ajax Load More] Unable to open repeater template - "
 msgstr ""
 
-#: admin/admin.php:1085
+#: admin/admin.php:1082
 msgid "[Ajax Load More] Error saving repeater template - "
 msgstr ""
 
-#: admin/admin.php:1117
+#: admin/admin.php:1114
 msgid "Template Saved Successfully"
 msgstr ""
 
-#: admin/admin.php:1119
+#: admin/admin.php:1116
 msgid "Error Writing File"
 msgstr ""
 
-#: admin/admin.php:1119 admin/views/repeater-templates.php:389
+#: admin/admin.php:1116 admin/views/repeater-templates.php:389
 msgid "Something went wrong and the data could not be saved."
 msgstr ""
 
-#: admin/admin.php:1321 admin/shortcode-builder/shortcode-builder.php:166
+#: admin/admin.php:1318 admin/shortcode-builder/shortcode-builder.php:166
 msgid "Container Type"
 msgstr ""
 
-#: admin/admin.php:1329 admin/shortcode-builder/shortcode-builder.php:196
+#: admin/admin.php:1326 admin/shortcode-builder/shortcode-builder.php:196
 msgid "Container Classes"
 msgstr ""
 
-#: admin/admin.php:1337
+#: admin/admin.php:1334
 msgid "Disable CSS"
 msgstr ""
 
-#: admin/admin.php:1345 admin/shortcode-builder/shortcode-builder.php:124
+#: admin/admin.php:1342 admin/shortcode-builder/shortcode-builder.php:124
 msgid "Button/Loading Style"
 msgstr ""
 
-#: admin/admin.php:1353
+#: admin/admin.php:1350
 msgid "Load CSS Inline"
 msgstr ""
 
-#: admin/admin.php:1361
+#: admin/admin.php:1358
 msgid "Button Classes"
 msgstr ""
 
-#: admin/admin.php:1379
+#: admin/admin.php:1376
 msgid "Legacy Callbacks"
 msgstr ""
 
-#: admin/admin.php:1387
+#: admin/admin.php:1384
 msgid "Dynamic Content"
 msgstr ""
 
-#: admin/admin.php:1395
+#: admin/admin.php:1392
 msgid "Error Notices"
 msgstr ""
 
-#: admin/admin.php:1403
+#: admin/admin.php:1400
 msgid "Delete on Uninstall"
 msgstr ""
 
-#: admin/admin.php:1472
+#: admin/admin.php:1469
 msgid ""
 "Customize the user experience of Ajax Load More by updating the fields below."
 msgstr ""
 
-#: admin/admin.php:1481
+#: admin/admin.php:1478
 msgid "The following settings affect the WordPress admin area only."
 msgstr ""
 
-#: admin/admin.php:1505
+#: admin/admin.php:1502
 msgid "I want to use my own CSS styles."
 msgstr ""
 
-#: admin/admin.php:1505
+#: admin/admin.php:1502
 msgid "View Ajax Load More CSS"
 msgstr ""
 
-#: admin/admin.php:1522
+#: admin/admin.php:1519
 msgid "Hide shortcode button in WYSIWYG editor."
 msgstr ""
 
-#: admin/admin.php:1539
+#: admin/admin.php:1536
 msgid ""
 "Display error messaging regarding repeater template updates in the browser "
 "console."
 msgstr ""
 
-#: admin/admin.php:1556
+#: admin/admin.php:1553
 msgid ""
 "Disable dynamic population of categories, tags and authors in the Shortcode "
 "Builder.<span style=\"display:block\">Recommended if you have a large number "
 "of categories, tags and/or authors."
 msgstr ""
 
-#: admin/admin.php:1574 admin/admin.php:1577
+#: admin/admin.php:1571 admin/admin.php:1574
 msgid "Ajax Posts Here"
 msgstr ""
 
-#: admin/admin.php:1579
+#: admin/admin.php:1576
 msgid "You can modify the container type when building a shortcode."
 msgstr ""
 
-#: admin/admin.php:1593
+#: admin/admin.php:1590
 msgid ""
 "Add custom classes to the <i>.alm-listing</i> container - classes are "
 "applied globally and will appear with every instance of Ajax Load More. "
@@ -354,67 +354,67 @@ msgid ""
 "shortcode.</span>"
 msgstr ""
 
-#: admin/admin.php:1654
+#: admin/admin.php:1651
 msgid ""
 "Select an Ajax loading style - you can choose between a <strong>Button</"
 "strong> or <strong>Infinite Scroll</strong>"
 msgstr ""
 
-#: admin/admin.php:1659 admin/shortcode-builder/shortcode-builder.php:130
+#: admin/admin.php:1656 admin/shortcode-builder/shortcode-builder.php:130
 msgid "Button Style (Dark)"
 msgstr ""
 
-#: admin/admin.php:1666 admin/shortcode-builder/shortcode-builder.php:137
+#: admin/admin.php:1663 admin/shortcode-builder/shortcode-builder.php:137
 msgid "Button Style (Light)"
 msgstr ""
 
-#: admin/admin.php:1671 admin/shortcode-builder/shortcode-builder.php:141
+#: admin/admin.php:1668 admin/shortcode-builder/shortcode-builder.php:141
 msgid "Infinite Scroll (No Button)"
 msgstr ""
 
-#: admin/admin.php:1687
+#: admin/admin.php:1684
 msgid "Click to Preview"
 msgstr ""
 
-#: admin/admin.php:1689 admin/shortcode-builder/shortcode-builder.php:155
+#: admin/admin.php:1686 admin/shortcode-builder/shortcode-builder.php:155
 #: admin/shortcode-builder/shortcode-builder.php:371
-#: core/classes/class-alm-shortcode.php:205
+#: core/classes/class-alm-shortcode.php:207
 msgid "Load More"
 msgstr ""
 
-#: admin/admin.php:1708
+#: admin/admin.php:1705
 msgid "Improve site performance by loading Ajax Load More CSS inline."
 msgstr ""
 
-#: admin/admin.php:1724
+#: admin/admin.php:1721
 msgid "Add classes to your <strong>Load More</strong> button."
 msgstr ""
 
-#: admin/admin.php:1764
+#: admin/admin.php:1761
 msgid ""
 "On initial page load, move the user's browser window to the top of the "
 "screen."
 msgstr ""
 
-#: admin/admin.php:1765
+#: admin/admin.php:1762
 msgid "This may help prevent the loading of unnecessary posts."
 msgstr ""
 
-#: admin/admin.php:1784
+#: admin/admin.php:1781
 msgid "Disable REST API."
 msgstr ""
 
-#: admin/admin.php:1785
+#: admin/admin.php:1782
 msgid ""
 "Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax "
 "requests."
 msgstr ""
 
-#: admin/admin.php:1804
+#: admin/admin.php:1801
 msgid "Load legacy JavaScript callback functions."
 msgstr ""
 
-#: admin/admin.php:1805
+#: admin/admin.php:1802
 msgid ""
 "Ajax Load More <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/"
 "callback-functions/\" target=\"_blank\">callback functions</a> were updated "
@@ -422,13 +422,13 @@ msgid ""
 "library to maintain compatibility."
 msgstr ""
 
-#: admin/admin.php:1824
+#: admin/admin.php:1821
 msgid ""
 "Check this box if Ajax Load More should remove all of its data* when the "
 "plugin is deleted."
 msgstr ""
 
-#: admin/admin.php:1825
+#: admin/admin.php:1822
 msgid "* Database Tables, Options and Repeater Templates"
 msgstr ""
 
@@ -436,12 +436,12 @@ msgstr ""
 #, php-format
 msgid ""
 "<p style='padding: 0; margin: 0 0 15px;'>You've been using <b style='color: "
-"#222;'><a href='%s'>Ajax Load More</a></b> for some time now, could you "
+"#222;'><a href='%1$s'>Ajax Load More</a></b> for some time now, could you "
 "please give it a review at wordpress.org?<br/>All reviews, both good and bad "
 "are important as they help the plugin grow and improve over time.</p><p "
-"style='padding: 0; margin: 0 0 15px;'><a href='%s' target='_blank' "
+"style='padding: 0; margin: 0 0 15px;'><a href='%2$s' target='_blank' "
 "class='button button-primary'>Yes, I'll leave a review</a> &nbsp; <a "
-"href='%s' class='button'>No thanks</a> &nbsp; <a href='%s' class='button-"
+"href='%3$s' class='button'>No thanks</a> &nbsp; <a href='%4$s' class='button-"
 "no'>I've already done this</a></p><p style='padding: 10px 0 0; margin: "
 "0;'><small><a href='http://connekthq.com/plugins/' target='_blank'>Check out "
 "our other <b>Connekt</b> WordPress plugins</a></small></p>"
@@ -2932,11 +2932,11 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:348
+#: ajax-load-more.php:444
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:349
+#: ajax-load-more.php:445
 msgid "No results found."
 msgstr ""
 

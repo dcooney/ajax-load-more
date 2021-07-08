@@ -1,3 +1,5 @@
+import { setButtonAtts } from '../modules/getButtonURL';
+import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 
 /**
@@ -100,6 +102,36 @@ export function elementor(content, alm, pageTitle = document.title) {
 }
 
 /**
+ * Handle Elementor loaded functionality and dispatch actions.
+ *
+ * @param {object} alm
+ * @since 5.5.0
+ */
+export function elementorLoaded(alm) {
+	let nextPageNum = alm.page + 1;
+	let nextPage = alm.addons.elementor_next_page_url; // Get URL.
+
+	// Set button data attributes.
+	setButtonAtts(alm.button, nextPageNum, nextPage);
+
+	// Lazy load images if necessary.
+	lazyImages(alm);
+
+	// Trigger almComplete.
+	if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+		window.almComplete(alm);
+	}
+
+	// End transitions.
+	alm.AjaxLoadMore.transitionEnd();
+
+	// ALM Done
+	if (!nextPage) {
+		alm.AjaxLoadMore.triggerDone();
+	}
+}
+
+/**
  * Get the content, title and results text from the Ajax response.
  *
  * @param {*} response
@@ -112,7 +144,7 @@ export function elementorGetContent(response, alm) {
 		meta: {
 			postcount: 1,
 			totalposts: alm.localize.total_posts,
-			debug: 'Elementor Query',
+			debug: false,
 		},
 	};
 	if (response.status === 200 && response.data) {

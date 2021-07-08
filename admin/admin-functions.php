@@ -27,6 +27,7 @@ function alm_has_addon_shortcodes() {
 	$installed = false;
 	$actions   = array(
 		'alm_cache_installed',
+		'alm_cta_installed',
 		'alm_filters_installed',
 		'alm_comments_installed',
 		'alm_nextpage_installed',

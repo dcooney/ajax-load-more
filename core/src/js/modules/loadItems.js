@@ -13,30 +13,40 @@ import setFocus from './setFocus';
  */
 const loadItems = (container, items, alm, pageTitle, url = window.location, className = '') => {
 	return new Promise((resolve) => {
-		let total = items.length;
+		const total = items.length;
 		let index = 0;
 		let count = 1;
+
+		// Get load direction.
+		const rel = alm.rel ? alm.rel : 'next';
+
+		// Set load properties.
+		const matchVal = rel === 'prev' ? total : 1; // The item to attach data attributes.
+		const page = rel === 'prev' ? alm.pagePrev : alm.page + 1; // Get the page number.
+
+		// Reverse items array if rel is 'prev'.
+		items = rel === 'prev' ? items.reverse() : items;
 
 		function loadItem() {
 			if (count <= total) {
 				(async function () {
 					items[index].style.opacity = 0;
 
-					// First item only
-					if (count == 1) {
+					// Add data attributes to first or last item for URL updates.
+					if (count == matchVal) {
 						items[index].classList.add(className);
 
 						// Set URL
 						items[index].dataset.url = url;
 
 						// Set page num
-						items[index].dataset.page = alm.page + 1;
+						items[index].dataset.page = page;
 
 						// Set page title
 						items[index].dataset.pageTitle = pageTitle;
 					}
 
-					await loadImage(container, items[index], alm.ua);
+					await loadImage(container, items[index], alm.ua, rel);
 
 					count++;
 					index++;
@@ -52,7 +62,11 @@ const loadItems = (container, items, alm, pageTitle, url = window.location, clas
 						item.style.opacity = 1;
 					});
 					if (items[0]) {
-						setFocus(alm, items[0], null, false);
+						// Get the item to focus.
+						const focusItem = rel === 'prev' ? items[items.length - 1] : items[0];
+
+						// Set the focus.
+						setFocus(alm, focusItem, null, false);
 					}
 				}, 50);
 

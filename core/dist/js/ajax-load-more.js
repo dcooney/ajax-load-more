@@ -188,8 +188,13 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.elementorInit = elementorInit;
 exports.elementor = elementor;
+exports.elementorLoaded = elementorLoaded;
 exports.elementorGetContent = elementorGetContent;
 exports.elementorCreateParams = elementorCreateParams;
+
+var _getButtonURL = __webpack_require__(/*! ../modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
+
+var _lazyImages = __webpack_require__(/*! ../modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
 
 var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/modules/loadItems.js");
 
@@ -337,6 +342,36 @@ function elementor(content, alm) {
 }
 
 /**
+ * Handle Elementor loaded functionality and dispatch actions.
+ *
+ * @param {object} alm
+ * @since 5.5.0
+ */
+function elementorLoaded(alm) {
+	var nextPageNum = alm.page + 1;
+	var nextPage = alm.addons.elementor_next_page_url; // Get URL.
+
+	// Set button data attributes.
+	(0, _getButtonURL.setButtonAtts)(alm.button, nextPageNum, nextPage);
+
+	// Lazy load images if necessary.
+	(0, _lazyImages.lazyImages)(alm);
+
+	// Trigger almComplete.
+	if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+		window.almComplete(alm);
+	}
+
+	// End transitions.
+	alm.AjaxLoadMore.transitionEnd();
+
+	// ALM Done
+	if (!nextPage) {
+		alm.AjaxLoadMore.triggerDone();
+	}
+}
+
+/**
  * Get the content, title and results text from the Ajax response.
  *
  * @param {*} response
@@ -349,7 +384,7 @@ function elementorGetContent(response, alm) {
 		meta: {
 			postcount: 1,
 			totalposts: alm.localize.total_posts,
-			debug: 'Elementor Query'
+			debug: false
 		}
 	};
 	if (response.status === 200 && response.data) {
@@ -1020,6 +1055,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.wooInit = wooInit;
 exports.woocommerce = woocommerce;
+exports.woocommerceLoaded = woocommerceLoaded;
 exports.wooReset = wooReset;
 exports.wooGetContent = wooGetContent;
 
@@ -1027,9 +1063,19 @@ var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _dispatchScrollEvent = __webpack_require__(/*! ../helpers/dispatchScrollEvent */ "./core/src/js/helpers/dispatchScrollEvent.js");
+
+var _dispatchScrollEvent2 = _interopRequireDefault(_dispatchScrollEvent);
+
+var _getButtonURL = __webpack_require__(/*! ../modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
+
+var _lazyImages = __webpack_require__(/*! ../modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
+
 var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/modules/loadItems.js");
 
 var _loadItems2 = _interopRequireDefault(_loadItems);
+
+var _loadPrevious = __webpack_require__(/*! ../modules/loadPrevious */ "./core/src/js/modules/loadPrevious.js");
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
@@ -1082,6 +1128,7 @@ function wooInit(alm) {
 	var container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 	if (container) {
 		var count = getContainerCount(alm.addons.woocommerce_settings.container);
+		var currentPage = alm.addons.woocommerce_settings.paged;
 
 		if (count > 1) {
 			// Display warning if multiple containers were found.
@@ -1104,8 +1151,15 @@ function wooInit(alm) {
 			console.warn('ALM WooCommerce: Unable to locate products. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_products');
 		}
 
-		if (alm.addons.woocommerce_settings.paged > 1) {
-			almWooCommerceResultsTextInit(alm);
+		// Paged URL: Create previous button.
+		if (currentPage > 1) {
+			// almWooCommerceResultsTextInit(alm);
+
+			if (alm.addons.woocommerce_settings.settings.previous_products) {
+				var prevURL = alm.addons.woocommerce_settings.paged_urls[currentPage - 2];
+				var label = alm.addons.woocommerce_settings.settings.previous_products;
+				(0, _loadPrevious.createLoadPreviousButton)(alm, container, currentPage - 1, prevURL, label);
+			}
 		}
 	} else {
 		console.warn('ALM WooCommerce: Unable to locate container element. Get more information -> https://connekthq.com/plugins/ajax-load-more/docs/add-ons/woocommerce/#alm_woocommerce_container');
@@ -1120,7 +1174,6 @@ function wooInit(alm) {
  * @param {String} pageTitle
  * @since 5.3.0
  */
-
 function woocommerce(content, alm) {
 	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
 
@@ -1131,7 +1184,8 @@ function woocommerce(content, alm) {
 	return new Promise(function (resolve) {
 		var container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 		var products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
-		var url = alm.addons.woocommerce_settings.paged_urls[alm.page];
+		var page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
+		var url = alm.addons.woocommerce_settings.paged_urls[page];
 
 		if (container && products && url) {
 			// Convert NodeList to Array
@@ -1163,7 +1217,47 @@ function woocommerce(content, alm) {
 }
 
 /**
- * Reset a WooCommerce Instance by hitting the updated site URL
+ * Handle WooCommerce loaded functionality and dispatch actions.
+ *
+ * @param {object} alm
+ * @since 5.5.0
+ */
+function woocommerceLoaded(alm) {
+	var nextPageNum = alm.page + 2;
+	var nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // Get URL.
+
+	// Set button data attributes.
+	if (alm.rel === 'prev' && alm.buttonPrev) {
+		var prevPageNum = alm.pagePrev - 1;
+		var prevPage = alm.addons.woocommerce_settings.paged_urls[alm.pagePrev - 2];
+		(0, _getButtonURL.setButtonAtts)(alm.buttonPrev, prevPageNum, prevPage);
+		(0, _dispatchScrollEvent2.default)(true);
+	} else {
+		(0, _getButtonURL.setButtonAtts)(alm.button, nextPageNum, nextPage);
+	}
+
+	// Lazy load images if necessary.
+	(0, _lazyImages.lazyImages)(alm);
+
+	// Trigger almComplete.
+	if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
+		window.almComplete(alm);
+	}
+
+	// End transitions.
+	alm.AjaxLoadMore.transitionEnd();
+
+	// ALM Done.
+	if (alm.rel === 'prev' && alm.pagePrev <= 1) {
+		alm.AjaxLoadMore.triggerDonePrev();
+	}
+	if (alm.rel === 'next' && nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
+		alm.AjaxLoadMore.triggerDone();
+	}
+}
+
+/**
+ * Reset a WooCommerce Instance by hitting the updated site URL.
  *
  * @since 5.3.8
  */
@@ -1190,7 +1284,7 @@ function wooReset() {
 /**
  * Get the content, title and results text from the Ajax response
  *
- * @param {object} alm
+ * @param {object} alm The Ajax Load More object.
  * @since 5.3.0
  */
 function wooGetContent(response, alm) {
@@ -1199,7 +1293,7 @@ function wooGetContent(response, alm) {
 		meta: {
 			postcount: 1,
 			totalposts: alm.localize.total_posts,
-			debug: 'WooCommerce Query'
+			debug: false
 		}
 	};
 	if (response.status === 200 && response.data) {
@@ -1225,7 +1319,7 @@ function wooGetContent(response, alm) {
  *  Set results text for WooCommerce Add-on.
  *
  *  @param {HTMLElement} target
- *  @param {Object} alm
+ *  @param {Object} alm The Ajax Load More object.
  *  @since 5.3
  */
 function almWooCommerceResultsText() {
@@ -1234,27 +1328,29 @@ function almWooCommerceResultsText() {
 
 	if (target && alm && alm.addons.woocommerce_settings.results_text) {
 		var currentResults = target.querySelector(alm.addons.woocommerce_settings.results);
-		var link = alm.addons.woocommerce_settings.settings.previous_page_link;
-		var label = alm.addons.woocommerce_settings.settings.previous_page_label;
-		var sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 
 		if (alm.addons.woocommerce_settings.results_text) {
+			//let link = alm.addons.woocommerce_settings.settings.previous_page_link;
+			//let label = alm.addons.woocommerce_settings.settings.previous_page_label;
+			//let sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 			alm.addons.woocommerce_settings.results_text.forEach(function (element) {
-				if (link && label) {
-					element.innerHTML = returnButton(currentResults, link, label, sep);
-				} else {
-					element.innerHTML = currentResults.innerHTML;
-				}
+				element.innerHTML = currentResults.innerHTML;
+				// if (link && label) {
+				// 	element.innerHTML = returnButton(currentResults, link, label, sep);
+				// } else {
+				// 	element.innerHTML = currentResults.innerHTML;
+				// }
 			});
 		}
 	}
 }
 
 /**
- *  Initiate Results text.
+ * Initiate Results text.
  *
- *  @param {Object} alm
- *  @since 5.3
+ * @param {Object} alm The Ajax Load More object.
+ * @since 5.3
+ * @deprecated 5.5
  */
 function almWooCommerceResultsTextInit(alm) {
 	if (alm && alm.addons.woocommerce_settings.results_text) {
@@ -1288,9 +1384,9 @@ function returnButton(text, link, label, seperator) {
 }
 
 /**
- * Get total count of WooCommerce containers
+ * Get total count of WooCommerce containers.
  *
- * @param {*} container
+ * @param {string} container The container class.
  */
 function getContainerCount(container) {
 	if (!container) {
@@ -1379,8 +1475,6 @@ var _setFocus2 = _interopRequireDefault(_setFocus);
 
 var _getButtonURL = __webpack_require__(/*! ./modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
 
-var _getButtonURL2 = _interopRequireDefault(_getButtonURL);
-
 var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
 var _fadeIn = __webpack_require__(/*! ./modules/fadeIn */ "./core/src/js/modules/fadeIn.js");
@@ -1414,8 +1508,6 @@ var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
 
 var _lazyImages = __webpack_require__(/*! ./modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
-
-var _lazyImages2 = _interopRequireDefault(_lazyImages);
 
 var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/js/addons/singleposts.js");
 
@@ -1511,14 +1603,13 @@ var alm_is_filtering = false;
 	'use strict';
 
 	/**
-  * ajaxloadmore
-  * Init Ajax Load More
+  * Initiate Ajax Load More.
   *
-  * @param {*} el
-  * @param {*} e
+  * @param {HTMLElement} el The Ajax Load More DOM element/container.
+  * @param {Number} index The current index number of the Ajax Load More instance.
   */
 
-	var ajaxloadmore = function ajaxloadmore(el, e) {
+	var ajaxloadmore = function ajaxloadmore(el, index) {
 		// Move user to top of page to prevent loading of unnessasry posts
 		if (alm_localize && alm_localize.scrolltop === 'true') {
 			window.scrollTo(0, 0);
@@ -1540,14 +1631,15 @@ var alm_is_filtering = false;
 		alm.loading = true;
 		alm.finished = false;
 		alm.timer = null;
+		alm.rel = 'next';
 
 		alm.ua = window.navigator.userAgent ? window.navigator.userAgent : ''; // Browser User Agent
 		alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
 		alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
 
 		alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance
-		el.classList.add('alm-' + e); // Add unique classname
-		el.setAttribute('data-alm-id', e); // Add unique data id
+		el.classList.add('alm-' + index); // Add unique classname.
+		el.setAttribute('data-alm-id', index); // Add unique data id.
 
 		// Get localized <script/> variables
 		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
@@ -1560,6 +1652,7 @@ var alm_is_filtering = false;
 		alm.el = alm.content;
 		alm.ajax = el.querySelector('.alm-ajax');
 		alm.container_type = alm.listing.dataset.containerType;
+		alm.loading_style = alm.listing.dataset.loadingStyle;
 
 		// Instance Params
 		alm.canonical_url = el.dataset.canonicalUrl;
@@ -2056,58 +2149,70 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   *  The function to get posts via Ajax
+   * The function to get posts via Ajax.
    *
-   *  @since 2.0.0
+   * @since 2.0.0
    */
 		alm.AjaxLoadMore.loadPosts = function () {
 			if (typeof almOnChange === 'function') {
 				window.almOnChange(alm);
 			}
 
+			// Check for ajax blocker.
+			if (alm.disable_ajax) {
+				return;
+			}
+
+			alm.loading = true;
 			(0, _placeholder.showPlaceholder)(alm);
 
-			if (!alm.disable_ajax) {
-				// Check for ajax blocker
-				if (!alm.addons.paging) {
+			// Add `.alm-loading` class to container.
+			alm.main.classList.add('alm-loading');
+
+			// Add loading styles to buttons.
+			if (!alm.addons.paging) {
+				if (alm.rel === 'prev') {
+					alm.buttonPrev.classList.add('loading');
+				} else {
 					alm.button.classList.add('loading');
 					if (alm.button_loading_label !== false) {
 						alm.button.innerHTML = alm.button_loading_label;
 					}
 				}
-				alm.main.classList.add('alm-loading');
-				alm.loading = true;
-				if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-					// Cache
-					var cache_page = (0, _getCacheUrl2.default)(alm);
+			}
 
-					if (cache_page) {
-						// Load `.html` page
-						_axios2.default.get(cache_page).then(function (response) {
-							// Exists
-							alm.AjaxLoadMore.success(response.data, true);
-						}).catch(function (error) {
-							// Error || Page does not yet exist
-							alm.AjaxLoadMore.ajax('standard');
-						});
-					} else {
-						// Standard ALM query
-						alm.AjaxLoadMore.ajax('standard');
-					}
+			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
+				// Cache
+				var cache_page = (0, _getCacheUrl2.default)(alm);
+				if (cache_page) {
+					// Load `.html` page
+					_axios2.default.get(cache_page).then(function (response) {
+						// Exists
+						alm.AjaxLoadMore.success(response.data, true);
+					}).catch(function (error) {
+						// Error || Page does not yet exist
+						console.log(error);
+						alm.AjaxLoadMore.ajax();
+					});
 				} else {
 					// Standard ALM query
-					alm.AjaxLoadMore.ajax('standard');
+					alm.AjaxLoadMore.ajax();
 				}
+			} else {
+				// Standard ALM query
+				alm.AjaxLoadMore.ajax();
 			}
 		};
 
 		/**
-   * Ajax Load Moe Ajax function
+   * The core Ajax Load More Ajax function.
    *
    * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 2.6.0
    */
-		alm.AjaxLoadMore.ajax = function (queryType) {
+		alm.AjaxLoadMore.ajax = function () {
+			var queryType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'standard';
+
 			// Default ALM action
 			var action = 'alm_get_posts';
 
@@ -2223,16 +2328,12 @@ var alm_is_filtering = false;
 		/**
    * Send request to the admin-ajax.php
    *
-   * @param {*} alm | ALm object
-   * @param {*} action | Ajax action
-   * @param {*} queryType
+   * @param {object} alm The Ajax Load More object.
+   * @param {string} action The Ajax action.
+   * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
 		alm.AjaxLoadMore.adminajax = function (alm, action, queryType) {
-			if (alm.page != 1 && !alm.addons.paging) {
-				alm.button.classList.add('loading');
-			}
-
 			// Axios Interceptor for nested data objects
 			_axios2.default.interceptors.request.use(function (config) {
 				config.paramsSerializer = function (params) {
@@ -2260,13 +2361,13 @@ var alm_is_filtering = false;
 
 			// WooCommerce Add-on
 			if (alm.addons.woocommerce) {
-				ajaxURL = (0, _getButtonURL2.default)(alm);
+				ajaxURL = (0, _getButtonURL.getButtonURL)(alm, alm.rel);
 				params = '';
 			}
 
 			// Elementor Add-on
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
-				ajaxURL = (0, _getButtonURL2.default)(alm);
+				ajaxURL = (0, _getButtonURL.getButtonURL)(alm, alm.rel);
 				params = '';
 			}
 
@@ -2314,9 +2415,9 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * Send request to the WP REST API.
+   * Ajax Load More Tab functionality.
    *
-   * @param {*} alm | ALm object
+   * @param {object} alm The Ajax Load More object.
    * @since 5.2.0
    */
 		alm.AjaxLoadMore.tabs = function (alm) {
@@ -2368,9 +2469,9 @@ var alm_is_filtering = false;
 		/**
    * Send request to the WP REST API
    *
-   * @param {*} alm | ALm object
-   * @param {*} action | Ajax action
-   * @param {*} queryType
+   * @param {object} alm The Ajax Load More object.
+   * @param {string} action The Ajax action.
+   * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
 		alm.AjaxLoadMore.restapi = function (alm, action, queryType) {
@@ -2437,7 +2538,7 @@ var alm_is_filtering = false;
 		/**
    * Success function after loading data.
    *
-   * @param {object} data      The results of the Ajax request.
+   * @param {object} data The results of the Ajax request.
    * @param {boolean} is_cache Are results of the Ajax request coming from cache?
    * @since 2.6.0
    */
@@ -2539,14 +2640,14 @@ var alm_is_filtering = false;
 				}
 			}
 
-			/*
-    *  Display alm_debug results
+			/**
+    * Display alm_debug results
     */
 
 			(0, _almDebug2.default)(alm);
 
-			/*
-    *  Set localized variables and Results Text
+			/**
+    * Set localized variables and Results Text
     */
 
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -2565,8 +2666,8 @@ var alm_is_filtering = false;
 				}, _callee, _this);
 			}))();
 
-			/*
-    *  Render results
+			/**
+    * Render results
     */
 
 			if (total > 0) {
@@ -2726,7 +2827,6 @@ var alm_is_filtering = false;
 					// WooCommerce Add-on
 					if (alm.addons.woocommerce) {
 						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-							var nextPageNum, nextPage;
 							return regeneratorRuntime.wrap(function _callee2$(_context2) {
 								while (1) {
 									switch (_context2.prev = _context2.next) {
@@ -2735,49 +2835,25 @@ var alm_is_filtering = false;
 											return (0, _woocommerce.woocommerce)(reveal, alm, data.pageTitle);
 
 										case 2:
-											nextPageNum = alm.page + 2;
+											(0, _woocommerce.woocommerceLoaded)(alm);
 
-											// Set button data attributes
-
-											alm.button.dataset.page = nextPageNum; // Page
-											nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // URL
-
-											alm.button.dataset.url = nextPage ? nextPage : '';
-
-											alm.AjaxLoadMore.transitionEnd();
-
-											// almComplete
-											if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
-												window.almComplete(alm);
-											}
-
-											(0, _lazyImages2.default)(alm);
-
-											// ALM Done
-											if (nextPageNum > parseInt(alm.addons.woocommerce_settings.pages)) {
-												alm.AjaxLoadMore.triggerDone();
-											}
-
-										case 10:
+										case 3:
 										case 'end':
 											return _context2.stop();
 									}
 								}
 							}, _callee2, this);
 						}))().catch(function (e) {
-							console.log(e);
-							console.log('There was an error loading woocommerce products');
+							console.log('Ajax Load More: There was an error loading woocommerce products.', e);
 						});
 
 						alm.init = false;
-
-						return;
+						return; // Exit
 					}
 
 					// Elementor Add-on
 					if (alm.addons.elementor) {
 						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-							var nextPageNum, nextPage;
 							return regeneratorRuntime.wrap(function _callee3$(_context3) {
 								while (1) {
 									switch (_context3.prev = _context3.next) {
@@ -2786,43 +2862,20 @@ var alm_is_filtering = false;
 											return (0, _elementor.elementor)(reveal, alm, data.pageTitle);
 
 										case 2:
-											nextPageNum = alm.page + 1;
+											(0, _elementor.elementorLoaded)(alm);
 
-											// Set button data attributes
-
-											alm.button.dataset.page = nextPageNum; // Page
-											nextPage = alm.addons.elementor_next_page_url; // URL
-
-											alm.button.dataset.url = nextPage ? nextPage : '';
-
-											alm.AjaxLoadMore.transitionEnd();
-
-											// almComplete
-											if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
-												window.almComplete(alm);
-											}
-
-											(0, _lazyImages2.default)(alm);
-
-											// ALM Done
-											if (!nextPage) {
-												alm.AjaxLoadMore.triggerDone();
-											}
-
-										case 10:
+										case 3:
 										case 'end':
 											return _context3.stop();
 									}
 								}
 							}, _callee3, this);
 						}))().catch(function (e) {
-							console.log(e);
-							console.log('There was an error loading Elementor Post Widget items');
+							console.log('Ajax Load More: There was an error loading Elementor items.', e);
 						});
 
 						alm.init = false;
-
-						return;
+						return; // Exit
 					}
 
 					// Append `reveal` div to ALM Listing container
@@ -2851,9 +2904,9 @@ var alm_is_filtering = false;
 						}
 					}
 
-					// *****
-					// Transitions
-					// *****
+					/**
+      * Transitions
+      */
 
 					// Masonry
 					if (alm.transition === 'masonry') {
@@ -2878,7 +2931,8 @@ var alm_is_filtering = false;
 												window.almComplete(alm);
 											}
 
-											(0, _lazyImages2.default)(alm);
+											// Lazy load images if necessary.
+											(0, _lazyImages.lazyImages)(alm);
 
 										case 7:
 										case 'end':
@@ -2979,12 +3033,13 @@ var alm_is_filtering = false;
 					// Insert Script
 					_insertScript2.default.init(alm.el);
 
-					// almComplete
+					// Trigger almComplete
 					if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
 						window.almComplete(alm);
 					}
 
-					(0, _lazyImages2.default)(alm);
+					// Lazy load images if necessary
+					(0, _lazyImages.lazyImages)(alm);
 
 					// Filters Add-on Complete
 					if (alm_is_filtering && alm.addons.filters) {
@@ -3032,9 +3087,10 @@ var alm_is_filtering = false;
 					window.almFiltersOnload(alm);
 				}
 			} else {
-				/*
+				/**
      * No results from Ajax
      */
+
 				alm.AjaxLoadMore.noresults();
 			}
 
@@ -3048,13 +3104,16 @@ var alm_is_filtering = false;
 				}
 			}
 
-			/*
-    *  Display tableOfContents
+			/**
+    * Display Table of Contents
     */
 
 			(0, _tableofcontents.tableOfContents)(alm, alm.init);
 
-			// Set Focus for A11y
+			/**
+    * Set Focus for A11y
+    */
+
 			if (alm.transition !== 'masonry') {
 				(0, _setFocus2.default)(alm, reveal, total, alm_is_filtering);
 			}
@@ -3069,8 +3128,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * noresults
-   * Functions run when no results are returned.
+   * Function runs when no results are returned.
    *
    * @since 5.3.1
    */
@@ -3084,7 +3142,7 @@ var alm_is_filtering = false;
 				alm.AjaxLoadMore.resetBtnText();
 			}
 
-			// almComplete
+			// Trigger almComplete
 			if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
 				window.almComplete(alm);
 			}
@@ -3344,6 +3402,7 @@ var alm_is_filtering = false;
 				}
 
 				alm.button.classList.add('done');
+				alm.button.removeAttribute('rel');
 				alm.button.disabled = true;
 			}
 
@@ -3357,13 +3416,43 @@ var alm_is_filtering = false;
 		};
 
 		/**
+   * Fires a set of actions once ALm Previous hits the first page.
+   *
+   * @since 5.5.0
+   */
+		alm.AjaxLoadMore.triggerDonePrev = function () {
+			alm.loading = false;
+			(0, _placeholder.hidePlaceholder)(alm);
+
+			if (!alm.addons.paging) {
+				// Update button text
+				// if (alm.button_done_label !== false) {
+				// 	setTimeout(function () {
+				// 		alm.button.innerHTML = alm.button_done_label;
+				// 	}, 75);
+				// }
+
+				alm.buttonPrev.classList.add('done');
+				alm.buttonPrev.removeAttribute('rel');
+				alm.buttonPrev.disabled = true;
+			}
+
+			// almDonePrev
+			if (typeof almDonePrev === 'function') {
+				// Delay done until animations complete
+				setTimeout(function () {
+					window.almDonePrev(alm);
+				}, alm.speed + 10);
+			}
+		};
+
+		/**
    * Resets the loading button text after loading has completed.
    *
    * @since 2.8.4
    */
 		alm.AjaxLoadMore.resetBtnText = function () {
 			if (alm.button_loading_label !== false && !alm.addons.paging) {
-				// Reset button text
 				alm.button.innerHTML = alm.button_label;
 			}
 		};
@@ -3412,10 +3501,12 @@ var alm_is_filtering = false;
 		/**
    * Button click handler to load posts.
    *
+   * @param {Object} e The target button element.
    * @since 4.2.0
    */
 		alm.AjaxLoadMore.click = function (e) {
 			var button = e.target || e.currentTarget;
+			alm.rel = 'next';
 			if (alm.pause === 'true') {
 				alm.pause = false;
 				alm.pause_override = false;
@@ -3427,6 +3518,35 @@ var alm_is_filtering = false;
 				alm.AjaxLoadMore.loadPosts();
 			}
 			button.blur(); // Remove button focus
+		};
+
+		/**
+   * Button click handler for previous load more.
+   *
+   * @param {Object} e The target button element.
+   * @since 5.5.0
+   */
+		alm.AjaxLoadMore.prevClick = function (e) {
+			var button = e.target || e.currentTarget;
+			e.preventDefault();
+			if (!alm.loading && !button.classList.contains('done')) {
+				alm.loading = true;
+				alm.pagePrev--;
+				alm.rel = 'prev';
+				alm.AjaxLoadMore.loadPosts();
+				button.blur(); // Remove button focus
+			}
+		};
+
+		/**
+   * Set the Load Previous button to alm object.
+   *
+   * @param {HTMLElement} button The button element.
+   * @since 5.5.0
+   */
+		alm.AjaxLoadMore.setPreviousButton = function (button) {
+			alm.pagePrev = alm.page;
+			alm.buttonPrev = button;
 		};
 
 		/**
@@ -3622,7 +3742,12 @@ var alm_is_filtering = false;
 			setTimeout(function () {
 				alm.AjaxLoadMore.resetBtnText();
 				alm.main.classList.remove('alm-loading');
-				alm.button.classList.remove('loading'); // Loading button
+				// Loading button
+				if (alm.rel === 'prev') {
+					alm.buttonPrev.classList.remove('loading');
+				} else {
+					alm.button.classList.remove('loading');
+				}
 				alm.AjaxLoadMore.triggerAddons(alm);
 				if (!alm.addons.paging) {
 					setTimeout(function () {
@@ -3914,8 +4039,8 @@ var alm_is_filtering = false;
   */
 	var alm_instances = document.querySelectorAll('.ajax-load-more-wrap');
 	if (alm_instances.length) {
-		[].concat(_toConsumableArray(alm_instances)).forEach(function (alm, e) {
-			new ajaxloadmore(alm, e);
+		[].concat(_toConsumableArray(alm_instances)).forEach(function (alm, index) {
+			new ajaxloadmore(alm, index);
 		});
 	}
 })();
@@ -4259,6 +4384,39 @@ var almDomParser = function almDomParser() {
   return data ? Array.prototype.slice.call(data.body.childNodes) : data;
 };
 exports.default = almDomParser;
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/dispatchScrollEvent.js":
+/*!****************************************************!*\
+  !*** ./core/src/js/helpers/dispatchScrollEvent.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+/**
+ * Dispatch a window scroll event.
+ *
+ * @param {Boolean} delay Should this be delayed.
+ * @since 5.5
+ */
+var dispatchScrollEvent = function dispatchScrollEvent() {
+	var delay = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+	if (typeof Event === 'function') {
+		setTimeout(function () {
+			window.dispatchEvent(new CustomEvent('scroll'));
+		}, delay ? 150 : 1);
+	}
+};
+
+exports.default = dispatchScrollEvent;
 
 /***/ }),
 
@@ -5187,24 +5345,23 @@ exports.default = tableWrap;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
-/**  
- * Display alm_debug results
- * https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
+/**
+ * Display Ajax Load More debug results.
  *
+ * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
  * @param {object} alm     Global alm object
- * @since 5.1.6 
+ * @since 5.1.6
  */
-
 var almDebug = function almDebug(alm) {
-  if (alm && alm.debug) {
-    var obj = {
-      'query': alm.debug,
-      'localize': alm.localize
-    };
-    console.log('ALM Debug:', obj);
-  }
+	if (alm && alm.debug) {
+		var obj = {
+			query: alm.debug,
+			localize: alm.localize
+		};
+		console.log('ALM Debug:', obj);
+	}
 };
 
 exports.default = almDebug;
@@ -5586,22 +5743,46 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 /**
- * Get the next URL for Load More button
+ * Get the URL for Load More button.
  *
- * @param {object} alm
+ * @param {object} alm The Ajax Load More object.
+ * @param {string} rel The type of load more, `next` or `previous`.
  * @since 5.4.0
  */
+var getButtonURL = exports.getButtonURL = function getButtonURL(alm) {
+	var rel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'next';
 
-var getButtonURL = function getButtonURL(alm) {
 	if (!alm || !alm.trigger) {
 		return false;
 	}
-	var button = alm.trigger.querySelector('button');
-	var url = button ? button.dataset.url : '';
+	var button = alm.trigger.querySelector('.alm-load-more-btn');
+	if (rel === 'prev') {
+		button = document.querySelector('.alm-load-more-btn--prev');
+	}
 
+	var url = button ? button.dataset.url : '';
 	return url ? url : '';
 };
-exports.default = getButtonURL;
+
+/**
+ * Set button dataset attributes.
+ *
+ * @param {*} button The HTML element.
+ * @param {*} page The current page number.
+ * @param {*} url The URL for updating.
+ */
+var setButtonAtts = exports.setButtonAtts = function setButtonAtts(button, page, url) {
+	if (!button) {
+		return;
+	}
+
+	if (button.rel && button.rel === 'prev') {
+		button.href = url;
+	}
+
+	button.dataset.page = page; // Set Page.
+	button.dataset.url = url ? url : ''; // Set URL.
+};
 
 /***/ }),
 
@@ -5743,6 +5924,8 @@ exports.default = insertScript;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.lazyImages = lazyImages;
+exports.lazyImagesReplace = lazyImagesReplace;
 /**
  * Lazy load images helper.
  * When a plugin or 3rd party script has hooked into WP Post Thumbnails to provide a lazy load solution, images will not load via Ajax.
@@ -5750,27 +5933,45 @@ Object.defineProperty(exports, "__esModule", {
  *
  * @param {Object} alm The Ajax Load More object.
  */
-var lazyImages = function lazyImages(alm) {
+function lazyImages(alm) {
 	if (!alm || !alm.lazy_images) {
 		return;
 	}
-	var images = alm.el.getElementsByTagName('img');
+	lazyImagesReplace(alm.el);
+}
+
+/**
+ * Loop all images in container and replace the src.
+ *
+ * @param {HTMLElement} container The element HTML.
+ */
+function lazyImagesReplace(container) {
+	var images = container.getElementsByTagName('img');
 	if (images) {
 		// Loop all images.
 		Array.prototype.forEach.call(images, function (img) {
 			if (img) {
-				if (img.dataset.src) {
-					img.src = img.dataset.src;
-				}
-				if (img.dataset.srcset) {
-					img.srcset = img.dataset.srcset;
-				}
+				replaceSrc(img);
 			}
 		});
 	}
-};
+}
 
-exports.default = lazyImages;
+/**
+ * Replace the image src with the value from data-src attributes.
+ *
+ * @param {HTMLElement} img The HTML image element.
+ */
+function replaceSrc(img) {
+	if (img) {
+		if (img.dataset.src) {
+			img.src = img.dataset.src;
+		}
+		if (img.dataset.srcset) {
+			img.srcset = img.dataset.srcset;
+		}
+	}
+}
 
 /***/ }),
 
@@ -5792,6 +5993,8 @@ var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./co
 
 var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
+var _lazyImages = __webpack_require__(/*! ./lazyImages */ "./core/src/js/modules/lazyImages.js");
+
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -5801,20 +6004,32 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
 /**
  * Load the image with imagesLoaded
  *
- * @param {HTMLElement} container
- * @param {HTMLElement} item
- * @param {String} ua
+ * @param {HTMLElement} container The HTML container.
+ * @param {HTMLElement} item      The element to load.
+ * @param {string}      ua        Browser user-agent.
+ * @param {string}      rel       The loading direction, next or prev.
  */
 var loadImage = function loadImage(container, item, ua) {
+	var rel = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'next';
+
 	return new Promise(function (resolve) {
 		imagesLoaded(item, function () {
 			// Add CSS transition
 			item.style.transition = 'all 0.4s ease';
 			// Append to container
-			container.appendChild(item);
+			if (rel === 'prev') {
+				container.insertBefore(item, container.childNodes[0]);
+			} else {
+				container.appendChild(item);
+			}
+
+			// Lazy Load images
+			(0, _lazyImages.lazyImagesReplace)(item);
+
 			// Run srcset fix
 			(0, _srcsetPolyfill2.default)(item, ua);
-			// Send await callback
+
+			// Send Promise callback
 			resolve(true);
 		});
 	});
@@ -5890,6 +6105,16 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 		var index = 0;
 		var count = 1;
 
+		// Get load direction.
+		var rel = alm.rel ? alm.rel : 'next';
+
+		// Set load properties.
+		var matchVal = rel === 'prev' ? total : 1; // The item to attach data attributes.
+		var page = rel === 'prev' ? alm.pagePrev : alm.page + 1; // Get the page number.
+
+		// Reverse items array if rel is 'prev'.
+		items = rel === 'prev' ? items.reverse() : items;
+
 		function loadItem() {
 			if (count <= total) {
 				_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -5899,22 +6124,22 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 								case 0:
 									items[index].style.opacity = 0;
 
-									// First item only
-									if (count == 1) {
+									// Add data attributes to first or last item for URL updates.
+									if (count == matchVal) {
 										items[index].classList.add(className);
 
 										// Set URL
 										items[index].dataset.url = url;
 
 										// Set page num
-										items[index].dataset.page = alm.page + 1;
+										items[index].dataset.page = page;
 
 										// Set page title
 										items[index].dataset.pageTitle = pageTitle;
 									}
 
 									_context.next = 4;
-									return (0, _loadImage2.default)(container, items[index], alm.ua);
+									return (0, _loadImage2.default)(container, items[index], alm.ua, rel);
 
 								case 4:
 
@@ -5939,7 +6164,11 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 						item.style.opacity = 1;
 					});
 					if (items[0]) {
-						(0, _setFocus2.default)(alm, items[0], null, false);
+						// Get the item to focus.
+						var focusItem = rel === 'prev' ? items[items.length - 1] : items[0];
+
+						// Set the focus.
+						(0, _setFocus2.default)(alm, focusItem, null, false);
 					}
 				}, 50);
 
@@ -5952,6 +6181,73 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 };
 
 exports.default = loadItems;
+
+/***/ }),
+
+/***/ "./core/src/js/modules/loadPrevious.js":
+/*!*********************************************!*\
+  !*** ./core/src/js/modules/loadPrevious.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.createLoadPreviousButton = createLoadPreviousButton;
+/**
+ * Create a Load Previous button.
+ *
+ * @param {HTMLElement} content
+ * @param {object} alm The Ajax Load More object.
+ * @param {object} container The container element.
+ * @param {number} page The previous page number.
+ * @param {string} url The previous page url.
+ * @param {string} label The label for the button.
+ * @since 5.5.0
+ */
+function createLoadPreviousButton(alm, container) {
+	var page = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
+	var url = arguments[3];
+	var label = arguments[4];
+
+	if (!label) {
+		return;
+	}
+
+	// Create wrapper.
+	var btnWrap = document.createElement('div');
+	btnWrap.classList.add('alm-btn-wrap--prev');
+
+	// Create button.
+	var button = document.createElement('a');
+	button.href = url;
+	button.innerHTML = label;
+	button.setAttribute('rel', 'prev');
+	button.dataset.page = page;
+	button.dataset.url = url;
+	button.setAttribute('class', 'alm-load-more-btn alm-load-more-btn--prev ' + alm.loading_style);
+
+	// Click event.
+	button.addEventListener('click', function (e) {
+		alm.AjaxLoadMore.prevClick(e);
+	});
+
+	// Set alm previous button to this button.
+	alm.AjaxLoadMore.setPreviousButton(button);
+
+	// Append button to wrap.
+	btnWrap.appendChild(button);
+
+	// Get parent element.
+	var parent = container.parentNode;
+
+	// Append button before container.
+	parent.insertBefore(btnWrap, container);
+}
 
 /***/ }),
 
@@ -6264,7 +6560,7 @@ function _interopRequireDefault(obj) {
 }
 
 function showPlaceholder(alm) {
-	if (!alm || !alm.main || alm.addons.paging) {
+	if (!alm || !alm.main || alm.addons.paging || alm.rel === 'prev') {
 		return false;
 	}
 	if (alm.placeholder) {

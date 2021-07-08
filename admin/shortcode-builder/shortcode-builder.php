@@ -62,7 +62,7 @@
 		<!-- Extensions -->
 		<?php
 			// ../admin-functions.php
-			if(alm_has_addon_shortcodes()) : ?>
+			if ( alm_has_extension_shortcodes() ) : ?>
 		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
 
 			<h2><?php _e('Extensions', 'ajax-load-more'); ?></h2>

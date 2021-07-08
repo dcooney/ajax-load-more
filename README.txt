@@ -1,10 +1,10 @@
 === WordPress Infinite Scroll - Ajax Load More ===
 Contributors: dcooney, connekthq
-Donate;WordPressInfiniteScrollAjaxLoadMoreContributorsWordPressInfiniteScrollAjaxLoadMoreContributorsWordPressInfiniteScrollAjaxLoadMoreContributorsWordPressInfiniteScrollAjaxLoadMoreContributors link: https://connekthq.com/donate/
+Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, scroll, infinite, lazy load, lazy loading, endless scroll, pagination, ajax pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
-Requires at least: 4.0
-Tested up to: 5.7
-Stable tag: 5.4.5
+Requires at least: 4.4
+Tested up to: 5.8
+Stable tag: 5.5.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -259,6 +259,14 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.0 - July 8, 2021 =
+ * UPDATE - Added support for image lazy loading in the WooCommece and Elementor add-ons. If a `data-src` attribute is present on an image in the Ajaz results, Ajax Load More will now automatically load the image.
+ * FIX - Fixed PHP warning that could appear if Ajax Load More settings had not been previously been updated.
+ * FIX - Fixed issue with Call to Actions settings not appearing in Shortcode Builder if that was the only add-on installed.
+ * FIX - Fixed issue where extensions may not appear in Shortcode Builder.
+ * FIX - Fixed issue where ALM_DEBUG was always set to true when using Elementor or WooCommerce add-ons.
+
 
 = 5.4.5 - April 20, 2021 =
 * NEW - Added new `lazy_images` parameter that provides a potential fix for images not loading when other plugins/scripts are hooked into the sites image loading process.

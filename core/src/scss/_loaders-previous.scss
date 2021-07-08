@@ -1,0 +1,91 @@
+// Load Previous.
+.alm-btn-wrap {
+	&--prev {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		clear: both;
+		padding: 0;
+		margin: 0;
+		&:after {
+			display: table;
+			clear: both;
+			height: 0;
+			content: '';
+		}
+		a.alm-load-more-btn--prev {
+			line-height: 1;
+			font-size: 14px;
+			font-weight: 500;
+			padding: 5px;
+			display: inline-block;
+			position: relative;
+			margin: 0 0 15px;
+			text-decoration: none;
+			&:hover,
+			&:focus {
+				text-decoration: underline;
+			}
+			&.loading,
+			&.loading:focus {
+				cursor: wait;
+				text-decoration: none;
+				&:before {
+					content: '';
+					display: block;
+					position: absolute;
+					left: -18px;
+					top: 50%;
+					transform: translateY(-50%);
+					width: 16px;
+					height: 16px;
+					background: url('../../img/ajax-loader-lg.gif') no-repeat left center;
+					background-size: 16px 16px;
+				}
+			}
+			&.skype {
+				&.loading {
+					&:before {
+						background-image: url('../../img/spinner-skype.gif');
+					}
+				}
+			}
+			&.ring {
+				&.loading {
+					&:before {
+						background-image: url('../../img/spinner-ring.gif');
+					}
+				}
+			}
+			&.fading-blocks {
+				&.loading {
+					&:before {
+						background-image: url('../../img/spinner-fading-blocks.gif');
+					}
+				}
+			}
+			&.circles {
+				&.loading {
+					&:before {
+						background-image: url('../../img/spinner-circles.gif');
+					}
+				}
+			}
+			&.chasing-arrows {
+				&.loading {
+					&:before {
+						background-image: url('../../img/spinner-chasing-arrows.gif');
+					}
+				}
+			}
+
+			&:not(.disabled),
+			button:not([disabled]) {
+				cursor: pointer;
+			}
+			&.done {
+				display: none !important;
+			}
+		}
+	}
+}
