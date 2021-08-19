@@ -14,6 +14,11 @@
  * @package AjaxLoadMore
  */
 
+/*
+FIX - Fixed possible issue with page location and document title being passed incorrectly to Google Analytics.
+
+*/
+
 define( 'ALM_VERSION', '5.5.0' );
 define( 'ALM_RELEASE', 'July 8, 2021' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
