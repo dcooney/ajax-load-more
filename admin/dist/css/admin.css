@@ -521,7 +521,8 @@ disabled look for disabled choices in the results dropdown
     background: #fff url("../../img/alm-logo-48x48.svg") no-repeat 20px 20px;
     font-size: 18px;
     font-weight: 800;
-    border-bottom: 1px solid #e1e1e1; }
+    border-bottom: 1px solid #e1e1e1;
+    width: 100%; }
     @media screen and (min-width: 768px) {
       .ajax-load-more .header-wrap h1 {
         font-size: 21px; } }

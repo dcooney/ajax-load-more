@@ -2522,7 +2522,6 @@ export { tab };
 let tracking = function (path) {
 	setTimeout(function () {
 		// Delay to allow for state change.
-
 		path = path.replace(/\/\//g, '/'); // Replace instance of a double backslash.
 
 		if (typeof gtag === 'function') {

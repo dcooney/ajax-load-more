@@ -15,7 +15,8 @@
  */
 
 /*
-FIX - Fixed possible issue with page location and document title being passed incorrectly to Google Analytics.
+FIX - Fixed possible issue with page location and document title being passed incorrectly to Google Analytics when using the Single Posts add-on.
+FIX - Added various admin fixes for WordPress 5.8.
 
 */
 
