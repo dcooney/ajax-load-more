@@ -17,7 +17,9 @@
 /*
 FIX - Fixed possible issue with page location and document title being passed incorrectly to Google Analytics when using the Single Posts add-on.
 FIX - Added various admin fixes for WordPress 5.8.
-
+FIX - Removed PHP warnings that could appear on initial plugin installation if `WP_DEBUG` is enabled.
+FIX - Attempted fix of license activation/deactivation problems some users have experienced.
+NEW - Added new almWooLoaded and almElementorLoaded JavaScript callback function that is triggered after a successful Ajax load whe using the WooCommerce add-on.
 */
 
 define( 'ALM_VERSION', '5.5.0' );

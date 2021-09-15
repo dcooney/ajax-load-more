@@ -2626,7 +2626,8 @@ hr.indented {
     margin: 0 0 20px;
     text-transform: uppercase; }
   .admin.ajax-load-more .ajax-load-more-wrap ul.alm-paging li span {
-    padding: 0; }
+    padding: 0;
+    margin: 0; }
 
 .admin.ajax-load-more.settings {
   /* Table Overrides */ }

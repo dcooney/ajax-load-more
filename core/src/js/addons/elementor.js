@@ -64,7 +64,7 @@ export function elementorInit(alm) {
  *
  * @param {HTMLElement} content
  * @param {object} alm
- * @param {String} pageTitle
+ * @param {string} pageTitle
  * @since 5.3.0
  */
 
@@ -81,6 +81,11 @@ export function elementor(content, alm, pageTitle = document.title) {
 		if (container && items && url) {
 			// Convert NodeList to Array
 			items = Array.prototype.slice.call(items);
+
+			// Trigger almElementorLoaded callback.
+			if (typeof almElementorLoaded === 'function') {
+				window.almElementorLoaded(items);
+			}
 
 			// Load the items
 			(async function () {

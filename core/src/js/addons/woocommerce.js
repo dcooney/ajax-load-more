@@ -94,8 +94,13 @@ export function woocommerce(content, alm, pageTitle = document.title) {
 		const url = alm.addons.woocommerce_settings.paged_urls[page];
 
 		if (container && products && url) {
-			// Convert NodeList to Array
+			// Convert NodeList to Array.
 			products = Array.prototype.slice.call(products);
+
+			// Trigger almWooCommerceLoaded callback.
+			if (typeof almWooCommerceLoaded === 'function') {
+				window.almWooCommerceLoaded(products);
+			}
 
 			// Load the Products
 			(async function () {
@@ -279,6 +284,7 @@ function returnButton(text, link, label, seperator) {
  * Get total count of WooCommerce containers.
  *
  * @param {string} container The container class.
+ * @return {Number} The total umber of containers.
  */
 function getContainerCount(container) {
 	if (!container) {

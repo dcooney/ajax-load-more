@@ -373,12 +373,11 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  Activate License
+	/**
+	 * Activate License.
 	 *
-	 *  @since 2.8.3
+	 * @since 2.8.3
 	 */
-
 	var almActivating = false;
 	$(document).on('click', '.license-btn', function (e) {
 		e.preventDefault();
@@ -444,8 +443,8 @@ jQuery(document).ready(function ($) {
 					almActivating = false;
 				},
 
-				error: function (xhr, status, error) {
-					console.log(status);
+				error: function (status, error) {
+					console.log(status, error);
 					$('.loading', parent).delay(250).fadeOut(300);
 					almActivating = false;
 				},
@@ -453,9 +452,10 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  Get layout value Ajax
-	 *  @since 2.8.7
+	/**
+	 * Get layout value Ajax.
+	 *
+	 * @since 2.8.7
 	 */
 	$(document).on('click', '.alm-layout-selection li a.layout', function (e) {
 		e.preventDefault();
@@ -512,9 +512,10 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	/*
-	 *  Dismiss Sharing (Transient)
-	 *  @since 2.8.7
+	/**
+	 * Dismiss Sharing (Transient).
+	 *
+	 * @since 2.8.7
 	 */
 	$(document).on('click', '.alm-notification--dismiss', function (e) {
 		e.preventDefault();
@@ -538,9 +539,10 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	/*
-	 *  Set Transient (Transient)
-	 *  @since 4.0
+	/**
+	 * Set Transient (Transient).
+	 *
+	 * @since 4.0
 	 */
 	$(document).on('click', '.alm-transient button.notice-dismiss', function (e) {
 		e.preventDefault();
@@ -568,11 +570,11 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	/*
-	 *  Scroll to setting section
-	 *  @since 2.7.3
+	/**
+	 * Scroll to setting section.
+	 *
+	 * @since 2.7.3
 	 */
-
 	$(document).on('change', '#alm-settings-nav', function (e) {
 		e.preventDefault();
 		var el = $(this),

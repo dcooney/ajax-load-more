@@ -2538,7 +2538,8 @@ let tracking = function (path) {
 
 		if (typeof ga === 'function') {
 			// Deprecated GA Tracking
-			ga('send', 'pageview', path);
+			ga('set', 'page', path);
+			ga('send', 'pageview');
 			if (alm_localize.ga_debug) {
 				console.log('Pageview sent to Google Analytics (ga)');
 			}
@@ -2546,7 +2547,8 @@ let tracking = function (path) {
 
 		if (typeof __gaTracker === 'function') {
 			// Monster Insights
-			__gaTracker('send', 'pageview', path);
+			__gaTracker('set', 'page', path);
+			__gaTracker('send', 'pageview');
 			if (alm_localize.ga_debug) {
 				console.log('Pageview sent to Google Analytics (__gaTracker)');
 			}

@@ -40,14 +40,11 @@ function alm_plugin_update_messages(){
 }
 alm_plugin_update_messages();
 
-
-
-/*
-*  alm_prefix_plugin_update_message
-*  Add extra message to plugin updater about expired/inactive licenses
-*
-*  @since 5.2
-*/
+/**
+ * Add extra message to plugin updater about expired/inactive licenses
+ *
+ * @since 5.2
+ */
 function alm_prefix_plugin_update_message( $data, $response ) {
 	$addons = alm_get_addons();
 	$slug = $response->slug;
@@ -155,7 +152,6 @@ function alm_transient_notification($message = '', $transient = '', $duration = 
    }
 }
 
-
 /**
  * Set transient via Ajax.
  *
@@ -208,96 +204,95 @@ add_action( 'admin_init', 'alm_repeaters_export' );
 /**
  * Activate Add-on licenses.
  *
-  * @since 2.8.3
-*/
+ * @since 2.8.3
+ */
 function alm_license_activation(){
 
-	if (current_user_can( 'edit_theme_options' )){
+	if (! current_user_can( 'edit_theme_options' )){
+		return;
+	}
 
-		$nonce   = $_GET['nonce'];
-	   $type    = $_GET['type']; // activate / deactivate.
-	   $item_id = $_GET['item'];
-	   $license = $_GET['license'];
-	   $url     = $_GET['url'];
-	   $upgrade = $_GET['upgrade'];
-	   $status  = $_GET['status'];
-	   $key     = $_GET['key'];
+	$nonce   = $_GET['nonce'];
+	$type    = $_GET['type']; // activate / deactivate.
+	$item_id = $_GET['item'];
+	$license = $_GET['license'];
+	$url     = $_GET['url'];
+	$upgrade = $_GET['upgrade'];
+	$status  = $_GET['status'];
+	$key     = $_GET['key'];
 
-	   // Check our nonce, if they don't match then bounce!
-	   if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ) ) {
-			die( 'Error - unable to verify nonce, please try again.' );
-	   }
+	// Check our nonce, if they don't match then bounce!
+	if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ) ) {
+		die( 'Error - unable to verify nonce, please try again.' );
+	}
 
-		// API Action.
-		if ( 'activate' === $type || 'check' === $type ) {
-			$action = 'activate_license';
-		} else {
-			$action = 'deactivate_license';
-		}
-
-		// Create the params for the request.
-		$api_params = array(
-			'edd_action' => $action,
-			'license'    => $license,
-			'item_id'    => $item_id, // the ID of our product in EDD.
-			'url'        => home_url()
-		);
-
-		// Call API.
-		$response = wp_remote_post( ALM_STORE_URL,
-			array(
-				'method'    => 'POST',
-				'body'      => $api_params,
-				'timeout'   => 45
-				//'sslverify' => true,
-				//'blocking'  => true
-			)
-		);
-
-		// make sure the response came back okay.
-		if ( is_wp_error( $response ) ) {
-			return false;
-		}
-
-		$license_data = $response['body'];
-		$license_data = json_decode( $license_data ); // decode the license data.
-
-		$return['success'] = $license_data->success;
-
-		$msg = '';
-		if ( 'activate' === $type ) {
-			$return['license_limit'] = $license_data->license_limit;
-			$return['expires'] = $license_data->expires;
-			$return['site_count'] = $license_data->site_count;
-			$return['activations_left'] = $license_data->activations_left;
-			$return['item_name'] = $license_data->item_name;
-
-			if ( $license_data->activations_left === 0 && $license_data->success === false ) {
-				$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em></strong>. Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
-			}
-		}
-		$return['msg'] = $msg;
-
-		// If error, make error the status of the license.
-		$license_status = ( isset( $license_data->error )) ? $license_data->error : $license_data->license;
-
-		$return['license'] = $license_status;
-
-		// Update the options table.
-		update_option( $status, $license_status );
-		update_option( $key, $license );
-
-		// Set transient value to store license status.
-		set_transient( "alm_{$item_id}_{$license}", $license_status, 96 * HOUR_IN_SECONDS ); // 4 days
-
-		// Send the response.
-	   wp_send_json( $return );
-
+	// API Action.
+	if ( 'activate' === $type || 'check' === $type ) {
+		$action = 'activate_license';
 	} else {
+		$action = 'deactivate_license';
+	}
 
-		echo __( 'You don\'t belong here.', 'ajax-load-more' );
+	// Create the params for the request.
+	$api_params = array(
+		'edd_action'  => $action,
+		'license'     => $license,
+		'item_id'     => $item_id, // the ID of our product in EDD.
+		'url'         => home_url(),
+		'environment' => function_exists( 'wp_get_environment_type' ) ? wp_get_environment_type() : 'production',
+	);
 
-   }
+	// Call API.
+	$response = wp_remote_post( ALM_STORE_URL,
+		array(
+			'method'    => 'POST',
+			'body'      => $api_params,
+			'timeout'   => 30,
+			'sslverify' => false,
+			//'blocking'  => true
+		)
+	);
+
+	// Make sure the response came back okay.
+	if ( is_wp_error( $response ) ) {
+		wp_send_json( $response );
+		//return false;
+	}
+
+	$license_data = $response['body'];
+	$license_data = json_decode( $license_data ); // decode the license data.
+
+	$return['success'] = $license_data->success;
+
+	$msg = '';
+	if ( 'activate' === $type ) {
+		$return['license_limit'] = $license_data->license_limit;
+		$return['expires'] = $license_data->expires;
+		$return['site_count'] = $license_data->site_count;
+		$return['activations_left'] = $license_data->activations_left;
+		$return['item_name'] = $license_data->item_name;
+
+		if ( $license_data->activations_left === 0 && $license_data->success === false ) {
+			$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em></strong>. Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
+		}
+	}
+	$return['msg'] = $msg;
+
+	// If error, make error the status of the license.
+	$license_status = ( isset( $license_data->error )) ? $license_data->error : $license_data->license;
+
+	$return['license'] = $license_status;
+
+	// Update the options table.
+	update_option( $status, $license_status );
+	update_option( $key, $license );
+
+	// Set transient value to store license status.
+	set_transient( "alm_{$item_id}_{$license}", $license_status, 96 * HOUR_IN_SECONDS ); // 4 days
+
+	// Send the response.
+	wp_send_json( $return );
+
 }
 
 /**
@@ -1580,99 +1575,101 @@ function alm_container_type_callback() {
 }
 
 /**
- * Add classes to the Ajax Load More wrapper
+ * Add classes to the Ajax Load More wrapper.
  *
  * @since 2.0.0
  */
 function alm_class_callback(){
 	$options = get_option( 'alm_settings' );
 
+	$class = isset( $options ) && isset($options['_alm_classname']) ? $options['_alm_classname'] : '';
+
 	$html = '<label for="alm_settings[_alm_classname]">'.__( 'Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more' ).'</label><br/>';
-	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="'.$options['_alm_classname'].'" placeholder="posts listing etc..." /> ';
+	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="' . $class . '" placeholder="posts listing etc..." /> ';
 
 	echo $html;
 }
 
 /**
- * Get button color
+ * Get button color.
  *
  * @since 2.0.0
  */
 function alm_btn_color_callback() {
 
-    $options = get_option( 'alm_settings' );
-    $type = $options['_alm_btn_color'];
+	$options = get_option( 'alm_settings' );
 
-    if(!isset($type))
-	   $options['_alm_btn_color'] = '0';
+	$type = isset( $options ) && isset($options['_alm_btn_color']) ? $options['_alm_btn_color'] : '';
 
-	 $selected0 = '';
-	 if($type == 'default' ) $selected0 = 'selected="selected"';
+	if(!isset($type)) $options['_alm_btn_color'] = '0';
 
-	 $selected1 = '';
-	 if($type == 'blue' ) $selected1 = 'selected="selected"';
+	$selected0 = '';
+	if($type == 'default' ) $selected0 = 'selected="selected"';
 
-	 $selected2 = '';
-	 if($type == 'green' ) $selected2 = 'selected="selected"';
+	$selected1 = '';
+	if($type == 'blue' ) $selected1 = 'selected="selected"';
 
-	 $selected3 = '';
-	 if($type == 'red' ) $selected3 = 'selected="selected"';
+	$selected2 = '';
+	if($type == 'green' ) $selected2 = 'selected="selected"';
 
-	 $selected4 = '';
-	 if($type == 'purple' ) $selected4 = 'selected="selected"';
+	$selected3 = '';
+	if($type == 'red' ) $selected3 = 'selected="selected"';
 
-	 $selected5 = '';
-	 if($type == 'grey' ) $selected5 = 'selected="selected"';
+	$selected4 = '';
+	if($type == 'purple' ) $selected4 = 'selected="selected"';
 
-	 $selected6 = '';
-	 if($type == 'white' ) $selected6 = 'selected="selected"';
+	$selected5 = '';
+	if($type == 'grey' ) $selected5 = 'selected="selected"';
 
-	 $selected13 = '';
-	 if($type == 'light-grey' ) $selected13 = 'selected="selected"';
+	$selected6 = '';
+	if($type == 'white' ) $selected6 = 'selected="selected"';
 
-	 $selected7 = '';
-	 if($type == 'infinite classic' ) $selected7 = 'selected="selected"';
+	$selected13 = '';
+	if($type == 'light-grey' ) $selected13 = 'selected="selected"';
 
-	 $selected8 = '';
-	 if($type == 'infinite skype' ) $selected8 = 'selected="selected"';
+	$selected7 = '';
+	if($type == 'infinite classic' ) $selected7 = 'selected="selected"';
 
-	 $selected9 = '';
-	 if($type == 'infinite ring' ) $selected9 = 'selected="selected"';
+	$selected8 = '';
+	if($type == 'infinite skype' ) $selected8 = 'selected="selected"';
 
-	 $selected10 = '';
-	 if($type == 'infinite fading-blocks' ) $selected10 = 'selected="selected"';
+	$selected9 = '';
+	if($type == 'infinite ring' ) $selected9 = 'selected="selected"';
 
-	 $selected11 = '';
-	 if($type == 'infinite fading-circles' ) $selected11 = 'selected="selected"';
+	$selected10 = '';
+	if($type == 'infinite fading-blocks' ) $selected10 = 'selected="selected"';
 
-	 $selected12 = '';
-	 if($type == 'infinite chasing-arrows' ) $selected12 = 'selected="selected"';
+	$selected11 = '';
+	if($type == 'infinite fading-circles' ) $selected11 = 'selected="selected"';
 
-    $html =  '<label for="alm_settings_btn_color">'.__( 'Select an Ajax loading style - you can choose between a <strong>Button</strong> or <strong>Infinite Scroll</strong>', 'ajax-load-more' );
-    $html .= '.<br/><span style="display:block">Selecting an Infinite Scroll style will remove the click interaction and load content on scroll <u>only</u>.</span>';
-    $html .= '</label>';
-    $html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
+	$selected12 = '';
+	if($type == 'infinite chasing-arrows' ) $selected12 = 'selected="selected"';
 
-	    $html .= '<optgroup label="'. __( 'Button Style (Dark)', 'ajax-load-more' ) .'">';
-		    $html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
-		    $html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
-		    $html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
-		    $html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
-		    $html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
-		 $html .= '</optgroup>';
-		 $html .= '<optgroup label="'. __( 'Button Style (Light)', 'ajax-load-more' ) .'">';
-		    $html .= '<option value="white" class="alm-color white" ' . $selected6 .'>White</option>';
-		    $html .= '<option value="light-grey" class="alm-color light-grey" ' . $selected13 .'>Light Grey</option>';
-	    $html .= '</optgroup>';
+	$html =  '<label for="alm_settings_btn_color">'.__( 'Select an Ajax loading style - you can choose between a <strong>Button</strong> or <strong>Infinite Scroll</strong>', 'ajax-load-more' );
+	$html .= '.<br/><span style="display:block">Selecting an Infinite Scroll style will remove the click interaction and load content on scroll <u>only</u>.</span>';
+	$html .= '</label>';
+	$html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
 
-	    $html .= '<optgroup label="'. __( 'Infinite Scroll (No Button)', 'ajax-load-more' ) .'">';
-		    $html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
-		    $html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
-		    $html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 .'>Circle Fill</option>';
-		    $html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 .'>Fading Blocks</option>';
-		    $html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 .'>Fading Circles</option>';
-		    $html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 .'>Chasing Arrows</option>';
-	    $html .= '</optgroup>';
+		$html .= '<optgroup label="'. __( 'Button Style (Dark)', 'ajax-load-more' ) .'">';
+			$html .= '<option value="default" class="alm-color default" ' . $selected0 .'>Default</option>';
+			$html .= '<option value="blue" class="alm-color blue" ' . $selected1 .'>Blue</option>';
+			$html .= '<option value="green" class="alm-color green" ' . $selected2 .'>Green</option>';
+			$html .= '<option value="purple" class="alm-color purple" ' . $selected4 .'>Purple</option>';
+			$html .= '<option value="grey" class="alm-color grey" ' . $selected5 .'>Grey</option>';
+		$html .= '</optgroup>';
+		$html .= '<optgroup label="'. __( 'Button Style (Light)', 'ajax-load-more' ) .'">';
+			$html .= '<option value="white" class="alm-color white" ' . $selected6 .'>White</option>';
+			$html .= '<option value="light-grey" class="alm-color light-grey" ' . $selected13 .'>Light Grey</option>';
+		$html .= '</optgroup>';
+
+		$html .= '<optgroup label="'. __( 'Infinite Scroll (No Button)', 'ajax-load-more' ) .'">';
+			$html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 .'>Classic</option>';
+			$html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 .'>Skype</option>';
+			$html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 .'>Circle Fill</option>';
+			$html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 .'>Fading Blocks</option>';
+			$html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 .'>Fading Circles</option>';
+			$html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 .'>Chasing Arrows</option>';
+		$html .= '</optgroup>';
 
    $html .= '</select>';
 
