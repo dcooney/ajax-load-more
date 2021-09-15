@@ -7,9 +7,9 @@ import setFocus from './setFocus';
  * @param {HTMLElement} container
  * @param {HTMLElement} items
  * @param {Object} alm
- * @param {String} pageTitle
- * @param {String} url
- * @param {String} className
+ * @param {string} pageTitle
+ * @param {string} url
+ * @param {string} className
  */
 const loadItems = (container, items, alm, pageTitle, url = window.location, className = '') => {
 	return new Promise((resolve) => {

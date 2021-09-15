@@ -2520,34 +2520,45 @@ export { tab };
  * @param {*} path
  */
 let tracking = function (path) {
-	if (typeof gtag === 'function') {
-		// Gtag GA Tracking
-		gtag('event', 'page_view', {
-			page_path: path,
-		});
-		if (alm_localize.ga_debug) {
-			console.log('Pageview sent to Google Analytics (gtag)');
-		}
-	}
-	if (typeof ga === 'function') {
-		// Deprecated GA Tracking
-		ga('send', 'pageview', path);
-		if (alm_localize.ga_debug) {
-			console.log('Pageview sent to Google Analytics (ga)');
-		}
-	}
-	if (typeof __gaTracker === 'function') {
-		// Monster Insights
-		__gaTracker('send', 'pageview', path);
-		if (alm_localize.ga_debug) {
-			console.log('Pageview sent to Google Analytics (__gaTracker)');
-		}
-	}
+	setTimeout(function () {
+		// Delay to allow for state change.
+		path = path.replace(/\/\//g, '/'); // Replace instance of a double backslash.
 
-	// Dispatch global Analytics callback
-	if (typeof almAnalytics === 'function') {
-		window.almAnalytics(path);
-	}
+		if (typeof gtag === 'function') {
+			// Gtag GA Tracking
+			gtag('event', 'page_view', {
+				page_title: document.title,
+				page_location: window.location.href,
+				page_path: window.location.pathname,
+			});
+			if (alm_localize.ga_debug) {
+				console.log('Pageview sent to Google Analytics (gtag)');
+			}
+		}
+
+		if (typeof ga === 'function') {
+			// Deprecated GA Tracking
+			ga('set', 'page', path);
+			ga('send', 'pageview');
+			if (alm_localize.ga_debug) {
+				console.log('Pageview sent to Google Analytics (ga)');
+			}
+		}
+
+		if (typeof __gaTracker === 'function') {
+			// Monster Insights
+			__gaTracker('set', 'page', path);
+			__gaTracker('send', 'pageview');
+			if (alm_localize.ga_debug) {
+				console.log('Pageview sent to Google Analytics (__gaTracker)');
+			}
+		}
+
+		// Dispatch global Analytics callback
+		if (typeof almAnalytics === 'function') {
+			window.almAnalytics(path);
+		}
+	}, 250);
 };
 export { tracking };
 
