@@ -7,23 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.0
+ * Version: 5.5.0.1
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-FIX - Fixed possible issue with page location and document title being passed incorrectly to Google Analytics when using the Single Posts add-on.
-FIX - Added various admin fixes for WordPress 5.8.
-FIX - Removed PHP warnings that could appear on initial plugin installation if `WP_DEBUG` is enabled.
-FIX - Attempted fix of license activation/deactivation problems some users have experienced.
-NEW - Added new almWooLoaded and almElementorLoaded JavaScript callback function that is triggered after a successful Ajax load whe using the WooCommerce add-on.
-*/
-
-define( 'ALM_VERSION', '5.5.0' );
-define( 'ALM_RELEASE', 'July 8, 2021' );
+define( 'ALM_VERSION', '5.5.0.1' );
+define( 'ALM_RELEASE', 'September 15, 2021' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
