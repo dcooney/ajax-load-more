@@ -14,6 +14,26 @@
  * @package AjaxLoadMore
  */
 
+/*
+* UPDATE - Updates Axios library to 0.21.2.
+* UPDATE - Cleaned and refactored the meta query functionality.
+
+
+CUSTOM REPEATERS
+* HOTFIX - Fixed potential issue with missing PHP Class in plugin updater.
+
+ADDONS
+
+NEXTPAGE
+* NEW - Added new `alm_nextpage_the_content` hook that provides a method to run a custom content filter on individual pages in the Ajax request.
+
+FILTERS
+- Started setup for auto populating a default value.
+	- https://wpdev.local/wp-admin/admin.php?page=ajax-load-more-filters&filter=defaultvalue&filter_updated
+	- https://wpdev.local/filter-add-on-default-value/
+
+*/
+
 define( 'ALM_VERSION', '5.5.0.1' );
 define( 'ALM_RELEASE', 'September 15, 2021' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

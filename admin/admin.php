@@ -273,7 +273,7 @@ function alm_license_activation(){
 		$return['item_name'] = $license_data->item_name;
 
 		if ( $license_data->activations_left === 0 && $license_data->success === false ) {
-			$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em></strong>. Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
+			$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em>.</strong>Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
 		}
 	}
 	$return['msg'] = $msg;

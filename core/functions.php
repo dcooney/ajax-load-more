@@ -266,13 +266,15 @@ function alm_parse_tax_terms( $terms ) {
  * Query by custom field values.
  *
  * @since 2.5.0
- * @param string $meta_key     The Custom Field key.
- * @param string $meta_value   The Custom Field value.
- * @param string $meta_compare The Custom Field compare operator.
- * @param string $meta_type    The Custom Field query type.
- * @return array               The WP_Query args.
+ * @param  array $array The array of meta query parameters.
+ * @return array        The WP_Query args.
  */
-function alm_get_meta_query( $meta_key, $meta_value, $meta_compare, $meta_type ) {
+function alm_get_meta_query( $array ) {
+
+	$meta_key     = esc_sql( $array['key'] );
+	$meta_value   = esc_sql( $array['value'] );
+	$meta_compare = esc_sql( $array['compare'] );
+	$meta_type    = esc_sql( $array['type'] );
 
 	if ( ! empty( $meta_key ) ) {
 		// do_shortcode fix (shortcode was rendering as HTML when using < OR  <==).
@@ -296,7 +298,6 @@ function alm_get_meta_query( $meta_key, $meta_value, $meta_compare, $meta_type )
 				'compare' => $meta_compare,
 				'type'    => $meta_type,
 			);
-
 		} else {
 			// If $meta_values is empty, don't query for 'value'.
 			$args = array(
@@ -304,9 +305,7 @@ function alm_get_meta_query( $meta_key, $meta_value, $meta_compare, $meta_type )
 				'compare' => $meta_compare,
 				'type'    => $meta_type,
 			);
-
 		}
-
 		return $args;
 	}
 }
@@ -315,12 +314,11 @@ function alm_get_meta_query( $meta_key, $meta_value, $meta_compare, $meta_type )
  * Parse the meta value for multiple values.
  *
  * @since 2.6.4
- * @param string $meta_value The meta value.
+ * @param string $meta_value   The meta value.
  * @param string $meta_compare The compare operator.
  * @return array
  */
 function alm_parse_meta_value( $meta_value, $meta_compare ) {
-
 	// Meta Query Docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query).
 	$meta_array = array( 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' );
 
@@ -328,7 +326,7 @@ function alm_parse_meta_value( $meta_value, $meta_compare ) {
 		// Remove all whitespace for meta_value because it needs to be an exact match.
 		$mv_trimmed  = preg_replace( '/\s+/', ' ', $meta_value ); // Trim whitespace.
 		$meta_values = str_replace( ', ', ',', $mv_trimmed ); // Replace [term, term] with [term,term].
-		$meta_values = ( '' === $meta_values ) ? '' : explode( ',', $meta_values );
+		$meta_values = '' === $meta_values ? '' : explode( ',', $meta_values );
 	} else {
 		$meta_values = $meta_value;
 	}
@@ -339,11 +337,12 @@ function alm_parse_meta_value( $meta_value, $meta_compare ) {
  * Get type of repeater.
  *
  * @since 2.9
- * @return string
+ * @param string $repeater The Repeater Template name.
+ * @return string          The Repeater Template type.
  */
 function alm_get_repeater_type( $repeater ) {
-	$type = preg_split( '/(?=\d)/', $repeater, 2 ); // split $repeater value at number to determine type
-	$type = $type[0]; // default | repeater | template_
+	$type = preg_split( '/(?=\d)/', $repeater, 2 ); // Split $repeater value at number to determine type.
+	$type = $type[0]; // default | repeater | template_.
 	return $type;
 }
 
