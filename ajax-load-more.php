@@ -15,14 +15,23 @@
  */
 
 /*
-* UPDATE - Updates Axios library to 0.21.2.
+* UPDATE - Updates Axios library to 0.24.0.
 * UPDATE - Cleaned and refactored the meta query functionality.
+* FIX - Fixed issue with null taxonomy query being added to some tax_query. This did not affect the overall query, but was being returned by mistake an dis now removed.
 
+
+ADDONS
 
 CUSTOM REPEATERS
 * HOTFIX - Fixed potential issue with missing PHP Class in plugin updater.
 
-ADDONS
+PAGING
+* NEW - Added new `almPagingComplete` callback that is dispatched once the Paging DOM elements have completed any transiations following an Ajax request.
+```
+window.almPagingComplete = function(alm){
+  console.log( 'Callback: almPagingComplete tiggered' );
+};
+```
 
 NEXTPAGE
 * NEW - Added new `alm_nextpage_the_content` hook that provides a method to run a custom content filter on individual pages in the Ajax request.

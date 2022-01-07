@@ -62,9 +62,11 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$taxonomy          = ( isset( $a['taxonomy'] ) ) ? $a['taxonomy'] : '';
 			$taxonomy_terms    = ( isset( $a['taxonomy_terms'] ) ) ? $a['taxonomy_terms'] : '';
 			$taxonomy_operator = ( isset( $a['taxonomy_operator'] ) ) ? $a['taxonomy_operator'] : '';
+
 			if ( empty( $taxonomy_operator ) ) {
 				$taxonomy_operator = 'IN';
 			}
+
 			$taxonomy_relation = ( isset( $a['taxonomy_relation'] ) ) ? $a['taxonomy_relation'] : 'AND';
 			if ( empty( $taxonomy_relation ) ) {
 				$taxonomy_relation = 'AND';
@@ -166,7 +168,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			);
 
 			// Post Format & Taxonomy.
-			// * Both use tax_query, so we need to combine these queries.
+			// Both use tax_query, so we need to combine these queries.
 			if ( ! empty( $post_format ) || ! empty( $taxonomy ) ) {
 
 				$tax_query_total   = count( explode( ':', $taxonomy ) ); // Total $taxonomy objects
@@ -183,11 +185,17 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 				} else {
 
-					// Post Formats.
-					$args['tax_query'] = array(
-						'relation' => $taxonomy_relation,
-						alm_get_post_format( $post_format ),
-					);
+					// Post Format.
+					if ( ! empty( $post_format ) ) {
+						$args['tax_query'] = array(
+							'relation' => $taxonomy_relation,
+							alm_get_post_format( $post_format ),
+						);
+					} else {
+						$args['tax_query'] = array(
+							'relation' => $taxonomy_relation
+						);
+					}
 
 					// Loop Taxonomies.
 					for ( $tax_i = 0; $tax_i < $tax_query_total; $tax_i++ ) {

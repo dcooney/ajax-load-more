@@ -5,8 +5,10 @@
 	"main": "core/src/js/ajax-load-more.js",
 	"scripts": {
 		"start": "webpack -w --mode development --config=webpack/dev.config.js",
-		"build": "webpack -p --mode production --config=webpack/prod.config.js && npm run clean",
-		"clean": "cd ./core/dist/ && del-cli js/ajax-load-more.js.map"
+		"build": "webpack -p --mode production --config=webpack/prod.config.js && npm run clean && mkdirp ./_out && npm run build:files && npm run build:dirs",
+		"clean": "cd ./core/dist/ && del-cli js/ajax-load-more.js.map",
+		"build:files": "cpy 'ajax-load-more.php' 'README.txt' 'LICENSE.txt' 'uninstall.php' ./_out",
+		"build:dirs": "cpy './admin' './core' './lang' './vendor' ./_out --parents"
 	},
 	"author": "connekt",
 	"private": true,
@@ -27,7 +29,7 @@
 	},
 	"devDependencies": {
 		"autoprefixer": "^7.1.4",
-		"axios": ">=0.21.2",
+		"axios": "^0.24.0",
 		"babel-core": "^6.25.0",
 		"babel-eslint": "^10.0.1",
 		"babel-loader": "^7.1.1",

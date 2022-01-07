@@ -202,7 +202,7 @@ function alm_get_post_format( $post_format ) {
 	if ( ! empty( $post_format ) ) {
 		$format = "post-format-$post_format";
 		// If query is for standard then we need to filter by NOT IN.
-		if ( $format == 'post-format-standard' ) {
+		if ( 'post-format-standard' === $format ) {
 			if ( ( $post_formats = get_theme_support( 'post-formats' ) ) && is_array( $post_formats[0] ) && count( $post_formats[0] ) ) {
 				$terms = array();
 				foreach ( $post_formats[0] as $format ) {
