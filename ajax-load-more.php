@@ -14,6 +14,10 @@
  * @package AjaxLoadMore
  */
 
+/*
+* FIX - Added fix for potential fatal error that could occur in the WP_Query when using sticky post functionality on very large large sites with greatan than 200 posts.
+*/
+
 define( 'ALM_VERSION', '5.5.1' );
 define( 'ALM_RELEASE', 'January 10, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

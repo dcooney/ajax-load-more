@@ -6,7 +6,6 @@
  * @since    3.7
  */
 
-// @codingStandardsIgnoreStart
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -22,7 +21,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		/**
 		 * This function will return a generated $args array.
 		 *
-		 * @param Array $a The query param array.
+		 * @param Array   $a The query param array.
 		 * @param Boolean $is_ajax Is this an ajax request or server side.
 		 * @return Array Query constructed arags.
 		 */
@@ -30,65 +29,65 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		public static function alm_build_queryargs( $a, $is_ajax = true ) {
 
 			// ID.
-			$id = ( isset( $a['id'] ) ) ? $a['id'] : '';
+			$id = isset( $a['id'] ) ? $a['id'] : '';
 
 			// Post ID.
-			$post_id = ( isset( $a['post_id'] ) ) ? $a['post_id'] : '';
+			$post_id = isset( $a['post_id'] ) ? $a['post_id'] : '';
 
-			// Posts Per Page
-			$posts_per_page = ( isset( $a['posts_per_page'] ) ) ? $a['posts_per_page'] : 5;
+			// Posts Per Page.
+			$posts_per_page = isset( $a['posts_per_page'] ) ? $a['posts_per_page'] : 5;
 
 			// Post Type.
 			if ( $is_ajax ) {
-				 $post_type = ( isset( $a['post_type'] ) ) ? explode( ',', $a['post_type'] ) : 'post';
+				$post_type = isset( $a['post_type'] ) ? explode( ',', $a['post_type'] ) : 'post';
 			} else {
-				 $post_type = explode( ',', $a['post_type'] );
+				$post_type = explode( ',', $a['post_type'] );
 			}
 
 			// Format.
 			$post_format = ( isset( $a['post_format'] ) ) ? $a['post_format'] : '';
 
-			// Category
-			$category         = ( isset( $a['category'] ) ) ? $a['category'] : '';
-			$category__and    = ( isset( $a['category__and'] ) ) ? $a['category__and'] : '';
-			$category__not_in = ( isset( $a['category__not_in'] ) ) ? $a['category__not_in'] : '';
+			// Category.
+			$category         = isset( $a['category'] ) ? $a['category'] : '';
+			$category__and    = isset( $a['category__and'] ) ? $a['category__and'] : '';
+			$category__not_in = isset( $a['category__not_in'] ) ? $a['category__not_in'] : '';
 
 			// Tags.
-			$tag         = ( isset( $a['tag'] ) ) ? $a['tag'] : '';
-			$tag__and    = ( isset( $a['tag__and'] ) ) ? $a['tag__and'] : '';
-			$tag__not_in = ( isset( $a['tag__not_in'] ) ) ? $a['tag__not_in'] : '';
+			$tag         = isset( $a['tag'] ) ? $a['tag'] : '';
+			$tag__and    = isset( $a['tag__and'] ) ? $a['tag__and'] : '';
+			$tag__not_in = isset( $a['tag__not_in'] ) ? $a['tag__not_in'] : '';
 
-			// Taxonomy..=
-			$taxonomy          = ( isset( $a['taxonomy'] ) ) ? $a['taxonomy'] : '';
-			$taxonomy_terms    = ( isset( $a['taxonomy_terms'] ) ) ? $a['taxonomy_terms'] : '';
-			$taxonomy_operator = ( isset( $a['taxonomy_operator'] ) ) ? $a['taxonomy_operator'] : '';
+			// Taxonomy.
+			$taxonomy          = isset( $a['taxonomy'] ) ? $a['taxonomy'] : '';
+			$taxonomy_terms    = isset( $a['taxonomy_terms'] ) ? $a['taxonomy_terms'] : '';
+			$taxonomy_operator = isset( $a['taxonomy_operator'] ) ? $a['taxonomy_operator'] : '';
 
 			if ( empty( $taxonomy_operator ) ) {
 				$taxonomy_operator = 'IN';
 			}
 
-			$taxonomy_relation = ( isset( $a['taxonomy_relation'] ) ) ? $a['taxonomy_relation'] : 'AND';
+			$taxonomy_relation = isset( $a['taxonomy_relation'] ) ? $a['taxonomy_relation'] : 'AND';
 			if ( empty( $taxonomy_relation ) ) {
 				$taxonomy_relation = 'AND';
 			}
 
 			// Date.
-			$year  = ( isset( $a['year'] ) ) ? $a['year'] : '';
-			$month = ( isset( $a['month'] ) ) ? $a['month'] : '';
-			$day   = ( isset( $a['day'] ) ) ? $a['day'] : '';
+			$year  = isset( $a['year'] ) ? $a['year'] : '';
+			$month = isset( $a['month'] ) ? $a['month'] : '';
+			$day   = isset( $a['day'] ) ? $a['day'] : '';
 
 			// Custom Fields.
-			$meta_key   = ( isset( $a['meta_key'] ) ) ? $a['meta_key'] : '';
-			$meta_value = ( isset( $a['meta_value'] ) ) ? $a['meta_value'] : '';
+			$meta_key   = isset( $a['meta_key'] ) ? $a['meta_key'] : '';
+			$meta_value = isset( $a['meta_value'] ) ? $a['meta_value'] : '';
 
-			$meta_compare = ( isset( $a['meta_compare'] ) ) ? $a['meta_compare'] : '';
-			$meta_compare = ( empty( $meta_compare ) ) ? 'IN' : $meta_compare;
+			$meta_compare = isset( $a['meta_compare'] ) ? $a['meta_compare'] : '';
+			$meta_compare = empty( $meta_compare ) ? 'IN' : $meta_compare;
 
-			$meta_type = ( isset( $a['meta_type'] ) ) ? $a['meta_type'] : '';
-			$meta_type = ( empty( $meta_type ) ) ? 'CHAR' : $meta_type;
+			$meta_type = isset( $a['meta_type'] ) ? $a['meta_type'] : '';
+			$meta_type = empty( $meta_type ) ? 'CHAR' : $meta_type;
 
-			$meta_relation = ( isset( $a['meta_relation'] ) ) ? $a['meta_relation'] : '';
-			$meta_relation = ( empty( $meta_relation ) ) ? 'AND' : $meta_relation;
+			$meta_relation = isset( $a['meta_relation'] ) ? $a['meta_relation'] : '';
+			$meta_relation = empty( $meta_relation ) ? 'AND' : $meta_relation;
 
 			// Search.
 			$s = ( isset( $a['search'] ) ) ? $a['search'] : '';
@@ -103,19 +102,19 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$author_id = ( isset( $a['author'] ) ) ? $a['author'] : '';
 
 			// Ordering.
-			$order   = ( isset( $a['order'] ) ) ? $a['order'] : 'DESC';
-			$orderby = ( isset( $a['orderby'] ) ) ? $a['orderby'] : 'date';
+			$order   = isset( $a['order'] ) ? $a['order'] : 'DESC';
+			$orderby = isset( $a['orderby'] ) ? $a['orderby'] : 'date';
 
-			// Sticky, Include, Exclude, Offset, Status
-			$sticky = ( isset( $a['sticky_posts'] ) ) ? $a['sticky_posts'] : '';
-			$sticky = ( $sticky === 'true' ) ? true : false;
+			// Sticky, Include, Exclude, Offset, Status.
+			$sticky = isset( $a['sticky_posts'] ) ? $a['sticky_posts'] : '';
+			$sticky = $sticky === 'true' ? true : false;
 
 			// Post IN.
-			$post__in = ( isset( $a['post__in'] ) ) ? $a['post__in'] : '';
+			$post__in = isset( $a['post__in'] ) ? $a['post__in'] : '';
 
 			// Exclude.
-			$post__not_in = ( isset( $a['post__not_in'] ) ) ? $a['post__not_in'] : '';
-			$exclude      = ( isset( $a['exclude'] ) ) ? $a['exclude'] : '';
+			$post__not_in = isset( $a['post__not_in'] ) ? $a['post__not_in'] : '';
+			$exclude      = isset( $a['exclude'] ) ? $a['exclude'] : '';
 
 			// Offset.
 			$offset = ( isset( $a['offset'] ) ) ? $a['offset'] : 0;
@@ -156,7 +155,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				}
 			}
 
-			// Create $args array
+			// Create $args array.
 			$args = array(
 				'post_type'           => $post_type,
 				'posts_per_page'      => $posts_per_page,
@@ -193,7 +192,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 						);
 					} else {
 						$args['tax_query'] = array(
-							'relation' => $taxonomy_relation
+							'relation' => $taxonomy_relation,
 						);
 					}
 
@@ -260,7 +259,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 				// Loop and build the Meta Query.
 				for ( $i = 0; $i < $meta_query_total; $i++ ) {
-					$meta_array = [
+					$meta_array           = [
 						'key'     => isset( $meta_keys[ $i ] ) ? $meta_keys[ $i ] : '',
 						'value'   => isset( $meta_value[ $i ] ) ? $meta_value[ $i ] : '',
 						'compare' => isset( $meta_compare[ $i ] ) ? $meta_compare[ $i ] : 'IN',
@@ -298,13 +297,13 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$args = self::parse_custom_vars( $args, $vars );
 			}
 
-			// Include posts
+			// Include posts.
 			if ( ! empty( $post__in ) ) {
 				$post__in         = explode( ',', $post__in );
 				$args['post__in'] = $post__in;
 			}
 
-			// Exclude posts
+			// Exclude posts.
 			if ( ! empty( $post__not_in ) ) {
 				$post__not_in         = explode( ',', $post__not_in );
 				$args['post__not_in'] = $post__not_in;
@@ -314,12 +313,12 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$args['post__not_in'] = $exclude;
 			}
 
-			// Language
+			// Language.
 			if ( ! empty( $lang ) ) {
 				$args['lang'] = $lang;
 			}
 
-			// Sticky Posts
+			// Sticky Posts.
 			if ( $sticky ) {
 				$sticky_posts        = get_option( 'sticky_posts' ); // Get all sticky post ids.
 				$sticky_post__not_in = isset( $args['post__not_in'] ) ? $args['post__not_in'] : '';
@@ -329,16 +328,17 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 					$sticky_query_args = $args;
 
 					$sticky_query_args['post__not_in']   = $sticky_posts;
-					$sticky_query_args['posts_per_page'] = -1;
+					$sticky_query_args['posts_per_page'] = apply_filters( 'alm_max_sticky_per_page', 50 ); // Set a maximum to prevent fatal query errors.
 					$sticky_query_args['fields']         = 'ids';
 
-					$sticky_query = new WP_Query( $sticky_query_args ); // Query all non sticky posts
+					$sticky_query = new WP_Query( $sticky_query_args ); // Query all non-sticky posts.
 
-					// If has sticky and regular posts
+					// If has sticky and regular posts.
 					if ( $sticky_posts && $sticky_query->posts ) {
 						$standard_posts = $sticky_query->posts;
 						if ( $standard_posts ) {
-							$sticky_ids       = array_merge( $sticky_posts, $standard_posts ); // merge regular posts with sticky
+							$sticky_ids = array_merge( $sticky_posts, $standard_posts ); // merge regular posts with sticky.
+
 							$args['post__in'] = alm_sticky_post__not_in( $sticky_ids, $sticky_post__not_in );
 							$args['orderby']  = 'post__in'; // set orderby to order by post__in.
 						}
@@ -348,28 +348,27 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 					// If more sticky posts than $posts_per_page run a secondary query to get posts to fill query.
 					if ( count( $sticky_posts ) <= $posts_per_page ) {
 
-						$sticky_query_args = $args;
-
+						$sticky_query_args                   = $args;
 						$sticky_query_args['post__not_in']   = $sticky_posts;
-						$sticky_query_args['posts_per_page'] = -1;
+						$sticky_query_args['posts_per_page'] = apply_filters( 'alm_max_sticky_per_page', 50 ); // Set a maximum to prevent fatal query errors.
 						$sticky_query_args['fields']         = 'ids';
 
-						$sticky_query = new WP_Query( $sticky_query_args ); // Query all non sticky posts
+						$sticky_query = new WP_Query( $sticky_query_args ); // Query all non sticky posts.
 
-						// If has sticky and regular posts
+						// If has sticky and regular posts.
 						if ( $sticky_posts && $sticky_query->posts ) {
-							 $standard_posts = $sticky_query->posts;
+							$standard_posts = $sticky_query->posts;
 							if ( $standard_posts ) {
-								$sticky_ids      = array_merge( $sticky_posts, $standard_posts ); // merge regular posts with sticky
+								$sticky_ids      = array_merge( $sticky_posts, $standard_posts ); // merge regular posts with sticky.
 								$sticky_ids      = alm_sticky_post__not_in( $sticky_ids, $sticky_post__not_in );
 								$args['orderby'] = 'post__in'; // set orderby to order by post__in.
 							}
 						}
 					} else {
-						$sticky_ids = $sticky_posts; // Pass get_option('sticky_posts');
+						$sticky_ids = $sticky_posts;
 					}
 
-								// If has sticky posts.
+					// If has sticky posts.
 					if ( $sticky_posts ) {
 						$args['post__in'] = $sticky_ids;
 						$args['orderby']  = 'post__in'; // set orderby to order by post__in.
@@ -377,19 +376,20 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				}
 			}
 
-			// Advanced Custom Fields
+			// Advanced Custom Fields.
 			if ( ! empty( $acf_field_type ) && ! empty( $acf_field_name ) && function_exists( 'get_field' ) ) {
-				if ( $acf_field_type === 'relationship' ) { // Relationship Field
+				if ( $acf_field_type === 'relationship' ) {
+					// Relationship Field.
 					$acf_post_id  = ( empty( $acf_post_id ) ) ? $post_id : $acf_post_id;
 					$acf_post_ids = [];
 
 					if ( empty( $acf_parent_field_name ) ) {
-						// Get field value from ACF
+						// Get field value from ACF.
 						$acf_post_ids = get_field( $acf_field_name, $acf_post_id );
 					} else {
-						// Call function in ACF extension
+						// Call function in ACF extension.
 						if ( function_exists( 'alm_acf_loop_gallery_rows' ) ) {
-							// Sub Fields
+							// Sub Fields.
 							$acf_post_ids = alm_acf_loop_relationship_rows( $acf_parent_field_name, $acf_field_name, $acf_post_id );
 						}
 					}
@@ -398,12 +398,11 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			}
 
 			/**
-			   * Custom `alm_id` query parameter in the WP_Query
-				* This allows pre_get_posts to parse based on ALM ID
-				*/
+			 * Custom `alm_id` query parameter in the WP_Query
+			 * This allows pre_get_posts to parse based on ALM ID
+			 */
 			$args['alm_id'] = $id;
 
-			// Return $args
 			return $args;
 
 		}
@@ -411,8 +410,8 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		/**
 		 * Parse a var parameter as string into array.
 		 *
-		 * @param object                                 $args The current $args array.
-		 * @param string argument The parameter to parse.
+		 * @param object $args The current $args array.
+		 * @param string $param The parameter to parse.
 		 */
 		public static function parse_custom_vars( $args, $param ) {
 			if ( empty( $param ) ) {
