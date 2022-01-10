@@ -28,6 +28,7 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
 
       <div class="next-page-content nested-component" style="display: none;">
 	      <div class="nested-component--inner">
+
             <section>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Post ID', 'ajax-load-more'); ?></h4>

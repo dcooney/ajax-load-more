@@ -1333,6 +1333,50 @@ hr.indented {
 		overflow: hidden;
 		color: $grey_text;
 	}
+
+	.nextpage-option {
+		display: block;
+		padding: 10px;
+		background-color: $light_grey;
+		border: 1px solid $border;
+		margin: 10px 0;
+		border-radius: $radius;
+		> div {
+			label {
+				margin: 0;
+				width: 100%;
+			}
+		}
+		&--type {
+			input:checked + label {
+				font-weight: 600;
+			}
+		}
+		&--shortcode {
+			display: none;
+			padding: 10px 5px 5px 30px;
+			&.active {
+				display: block;
+			}
+			label {
+				padding: 10px 1px 0;
+				margin: 0 0 10px;
+				font-size: 13px;
+				border-top: 1px solid $border;
+				display: block;
+				width: 100%;
+				max-width: 100%;
+			}
+			textarea {
+				border-radius: $radius;
+				font-size: 12px;
+				line-height: 1.55;
+				font-family: Consolas, monaco, monospace;
+				width: 100%;
+				display: block;
+			}
+		}
+	}
 }
 
 .ajax-load-more h2.addon-title {
@@ -2034,7 +2078,7 @@ span.cnkt-button.installed i,
 	margin: 0 0 20px;
 	overflow: visible;
 	position: relative;
-	box-shadow: 0 4px 10px 1px rgba(0, 0, 0, 0.065);
+	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.035);
 	border-radius: $radius;
 	.alm-file-location:not(input) {
 		padding-top: 15px;

@@ -7,15 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.0.1
+ * Version: 5.5.1
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '5.5.0.1' );
-define( 'ALM_RELEASE', 'September 15, 2021' );
+define( 'ALM_VERSION', '5.5.1' );
+define( 'ALM_RELEASE', 'January 10, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
@@ -650,7 +650,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 						 endwhile;
 					wp_reset_query();
-					 // End ALM Loop
+					// End ALM Loop.
 
 					 $data = ob_get_clean();
 

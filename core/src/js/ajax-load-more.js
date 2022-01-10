@@ -151,7 +151,7 @@ let alm_is_filtering = false;
 		alm.transition = alm.listing.dataset.transition; // Transition
 		alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
 		alm.tcc = alm.listing.dataset.transitionContainerClasses; // Transition Container Classes
-		alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
+		alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 150;
 		alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
 		alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
 		alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
@@ -2558,7 +2558,7 @@ let tracking = function (path) {
 		if (typeof almAnalytics === 'function') {
 			window.almAnalytics(path);
 		}
-	}, 250);
+	}, 200);
 };
 export { tracking };
 

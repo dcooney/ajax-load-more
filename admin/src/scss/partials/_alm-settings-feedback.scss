@@ -55,7 +55,7 @@
 		left: 0;
 		top: 0;
 		z-index: 10;
-		background: rgba(255, 255, 255, 0.5);
+		background: rgba(255, 255, 255, 0.65);
 		transition: all 0.2s ease;
 		opacity: 0;
 		visibility: hidden;
@@ -64,7 +64,7 @@
 		.save-in-progress {
 			opacity: 1;
 			visibility: visible;
-			cursor: not-allowed !important;
+			cursor: wait !important;
 		}
 	}
 }
