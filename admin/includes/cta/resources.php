@@ -1,5 +1,5 @@
 <div class="cta resources">
-	<h3><?php _e( 'Resources', 'ajax-load-more' ); ?></h3>
+	<h3><?php _e( 'Plugin Resources', 'ajax-load-more' ); ?></h3>
 	<div class="cta-inner">
 		<ul>
 			<li>
@@ -20,7 +20,7 @@
 			<li>
 				<a target="blank" href="https://connekthq.com/support/?product=Ajax%20Load%20More"><i class="fa fa-question-circle"></i> <?php _e( 'Get Support', 'ajax-load-more' ); ?></a>
 			</li>
-			<?php }  ?>
+			<?php } ?>
 			<li>
 				<a target="blank" href="https://wordpress.org/support/view/plugin-reviews/ajax-load-more"><i class="fa fa-star"></i> <?php _e( 'Reviews', 'ajax-load-more' ); ?></a>
 			</li>

@@ -7,44 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.0.1
+ * Version: 5.5.1
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* UPDATE - Updates Axios library to 0.24.0.
-* UPDATE - Cleaned and refactored the meta query functionality.
-* FIX - Fixed issue with null taxonomy query being added to some tax_query. This did not affect the overall query, but was being returned by mistake an dis now removed.
-
-
-ADDONS
-
-CUSTOM REPEATERS
-* HOTFIX - Fixed potential issue with missing PHP Class in plugin updater.
-
-PAGING
-* NEW - Added new `almPagingComplete` callback that is dispatched once the Paging DOM elements have completed any transiations following an Ajax request.
-```
-window.almPagingComplete = function(alm){
-  console.log( 'Callback: almPagingComplete tiggered' );
-};
-```
-
-NEXTPAGE
-* NEW - Added new `alm_nextpage_the_content` hook that provides a method to run a custom content filter on individual pages in the Ajax request.
-
-FILTERS
-- Started setup for auto populating a default value.
-	- https://wpdev.local/wp-admin/admin.php?page=ajax-load-more-filters&filter=defaultvalue&filter_updated
-	- https://wpdev.local/filter-add-on-default-value/
-
-*/
-
-define( 'ALM_VERSION', '5.5.0.1' );
-define( 'ALM_RELEASE', 'September 15, 2021' );
+define( 'ALM_VERSION', '5.5.1' );
+define( 'ALM_RELEASE', 'January 10, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
@@ -679,7 +650,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 						 endwhile;
 					wp_reset_query();
-					 // End ALM Loop
+					// End ALM Loop.
 
 					 $data = ob_get_clean();
 

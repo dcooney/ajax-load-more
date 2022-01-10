@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 5.8
-Stable tag: 5.5.0.1
+Stable tag: 5.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,15 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.1 - January 10, 2022 =
+
+- UDPATED - Added required functionality for updated to the Next Page add-on that allows for auto implementation across post types.
+- UPDATE - Updates Axios library to 0.24.0.
+- UPDATE - Cleaned and refactored the meta query functionality.
+- UPDATE - Various admin UI and UX updates.
+- FIX - Fixed issue with null taxonomy query being added to some tax_query. This did not affect the overall query, but was being returned by mistake an dis now removed.
+
 
 = 5.5.0.1 - September 15, 2021 =
 

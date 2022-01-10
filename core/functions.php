@@ -583,6 +583,16 @@ function alm_pretty_print( $query ) {
 		print_r( $query ); // phpcs:ignore
 		echo '</pre>';
 	}
+
+}
+/**
+ * Shorter debug helper for printing variables to screen.
+ *
+ * @since 5.5.1
+ * @param object $query The current WP_Query.
+ */
+function alm_print( $query ) {
+	alm_pretty_print( $query );
 }
 
 /**

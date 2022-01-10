@@ -892,10 +892,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Nextpage Post Add-on.
 			if ( has_action( 'alm_nextpage_installed' ) && $nextpage ) {
 
-				// Get post ID if null
-				if ( ! $nextpage_post_id ) {
-						global $post;
-						$nextpage_post_id = $post->ID;
+				// Get post ID is null or equals the shortcode builder output :) .
+				if ( ! $nextpage_post_id || "'.get_the_ID().'" === $nextpage_post_id ) {
+					global $post;
+					$nextpage_post_id = $post->ID;
 				}
 
 				$nextpage_return = apply_filters(
@@ -1119,7 +1119,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= ! empty( $taxonomy_relation ) ? ' data-taxonomy-relation="' . $taxonomy_relation . '"' : '';
 
 			// Meta Query.
-			$ajaxloadmore .= ! empty( $meta_key )  ? ' data-meta-key="' . $meta_key . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_key ) ? ' data-meta-key="' . $meta_key . '"' : '';
 			$ajaxloadmore .= ! empty( $meta_value || $meta_value === '0' ) ? ' data-meta-value="' . $meta_value . '"' : '';
 			$ajaxloadmore .= ! empty( $meta_compare ) ? ' data-meta-compare="' . $meta_compare . '"' : '';
 			$ajaxloadmore .= ! empty( $meta_relation ) ? ' data-meta-relation="' . $meta_relation . '"' : '';
