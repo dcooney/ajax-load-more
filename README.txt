@@ -265,7 +265,7 @@ How to install Ajax Load More.
 
 = 5.5.1 - January 10, 2022 =
 
-- UDPATED - Added required functionality for updated to the Next Page add-on that allows for auto implementation across post types.
+- UPDATE - Added required functionality for updated to the Next Page add-on that allows for auto implementation across post types.
 - UPDATE - Updates Axios library to 0.24.0.
 - UPDATE - Cleaned and refactored the meta query functionality.
 - UPDATE - Various admin UI and UX updates.
