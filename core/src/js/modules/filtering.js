@@ -3,7 +3,6 @@ import almFadeOut from './fadeOut';
 import { clearTOC } from './tableofcontents';
 
 /**
- * almFilter(type, speed, data)
  * Filter Ajax Load More
  *
  * @param {*} transition string;
@@ -16,9 +15,7 @@ import { clearTOC } from './tableofcontents';
 let almFilter = function (transition, speed, data, type = 'filter') {
 	if (data.target) {
 		// if a target has been specified
-		let target = document.querySelectorAll(
-			'.ajax-load-more-wrap[data-id="' + data.target + '"]'
-		);
+		let target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
 		target.forEach(function (element) {
 			almFilterTransition(transition, speed, data, element, type);
 		});
@@ -36,7 +33,6 @@ let almFilter = function (transition, speed, data, type = 'filter') {
 export default almFilter;
 
 /**
- * almFilterTransition(transition, speed, data, el)
  * Transition Ajax Load More
  *
  * @param {*} transition string;
@@ -78,7 +74,6 @@ let almFilterTransition = function (transition, speed, data, el, type) {
 };
 
 /**
- * almCompleteFilterTransition
  * Complete the filter transition
  *
  * @param {*} speed number;
@@ -118,8 +113,7 @@ let almCompleteFilterTransition = (speed, data, el, type) => {
 };
 
 /**
- * almSetFilters
- * Set filter parameters on .alm-listing element
+ * Set filter parameters on .alm-listing element.
  *
  * @param {*} speed number;
  * @param {*} el element;
@@ -128,10 +122,9 @@ let almCompleteFilterTransition = (speed, data, el, type) => {
  * @updated 3.3
  * @since 2.6.1
  */
-let almSetFilters = function (speed = 250, data, el, type) {
+let almSetFilters = function (speed = 150, data, el, type) {
 	// Get `alm-listing` container
-	let listing =
-		el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+	let listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
 	if (!listing) {
 		return false;
 	}
@@ -164,9 +157,7 @@ let almSetFilters = function (speed = 250, data, el, type) {
 	let target = '';
 	if (data.target) {
 		// Target has been specified
-		target = document.querySelector(
-			'.ajax-load-more-wrap[data-id="' + data.target + '"]'
-		);
+		target = document.querySelector('.ajax-load-more-wrap[data-id="' + data.target + '"]');
 		if (target) {
 			window.almInit(target);
 		}

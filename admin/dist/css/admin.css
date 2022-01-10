@@ -936,7 +936,7 @@ disabled look for disabled choices in the results dropdown
     left: 0;
     top: 0;
     z-index: 10;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.65);
     -webkit-transition: all 0.2s ease;
     transition: all 0.2s ease;
     opacity: 0;
@@ -944,7 +944,7 @@ disabled look for disabled choices in the results dropdown
   #alm_OptionsForm.--saving .save-in-progress {
     opacity: 1;
     visibility: visible;
-    cursor: not-allowed !important; }
+    cursor: wait !important; }
 
 /* Custom buttom/loading styles */
 .select2-results .select2-result.alm-color .select2-result-label {
@@ -2659,6 +2659,38 @@ hr.indented {
     margin: 5px 0 20px;
     overflow: hidden;
     color: #999; }
+  .admin.ajax-load-more.settings .nextpage-option {
+    display: block;
+    padding: 10px;
+    background-color: #f7f7f7;
+    border: 1px solid #e1e1e1;
+    margin: 10px 0;
+    border-radius: 3px; }
+    .admin.ajax-load-more.settings .nextpage-option > div label {
+      margin: 0;
+      width: 100%; }
+    .admin.ajax-load-more.settings .nextpage-option--type input:checked + label {
+      font-weight: 600; }
+    .admin.ajax-load-more.settings .nextpage-option--shortcode {
+      display: none;
+      padding: 10px 5px 5px 30px; }
+      .admin.ajax-load-more.settings .nextpage-option--shortcode.active {
+        display: block; }
+      .admin.ajax-load-more.settings .nextpage-option--shortcode label {
+        padding: 10px 1px 0;
+        margin: 0 0 10px;
+        font-size: 13px;
+        border-top: 1px solid #e1e1e1;
+        display: block;
+        width: 100%;
+        max-width: 100%; }
+      .admin.ajax-load-more.settings .nextpage-option--shortcode textarea {
+        border-radius: 3px;
+        font-size: 12px;
+        line-height: 1.55;
+        font-family: Consolas, monaco, monospace;
+        width: 100%;
+        display: block; }
 
 .ajax-load-more h2.addon-title {
   font-size: 19px !important;
@@ -3322,8 +3354,8 @@ span.cnkt-button.installed i,
   margin: 0 0 20px;
   overflow: visible;
   position: relative;
-  -webkit-box-shadow: 0 4px 10px 1px rgba(0, 0, 0, 0.065);
-          box-shadow: 0 4px 10px 1px rgba(0, 0, 0, 0.065);
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.035);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.035);
   border-radius: 3px; }
   .ajax-load-more .cnkt-sidebar .cta .alm-file-location:not(input) {
     padding-top: 15px;

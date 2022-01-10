@@ -273,7 +273,7 @@ function alm_license_activation(){
 		$return['item_name'] = $license_data->item_name;
 
 		if ( $license_data->activations_left === 0 && $license_data->success === false ) {
-			$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em></strong>. Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
+			$msg = '<strong>You\'re out of available licenses <em>( '. $license_data->license_limit . ' / ' . $license_data->site_count . ' )</em>.</strong>Please visit the <a href="' . $upgrade . '" target="_blank">' . $license_data->item_name . '</a> website to add additional licenses.';
 		}
 	}
 	$return['msg'] = $msg;
@@ -1418,6 +1418,11 @@ function alm_admin_init(){
    	do_action( 'alm_layouts_settings' );
    }
 
+	// NEXT PAGE
+	if(has_action( 'alm_nextpage_settings' )){
+   	do_action( 'alm_nextpage_settings' );
+   }
+
 	// PAGINATION
 	if(has_action( 'alm_paging_settings' )){
    	do_action( 'alm_paging_settings' );
@@ -1716,7 +1721,7 @@ function alm_btn_class_callback(){
 	   $options['_alm_btn_classname'] = '';
 
 	$html = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
-	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button rounded listing etc..." /> ';
+	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button bg-black rounded etc..." /> ';
 
 	echo $html;
 	?>
