@@ -1017,7 +1017,6 @@ let alm_is_filtering = false;
 			let isPaged = false;
 
 			// Create `.alm-reveal` element
-			//let reveal = document.createElement('div');
 			let reveal = alm.container_type === 'table' ? document.createElement('tbody') : document.createElement('div');
 			alm.el = reveal;
 			reveal.style.opacity = 0;

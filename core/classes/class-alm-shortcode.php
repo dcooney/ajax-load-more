@@ -715,12 +715,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$posts_per_page = $users_per_page;
 			}
 
-			// Term Query
+			// Term Query.
 			if ( $term_query ) {
 				$posts_per_page = $term_query_number;
 			}
 
-			// Nextpage Add-on
+			// Nextpage Add-on.
 			if ( $nextpage ) {
 				$single_post = false;
 				$seo         = false;
@@ -730,13 +730,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$pause       = 'true';
 			}
 
-			// If SEO, set preloaded_amount to posts_per_page
-			if ( $seo === 'true' || $filters ) {
+			// If SEO or Filters, set preloaded_amount to posts_per_page.
+			if ( 'true' === $seo || $filters ) {
 				$preloaded_amount = $posts_per_page;
 			}
 
-			// If Filters & Filters Paging, set preloaded_amount to posts_per_page
-			if ( $filters && $filters_paging === 'true' ) {
+			// If Filters & Filters Paging, set preloaded_amount to posts_per_page.
+			if ( $filters && 'true' === $filters_paging ) {
 				$preloaded_amount = $posts_per_page;
 			}
 
@@ -745,6 +745,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				'post_id'               => $post_id,
 				'preloaded'             => $preloaded,
 				'preloaded_amount'      => $preloaded_amount,
+				'filters'               => $filters,
 				'acf'                   => $acf,
 				'acf_post_id'           => $acf_post_id,
 				'acf_field_type'        => $acf_field_type,
@@ -1288,7 +1289,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 */
 			if ( ( $seo === 'true' || $filters ) && $preloaded !== 'true' && ! $restapi ) {
 				if ( ! apply_filters( 'alm_disable_noscript_' . $id, false ) ) {
-					$ajaxloadmore .= apply_filters( 'alm_noscript', $query_args, $container_element, $css_classes, $transition_container_classes );
+					$ajaxloadmore .= apply_filters( 'alm_noscript', $query_args, $container_element, $css_classes, $transition_container_classes, $filters );
 				}
 			}
 

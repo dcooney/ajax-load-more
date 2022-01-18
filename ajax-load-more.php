@@ -15,7 +15,16 @@
  */
 
 /*
-* FIX - Added fix for potential fatal error that could occur in the WP_Query when using sticky post functionality on very large large sites with greatan than 200 posts.
+* FIX - Fixed issue with Filters add-on pagination links in `<noscript/> not maintinaing the querystring URLs e.g. ?pg=2, ?pg=3 etc.
+* FIX - Added fix for potential Sticky Posts fatal error that could occur in the WP_Query when using the ALM sticky post functionality on very large large sites with greatan than 200 posts.
+
+ADDONS
+
+Next page
+* Update: Added update to exclude some unnessasary post types from the automatic installation.
+* Fix: Adding `page` post type to the automatic installation settings.
+
+
 */
 
 define( 'ALM_VERSION', '5.5.1' );
@@ -137,7 +146,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			add_action( 'wp_enqueue_scripts', array( &$this, 'alm_enqueue_scripts' ) );
 			add_action( 'after_setup_theme', array( &$this, 'alm_image_sizes' ) );
 			add_filter( 'alm_noscript', array( &$this, 'alm_noscript' ), 10, 5 );
-			add_filter( 'alm_noscript_pagination', array( &$this, 'alm_noscript_pagination' ), 10, 2 );
+			add_filter( 'alm_noscript_pagination', array( &$this, 'alm_noscript_pagination' ), 10, 3 );
 			add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'alm_action_links' ) );
 			add_filter( 'plugin_row_meta', array( &$this, 'alm_plugin_meta_links' ), 10, 2 );
 			add_shortcode( 'ajax_load_more', array( &$this, 'alm_shortcode' ) );
@@ -219,12 +228,16 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		}
 
 		/**
-		 * This function will build an query for users without JS enabled.
+		 * This function will build query results including pagination for users without JS enabled.
 		 *
-		 * @return $return string
+		 * @param array  $args The alm_query args.
+		 * @param string $container_element The container HTML element.
+		 * @param string $css_classes ALM classes.
+		 * @param string $transition_container_classes Transition classes.
+		 * @return string $noscript
 		 * @since 3.7
 		 */
-		public function alm_noscript( $args, $container_element, $css_classes = '', $transition_container_classes = '' ) {
+		public function alm_noscript( $args = [], $container_element = 'ul', $css_classes = '', $transition_container_classes = '' ) {
 			if ( is_admin() || apply_filters( 'alm_disable_noscript', false ) ) {
 				return;
 			}
@@ -236,16 +249,17 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * This function will build pagination for users without JS enabled.
 		 *
-		 * @param array $query
+		 * @param array   $query The current query.
+		 * @param boolean $filters Is this a filters query.
 		 * @return $return string
 		 * @since 3.7
 		 */
-		public function alm_noscript_pagination( $query ) {
+		public function alm_noscript_pagination( $query, $filters ) {
 			if ( is_admin() || apply_filters( 'alm_disable_noscript', false ) ) {
 				return;
 			}
 			include_once ALM_PATH . 'core/classes/class-alm-noscript.php'; // Load Noscript Class.
-			$noscript = ALM_NOSCRIPT::build_noscript_paging( $query );
+			$noscript = ALM_NOSCRIPT::build_noscript_paging( $query, $filters );
 			return '<noscript>' . $noscript . '</noscript>';
 		}
 
@@ -285,20 +299,20 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 * @since 2.0.0
 		 */
 		public function alm_includes() {
-			include_once ALM_PATH . 'core/functions.php'; // Load Core Functions.
-			include_once ALM_PATH . 'core/classes/class-alm-shortcode.php'; // Load Shortcode Class.
-			include_once ALM_PATH . 'core/classes/class-alm-woocommerce.php'; // Load Woocommerce Class.
-			include_once ALM_PATH . 'core/classes/class-alm-enqueue.php'; // Load Enqueue Class.
-			include_once ALM_PATH . 'core/classes/class-alm-queryargs.php'; // Load Query Args Class.
-			include_once ALM_PATH . 'core/classes/class-alm-localize.php'; // Load Localize Class.
-			include_once ALM_PATH . 'core/integration/elementor/elementor.php';
+			require_once ALM_PATH . 'core/functions.php'; // Load Core Functions.
+			require_once ALM_PATH . 'core/classes/class-alm-shortcode.php'; // Load Shortcode Class.
+			require_once ALM_PATH . 'core/classes/class-alm-woocommerce.php'; // Load Woocommerce Class.
+			require_once ALM_PATH . 'core/classes/class-alm-enqueue.php'; // Load Enqueue Class.
+			require_once ALM_PATH . 'core/classes/class-alm-queryargs.php'; // Load Query Args Class.
+			require_once ALM_PATH . 'core/classes/class-alm-localize.php'; // Load Localize Class.
+			require_once ALM_PATH . 'core/integration/elementor/elementor.php';
 
 			if ( is_admin() ) {
 				require_once 'admin/admin.php';
 				require_once 'admin/admin-functions.php';
-				require_once 'vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
+				require_once 'admin/vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
 				if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-					include dirname( __FILE__ ) . '/vendor/EDD_SL_Plugin_Updater.php';
+					require_once dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php';
 				}
 			}
 		}
@@ -316,12 +330,14 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * Add plugin action links to WP plugin screen.
 		 *
+		 * @param array $links The array of links.
+		 * @return array
 		 * @since 2.2.3
 		 */
 		public function alm_action_links( $links ) {
 			$settings = '<a href="' . get_admin_url( null, 'admin.php?page=ajax-load-more' ) . '">' . __( 'Settings', 'ajax-load-more' ) . '</a>';
 			array_unshift( $links, $settings );
-			 return $links;
+			return $links;
 		}
 
 		/**
@@ -367,13 +383,13 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			wp_script_add_data( 'ajax-load-more', 'data-no-optimize', '1' );
 
 			// Progress Bar JS.
-			wp_register_script( 'ajax-load-more-progress', plugins_url( '/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
+			wp_register_script( 'ajax-load-more-progress', plugins_url( '/core/dist/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
 
 			// Masonry JS.
-			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/vendor/js/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
+			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/core/dist/vendor/js/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
 
 			// Callback Helpers.
-			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/vendor/js/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
+			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/core/dist/vendor/js/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
 
 			// Core CSS.
 			if ( ! alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) ) { // Not inline or disabled.

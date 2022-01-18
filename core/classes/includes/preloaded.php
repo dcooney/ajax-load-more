@@ -325,9 +325,9 @@ else {
 		 *
 		 * @return html;
 		 */
-		if ( has_action( 'alm_seo_installed') && $seo === 'true' ) {
+		if ( has_action( 'alm_seo_installed') && $seo === 'true' || $filters ) {
 			if ( ! apply_filters( 'alm_disable_noscript_' . $id, false ) ) {
-				$noscript_pagingnav = apply_filters( 'alm_noscript_pagination', $alm_preload_query );
+				$noscript_pagingnav = apply_filters( 'alm_noscript_pagination', $alm_preload_query, $filters);
 			}
 		}
 

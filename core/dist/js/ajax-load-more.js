@@ -2564,7 +2564,6 @@ var alm_is_filtering = false;
 			var isPaged = false;
 
 			// Create `.alm-reveal` element
-			//let reveal = document.createElement('div');
 			var reveal = alm.container_type === 'table' ? document.createElement('tbody') : document.createElement('div');
 			alm.el = reveal;
 			reveal.style.opacity = 0;

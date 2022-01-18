@@ -1,0 +1,32 @@
+{
+	"name": "ajaxloadmore/core",
+	"description": "Ajax Load More plugin config.",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"authors": [
+		{
+			"name": "ConnektHQ",
+			"email": "support@connekthq.com"
+		}
+	],
+	"config": {
+		"platform": {
+			"php": "7.4"
+		}
+	},
+	"require": {
+		"composer/installers": "^1.10"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.7.1",
+		"phpcompatibility/phpcompatibility-wp": "^2.1.1",
+		"wp-cli/wp-cli-bundle": "*",
+		"wp-coding-standards/wpcs": "~2.3.0",
+		"squizlabs/php_codesniffer": "^3.6"
+	},
+	"scripts": {
+		"format": "./vendor/bin/phpcbf --standard=.phpcs.xml --report=summary,source",
+		"lint": "./vendor/bin/phpcs --standard=.phpcs.xml --report=summary,source",
+		"pot": "./vendor/wp-cli/wp-cli/bin/wp i18n make-pot . lang/ajax-load-more.pot --exclude=node_modules,vendor,core/dist --allow-root"
+	}
+}
