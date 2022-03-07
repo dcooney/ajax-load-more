@@ -1,22 +1,20 @@
 import axios from 'axios';
 
 /**
- * createCacheFile
- * Create a single post cache file
+ * Create a single post cache file.
  *
- * @param {Object} alm
- * @param {String} content
- * @param {String} type
+ * @param {object} alm     The ALM object.
+ * @param {string} content The content to cache.
+ * @param {string} type    The type of cache to create.
  * @since 5.3.1
  */
 export function createCacheFile(alm, content, type = 'standard') {
 	if (alm.addons.cache !== 'true' || !content || content === '') {
 		return false;
 	}
+	const name = type === 'single' ? alm.addons.single_post_id : `page-${alm.page + 1}`;
 
-	let name = type === 'single' ? alm.addons.single_post_id : `page-${alm.page + 1}`;
-
-	let formData = new FormData();
+	const formData = new FormData();
 	formData.append('action', 'alm_cache_from_html');
 	formData.append('security', alm_localize.alm_nonce);
 	formData.append('cache_id', alm.addons.cache_id);
@@ -31,8 +29,7 @@ export function createCacheFile(alm, content, type = 'standard') {
 }
 
 /**
- * wooCache
- * Create a WooCommerce cache file
+ * Create a WooCommerce cache file.
  *
  * @param {Object} alm
  * @param {String} content
@@ -52,7 +49,7 @@ export function wooCache(alm, content) {
 	formData.append('name', `page-${alm.page}`);
 	formData.append('html', content.trim());
 
-	axios.post(alm_localize.ajaxurl, formData).then(function (response) {
+	axios.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for post: ' + alm.canonical_url);
 		//console.log(response);
 	});

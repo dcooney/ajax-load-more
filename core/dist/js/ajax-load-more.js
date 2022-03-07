@@ -112,12 +112,11 @@ function _interopRequireDefault(obj) {
 }
 
 /**
- * createCacheFile
- * Create a single post cache file
+ * Create a single post cache file.
  *
- * @param {Object} alm
- * @param {String} content
- * @param {String} type
+ * @param {object} alm     The ALM object.
+ * @param {string} content The content to cache.
+ * @param {string} type    The type of cache to create.
  * @since 5.3.1
  */
 function createCacheFile(alm, content) {
@@ -126,7 +125,6 @@ function createCacheFile(alm, content) {
 	if (alm.addons.cache !== 'true' || !content || content === '') {
 		return false;
 	}
-
 	var name = type === 'single' ? alm.addons.single_post_id : 'page-' + (alm.page + 1);
 
 	var formData = new FormData();
@@ -144,8 +142,7 @@ function createCacheFile(alm, content) {
 }
 
 /**
- * wooCache
- * Create a WooCommerce cache file
+ * Create a WooCommerce cache file.
  *
  * @param {Object} alm
  * @param {String} content
@@ -165,7 +162,7 @@ function wooCache(alm, content) {
 	formData.append('name', 'page-' + alm.page);
 	formData.append('html', content.trim());
 
-	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
+	_axios2.default.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for post: ' + alm.canonical_url);
 		//console.log(response);
 	});
@@ -291,7 +288,6 @@ function elementorInit(alm) {
  * @param {string} pageTitle
  * @since 5.3.0
  */
-
 function elementor(content, alm) {
 	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
 
@@ -592,9 +588,7 @@ function elementorGetWidgetType(target) {
  */
 function elementorGetNextPage(element, classname) {
 	var pagination = element.querySelector(classname);
-	var href = pagination ? elementorGetNextUrl(pagination) : '';
-
-	return href;
+	return pagination ? elementorGetNextUrl(pagination) : '';
 }
 
 /**
@@ -822,6 +816,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.createMasonrySEOPage = createMasonrySEOPage;
 exports.createMasonrySEOPages = createMasonrySEOPages;
 exports.createSEOAttributes = createSEOAttributes;
+exports.getSEOPageNum = getSEOPageNum;
 /**
  * createMasonrySEOPage
  * Create data attributes for SEO paged results
@@ -924,9 +919,12 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 /**
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
- * @param {object} alm
- * @param {array} elements
- *
+ * @param  {object}      alm         The ALM object.
+ * @param  {HTLElement}  element     The div element.
+ * @param  {string}      querystring The current querystring.
+ * @param  {string}      seo_class   The classname to add to element.
+ * @param  {Number}      pagenum     The current page number.
+ * @return {HTMLElement}             The modified HTML element.
  * @since 5.3.1
  */
 function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
@@ -942,6 +940,21 @@ function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
 	}
 
 	return element;
+}
+
+/**
+ * Get the current page number.
+ *
+ * @param  {string} seo_offset Is this an SEO offset.
+ * @param  {Number} page       The page number,
+ * @return {Number}            The page number.
+ */
+function getSEOPageNum(seo_offset, page) {
+	if (seo_offset === 'true') {
+		return parseInt(page) + 1;
+	} else {
+		return page;
+	}
 }
 
 /***/ }),
@@ -1801,6 +1814,7 @@ var alm_is_filtering = false;
 		alm.addons.tabs = alm.listing.dataset.tabs;
 		alm.addons.filters = alm.listing.dataset.filters;
 		alm.addons.seo = alm.listing.dataset.seo;
+		alm.addons.seo_offset = alm.listing.dataset.seoOffset;
 
 		// Preloaded
 		alm.addons.preloaded = alm.listing.dataset.preloaded; // Preloaded add-on
@@ -1818,31 +1832,37 @@ var alm_is_filtering = false;
 		// Extension Shortcode Params
 
 		// REST API.
-		alm.extensions.restapi = alm.listing.dataset.restapi; // REST API
-		alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
-		alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
-		alm.extensions.restapi_endpoint = alm.listing.dataset.restapiEndpoint;
-		alm.extensions.restapi_template_id = alm.listing.dataset.restapiTemplateId;
-		alm.extensions.restapi_debug = alm.listing.dataset.restapiDebug;
+		alm.extensions.restapi = alm.listing.dataset.restapi;
+		if (alm.extensions.restapi === 'true') {
+			alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
+			alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
+			alm.extensions.restapi_endpoint = alm.listing.dataset.restapiEndpoint;
+			alm.extensions.restapi_template_id = alm.listing.dataset.restapiTemplateId;
+			alm.extensions.restapi_debug = alm.listing.dataset.restapiDebug;
+		}
 
 		// ACF.
 		alm.extensions.acf = alm.listing.dataset.acf;
-		alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
-		alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
-		alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
-		alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
-		alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
-		// if field type, name or post ID is empty
-		if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
-			alm.extensions.acf = false;
+		if (alm.extensions.acf === 'true') {
+			alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
+			alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
+			alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
+			alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
+			alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
+			// if field type, name or post ID is empty
+			if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
+				alm.extensions.acf = false;
+			}
 		}
 
 		// Term Query.
-		alm.extensions.term_query = alm.listing.dataset.termQuery; // TERM QUERY
-		alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
-		alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
-		alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
-		alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
+		alm.extensions.term_query = alm.listing.dataset.termQuery;
+		if (alm.extensions.term_query === 'true') {
+			alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
+			alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
+			alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
+			alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
+		}
 
 		// Paging.
 		alm.addons.paging = alm.listing.dataset.paging; // Paging add-on
@@ -2192,11 +2212,10 @@ var alm_is_filtering = false;
 				}
 			}
 
+			// Cache
 			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				// Cache
 				var cache_page = (0, _getCacheUrl2.default)(alm);
 				if (cache_page) {
-					// Load `.html` page
 					_axios2.default.get(cache_page).then(function (response) {
 						// Exists
 						alm.AjaxLoadMore.success(response.data, true);
@@ -2549,7 +2568,7 @@ var alm_is_filtering = false;
 		/**
    * Success function after loading data.
    *
-   * @param {object} data The results of the Ajax request.
+   * @param {object}  data     The results of the Ajax request.
    * @param {boolean} is_cache Are results of the Ajax request coming from cache?
    * @since 2.6.0
    */
@@ -2564,7 +2583,6 @@ var alm_is_filtering = false;
 			var isPaged = false;
 
 			// Create `.alm-reveal` element
-			//let reveal = document.createElement('div');
 			var reveal = alm.container_type === 'table' ? document.createElement('tbody') : document.createElement('div');
 			alm.el = reveal;
 			reveal.style.opacity = 0;
@@ -2720,7 +2738,7 @@ var alm_is_filtering = false;
 							if (alm.init && (alm.start_page > 1 || alm.addons.filters_startpage > 0)) {
 								// loop through items and break into separate .alm-reveal divs for paging
 
-								var return_data = [];
+								var _data = [];
 								var container_array = [];
 								var posts_per_page = parseInt(alm.posts_per_page);
 								var pages = Math.ceil(total / posts_per_page);
@@ -2734,15 +2752,15 @@ var alm_is_filtering = false;
 								}
 
 								// Parse returned HTML and strip empty nodes
-								var _data = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html, 'text/html'));
+								var _html = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html, 'text/html'));
 
-								// Slice data array into individual pages (array)
+								// Split data into array of individual page
 								for (var i = 0; i < total; i += posts_per_page) {
-									return_data.push(_data.slice(i, posts_per_page + i));
+									_data.push(_html.slice(i, posts_per_page + i));
 								}
 
-								// Loop return_data array to build .alm-reveal containers
-								for (var k = 0; k < return_data.length; k++) {
+								// Loop data array to build .alm-reveal containers
+								for (var k = 0; k < _data.length; k++) {
 									var p = alm.addons.preloaded === 'true' ? 1 : 0; // Add 1 page if items are preloaded.
 									var alm_reveal = document.createElement('div');
 
@@ -2751,7 +2769,7 @@ var alm_is_filtering = false;
 
 										if (alm.addons.seo) {
 											// SEO
-											alm_reveal = (0, _seo.createSEOAttributes)(alm, alm_reveal, querystring, seo_class, pagenum);
+											alm_reveal = (0, _seo.createSEOAttributes)(alm, alm_reveal, querystring, seo_class, (0, _seo.getSEOPageNum)(alm.addons.seo_offset, pagenum));
 										}
 
 										if (alm.addons.filters) {
@@ -2764,7 +2782,7 @@ var alm_is_filtering = false;
 										// First Page
 										if (alm.addons.seo) {
 											// SEO
-											alm_reveal = (0, _seo.createSEOAttributes)(alm, alm_reveal, querystring, seo_class, 1);
+											alm_reveal = (0, _seo.createSEOAttributes)(alm, alm_reveal, querystring, seo_class + preloaded_class, (0, _seo.getSEOPageNum)(alm.addons.seo_offset, 1));
 										}
 										if (alm.addons.filters) {
 											// Filters
@@ -2775,7 +2793,7 @@ var alm_is_filtering = false;
 									}
 
 									// Append children to `.alm-reveal` element
-									(0, _almAppendChildren2.default)(alm_reveal, return_data[k]);
+									(0, _almAppendChildren2.default)(alm_reveal, _data[k]);
 
 									// Run srcSet polyfill
 									(0, _srcsetPolyfill2.default)(alm_reveal, alm.ua);
@@ -2805,7 +2823,7 @@ var alm_is_filtering = false;
 
 										if (alm.addons.seo) {
 											// SEO
-											reveal = (0, _seo.createSEOAttributes)(alm, reveal, querystring, seo_class, pagenum);
+											reveal = (0, _seo.createSEOAttributes)(alm, reveal, querystring, seo_class, (0, _seo.getSEOPageNum)(alm.addons.seo_offset, pagenum));
 										} else if (alm.addons.filters) {
 											// Filters
 											reveal.setAttribute('class', 'alm-reveal' + filters_class + alm.tcc);
@@ -2823,7 +2841,7 @@ var alm_is_filtering = false;
 									} else {
 										if (alm.addons.seo) {
 											// SEO [Page 1]
-											reveal = (0, _seo.createSEOAttributes)(alm, reveal, querystring, seo_class, 1);
+											reveal = (0, _seo.createSEOAttributes)(alm, reveal, querystring, seo_class, (0, _seo.getSEOPageNum)(alm.addons.seo_offset, 1));
 										} else {
 											// Basic ALM
 											reveal.setAttribute('class', 'alm-reveal' + alm.tcc);
@@ -3185,9 +3203,8 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * pagingPreloadedInit
-   * First run for Paging + Preloaded add-ons
-   * Moves preloaded content into ajax container
+   * First run for Paging + Preloaded add-ons.
+   * Moves preloaded content into ajax container.
    *
    * @param {data} Results of the Ajax request
    * @since 2.11.3
@@ -3212,9 +3229,8 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * pagingNextpageInit
-   * First run for Paging + Next Page add-ons
-   * Moves .alm-nextpage content into ajax container
+   * First run for Paging + Next Page add-ons.
+   * Moves .alm-nextpage content into ajax container.
    *
    * @param {data} Results of Ajax request
    * @since 2.14.0
@@ -3232,8 +3248,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * pagingInit
-   * First run for Paging + (Preloaded & Next Page) add-ons. Create required containers.
+   * First run for Paging to create required containers.
    *
    * @param {data} Ajax results
    * @param {classes} added classes
@@ -3242,42 +3257,42 @@ var alm_is_filtering = false;
 		alm.AjaxLoadMore.pagingInit = function (data) {
 			var classes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'alm-reveal';
 
-			data = data == null ? '' : data; // Check for null data object
+			data = data == null ? '' : data; // Check for null data object.
 
-			// Create `alm-reveal` container
+			// Create `alm-reveal` container.
 			var reveal = document.createElement('div');
 			reveal.setAttribute('class', classes);
 
-			// Create `alm-paging-loading` container
+			// Create `alm-paging-loading` container.
 			var content = document.createElement('div');
 			content.setAttribute('class', 'alm-paging-content' + alm.tcc);
 			content.innerHTML = data;
 			reveal.appendChild(content);
 
-			// Create `alm-paging-content` container
+			// Create `alm-paging-content` container.
 			var loader = document.createElement('div');
 			loader.setAttribute('class', 'alm-paging-loading');
 			reveal.appendChild(loader);
 
-			// Add div to container
+			// Add div to container.
 			alm.listing.appendChild(reveal);
 
-			// Get/Set height of .alm-listing div
+			// Get/Set height of .alm-listing div.
 			var styles = window.getComputedStyle(alm.listing);
 			var pTop = parseInt(styles.getPropertyValue('padding-top').replace('px', ''));
 			var pBtm = parseInt(styles.getPropertyValue('padding-bottom').replace('px', ''));
 			var h = reveal.offsetHeight;
 
-			// Set initial `.alm-listing` height
+			// Set initial `.alm-listing` height.
 			alm.listing.style.height = h + pTop + pBtm + 'px';
 
-			// Insert Script
+			// Insert Script.
 			_insertScript2.default.init(reveal);
 
-			// Reset button text
+			// Reset button text.
 			alm.AjaxLoadMore.resetBtnText();
 
-			// Delay reveal of paging to avoid positioning issues
+			// Delay reveal of paging to avoid positioning issues.
 			setTimeout(function () {
 				if (typeof almFadePageControls === 'function') {
 					window.almFadePageControls(alm.btnWrap);
@@ -3285,14 +3300,13 @@ var alm_is_filtering = false;
 				if (typeof almOnWindowResize === 'function') {
 					window.almOnWindowResize(alm);
 				}
-				// Remove loading class from main container
+				// Remove loading class from main container.
 				alm.main.classList.remove('loading');
 			}, alm.speed);
 		};
 
 		/**
-   *	nested
-   *	Automatically trigger nested ALM instances (Requies `.alm-reveal` container
+   *	Automatically trigger nested ALM instances (Requies `.alm-reveal` container.
    *
    * @param {object} instance
    * @since 5.0

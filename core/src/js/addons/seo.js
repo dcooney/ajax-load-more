@@ -100,9 +100,12 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 /**
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
- * @param {object} alm
- * @param {array} elements
- *
+ * @param  {object}      alm         The ALM object.
+ * @param  {HTLElement}  element     The div element.
+ * @param  {string}      querystring The current querystring.
+ * @param  {string}      seo_class   The classname to add to element.
+ * @param  {Number}      pagenum     The current page number.
+ * @return {HTMLElement}             The modified HTML element.
  * @since 5.3.1
  */
 export function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
@@ -121,4 +124,19 @@ export function createSEOAttributes(alm, element, querystring, seo_class, pagenu
 	}
 
 	return element;
+}
+
+/**
+ * Get the current page number.
+ *
+ * @param  {string} seo_offset Is this an SEO offset.
+ * @param  {Number} page       The page number,
+ * @return {Number}            The page number.
+ */
+export function getSEOPageNum(seo_offset, page) {
+	if (seo_offset === 'true') {
+		return parseInt(page) + 1;
+	} else {
+		return page;
+	}
 }

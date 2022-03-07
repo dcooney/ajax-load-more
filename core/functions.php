@@ -615,7 +615,6 @@ function alm_convert_dashes_to_underscore( $string = '' ) {
  * @since 3.7
  */
 function alm_sticky_post__not_in( $ids = '', $not_in = '' ) {
-
 	if ( ! empty( $not_in ) ) {
 		$new_array = array();
 		foreach ( $ids as $id ) {
