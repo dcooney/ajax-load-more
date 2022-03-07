@@ -67,7 +67,6 @@ export function elementorInit(alm) {
  * @param {string} pageTitle
  * @since 5.3.0
  */
-
 export function elementor(content, alm, pageTitle = document.title) {
 	if (!content || !alm) {
 		return false;
@@ -358,9 +357,7 @@ function elementorGetWidgetType(target) {
  */
 function elementorGetNextPage(element, classname) {
 	const pagination = element.querySelector(classname);
-	const href = pagination ? elementorGetNextUrl(pagination) : '';
-
-	return href;
+	return pagination ? elementorGetNextUrl(pagination) : '';
 }
 
 /**

@@ -5,10 +5,11 @@
 	"main": "core/src/js/ajax-load-more.js",
 	"scripts": {
 		"start": "webpack -w --mode development --config=webpack/dev.config.js",
-		"build": "webpack -p --mode production --config=webpack/prod.config.js && npm run clean && mkdirp ./_out && npm run build:files && npm run build:dirs",
+		"build": "webpack -p --mode production --config=webpack/prod.config.js && npm run clean && mkdirp ./_out && npm run pot && npm run build:files && npm run build:dirs",
+		"pot": "composer run pot",
 		"clean": "cd ./core/dist/ && del-cli js/ajax-load-more.js.map",
 		"build:files": "cpy 'ajax-load-more.php' 'README.txt' 'LICENSE.txt' 'uninstall.php' ./_out",
-		"build:dirs": "cpy './admin' './core' './lang' './vendor' ./_out --parents"
+		"build:dirs": "cpy './admin' './core' './includes' './lang' ./_out --parents"
 	},
 	"author": "connekt",
 	"private": true,
@@ -37,7 +38,7 @@
 		"babel-preset-env": "^1.6.0",
 		"babel-preset-es2015": "^6.24.1",
 		"babel-preset-react": "^6.24.1",
-		"copy-webpack-plugin": "^4.5.0",
+		"copy-webpack-plugin": "^6.4.1",
 		"css-loader": "^0.28.7",
 		"del-cli": "^3.0.1",
 		"eslint": "^5.15.1",

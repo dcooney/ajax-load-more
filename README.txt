@@ -4,8 +4,8 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 5.8
-Stable tag: 5.5.1
+Tested up to: 5.9
+Stable tag: 5.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,14 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.2 - March 7, 2022 =
+* NEW: Added `alm_ajaxurl` filter that allows for filtering the admin-ajax URL.
+* FIX: Fixed issue with Filters add-on pagination links in `<noscript/> not maintinaing the querystring URLs e.g. ?pg=2, ?pg=3 etc.
+* FIX: Added fix for potential Sticky Posts fatal error that could occur in the WP_Query when using the ALM sticky post functionality on very large large sites with greatan than 200 posts.
+* FIX: Fixed PHP warning that could appear in the `<noscript/>` function for SEO and Filters add-ons.
+* FIX: Fixed issue with SEO and Preloaded element not getting the 'alm-preloaded' classname.
+* FIX: Fixed issue with PHP warning around ALM settings.
 
 = 5.5.1 - January 10, 2022 =
 
