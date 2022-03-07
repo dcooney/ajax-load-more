@@ -8,4 +8,4 @@ node_modules/
 npm-shrinkwrap.json
 *.map
 _out
-vendor
+/vendor
