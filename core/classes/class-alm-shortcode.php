@@ -146,6 +146,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'preloaded'                    => 'false',
 						'preloaded_amount'             => '5',
 						'seo'                          => 'false',
+						'seo_offset'                   => false,
 						'repeater'                     => 'default',
 						'theme_repeater'               => 'null',
 						'cta'                          => false,
@@ -361,12 +362,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Elementor.
 			if ( has_action( 'alm_elementor_installed' ) && $elementor === 'posts' && $elementor_url === 'true' ) {
-				// Only load external script if URLs are set to true
+				// Only load external script if URLs are set to true.
 				wp_enqueue_script( 'ajax-load-more-elementor' );
 			}
 
 			/**
-			 * ALM Core Action
+			 * ALM Core Action.
 			 * Load JavaScript located in external add-ons and extensions.
 			 */
 			do_action( 'alm_enqueue_external_scripts', $atts );
@@ -374,7 +375,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// End Enqueue Scripts.
 
 			// Filters - Set initial shortcode state.
-			$filters = ( 'true' === $filters && class_exists( 'ALMFilters' ) ) ? true : false;
+			$filters = 'true' === $filters && class_exists( 'ALMFilters' ) ? true : false;
 			if ( $filters ) {
 				$single_post          = false;
 				$seo                  = false;
@@ -401,7 +402,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Get container elements (ul | div).
 			$container_element = 'ul';
-			if ( isset( $options ) && ( $options['_alm_container_type'] == '2' || $single_post ) ) {
+			if ( isset( $options ) && ( isset( $options['_alm_container_type'] ) && '2' === $options['_alm_container_type'] || $single_post ) ) {
 				$container_element = 'div';
 			}
 
@@ -513,13 +514,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			*/
 			$ajaxloadmore .= apply_filters( 'alm_before_container', '' );
 
-			// Generate ALM ID
-			$div_id = ( self::$counter > 1 ) ? 'ajax-load-more-' . self::$counter : 'ajax-load-more';
+			// Generate ALM ID.
+			$div_id = self::$counter > 1 ? 'ajax-load-more-' . self::$counter : 'ajax-load-more';
 
-			// Localized ID - ID used for storin glocalized variables
+			// Localized ID - ID used for storin glocalized variables.
 			$localize_id = empty( $id ) ? $div_id : 'ajax-load-more-' . $id;
 
-			// Master ID - Manual or generated ALM ID
+			// Master ID - Manual or generated ALM ID.
 			$master_id = empty( $id ) ? $div_id : $id;
 
 			// Custom unique ALM ID (shortcode).
@@ -549,7 +550,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$ajaxloadmore .= '<style>' . $scroll_container . '{ height: auto; width: 100%; overflow: hidden; overflow-x: auto; -webkit-overflow-scrolling: touch;</style>';
 			}
 
-			// Start .alm-listing
+			// Start .alm-listing.
 			$ajaxloadmore .= '<div id="' . $div_id . '" class="' . $alm_wrapper_class . $alm_loading_style . '' . $paging_color . '' . $alm_layouts . $alm_tabs . $alm_direction . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . $canonicalURL . '" data-slug="' . $slug . '" data-post-id="' . $post_id . '" ' . $is_search . $is_nested . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars' . '">';
 
 			// Masonry Hook (Before).
@@ -630,16 +631,15 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 									}
 								}
 							}
-
 							break;
 					}
 				}
 			}
 
-				/**
-				 * Archive Integration.
-				 * Set required archive config options.
-				 */
+			/**
+			 * Archive Integration.
+			 * Set required archive config options.
+			 */
 			if ( $archive && is_archive() ) {
 				if ( is_date() ) {
 					$archive_year  = get_the_date( 'Y' );
@@ -675,7 +675,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				}
 			}
 
-				// WooCommerce Add-on || Elementor Add-on
+				// WooCommerce Add-on || Elementor Add-on.
 			if ( $woo || $elementor === 'posts' ) {
 				$filters     = false;
 				$single_post = false;
@@ -687,7 +687,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$users       = false;
 				$preloaded   = false;
 			}
-				$woo = $elementor === 'posts' ? false : $woo;
+			$woo = $elementor === 'posts' ? false : $woo;
 
 			// Single Post Add-on.
 			if ( $single_post ) {
@@ -730,13 +730,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$pause       = 'true';
 			}
 
-			// If SEO or Filters, set preloaded_amount to posts_per_page.
+			// If SEO, Filters or Paging - set preloaded_amount to posts_per_page.
 			if ( 'true' === $seo || $filters ) {
-				$preloaded_amount = $posts_per_page;
-			}
-
-			// If Filters & Filters Paging, set preloaded_amount to posts_per_page.
-			if ( $filters && 'true' === $filters_paging ) {
 				$preloaded_amount = $posts_per_page;
 			}
 
@@ -991,7 +986,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					'alm_seo_shortcode',
 					$seo,
 					$preloaded,
-					$options
+					$options,
+					$seo_offset
 				);
 				$ajaxloadmore .= $seo_return;
 			}
@@ -1213,7 +1209,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= $primary !== false ? ' data-primary="true"' : '';
 
 			$ajaxloadmore .= '>';
-			// End .alm-listing data
+			// End .alm-listing data.
+
+			// SEO Offset.
+			if ( $seo_offset === 'true' ) {
+				$ajaxloadmore .= '<div class="alm-reveal alm-seo' . $transition_container_classes . '" data-page="1" data-url="' . $canonicalURL . '">';
+			}
 
 			// Preloaded.
 			$noscript_pagingnav = '';

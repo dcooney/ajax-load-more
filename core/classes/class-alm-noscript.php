@@ -29,17 +29,17 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 		 */
 		public static function alm_get_noscript( $q, $container = 'ul', $css_classes = '', $transition_container_classes = '' ) {
 
-			$paged = $q['paged'] ? $q['paged'] : 1;
+			$paged   = $q['paged'] ? $q['paged'] : 1;
 			$filters = $q['filters'] ? $q['filters'] : false;
 
-			// Comments
+			// Comments.
 			if ( $q['comments'] ) {
 				if ( has_action( 'alm_comments_installed' ) && $q['comments'] ) {
 					// SEO does not support comments at this time
 				}
 			}
 
-			// Users
+			// Users.
 			elseif ( $q['users'] ) {
 
 				if ( has_action( 'alm_users_preloaded' ) && $q['users'] ) {
@@ -59,7 +59,7 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 				}
 			}
 
-			// Advanced Custom Fields (Repeater, Gallery, Flex Content
+			// Advanced Custom Fields (Repeater, Gallery, Flex Content.
 			elseif ( $q['acf'] && ( $q['acf_field_type'] !== 'relationship' ) ) {
 				if ( has_action( 'alm_acf_installed' ) && $q['acf'] ) {
 
@@ -73,28 +73,23 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 				}
 			}
 
-			// Standard ALM
+			// Standard ALM.
 			else {
 
-				// Build the $args array to use with this WP_Query
+				// Build the $args array to use with this WP_Query.
 				$query_args = ALM_QUERY_ARGS::alm_build_queryargs( $q, false );
 
-				/*
-				*  alm_query_args_[id]
-				*
-				* ALM Core Filter Hook
-				*
-				* @return $query_args;
+				/**
+				 * ALM Core Filter Hook
+				 *
+				 * @return $query_args;
 				*/
 				$query_args = apply_filters( 'alm_query_args_' . $q['id'], $query_args, $q['post_id'] );
 
-				// Get Per Page param
 				$posts_per_page = $query_args['posts_per_page'];
+				$type           = alm_get_repeater_type( $q['repeater'] );
 
-				// Get Repeater Template type
-				$type = alm_get_repeater_type( $q['repeater'] );
-
-				// Update offset
+				// Update offset.
 				$query_args['paged']  = $paged;
 				$query_args['offset'] = self::set_offset( $paged, $posts_per_page, $q['offset'] );
 
@@ -116,17 +111,16 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 
 						$output .= alm_loop( $q['repeater'], $type, $q['theme_repeater'], $alm_found_posts, $alm_page, $alm_item, $alm_current, $query_args );
 
-				   endwhile;
+					endwhile;
 					wp_reset_query();
 
-			   endif;
+				endif;
 
 				$paging = self::build_noscript_paging( $noscript_query, $filters );
 
 				return self::render( $output, $container, $paging, $css_classes, $transition_container_classes );
 
 			}
-
 		}
 
 		/**
@@ -147,48 +141,26 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 			$posts_per_page = $query->query_vars['posts_per_page'];
 			$total          = ceil( $numposts / $posts_per_page );
 			$permalink      = get_permalink();
-			$start_page = 1;
-			$content    = '';
+			$start_page     = 1;
+			$content        = '';
 
 			// Get existing querystring and build array.
-			parse_str($_SERVER['QUERY_STRING'], $querystring);
+			parse_str( $_SERVER['QUERY_STRING'], $querystring );
 
 			if ( $total > 1 ) {
 
 				$content .= '<div class="alm-paging">';
 				$content .= __( 'Pages: ', 'ajax-load-more' );
 
-				// First Page.
-				if ( $paged >= 2 ) {
-					if($filters){
-						$querystring['pg'] = $i;
-						$url = $permalink . '?' . http_build_query($querystring);
-					}else{
-						$url = get_pagenum_link( $i );
-					}
-					// $content .= '<span class="page"><a href="' . $url . '">' . __( 'First Page', 'ajax-load-more' ) . '</a></span>';
-				}
-
 				// Loop pages.
 				for ( $i = $start_page; $i <= $total; $i++ ) {
-					if($filters){
+					if ( $filters ) {
 						$querystring['pg'] = $i;
-						$url = $permalink . '?' . http_build_query($querystring);
-					}else{
+						$url               = $permalink . '?' . http_build_query( $querystring );
+					} else {
 						$url = get_pagenum_link( $i );
 					}
 					$content .= '<span class="page"><a href="' . $url . '">' . $i . '</a></span>';
-				}
-
-				// Last Page.
-				if ( $paged != $total ) {
-					if($filters){
-						$querystring['pg'] = $total;
-						$last = $permalink . '?' . http_build_query($querystring);
-					}else{
-						$last = get_pagenum_link( $total );
-					}
-					// $content .= '<span><a href="' . $last . '">' . __( 'Last Page', 'ajax-load-more' ) . '</a></span>';
 				}
 
 				$content .= '</div>';
@@ -202,9 +174,11 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 		 * This function will return the HTML output of the <noscript/>.
 		 *
 		 * @since 1.8
-		 * @param string $output
-		 * @param string $container
-		 * @param string $paging
+		 * @param string $output The noscript output.
+		 * @param string $container The ALM container.
+		 * @param string $paging ALM paging.
+		 * @param string $css_classes Custom CSS classes.
+		 * @param string $transition_container_classes Transition classes.
 		 * @return HTMLElement
 		 */
 		public static function render( $output, $container, $paging, $css_classes, $transition_container_classes ) {

@@ -7,28 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.1
+ * Version: 5.5.2
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* FIX - Fixed issue with Filters add-on pagination links in `<noscript/> not maintinaing the querystring URLs e.g. ?pg=2, ?pg=3 etc.
-* FIX - Added fix for potential Sticky Posts fatal error that could occur in the WP_Query when using the ALM sticky post functionality on very large large sites with greatan than 200 posts.
-
-ADDONS
-
-Next page
-* Update: Added update to exclude some unnessasary post types from the automatic installation.
-* Fix: Adding `page` post type to the automatic installation settings.
-
-
-*/
-
-define( 'ALM_VERSION', '5.5.1' );
-define( 'ALM_RELEASE', 'January 10, 2022' );
+define( 'ALM_VERSION', '5.5.2' );
+define( 'ALM_RELEASE', 'March 7, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
@@ -402,7 +389,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				array(
-					'ajaxurl'         => admin_url( 'admin-ajax.php' ),
+					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
@@ -631,20 +618,19 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 				if ( $alm_query->have_posts() ) {
 
-					 $alm_found_posts = $alm_total_posts;
-					 $alm_post_count  = $alm_query->post_count;
-					 $alm_current     = 0;
-					 $alm_has_cta     = false;
+					$alm_found_posts = $alm_total_posts;
+					$alm_post_count  = $alm_query->post_count;
+					$alm_current     = 0;
+					$alm_has_cta     = false;
 
-					 $cta_array = array();
+					$cta_array = array();
 					if ( $cta && has_action( 'alm_cta_pos_array' ) ) {
 						// Build CTA Position Array.
 						$cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging );
 					}
 
-					 ob_start();
+					ob_start();
 
-					 // ALM Loop
 					while ( $alm_query->have_posts() ) :
 						$alm_query->the_post();
 
@@ -668,33 +654,33 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							$alm_has_cta = true;
 						}
 
-						 endwhile;
-					wp_reset_query();
+						endwhile;
+					wp_reset_query(); // phpcs:ignore
 					// End ALM Loop.
 
-					 $data = ob_get_clean();
+					$data = ob_get_clean();
 
-					 /**
+					/**
 					 * Cache Add-on hook - If Cache is enabled, check the cache file
 					 *
-					 * @param $cache_id          String     ID of the ALM cache
-					 * @param $do_create_cache   Boolean    Should cache be created for this user
+					 * @param string $cache_id ID of the ALM cache
+					 * @param boolean $do_create_cache Should cache be created for this user
 					 * @since 3.2.1
 					 */
 					if ( ! empty( $cache_id ) && has_action( 'alm_cache_installed' ) && $do_create_cache ) {
 						if ( $single_post ) {
-							// Single Post Cache
-							   apply_filters( 'alm_previous_post_cache_file', $cache_id, $single_post_id, $data );
+							// Single Post Cache.
+							apply_filters( 'alm_previous_post_cache_file', $cache_id, $single_post_id, $data );
 
 						} else {
-							// Standard Cache
+							// Standard Cache.
 
-							// Filters
+							// Filters.
 							$startpage = $is_filters ? $filters_startpage : $seo_start_page;
 
-							// Filters and Preloaded
-							// - add 2 pages to maintain paging compatibility when returning to the same listing via filter
-							// - set $page to $startpage
+							// Filters and Preloaded.
+							// - add 2 pages to maintain paging compatibility when returning to the same listing via filter.
+							// - set $page to $startpage.
 							if ( $is_filters && $preloaded === 'true' ) {
 									$startpage = $startpage + 1;
 									$page      = $page + 1;
@@ -712,7 +698,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							'debug'      => $debug,
 						),
 					);
-					 wp_send_json( $return );
+					wp_send_json( $return );
 
 				} else {
 					$return = array(
