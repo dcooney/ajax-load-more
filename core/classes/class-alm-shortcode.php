@@ -943,10 +943,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Preloaded Add-on.
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
 
-				$preloaded = ( $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ) ? 'true' : $preloaded; // SEO page 1
+				$preloaded = $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ? 'true' : $preloaded; // SEO page 1
 
 				// SEO > page 1.
-				$preloaded = ( $seo === 'true' && $query_args['paged'] > 1 && $paging !== 'true' ) ? false : $preloaded; // SEO page > 1
+				$preloaded = $seo === 'true' && $query_args['paged'] > 1 && $paging !== 'true' ? false : $preloaded; // SEO page > 1
 
 				// Filters.
 				if ( $filters && $_SERVER['QUERY_STRING'] ) {
@@ -959,7 +959,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				}
 
 				// Set `is-preloaded` attribute to add `.alm-preloaded` class to first `.alm-reveal` div.
-				$ajaxloadmore .= ( $seo === 'true' && $query_args['paged'] > 1 ) ? ' data-is-preloaded="true"' : '';
+				$ajaxloadmore .= $seo === 'true' && $query_args['paged'] > 1 ? ' data-is-preloaded="true"' : '';
 
 				// Add `preloaded` atts.
 				$ajaxloadmore .= ' data-preloaded="' . $preloaded . '"';

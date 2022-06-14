@@ -6002,6 +6002,14 @@ function replaceSrc(img) {
 		if (img.dataset.srcset) {
 			img.srcset = img.dataset.srcset;
 		}
+		// Blocksy Pro.
+		// @see https://creativethemes.com/blocksy
+		if (img.dataset.ctLazy) {
+			img.src = img.dataset.ctLazy;
+		}
+		if (img.dataset.ctLazySet) {
+			img.srcset = img.dataset.ctLazySet;
+		}
 	}
 }
 

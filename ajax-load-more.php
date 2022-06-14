@@ -14,6 +14,25 @@
  * @package AjaxLoadMore
  */
 
+/*
+* UPDATE: Added support for lazy loading images with Blocksy Pro theme.
+* FIX: Fixed issue with potential xs scriptiing issue. [report](https://github.com/dcooney/wordpress-ajax-load-more/issues/183)
+
+
+ADDONS
+
+NEXTPAGE
+* NEW: Added new functionality for Nextpage autoload based on taxonomy terms. This allows conditionally inject a shortcode for certain terms only.
+e.g. `[ajax_load_more nextpage="true" taxonomy="actors" taxonomy_terms="will-smith, chris-rock"]
+
+
+FILTERS
+* UPDATED: Improved accessibility of admin filter builder.
+* Updated: Added localstorage variable for expanding/collapsing admin filters. Filters in the admin will now retain the selected state (expanded/collapse)).
+
+
+*/
+
 define( 'ALM_VERSION', '5.5.2' );
 define( 'ALM_RELEASE', 'March 7, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -432,91 +451,92 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 */
 		public function alm_query_posts() {
 
-			// WPML fix for category/tag/taxonomy archives
+			// WPML fix for category/tag/taxonomy archives.
 			if ( ( isset( $_GET['category'] ) && $_GET['category'] ) || ( isset( $_GET['taxonomy'] ) && $_GET['taxonomy'] ) || ( isset( $_GET['tag'] ) && $_GET['tag'] ) ) {
 				unset( $_REQUEST['post_id'] );
 			}
 
-			$id                = ( isset( $_GET['id'] ) ) ? $_GET['id'] : '';
-			$post_id           = ( isset( $_GET['post_id'] ) ) ? $_GET['post_id'] : '';
-			$slug              = ( isset( $_GET['slug'] ) ) ? $_GET['slug'] : '';
-			$canonical_url     = ( isset( $_GET['canonical_url'] ) ) ? esc_url( $_GET['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] );
-			$is_filters        = ( isset( $_GET['filters'] ) ) ? true : false;
-			$filters_startpage = ( isset( $_GET['filters_startpage'] ) && $is_filters ) ? $_GET['filters_startpage'] : 0;
+			$id                = isset( $_GET['id'] ) ? $_GET['id'] : '';
+			$post_id           = isset( $_GET['post_id'] ) ? $_GET['post_id'] : '';
+			$slug              = isset( $_GET['slug'] ) ? $_GET['slug'] : '';
+			$canonical_url     = isset( $_GET['canonical_url'] ) ? esc_url( $_GET['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] );
+			$is_filters        = isset( $_GET['filters'] ) ? true : false;
+			$filters_startpage = isset( $_GET['filters_startpage'] ) && $is_filters ? $_GET['filters_startpage'] : 0;
 
-			// Ajax Query Type
-			$queryType = ( isset( $_GET['query_type'] ) ) ? $_GET['query_type'] : 'standard';   // 'standard' or 'totalposts'; totalposts returns $alm_found_posts
-			// Cache
-			$cache_id        = ( isset( $_GET['cache_id'] ) ) ? $_GET['cache_id'] : '';
-			$cache_logged_in = ( isset( $_GET['cache_logged_in'] ) ) ? $_GET['cache_logged_in'] : false;
-			$do_create_cache = ( $cache_logged_in === 'true' && is_user_logged_in() ) ? false : true;
+			// Ajax Query Type.
+			$queryType = isset( $_GET['query_type'] ) ? $_GET['query_type'] : 'standard';   // 'standard' or 'totalposts'; totalposts returns $alm_found_posts
 
-			// Offset
-			$offset = ( isset( $_GET['offset'] ) ) ? $_GET['offset'] : 0;
+			// Cache.
+			$cache_id        = isset( $_GET['cache_id'] ) ? $_GET['cache_id'] : '';
+			$cache_logged_in = isset( $_GET['cache_logged_in'] ) ? $_GET['cache_logged_in'] : false;
+			$do_create_cache = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
 
-			// Repeater Templates
-			$repeater       = ( isset( $_GET['repeater'] ) ) ? sanitize_file_name( $_GET['repeater'] ) : 'default';
+			// Offset.
+			$offset = isset( $_GET['offset'] ) ? $_GET['offset'] : 0;
+
+			// Repeater Templates.
+			$repeater       = isset( $_GET['repeater'] ) ? sanitize_file_name( $_GET['repeater'] ) : 'default';
 			$type           = alm_get_repeater_type( $repeater );
-			$theme_repeater = ( isset( $_GET['theme_repeater'] ) ) ? sanitize_file_name( $_GET['theme_repeater'] ) : 'null';
+			$theme_repeater = isset( $_GET['theme_repeater'] ) ? sanitize_file_name( $_GET['theme_repeater'] ) : 'null';
 
-			// Post Type
+			// Post Type.
 			$postType = ( isset( $_GET['post_type'] ) ) ? $_GET['post_type'] : 'post';
 
-			// Page Parameters
-			$posts_per_page = ( isset( $_GET['posts_per_page'] ) ) ? $_GET['posts_per_page'] : 5;
-			$page           = ( isset( $_GET['page'] ) ) ? $_GET['page'] : 0;
+			// Page Parameters.
+			$posts_per_page = isset( $_GET['posts_per_page'] ) ? $_GET['posts_per_page'] : 5;
+			$page           = isset( $_GET['page'] ) ? $_GET['page'] : 0;
 
-			// Advanced Custom Fields
-			$acfData = ( isset( $_GET['acf'] ) ) ? $_GET['acf'] : false;
+			// Advanced Custom Fields.
+			$acfData = isset( $_GET['acf'] ) ? $_GET['acf'] : false;
 			if ( $acfData ) {
-				$acf            = ( isset( $acfData['acf'] ) ) ? $acfData['acf'] : false; // true / false
-				$acf_post_id    = ( isset( $acfData['post_id'] ) ) ? $acfData['post_id'] : ''; // Post ID
-				$acf_field_type = ( isset( $acfData['field_type'] ) ) ? $acfData['field_type'] : ''; // ACF Field Type
-				$acf_field_name = ( isset( $acfData['field_name'] ) ) ? $acfData['field_name'] : ''; // ACF Field Type
+				$acf            = isset( $acfData['acf'] ) ? $acfData['acf'] : false;
+				$acf_post_id    = isset( $acfData['post_id'] ) ? $acfData['post_id'] : '';
+				$acf_field_type = isset( $acfData['field_type'] ) ? $acfData['field_type'] : '';
+				$acf_field_name = isset( $acfData['field_name'] ) ? $acfData['field_name'] : '';
 			}
 
-			// Paging Add-on
-			$paging = ( isset( $_GET['paging'] ) ) ? $_GET['paging'] : 'false';
+			// Paging Add-on.
+			$paging = isset( $_GET['paging'] ) ? $_GET['paging'] : 'false';
 
-			// Preload Add-on
-			$preloaded        = ( isset( $_GET['preloaded'] ) ) ? $_GET['preloaded'] : 'false';
-			$preloaded_amount = ( isset( $_GET['preloaded_amount'] ) ) ? $_GET['preloaded_amount'] : '5';
+			// Preload Add-on.
+			$preloaded        = isset( $_GET['preloaded'] ) ? $_GET['preloaded'] : 'false';
+			$preloaded_amount = isset( $_GET['preloaded_amount'] ) ? $_GET['preloaded_amount'] : '5';
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
-				// If preload - offset the ajax posts by posts_per_page + preload_amount val
+				// If preloaded - offset the ajax posts by posts_per_page + preload_amount val.
 				$old_offset = $preloaded_amount;
 				$offset     = $offset + $preloaded_amount;
 			}
 
-			// CTA Add-on
-			   $cta     = false;
-			   $ctaData = ( isset( $_GET['cta'] ) ) ? $_GET['cta'] : false;
-			if ( $ctaData ) {
+			// CTA Add-on.
+			$cta      = false;
+			$cta_data = isset( $_GET['cta'] ) ? $_GET['cta'] : false;
+			if ( $cta_data ) {
 				$cta                = true;
-				$cta_position       = ( isset( $ctaData['cta_position'] ) ) ? $ctaData['cta_position'] : 'before:1';
+				$cta_position       = isset( $cta_data['cta_position'] ) ? $cta_data['cta_position'] : 'before:1';
 				$cta_position_array = explode( ':', $cta_position );
 				$cta_pos            = (string) $cta_position_array[0];
 				$cta_val            = (string) $cta_position_array[1];
-				$cta_pos            = ( $cta_pos != 'after' ) ? 'before' : $cta_pos;
-				$cta_repeater       = ( isset( $ctaData['cta_repeater'] ) ) ? $ctaData['cta_repeater'] : 'null';
-				$cta_theme_repeater = ( isset( $ctaData['cta_theme_repeater'] ) ) ? sanitize_file_name( $ctaData['cta_theme_repeater'] ) : 'null';
+				$cta_pos            = $cta_pos !== 'after' ? 'before' : $cta_pos;
+				$cta_repeater       = isset( $cta_data['cta_repeater'] ) ? $cta_data['cta_repeater'] : 'null';
+				$cta_theme_repeater = isset( $cta_data['cta_theme_repeater'] ) ? sanitize_file_name( $cta_data['cta_theme_repeater'] ) : 'null';
 			}
 
 			// Single Post Add-on.
 			$single_post      = false;
-			$single_post_data = ( isset( $_GET['single_post'] ) ) ? $_GET['single_post'] : false;
+			$single_post_data = isset( $_GET['single_post'] ) ? $_GET['single_post'] : false;
 			if ( $single_post_data ) {
 				$single_post      = true;
-				$single_post_id   = ( isset( $single_post_data['id'] ) ) ? $single_post_data['id'] : '';
-				$single_post_slug = ( isset( $single_post_data['slug'] ) ) ? $single_post_data['slug'] : '';
+				$single_post_id   = isset( $single_post_data['id'] ) ? $single_post_data['id'] : '';
+				$single_post_slug = isset( $single_post_data['slug'] ) ? $single_post_data['slug'] : '';
 			}
 
 			// SEO Add-on.
-			$seo_start_page = ( isset( $_GET['seo_start_page'] ) ) ? $_GET['seo_start_page'] : 1;
+			$seo_start_page = isset( $_GET['seo_start_page'] ) ? $_GET['seo_start_page'] : 1;
 
 			// WooCommerce Add-on.
 			$woocommerce = ( isset( $_GET['woocommerce'] ) ) ? $_GET['woocommerce'] : false;
 			if ( $woocommerce ) {
-				$woocommerce_template = ( isset( $woocommerce['template'] ) ) ? sanitize_file_name( $ctaData['template'] ) : null;
+				$woocommerce_template = ( isset( $woocommerce['template'] ) ) ? sanitize_file_name( $cta_data['template'] ) : null;
 			}
 
 			// Set up initial WP_Query $args.
