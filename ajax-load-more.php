@@ -7,34 +7,17 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.2
+ * Version: 5.5.3
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* UPDATE: Added support for lazy loading images with Blocksy Pro theme.
-* FIX: Fixed issue with potential xs scriptiing issue. [report](https://github.com/dcooney/wordpress-ajax-load-more/issues/183)
+/* */
 
-
-ADDONS
-
-NEXTPAGE
-* NEW: Added new functionality for Nextpage autoload based on taxonomy terms. This allows conditionally inject a shortcode for certain terms only.
-e.g. `[ajax_load_more nextpage="true" taxonomy="actors" taxonomy_terms="will-smith, chris-rock"]
-
-
-FILTERS
-* UPDATED: Improved accessibility of admin filter builder.
-* Updated: Added localstorage variable for expanding/collapsing admin filters. Filters in the admin will now retain the selected state (expanded/collapse)).
-
-
-*/
-
-define( 'ALM_VERSION', '5.5.2' );
-define( 'ALM_RELEASE', 'March 7, 2022' );
+define( 'ALM_VERSION', '5.5.3' );
+define( 'ALM_RELEASE', 'June 24, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
