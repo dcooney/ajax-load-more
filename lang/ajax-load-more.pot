@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 5.5.2\n"
+"Project-Id-Version: Ajax Load More 5.5.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-03-07T13:45:04+00:00\n"
+"POT-Creation-Date: 2022-06-24T13:54:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
@@ -175,7 +175,7 @@ msgstr ""
 
 #: admin/admin.php:632
 #: admin/admin.php:633
-#: ajax-load-more.php:325
+#: ajax-load-more.php:327
 msgid "Settings"
 msgstr ""
 
@@ -2721,15 +2721,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:278
+#: ajax-load-more.php:280
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:399
+#: ajax-load-more.php:401
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:400
+#: ajax-load-more.php:402
 msgid "No results found."
 msgstr ""
 
