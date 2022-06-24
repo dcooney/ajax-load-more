@@ -488,7 +488,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$paging_transition      = '';
 			if ( $paging === 'true' ) {
 				$paging_container_class = ' alm-paging-wrap';
-				$paging_transition      = ' style="-webkit-transition: height 0.25s ease; transition: height 0.25s ease;"';
+				$paging_transition      = ' style="transition: height 0.25s ease;"';
 				// If Preloaded & Paging, pause loading by default.
 				if ( $preloaded === 'true' ) {
 					$pause          = 'true';
@@ -943,14 +943,14 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Preloaded Add-on.
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
 
-				$preloaded = ( $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ) ? 'true' : $preloaded; // SEO page 1
+				$preloaded = $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ? 'true' : $preloaded; // SEO page 1
 
 				// SEO > page 1.
-				$preloaded = ( $seo === 'true' && $query_args['paged'] > 1 && $paging !== 'true' ) ? false : $preloaded; // SEO page > 1
+				$preloaded = $seo === 'true' && $query_args['paged'] > 1 && $paging !== 'true' ? false : $preloaded; // SEO page > 1
 
-				// Filters
+				// Filters.
 				if ( $filters && $_SERVER['QUERY_STRING'] ) {
-					$querystring = $_SERVER['QUERY_STRING'];
+					$querystring = esc_attr( $_SERVER['QUERY_STRING'] );
 					if ( isset( $_GET['pg'] ) ) {
 						$pg            = $_GET['pg'];
 						$preloaded     = ( $pg > 1 ) ? false : $preloaded;
@@ -958,10 +958,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					}
 				}
 
-				// Set `is-preloaded` attribute to add `.alm-preloaded` class to first `.alm-reveal` div
-				$ajaxloadmore .= ( $seo === 'true' && $query_args['paged'] > 1 ) ? ' data-is-preloaded="true"' : '';
+				// Set `is-preloaded` attribute to add `.alm-preloaded` class to first `.alm-reveal` div.
+				$ajaxloadmore .= $seo === 'true' && $query_args['paged'] > 1 ? ' data-is-preloaded="true"' : '';
 
-				// Add `preloaded` atts
+				// Add `preloaded` atts.
 				$ajaxloadmore .= ' data-preloaded="' . $preloaded . '"';
 				$ajaxloadmore .= ' data-preloaded-amount="' . $preloaded_amount . '"';
 			}
@@ -1233,9 +1233,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$repeater_type = null;
 				}
 				// Get current permalink - (including querystring).
-				$single_post_permanlink = ( $_SERVER['QUERY_STRING'] ) ? get_permalink( $single_post_id ) . '?' . $_SERVER['QUERY_STRING'] : get_permalink( $single_post_id );
+				$single_post_permanlink = $_SERVER['QUERY_STRING'] ? get_permalink( $single_post_id ) . '?' . esc_attr( $_SERVER['QUERY_STRING'] ) : get_permalink( $single_post_id );
 
-				// Get previous post include, build output from the next post filter
+				// Get previous post include, build output from the next post filter.
 				$single_post_output = '<div class="alm-reveal alm-single-post post-' . $single_post_id . '" data-url="' . $single_post_permanlink . '" data-title="' . strip_tags( get_the_title( $single_post_id ) ) . '" data-id="' . $single_post_id . '" data-page="0">'; // Set the post id .alm-reveal div
 
 				/**

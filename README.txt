@@ -4,7 +4,7 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 5.9
+Tested up to: 6.0
 Stable tag: 5.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -262,6 +262,10 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.3 - June 24, 2022 =
+* UPDATE: Added support for lazy loading images with Blocksy Pro theme.
+* FIX: Fixed issue with potential xs scriptiing issue. [report](https://github.com/dcooney/wordpress-ajax-load-more/issues/183)
 
 = 5.5.2 - March 7, 2022 =
 * NEW: Added `alm_ajaxurl` filter that allows for filtering the admin-ajax URL.

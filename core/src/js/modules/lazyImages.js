@@ -21,7 +21,7 @@ export function lazyImagesReplace(container) {
 	const images = container.getElementsByTagName('img');
 	if (images) {
 		// Loop all images.
-		Array.prototype.forEach.call(images, (img) => {
+		Array.prototype.forEach.call(images, img => {
 			if (img) {
 				replaceSrc(img);
 			}
@@ -41,6 +41,14 @@ function replaceSrc(img) {
 		}
 		if (img.dataset.srcset) {
 			img.srcset = img.dataset.srcset;
+		}
+		// Blocksy Pro.
+		// @see https://creativethemes.com/blocksy
+		if (img.dataset.ctLazy) {
+			img.src = img.dataset.ctLazy;
+		}
+		if (img.dataset.ctLazySet) {
+			img.srcset = img.dataset.ctLazySet;
 		}
 	}
 }
