@@ -67,15 +67,15 @@ function alm_do_inline_css( $setting ) {
 /**
  * This function will return HTML of a looped item.
  *
- * @param string  $repeater
- * @param string  $type
- * @param string  $theme_repeater
- * @param string  $alm_found_posts
- * @param string  $alm_page
- * @param string  $alm_item
- * @param string  $alm_current
- * @param array   $args
- * @param boolean $ob
+ * @param string  $repeater        The repeater name.
+ * @param string  $type            Type of template.
+ * @param string  $theme_repeater  Theme repeater name.
+ * @param string  $alm_found_posts Total posts found.
+ * @param string  $alm_page        The page number.
+ * @param string  $alm_item        Current item in loop.
+ * @param string  $alm_current     Current item in page.
+ * @param array   $args            The ALM Args.
+ * @param boolean $ob              Should the returned HTML be wrapped in ob_start PHP.
  * @return $html
  * @since 3.7
  */
@@ -435,7 +435,7 @@ function alm_get_page_slug( $post ) {
 
 	if ( ! is_archive() ) {
 		// If not archive, set the post slug.
-		if ( is_front_page() || is_home() ) {
+		if ( is_front_page() || is_home() || is_404() ) {
 			$slug = 'home';
 		} else {
 			if ( is_search() ) {
@@ -510,7 +510,7 @@ function alm_get_page_id( $post ) {
 
 	if ( ! is_archive() ) {
 		// If not an archive page, set the post slug.
-		if ( is_front_page() || is_home() ) {
+		if ( is_front_page() || is_home() || is_404() ) {
 			$post_id = '0';
 		} else {
 			// Search.

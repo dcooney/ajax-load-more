@@ -274,7 +274,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$inline_css = ALM_ENQUEUE::alm_inline_css( ALM_SLUG, $file, ALM_URL );
 			}
 
-			// Legacy Callback Helpers.
+			// Legacy Callback - ALM Setting.
 			if ( isset( $options['_alm_legacy_callbacks'] ) && $options['_alm_legacy_callbacks'] == '1' ) { // Load if active.
 				wp_enqueue_script( 'ajax-load-more-legacy-callbacks' );
 			}
@@ -480,7 +480,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// SEO Posts Per Page.
 			if ( $seo === 'true' && has_action( 'alm_seo_installed' ) && $wp_posts_per_page > $posts_per_page ) {
-				$posts_per_page = $wp_posts_per_page;
+				$posts_per_page = apply_filters( 'alm_seo_posts_per_page', true) ? $wp_posts_per_page : $posts_per_page;
 			}
 
 			// Paging.
@@ -507,7 +507,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= has_action( 'alm_elementor_installed' ) && $elementor === 'posts' ? apply_filters( 'alm_elementor_hide_pagination', '' ) : '';
 
 			/*
-			*  ALM Before Container
+			* ALM Before Container
 			* ALM Core Filter Hook
 			*
 			* @return html
@@ -1298,7 +1298,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= ! empty( $noscript_pagingnav ) ? $noscript_pagingnav : '';
 
 			/**
-			 *  Before Button
+			 * Before Button
 			 * ALM Core Filter Hook
 			 *
 			 * @return html;
@@ -1309,7 +1309,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= self::alm_render_button( $seo, $paging, $button_classname, $button_label, $canonicalURL, $elementor_page_link );
 
 			/**
-			 *  After Button
+			 * After Button
 			 * ALM Core Filter Hook
 			 *
 			 * @return html;
@@ -1340,7 +1340,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Progress Bar CSS.
 			$ajaxloadmore .= apply_filters( 'alm_progress_css', self::$counter, $progress_bar, $progress_bar_color ); // ALM Core Filter Hook
 
-			// REST API Add-on
+			// Custom JavaScript - ALM Setting.
+			$ajaxloadmore .= isset( $options['_alm_custom_js'] ) && ! empty( $options['_alm_custom_js'] ) ? '<script>' . $options['_alm_custom_js'] . '</script>' : '';
+
+			// REST API Add-on$ajaxloadmore
 			// add <script/> template to page.
 			if ( has_action( 'alm_rest_api_installed' ) && $restapi ) {
 				if ( $theme_repeater !== 'null' && has_action( 'alm_get_rest_theme_repeater' ) ) {

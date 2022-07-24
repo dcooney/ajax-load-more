@@ -1714,7 +1714,7 @@ var alm_is_filtering = false;
 		alm.scroll_container = alm.listing.dataset.scrollContainer;
 		alm.scroll_direction = alm.listing.dataset.scrollDirection;
 		alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
-		alm.pause_override = alm.listing.dataset.pauseOverride; // true | false
+		alm.pause_override = alm.listing.dataset.pauseOverride ? alm.listing.dataset.pauseOverride : false; // true | false
 		alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
 		alm.transition = alm.listing.dataset.transition; // Transition
 		alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
@@ -6634,158 +6634,158 @@ function hidePlaceholder(alm) {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 exports.almResultsText = almResultsText;
 exports.almGetResultsText = almGetResultsText;
 exports.almInitResultsText = almInitResultsText;
-/**  
+/**
  * Set the results text if required.
- * 
- * @param {object} alm     Global alm object
- * @param {string} type    Type of results
+ *
+ * @param {object} alm  Global alm object.
+ * @param {string} type Type of results.
  * @since 5.1
  */
 function almResultsText(alm) {
-  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-  if (!alm.resultsText || alm.nested === 'true') return false;
-  var resultsType = type === 'nextpage' || type === 'woocommerce' ? type : 'standard';
+	if (!alm.resultsText || alm.nested === 'true') return false;
+	var resultsType = type === 'nextpage' || type === 'woocommerce' ? type : 'standard';
 
-  almGetResultsText(alm, resultsType);
+	almGetResultsText(alm, resultsType);
 }
 
-/**  
- *  Get values for showing results text.
- * 
- *  @param {Object} alm
- *  @param {String} type
- *  @since 4.1
+/**
+ * Get values for showing results text.
+ *
+ * @param {object} alm  Global alm object.
+ * @param {string} type Type of results.
+ * @since 4.1
  */
 function almGetResultsText(alm) {
-  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-  if (!alm.resultsText || !alm.localize || alm.nested === 'true') {
-    return false;
-  }
+	if (!alm.resultsText || !alm.localize || alm.nested === 'true') {
+		return false;
+	}
 
-  var page = 0;
-  var pages = 0;
-  var post_count = 0;
-  var total_posts = 0;
-  var preloaded = alm.addons.preloaded === 'true' ? true : false;
-  var paging = alm.addons.paging ? true : false;
-  var posts_per_page = alm.orginal_posts_per_page;
+	var page = 0;
+	var pages = 0;
+	var post_count = 0;
+	var total_posts = 0;
+	var preloaded = alm.addons.preloaded === 'true' ? true : false;
+	var paging = alm.addons.paging ? true : false;
+	var posts_per_page = alm.orginal_posts_per_page;
 
-  switch (type) {
+	switch (type) {
+		// Nextpage
+		case 'nextpage':
+			page = parseInt(alm.localize.page);
+			post_count = page;
+			pages = parseInt(alm.localize.total_posts);
+			total_posts = parseInt(pages);
+			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, posts_per_page);
 
-    // Nextpage
-    case 'nextpage':
+			break;
 
-      page = parseInt(alm.localize.page);
-      post_count = page;
-      pages = parseInt(alm.localize.total_posts);
-      total_posts = parseInt(pages);
-      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
+		// WooCommerce
+		case 'woocommerce':
+			// Don't do anything
+			break;
 
-      break;
+		default:
+			page = parseInt(alm.page) + 1;
+			pages = Math.ceil(alm.localize.total_posts / posts_per_page);
+			post_count = parseInt(alm.localize.post_count);
+			total_posts = parseInt(alm.localize.total_posts);
 
-    // WooCommerce
-    case 'woocommerce':
-      // Don't do anything
-      break;
+			// Add 1 page if Preloaded
+			if (preloaded) {
+				page = paging ? alm.page + 1 : page + 1;
+			}
 
-    default:
-
-      page = parseInt(alm.page) + 1;
-      pages = Math.ceil(alm.localize.total_posts / posts_per_page);
-      post_count = parseInt(alm.localize.post_count);
-      total_posts = parseInt(alm.localize.total_posts);
-
-      // Add 1 page if Preloaded
-      if (preloaded) {
-        page = paging ? alm.page + 1 : page + 1;
-      }
-
-      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
-
-  }
+			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, posts_per_page);
+	}
 }
 
-/**  
- *  Display `Showing {x} of {y} pages` text.
+/**
+ * Display `Showing {x} of {y} pages` text.
  *
- *  @param {Object} alm
- *  @param {String} type
- *  @since 4.1
+ * @param {object} alm  Global alm object.
+ * @param {string} type Type of results.
+ * @since 4.1
  */
 function almInitResultsText(alm) {
-  var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
+	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-  if (!alm.resultsText || !alm.localize || alm.nested === 'true') return false;
+	if (!alm.resultsText || !alm.localize || alm.nested === 'true') return false;
 
-  var page = 0;
-  var pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
-  var post_count = parseInt(alm.localize.post_count);
-  var total_posts = parseInt(alm.localize.total_posts);
+	var page = 0;
+	var pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
+	var post_count = parseInt(alm.localize.post_count);
+	var total_posts = parseInt(alm.localize.total_posts);
 
-  switch (type) {
+	switch (type) {
+		// Nextpage
+		case 'nextpage':
+			page = alm.addons.nextpage_startpage;
+			post_count = page;
+			pages = total_posts;
+			almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts, alm.posts_per_page);
+			break;
 
-    // Nextpage
-    case 'nextpage':
-      page = alm.addons.nextpage_startpage;
-      post_count = page;
-      pages = total_posts;
-      almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts);
-      break;
+		// Preloaded
+		case 'preloaded':
+			page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
+			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, alm.posts_per_page);
+			break;
 
-    // Preloaded
-    case 'preloaded':
-      page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
-      almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts);
-      break;
+		// WooCommerce
+		case 'woocommerce':
+			// Don't do anything
+			break;
 
-    // WooCommerce
-    case 'woocommerce':
-      // Don't do anything
-      break;
-
-    default:
-
-      console.log('No results to set.');
-
-  }
+		default:
+			console.log('No results to set.');
+	}
 }
 
-/**  
+/**
  *  Render `Showing {x} of {y} results` text.
- * 
- *  @param {Element} el
- *  @param {String} page
- *  @param {String} pages
- *  @param {String} post_count
- *  @param {String} total_posts
+ *
+ *  @param {Element} el          The results text HTML element.
+ *  @param {string}  page        The current page number.
+ *  @param {string}  pages       The total pages.
+ *  @param {string}  post_count  Total posts displayed.
+ *  @param {string}  total_posts Total amount of posts in query.
+ *  @param {string}  per_page    Total amount of posts per page.
  *  @since 4.1
  */
-var almRenderResultsText = function almRenderResultsText(el, page, pages, post_count, total_posts) {
+var almRenderResultsText = function almRenderResultsText(el, page, pages, post_count, total_posts, per_page) {
+	el.forEach(function (result) {
+		pages = parseInt(pages);
+		var text = pages > 0 ? alm_localize.results_text : alm_localize.no_results_text;
 
-  el.forEach(function (result) {
+		// Paging add-on.
+		// Start and End values for posts in view.
+		var start = page * per_page - per_page + 1;
+		var end_val = page * per_page;
+		var end = end_val <= total_posts ? end_val : total_posts;
 
-    pages = parseInt(pages);
-    var text = pages > 0 ? alm_localize.results_text : alm_localize.no_results_text;
-
-    if (pages > 0) {
-      text = text.replace('{num}', '<span class="alm-results-num">' + page + '</span>'); // Deprecated
-      text = text.replace('{page}', '<span class="alm-results-page">' + page + '</span>');
-      text = text.replace('{total}', '<span class="alm-results-total">' + pages + '</span>'); // Deprecated
-      text = text.replace('{pages}', '<span class="alm-results-pages">' + pages + '</span>');
-      text = text.replace('{post_count}', '<span class="alm-results-post_count">' + post_count + '</span>');
-      text = text.replace('{total_posts}', '<span class="alm-results-total_posts">' + total_posts + '</span>');
-      result.innerHTML = text;
-    } else {
-      result.innerHTML = text;
-    }
-  });
+		if (pages > 0) {
+			text = text.replace('{num}', '<span class="alm-results-num">' + page + '</span>'); // Deprecated
+			text = text.replace('{page}', '<span class="alm-results-page">' + page + '</span>');
+			text = text.replace('{start}', '<span class="alm-results-start">' + start + '</span>');
+			text = text.replace('{end}', '<span class="alm-results-start">' + end + '</span>');
+			text = text.replace('{total}', '<span class="alm-results-total">' + pages + '</span>'); // Deprecated
+			text = text.replace('{pages}', '<span class="alm-results-pages">' + pages + '</span>');
+			text = text.replace('{post_count}', '<span class="alm-results-post_count">' + post_count + '</span>');
+			text = text.replace('{total_posts}', '<span class="alm-results-total_posts">' + total_posts + '</span>');
+			result.innerHTML = text;
+		} else {
+			result.innerHTML = text;
+		}
+	});
 };
 
 /***/ }),

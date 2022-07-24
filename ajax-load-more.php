@@ -14,7 +14,12 @@
  * @package AjaxLoadMore
  */
 
-/* */
+/*
+* NEW - Added new core setting for adding custom JavaScript. This new setting will allow for adding callbacks directly from the ALM settings page.
+* NEW: Added new `alm_seo_posts_per_page` filter to disable the posts_per_page protection in the SEO add-on.
+* UPDATE: Added new `start` and `end` variables in the [Results](https://connekthq.com/plugins/ajax-load-more/docs/results-text) Text feature. This adds support for using Results Text with the Paging Add-on.
+* FIX - Fixed PHP warnings displayed if ALM was added to a 404 page.
+*/
 
 define( 'ALM_VERSION', '5.5.3' );
 define( 'ALM_RELEASE', 'June 24, 2022' );

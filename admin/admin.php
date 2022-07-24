@@ -1356,11 +1356,19 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	add_settings_field(  // Custom JavaScript
+		'_alm_custom_js',
+		__( 'Custom JavaScript', 'ajax-load-more' ),
+		'alm_custom_js_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
 /*
 	add_settings_field(  // Disable REST API
 		'_alm_use_rest_api',
 		__( 'REST API', 'ajax-load-more' ),
-		'_alm_use_rest_api_callback',
+		'alm_use_rest_api_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
@@ -1369,7 +1377,7 @@ function alm_admin_init(){
 	add_settings_field(  // Legacy Callbacks
 		'_alm_legacy_callbacks',
 		__( 'Legacy Callbacks', 'ajax-load-more' ),
-		'_alm_legacy_callbacks_callback',
+		'alm_legacy_callbacks_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
@@ -1393,7 +1401,7 @@ function alm_admin_init(){
 	add_settings_field(  // Uninstall
 		'_alm_uninstall',
 		__( 'Delete on Uninstall', 'ajax-load-more' ),
-		'_alm_uninstall_callback',
+		'alm_uninstall_callback',
 		'ajax-load-more',
 		'alm_admin_settings'
 	);
@@ -1720,7 +1728,7 @@ function alm_btn_class_callback(){
     if(!isset($options['_alm_btn_classname']))
 	   $options['_alm_btn_classname'] = '';
 
-	$html = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
+	$html  = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
 	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button bg-black rounded etc..." /> ';
 
 	echo $html;
@@ -1748,6 +1756,22 @@ function alm_btn_class_callback(){
 }
 
 /**
+ * Custom JS to the shortcode output.
+ *
+ * @since 5.5.4
+ */
+function alm_custom_js_callback(){
+	$options = get_option( 'alm_settings' );
+	$html = '<label for="_alm_layouts_css">' . __( 'Enter custom JavaScript code.', 'ajax-load-more') . '</label>';
+	$html .= '<textarea id="_alm_custom_js" name="alm_settings[_alm_custom_js]" rows="5">';
+	$html .= isset( $options['_alm_custom_js'] ) ? $options['_alm_custom_js'] : '';
+	$html .= '</textarea>';
+	$html .= '<label><span style="display:block;">' . __( 'JavaScript will be rendered with every Ajax Load More instance.', 'ajax-load-more' ) . '</span></label>';
+
+	echo $html;
+}
+
+/**
  * Move window to top of screen on page load.
  *
  * @since 2.6.0
@@ -1772,7 +1796,7 @@ function _alm_scroll_top_callback(){
  *
  * @since 5.1
  */
-function _alm_use_rest_api_callback(){
+function alm_use_rest_api_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_use_rest_api']))
 	   $options['_alm_use_rest_api'] = '0';
@@ -1792,7 +1816,7 @@ function _alm_use_rest_api_callback(){
  *
  * @since 5.0.0
  */
-function _alm_legacy_callbacks_callback(){
+function alm_legacy_callbacks_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_legacy_callbacks']))
 	   $options['_alm_legacy_callbacks'] = '0';
@@ -1812,7 +1836,7 @@ function _alm_legacy_callbacks_callback(){
  *
  * @since 4.1.0
  */
-function _alm_uninstall_callback(){
+function alm_uninstall_callback(){
 	$options = get_option( 'alm_settings' );
 
 	if(!isset($options['_alm_uninstall']))
