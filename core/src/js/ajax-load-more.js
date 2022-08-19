@@ -71,7 +71,7 @@ let alm_is_filtering = false;
 			window.scrollTo(0, 0);
 		}
 
-		//Set ALM Variables
+		// Set ALM Variables
 		let alm = this;
 		alm.AjaxLoadMore = {};
 		alm.addons = {};
@@ -965,14 +965,13 @@ let alm_is_filtering = false;
 				.get(alm_rest_url, { params })
 				.then(function(response) {
 					// Success
-					let results = response.data; // Get data from response
-					let data = '';
-					let html = results.html;
-					let meta = results.meta;
-					let postcount = meta && meta.postcount ? meta.postcount : 0;
-					let totalposts = meta && meta.totalposts ? meta.totalposts : 0;
+					const results = response.data; // Get data from response
+					const { html = null, meta = null } = results;
+					const postcount = meta && meta.postcount ? meta.postcount : 0;
+					const totalposts = meta && meta.totalposts ? meta.totalposts : 0;
 
-					// loop results to get data from each
+					// loop results to get data from each.
+					let data = '';
 					for (let i = 0; i < html.length; i++) {
 						let result = html[i];
 						if (alm.restapi_debug === 'true') {

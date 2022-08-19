@@ -177,8 +177,8 @@ export function elementorGetContent(response, alm) {
 /**
  * Create Elementor Params for ALM.
  *
- * @param Object alm
- * @return alm
+ * @param  {object} alm The alm object.
+ * @return {object}     The modified object.
  */
 export function elementorCreateParams(alm) {
 	// Get Settings
@@ -228,8 +228,9 @@ export function elementorCreateParams(alm) {
 /**
  * Set the required classnames for parsing data and injecting content into the Elementor listing
  *
- * @param {*} alm
- * @param {*} type
+ * @param  {object} alm  The alm object.
+ * @param  {string} type The Elementor type.
+ * @return {object}      The modified object.
  */
 function setElementorClasses(alm, type = 'posts') {
 	// Container Class
@@ -249,7 +250,8 @@ function setElementorClasses(alm, type = 'posts') {
 /**
  * Parse Masonry Settings from Elementor Data atts
  *
- * @param {*} alm
+ * @param {object} alm The alm object.
+ * @return {object}    The modified object.
  */
 function parseMasonryConfig(alm) {
 	if (!alm.addons.elementor_element) {
@@ -277,9 +279,9 @@ function parseMasonryConfig(alm) {
 /**
  * Position Elementor Masonry Items
  *
- * @param {*} alm
- * @param {*} container_class
- * @param {*} item_class
+ * @param {object} alm             The alm object.
+ * @param {string} container_class The container classname.
+ * @param {string} item_class      The item classname.
  */
 function positionMasonryItems(alm, container_class, item_class) {
 	let heights = [];
@@ -336,8 +338,8 @@ function positionMasonryItems(alm, container_class, item_class) {
 /**
  * Determine the type of elementor widget (woocommerce || posts)
  *
- * @param {*} target
- * @param {*} classname
+ * @param  {HTMLElement} target The target element.
+ * @return {string}             The Elementor type.
  */
 function elementorGetWidgetType(target) {
 	if (!target) {
@@ -351,9 +353,9 @@ function elementorGetWidgetType(target) {
 /**
  * Get the upcoming URL from the a.next link from the HTML
  *
- * @param {HTMLElement} element
- * @param {String} classname
- * @return {string} href
+ * @param  {HTMLElement} element   The target element
+ * @param  {string}      classname The classname.
+ * @return {HTMLElement | string}      
  */
 function elementorGetNextPage(element, classname) {
 	const pagination = element.querySelector(classname);
@@ -363,8 +365,8 @@ function elementorGetNextPage(element, classname) {
 /**
  * Get the URL of the next page to load from the a.next href
  *
- * @param {HTMLElement} element
- * @return {String} url
+ * @param {HTMLElement} element The target element
+ * @return {HTMLElement | string} 
  */
 function elementorGetNextUrl(element) {
 	if (!element) {

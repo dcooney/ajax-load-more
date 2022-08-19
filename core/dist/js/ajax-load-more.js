@@ -414,8 +414,8 @@ function elementorGetContent(response, alm) {
 /**
  * Create Elementor Params for ALM.
  *
- * @param Object alm
- * @return alm
+ * @param  {object} alm The alm object.
+ * @return {object}     The modified object.
  */
 function elementorCreateParams(alm) {
 	// Get Settings
@@ -459,8 +459,9 @@ function elementorCreateParams(alm) {
 /**
  * Set the required classnames for parsing data and injecting content into the Elementor listing
  *
- * @param {*} alm
- * @param {*} type
+ * @param  {object} alm  The alm object.
+ * @param  {string} type The Elementor type.
+ * @return {object}      The modified object.
  */
 function setElementorClasses(alm) {
 	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'posts';
@@ -480,7 +481,8 @@ function setElementorClasses(alm) {
 /**
  * Parse Masonry Settings from Elementor Data atts
  *
- * @param {*} alm
+ * @param {object} alm The alm object.
+ * @return {object}    The modified object.
  */
 function parseMasonryConfig(alm) {
 	if (!alm.addons.elementor_element) {
@@ -508,9 +510,9 @@ function parseMasonryConfig(alm) {
 /**
  * Position Elementor Masonry Items
  *
- * @param {*} alm
- * @param {*} container_class
- * @param {*} item_class
+ * @param {object} alm             The alm object.
+ * @param {string} container_class The container classname.
+ * @param {string} item_class      The item classname.
  */
 function positionMasonryItems(alm, container_class, item_class) {
 	var heights = [];
@@ -567,8 +569,8 @@ function positionMasonryItems(alm, container_class, item_class) {
 /**
  * Determine the type of elementor widget (woocommerce || posts)
  *
- * @param {*} target
- * @param {*} classname
+ * @param  {HTMLElement} target The target element.
+ * @return {string}             The Elementor type.
  */
 function elementorGetWidgetType(target) {
 	if (!target) {
@@ -582,9 +584,9 @@ function elementorGetWidgetType(target) {
 /**
  * Get the upcoming URL from the a.next link from the HTML
  *
- * @param {HTMLElement} element
- * @param {String} classname
- * @return {string} href
+ * @param  {HTMLElement} element   The target element
+ * @param  {string}      classname The classname.
+ * @return {HTMLElement | string}      
  */
 function elementorGetNextPage(element, classname) {
 	var pagination = element.querySelector(classname);
@@ -594,8 +596,8 @@ function elementorGetNextPage(element, classname) {
 /**
  * Get the URL of the next page to load from the a.next href
  *
- * @param {HTMLElement} element
- * @return {String} url
+ * @param {HTMLElement} element The target element
+ * @return {HTMLElement | string} 
  */
 function elementorGetNextUrl(element) {
 	if (!element) {
@@ -1639,7 +1641,7 @@ var alm_is_filtering = false;
 			window.scrollTo(0, 0);
 		}
 
-		//Set ALM Variables
+		// Set ALM Variables
 		var alm = this;
 		alm.AjaxLoadMore = {};
 		alm.addons = {};
@@ -2525,13 +2527,16 @@ var alm_is_filtering = false;
 			_axios2.default.get(alm_rest_url, { params: params }).then(function (response) {
 				// Success
 				var results = response.data; // Get data from response
-				var data = '';
-				var html = results.html;
-				var meta = results.meta;
+				var _results$html = results.html,
+				    html = _results$html === undefined ? null : _results$html,
+				    _results$meta = results.meta,
+				    meta = _results$meta === undefined ? null : _results$meta;
+
 				var postcount = meta && meta.postcount ? meta.postcount : 0;
 				var totalposts = meta && meta.totalposts ? meta.totalposts : 0;
 
-				// loop results to get data from each
+				// loop results to get data from each.
+				var data = '';
 				for (var i = 0; i < html.length; i++) {
 					var result = html[i];
 					if (alm.restapi_debug === 'true') {

@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 5.5.3
+Stable tag: 5.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,9 +263,24 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 5.5.4 - August 19, 2022 =
+* NEW - Added new core setting for adding custom JavaScript. This new setting will allow for adding callbacks directly from the ALM settings page.
+* NEW: Added new `alm_seo_posts_per_page` filter to disable the posts_per_page protection in the SEO add-on.
+* NEW - Added new `alm_canonical_frontpage_trailing_slash` filter to remove the trailing slash from frontpage URLs. This is useful for add-ons to update the browser URL.
+* NEW - Added new `alm_allow_future_posts` filter to allow future posts for non-logged in users. `add_filter('alm_allow_future_posts', '__return_true');`
+* NEW - Added new `alm_button_wrap_classes` filter to add classes to the button wrapper element.
+* UPDATE: Added new `start` and `end` variables in the [Results](https://connekthq.com/plugins/ajax-load-more/docs/results-text) Text feature. This adds support for using Results Text with the Paging Add-on.
+* UPDATE: Normalized how the default.php Repeater Template is created on plugin activation.
+* FIX - Fixed PHP warnings displayed if ALM was added to a 404 page.
+* SECURITY - Fix for potential admin level exploit with Repeater exports.
+* SECURITY - Fix for potential admin level exploit with getting taxonomy terms in the Shortcode Builder.
+* SECURITY - Fix for potential admin level exploit with getting layout templates in the Repeater Template section of ALM.
+
+
 = 5.5.3 - June 24, 2022 =
 * UPDATE: Added support for lazy loading images with Blocksy Pro theme.
 * FIX: Fixed issue with potential xs scriptiing issue. [report](https://github.com/dcooney/wordpress-ajax-load-more/issues/183)
+
 
 = 5.5.2 - March 7, 2022 =
 * NEW: Added `alm_ajaxurl` filter that allows for filtering the admin-ajax URL.
@@ -274,6 +289,7 @@ How to install Ajax Load More.
 * FIX: Fixed PHP warning that could appear in the `<noscript/>` function for SEO and Filters add-ons.
 * FIX: Fixed issue with SEO and Preloaded element not getting the 'alm-preloaded' classname.
 * FIX: Fixed issue with PHP warning around ALM settings.
+
 
 = 5.5.1 - January 10, 2022 =
 

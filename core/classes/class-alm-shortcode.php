@@ -1372,11 +1372,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 * Render the load more button.
 		 *
 		 * @since         3.3.2
-		 * @return        $html
+		 * @return string The updated html.
 		 */
 		public static function alm_render_button( $seo, $paging, $button_classname, $button_label, $canonicalURL, $elementor_page_link ) {
+			$btn_wrap_classes  = has_filter( 'alm_button_wrap_classes' ) ? ' ' . apply_filters( 'alm_button_wrap_classes', '' ) : '';
 
-			$html = '<div class="alm-btn-wrap" style="visibility: hidden;">';
+			$html = '<div class="alm-btn-wrap' . $btn_wrap_classes . '" style="visibility: hidden;">';
 			if ( 'true' !== $paging ) {
 				// Elementor Page Link.
 				$html .= ! empty( $elementor_page_link ) ? $elementor_page_link : '';
@@ -1387,7 +1388,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$html       .= '<' . $btn_element . ' class="alm-load-more-btn more' . $button_classname . '"' . $btn_href . $btn_rel . ' type="button">' . $button_label . '</' . $btn_element . '>';
 			}
 			$html .= '</div>';
-
 			return $html;
 		}
 

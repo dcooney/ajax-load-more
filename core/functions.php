@@ -177,6 +177,7 @@ function alm_get_default_repeater() {
 	} else {
 		$template_theme_file = get_template_directory() . '/' . $template_dir . '/default.php';
 	}
+
 	// If theme or child theme contains the template, use that file.
 	if ( file_exists( $template_theme_file ) ) {
 		$file = $template_theme_file;
@@ -375,7 +376,8 @@ function alm_get_canonical_url() {
 		if ( function_exists( 'pll_home_url' ) ) { // Polylang support
 			$canonical_url = pll_home_url();
 		} else {
-			$canonical_url = get_home_url() . '/';
+			$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
+			// e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false');
 		}
 	} elseif ( is_home() ) {
 		// Home (Blog Default).
@@ -409,7 +411,7 @@ function alm_get_canonical_url() {
 
 	} elseif ( is_search() ) {
 		// Search.
-		$canonical_url = get_home_url() . '/';
+		$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
 
 	} else {
 		// Fallback.
