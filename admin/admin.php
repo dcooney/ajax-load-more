@@ -1,5 +1,4 @@
 <?php
-// @codingStandardsIgnoreStart
 
 add_action( 'init', 'alm_core_update' ); // Core Update.
 add_action( 'admin_init', 'alm_admin_hooks' );
@@ -26,9 +25,9 @@ function alm_admin_hooks() {
 }
 
 /**
- *  Create custom update notifications.
+ * Create custom update notifications.
  *
- *  @since 5.2
+ * @since 5.2
  */
 function alm_plugin_update_messages(){
 	$addons = alm_get_addons();
@@ -186,16 +185,22 @@ function alm_set_transient(){
  * @since 3.6
  */
 function alm_repeaters_export() {
-	if ( isset( $_POST['alm_repeaters_export'] ) && ( ! wp_doing_ajax() ) ) {
-		if ( current_user_can( 'edit_theme_options' ) ) {
-			$file = $_POST['alm_repeaters_export'];
-			if ( file_exists( $file ) ) {
-				header( 'Content-Description: File Transfer' );
-				header( 'Content-Type: application/octet-stream' );
-				header( 'Content-Disposition: attachment; filename="' . basename( $file ) . '"' );
-				readfile( $file );
-				exit();
-			}
+	if ( isset( $_POST['alm_repeaters_export'] ) && ! wp_doing_ajax() && current_user_can( 'edit_theme_options' ) ) {
+		$type = esc_attr( $_POST['alm_repeaters_export_type'] );
+		$name = esc_attr( $_POST['alm_repeaters_export_name'] );
+
+		if ( $type === 'theme-repeater' ) {
+			$file = AjaxLoadMore::alm_get_theme_repeater_path() . '/' . $name;
+		} else {
+			$file = AjaxLoadMore::alm_get_repeater_path() . '/' . $name . '.php';
+		}
+
+		if ( file_exists( $file ) ) {
+			header( 'Content-Description: File Transfer' );
+			header( 'Content-Type: application/octet-stream' );
+			header( 'Content-Disposition: attachment; filename="' . basename( $file ) . '"' );
+			readfile( $file );
+			exit();
 		}
 	}
 }
@@ -416,16 +421,23 @@ function alm_get_layout() {
 
 		// Check our nonce, if they don't match then bounce!
 		if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ) ) {
-			wp_die( 'Error - unable to verify nonce, please try again.' );
+			wp_die( __( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
 		}
 
-		if ( $type === 'default' ) {
-			// Default Layout.
-			$content =  file_get_contents( ALM_PATH . 'admin/includes/layout/' . $type.'.php' );
+		if ( $type === 'default' ) { // Default Layout.
+
+			$path = ALM_PATH . 'admin/includes/layout/' . $type . '.php';
+
+			// Security check - confirm dir path does NOT contain relative path.
+			if ( false !== strpos( $path, './' ) ) {
+				wp_die();
+			}
+
+			$content =  AjaxLoadMore::alm_get_default_repeater_markup();
 
 		} else {
-			// Custom Layout.
-			if ( $custom == 'true' ) {
+			if ( $custom === 'true' ) {
+				// Custom Layout.
 				$dir = 'alm_layouts';
 				if ( is_child_theme() ) {
 					$path = get_stylesheet_directory() . '/' . $dir . '/' . $type;
@@ -436,18 +448,29 @@ function alm_get_layout() {
 				} else {
 					$path = get_template_directory() . '/' . $dir . '/' . $type;
 				}
+
+				// Security check - confirm dir path does NOT contain relative path.
+				if ( false !== strpos( $path, './' ) ) {
+					wp_die();
+				}
+
 				$content = file_get_contents( $path );
 
 			}
 			// Layouts Add-on.
 			else {
+				$path = ALM_LAYOUTS_PATH . 'layouts/' . $type . '.php';
+				// Security check - confirm dir path does NOT contain relative path.
+				if ( false !== strpos( $path, './' ) ) {
+					wp_die();
+				}
 				$content = file_get_contents( ALM_LAYOUTS_PATH . 'layouts/' . $type . '.php' );
 			}
 
 		}
 
 		$return['value'] = $content;
-		echo json_encode( $return );
+		echo wp_json_encode( $return );
 
 	} else {
 		echo __( 'You don\'t belong here.', 'ajax-load-more' );
@@ -472,7 +495,7 @@ function alm_get_layouts() {
 function alm_admin_vars() { ?>
    <script type='text/javascript'>
 	 /* <![CDATA[ */
-	var alm_admin_localize = <?php echo json_encode( array(
+	var alm_admin_localize = <?php echo wp_json_encode( array(
 		'ajax_admin_url'   => admin_url( 'admin-ajax.php' ),
 		'ajax_load_more'   => __( 'Ajax Load More', 'ajax-load-more' ),
 		'active'           => __( 'Active', 'ajax-load-more' ),
@@ -1167,24 +1190,22 @@ function alm_update_repeater(){
 
 
 
-/*
-*  alm_get_tax_terms
-*  Get taxonomy terms for shortcode builder
+/**
+* Get taxonomy terms for shortcode builder and build the markup.
 *
-*  @return   Taxonomy Terms
-*  @since 2.1.0
+* @since 2.1.0
 */
-
 function alm_get_tax_terms(){
-	if (current_user_can( 'edit_theme_options' )){
-
+	if ( current_user_can( 'edit_theme_options' ) ) {
 		$nonce = $_GET["nonce"];
-		// Check our nonce, if they don't match then bounce!
-		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ))
-			die( 'Get Bounced!' );
 
-		$taxonomy = (isset($_GET['taxonomy'])) ? $_GET['taxonomy'] : '';
-		$index = (isset($_GET['index'])) ? $_GET['index'] : '1';
+		// Check our nonce, if they don't match then bounce!
+		if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ) ) {
+			wp_die( __( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
+		}
+
+		$taxonomy = isset( $_GET['taxonomy'] ) ? esc_attr( $_GET['taxonomy'] ) : '';
+		$index    = isset( $_GET['index'] ) ? esc_attr( $_GET['index'] ) : '1';
 
 		$tax_args = array(
 			'orderby'       => 'name',
@@ -1192,33 +1213,28 @@ function alm_get_tax_terms(){
 			'hide_empty'    => false
 		);
 		$terms = get_terms($taxonomy, $tax_args);
-		$returnVal = '';
+		$value = '';
 		if ( !empty( $terms ) && !is_wp_error( $terms ) ){
-			$returnVal .= '<ul>';
+			$value .= '<ul>';
 			foreach ( $terms as $term ) {
-
-				$returnVal .='<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'-'.$index.'" data-type="'.$term->slug.'"><label for="tax-term-'.$term->slug.'-'.$index.'">'.$term->name.'</label></li>';
-
+				$value .= '<li><input type="checkbox" class="alm_element" name="tax-term-'.$term->slug.'" id="tax-term-'.$term->slug.'-'.$index.'" data-type="'.$term->slug.'">';
+				$value .= '<label for="tax-term-'.$term->slug.'-'.$index.'">'.$term->name.'</label>';
+				$value .= '</li>';
 			}
-			$returnVal .= '</ul>';
-			echo $returnVal;
-
-			die();
+			$value .= '</ul>';
+			echo $value;
+			wp_die();
 		}else{
 			echo "<p class='warning'>No terms exist within this taxonomy</p>";
-			die();
+			wp_die();
 		}
-
-	} else {
-		echo __( 'You don\'t belong here.', 'ajax-load-more' );
 	}
 }
 
-/*
-*  alm_layouts_dismiss
-*  Dismiss Add Layouts CTA in repeater templates.
+/**
+* Dismiss Add Layouts CTA in repeater templates.
 *
-*  @since 2.8.2.1
+* @since 2.8.2.1
 */
 function alm_layouts_dismiss(){
    if (current_user_can( 'edit_theme_options' )){
@@ -1356,11 +1372,19 @@ function alm_admin_init(){
 		'alm_general_settings'
 	);
 
+	add_settings_field(  // Custom JavaScript
+		'_alm_custom_js',
+		__( 'Custom JavaScript', 'ajax-load-more' ),
+		'alm_custom_js_callback',
+		'ajax-load-more',
+		'alm_general_settings'
+	);
+
 /*
 	add_settings_field(  // Disable REST API
 		'_alm_use_rest_api',
 		__( 'REST API', 'ajax-load-more' ),
-		'_alm_use_rest_api_callback',
+		'alm_use_rest_api_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
@@ -1369,7 +1393,7 @@ function alm_admin_init(){
 	add_settings_field(  // Legacy Callbacks
 		'_alm_legacy_callbacks',
 		__( 'Legacy Callbacks', 'ajax-load-more' ),
-		'_alm_legacy_callbacks_callback',
+		'alm_legacy_callbacks_callback',
 		'ajax-load-more',
 		'alm_general_settings'
 	);
@@ -1393,7 +1417,7 @@ function alm_admin_init(){
 	add_settings_field(  // Uninstall
 		'_alm_uninstall',
 		__( 'Delete on Uninstall', 'ajax-load-more' ),
-		'_alm_uninstall_callback',
+		'alm_uninstall_callback',
 		'ajax-load-more',
 		'alm_admin_settings'
 	);
@@ -1720,7 +1744,7 @@ function alm_btn_class_callback(){
     if(!isset($options['_alm_btn_classname']))
 	   $options['_alm_btn_classname'] = '';
 
-	$html = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
+	$html  = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
 	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="'.$options['_alm_btn_classname'].'" placeholder="button bg-black rounded etc..." /> ';
 
 	echo $html;
@@ -1748,6 +1772,22 @@ function alm_btn_class_callback(){
 }
 
 /**
+ * Custom JS to the shortcode output.
+ *
+ * @since 5.5.4
+ */
+function alm_custom_js_callback(){
+	$options = get_option( 'alm_settings' );
+	$html = '<label for="_alm_layouts_css">' . __( 'Enter custom JavaScript code.', 'ajax-load-more') . '</label>';
+	$html .= '<textarea id="_alm_custom_js" name="alm_settings[_alm_custom_js]" rows="5">';
+	$html .= isset( $options['_alm_custom_js'] ) ? $options['_alm_custom_js'] : '';
+	$html .= '</textarea>';
+	$html .= '<label><span style="display:block;">' . __( 'JavaScript will be rendered with every Ajax Load More instance.', 'ajax-load-more' ) . '</span></label>';
+
+	echo $html;
+}
+
+/**
  * Move window to top of screen on page load.
  *
  * @since 2.6.0
@@ -1772,7 +1812,7 @@ function _alm_scroll_top_callback(){
  *
  * @since 5.1
  */
-function _alm_use_rest_api_callback(){
+function alm_use_rest_api_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_use_rest_api']))
 	   $options['_alm_use_rest_api'] = '0';
@@ -1792,7 +1832,7 @@ function _alm_use_rest_api_callback(){
  *
  * @since 5.0.0
  */
-function _alm_legacy_callbacks_callback(){
+function alm_legacy_callbacks_callback(){
 	$options = get_option( 'alm_settings' );
 	if(!isset($options['_alm_legacy_callbacks']))
 	   $options['_alm_legacy_callbacks'] = '0';
@@ -1812,7 +1852,7 @@ function _alm_legacy_callbacks_callback(){
  *
  * @since 4.1.0
  */
-function _alm_uninstall_callback(){
+function alm_uninstall_callback(){
 	$options = get_option( 'alm_settings' );
 
 	if(!isset($options['_alm_uninstall']))

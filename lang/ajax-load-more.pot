@@ -2,20 +2,20 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 5.5.3\n"
+"Project-Id-Version: Ajax Load More 5.5.4\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2022-06-24T13:54:58+00:00\n"
+"POT-Creation-Date: 2022-08-19T13:03:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
 
 #. Plugin Name of the plugin
-#: admin/admin.php:477
+#: admin/admin.php:500
 msgid "Ajax Load More"
 msgstr ""
 
@@ -35,395 +35,408 @@ msgstr ""
 msgid "https://connekthq.com"
 msgstr ""
 
-#: admin/admin.php:70
+#: admin/admin.php:69
 msgid "Looks like your subscription has expired."
 msgstr ""
 
-#: admin/admin.php:71
+#: admin/admin.php:70
 msgid "Please login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/admin.php:78
+#: admin/admin.php:77
 msgid "Looks like your license is inactive and/or invalid."
 msgstr ""
 
-#: admin/admin.php:79
+#: admin/admin.php:78
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> or login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/admin.php:86
+#: admin/admin.php:85
 msgid "Looks like your license has been deactivated."
 msgstr ""
 
-#: admin/admin.php:87
+#: admin/admin.php:86
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> to update."
 msgstr ""
 
-#: admin/admin.php:172
-#: admin/admin.php:1252
+#: admin/admin.php:171
+#: admin/admin.php:424
+#: admin/admin.php:1204
+#: admin/admin.php:1268
 msgid "Error - unable to verify nonce, please try again."
 msgstr ""
 
-#: admin/admin.php:176
+#: admin/admin.php:175
 msgid "Transient set successfully"
 msgstr ""
 
-#: admin/admin.php:319
+#: admin/admin.php:324
 msgid "You have an invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More Pro</b></a> license key - please visit the <a href=\"admin.php?page=ajax-load-more-licenses\">License</a> section to input your key or <a href=\"https://connekthq.com/plugins/ajax-load-more/pro/\" target=\"_blank\">purchase</a> one now."
 msgstr ""
 
-#: admin/admin.php:323
+#: admin/admin.php:328
 msgid "You have invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More</b></a> license keys - please visit the <a href=\"admin.php?page=ajax-load-more-licenses\">Licenses</a> section and input your keys."
 msgstr ""
 
-#: admin/admin.php:453
-#: admin/admin.php:1117
-#: admin/admin.php:1163
-#: admin/admin.php:1213
+#: admin/admin.php:476
+#: admin/admin.php:1140
+#: admin/admin.php:1186
 msgid "You don't belong here."
 msgstr ""
 
-#: admin/admin.php:478
+#: admin/admin.php:501
 #: admin/editor/editor-build.php:69
 #: admin/views/licenses.php:87
 msgid "Active"
 msgstr ""
 
-#: admin/admin.php:479
+#: admin/admin.php:502
 #: admin/editor/editor-build.php:70
 #: admin/views/licenses.php:89
 msgid "Inactive"
 msgstr ""
 
-#: admin/admin.php:480
+#: admin/admin.php:503
 #: admin/editor/editor-build.php:71
 msgid "Applying layout"
 msgstr ""
 
-#: admin/admin.php:481
+#: admin/admin.php:504
 #: admin/editor/editor-build.php:72
-#: admin/views/repeater-templates.php:448
+#: admin/views/repeater-templates.php:439
 msgid "Template Updated"
 msgstr ""
 
-#: admin/admin.php:483
+#: admin/admin.php:506
 #: admin/editor/editor-build.php:75
 msgid "Select Author(s)"
 msgstr ""
 
-#: admin/admin.php:484
+#: admin/admin.php:507
 #: admin/editor/editor-build.php:76
 msgid "Select Categories"
 msgstr ""
 
-#: admin/admin.php:485
+#: admin/admin.php:508
 #: admin/editor/editor-build.php:77
 msgid "Select Tags"
 msgstr ""
 
-#: admin/admin.php:486
+#: admin/admin.php:509
 #: admin/editor/editor-build.php:74
 msgid "Select"
 msgstr ""
 
-#: admin/admin.php:487
+#: admin/admin.php:510
 #: admin/editor/editor-build.php:41
 #: admin/editor/editor-build.php:78
 msgid "Jump to Option"
 msgstr ""
 
-#: admin/admin.php:488
+#: admin/admin.php:511
 #: admin/editor/editor-build.php:79
 msgid "Jump to Template"
 msgstr ""
 
-#: admin/admin.php:489
+#: admin/admin.php:512
 msgid "Are you sure you want to install this Ajax Load More extension?"
 msgstr ""
 
-#: admin/admin.php:490
+#: admin/admin.php:513
 msgid "Install Now"
 msgstr ""
 
-#: admin/admin.php:491
+#: admin/admin.php:514
 msgid "Activate"
 msgstr ""
 
-#: admin/admin.php:492
+#: admin/admin.php:515
 msgid "Saving Settings"
 msgstr ""
 
-#: admin/admin.php:493
+#: admin/admin.php:516
 msgid "Settings Saved Successfully"
 msgstr ""
 
-#: admin/admin.php:494
+#: admin/admin.php:517
 msgid "Error Saving Settings"
 msgstr ""
 
-#: admin/admin.php:495
+#: admin/admin.php:518
 msgid "There is a maximum of 3 tax_query objects while using the shortcode builder"
 msgstr ""
 
-#: admin/admin.php:592
+#: admin/admin.php:615
 msgid "[Ajax Load More] Error opening default repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory"
 msgstr ""
 
-#: admin/admin.php:596
+#: admin/admin.php:619
 msgid "[Ajax Load More] Error updating default repeater template - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files within the /ajax-load-more/core/repeater directory."
 msgstr ""
 
-#: admin/admin.php:632
-#: admin/admin.php:633
-#: ajax-load-more.php:327
+#: admin/admin.php:655
+#: admin/admin.php:656
+#: ajax-load-more.php:361
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:641
-#: admin/admin.php:642
+#: admin/admin.php:664
+#: admin/admin.php:665
 #: admin/views/repeater-templates.php:14
 #: admin/views/repeater-templates.php:27
 msgid "Repeater Templates"
 msgstr ""
 
-#: admin/admin.php:650
-#: admin/admin.php:651
+#: admin/admin.php:673
+#: admin/admin.php:674
 #: admin/views/shortcode-builder.php:9
 msgid "Shortcode Builder"
 msgstr ""
 
-#: admin/admin.php:660
-#: admin/admin.php:661
+#: admin/admin.php:683
+#: admin/admin.php:684
 #: admin/shortcode-builder/shortcode-builder.php:18
 #: admin/shortcode-builder/shortcode-builder.php:38
 #: admin/views/add-ons.php:6
 msgid "Add-ons"
 msgstr ""
 
-#: admin/admin.php:670
-#: admin/admin.php:671
+#: admin/admin.php:693
+#: admin/admin.php:694
 #: admin/shortcode-builder/shortcode-builder.php:21
 #: admin/shortcode-builder/shortcode-builder.php:68
 #: admin/views/extensions.php:5
 msgid "Extensions"
 msgstr ""
 
-#: admin/admin.php:679
-#: admin/admin.php:680
+#: admin/admin.php:702
+#: admin/admin.php:703
 #: admin/views/help.php:18
 msgid "Help"
 msgstr ""
 
-#: admin/admin.php:686
+#: admin/admin.php:709
 msgid "License"
 msgstr ""
 
-#: admin/admin.php:686
+#: admin/admin.php:709
 #: admin/views/licenses.php:2
 msgid "Licenses"
 msgstr ""
 
-#: admin/admin.php:704
-#: admin/admin.php:705
-#: admin/admin.php:713
+#: admin/admin.php:727
+#: admin/admin.php:728
+#: admin/admin.php:736
 #: admin/views/go-pro.php:5
 msgid "Pro"
 msgstr ""
 
-#: admin/admin.php:714
+#: admin/admin.php:737
 #: admin/views/licenses.php:145
 msgid "Go Pro"
 msgstr ""
 
-#: admin/admin.php:725
-#: admin/admin.php:726
+#: admin/admin.php:748
+#: admin/admin.php:749
 #: admin/shortcode-builder/components/cache.php:3
 msgid "Cache"
 msgstr ""
 
-#: admin/admin.php:745
-#: admin/admin.php:746
+#: admin/admin.php:768
+#: admin/admin.php:769
 #: admin/shortcode-builder/components/filters.php:3
 msgid "Filters"
 msgstr ""
 
-#: admin/admin.php:766
-#: admin/admin.php:767
+#: admin/admin.php:789
+#: admin/admin.php:790
 msgid "WooCommerce"
 msgstr ""
 
-#: admin/admin.php:1073
+#: admin/admin.php:1096
 msgid "[Ajax Load More] Unable to open repeater template - "
 msgstr ""
 
-#: admin/admin.php:1077
+#: admin/admin.php:1100
 msgid "[Ajax Load More] Error saving repeater template - "
 msgstr ""
 
-#: admin/admin.php:1109
+#: admin/admin.php:1132
 msgid "Template Saved Successfully"
 msgstr ""
 
-#: admin/admin.php:1111
+#: admin/admin.php:1134
 msgid "Error Writing File"
 msgstr ""
 
-#: admin/admin.php:1111
-#: admin/views/repeater-templates.php:389
+#: admin/admin.php:1134
+#: admin/views/repeater-templates.php:380
 msgid "Something went wrong and the data could not be saved."
 msgstr ""
 
-#: admin/admin.php:1313
+#: admin/admin.php:1329
 #: admin/shortcode-builder/shortcode-builder.php:166
 msgid "Container Type"
 msgstr ""
 
-#: admin/admin.php:1321
+#: admin/admin.php:1337
 #: admin/shortcode-builder/shortcode-builder.php:196
 msgid "Container Classes"
 msgstr ""
 
-#: admin/admin.php:1329
+#: admin/admin.php:1345
 msgid "Disable CSS"
 msgstr ""
 
-#: admin/admin.php:1337
+#: admin/admin.php:1353
 #: admin/shortcode-builder/shortcode-builder.php:124
 msgid "Button/Loading Style"
 msgstr ""
 
-#: admin/admin.php:1345
+#: admin/admin.php:1361
 msgid "Load CSS Inline"
 msgstr ""
 
-#: admin/admin.php:1353
+#: admin/admin.php:1369
 msgid "Button Classes"
 msgstr ""
 
-#: admin/admin.php:1371
-msgid "Legacy Callbacks"
-msgstr ""
-
-#: admin/admin.php:1379
-msgid "Dynamic Content"
-msgstr ""
-
-#: admin/admin.php:1387
-msgid "Error Notices"
+#: admin/admin.php:1377
+msgid "Custom JavaScript"
 msgstr ""
 
 #: admin/admin.php:1395
+msgid "Legacy Callbacks"
+msgstr ""
+
+#: admin/admin.php:1403
+msgid "Dynamic Content"
+msgstr ""
+
+#: admin/admin.php:1411
+msgid "Error Notices"
+msgstr ""
+
+#: admin/admin.php:1419
 msgid "Delete on Uninstall"
 msgstr ""
 
-#: admin/admin.php:1469
+#: admin/admin.php:1493
 msgid "Customize the user experience of Ajax Load More by updating the fields below."
 msgstr ""
 
-#: admin/admin.php:1478
+#: admin/admin.php:1502
 msgid "The following settings affect the WordPress admin area only."
 msgstr ""
 
-#: admin/admin.php:1502
+#: admin/admin.php:1526
 msgid "I want to use my own CSS styles."
 msgstr ""
 
-#: admin/admin.php:1502
+#: admin/admin.php:1526
 msgid "View Ajax Load More CSS"
 msgstr ""
 
-#: admin/admin.php:1519
+#: admin/admin.php:1543
 msgid "Hide shortcode button in WYSIWYG editor."
 msgstr ""
 
-#: admin/admin.php:1536
+#: admin/admin.php:1560
 msgid "Display error messaging regarding repeater template updates in the browser console."
 msgstr ""
 
-#: admin/admin.php:1553
+#: admin/admin.php:1577
 msgid "Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style=\"display:block\">Recommended if you have a large number of categories, tags and/or authors."
 msgstr ""
 
-#: admin/admin.php:1571
-#: admin/admin.php:1574
+#: admin/admin.php:1595
+#: admin/admin.php:1598
 msgid "Ajax Posts Here"
 msgstr ""
 
-#: admin/admin.php:1576
+#: admin/admin.php:1600
 msgid "You can modify the container type when building a shortcode."
 msgstr ""
 
-#: admin/admin.php:1592
+#: admin/admin.php:1616
 msgid "Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style=\"display:block\">You can also add classes when building a shortcode.</span>"
 msgstr ""
 
-#: admin/admin.php:1653
+#: admin/admin.php:1677
 msgid "Select an Ajax loading style - you can choose between a <strong>Button</strong> or <strong>Infinite Scroll</strong>"
 msgstr ""
 
-#: admin/admin.php:1658
+#: admin/admin.php:1682
 #: admin/shortcode-builder/shortcode-builder.php:130
 msgid "Button Style (Dark)"
 msgstr ""
 
-#: admin/admin.php:1665
+#: admin/admin.php:1689
 #: admin/shortcode-builder/shortcode-builder.php:137
 msgid "Button Style (Light)"
 msgstr ""
 
-#: admin/admin.php:1670
+#: admin/admin.php:1694
 #: admin/shortcode-builder/shortcode-builder.php:141
 msgid "Infinite Scroll (No Button)"
 msgstr ""
 
-#: admin/admin.php:1686
+#: admin/admin.php:1710
 msgid "Click to Preview"
 msgstr ""
 
-#: admin/admin.php:1688
+#: admin/admin.php:1712
 #: admin/shortcode-builder/shortcode-builder.php:155
 #: admin/shortcode-builder/shortcode-builder.php:371
 #: core/classes/class-alm-shortcode.php:208
 msgid "Load More"
 msgstr ""
 
-#: admin/admin.php:1707
+#: admin/admin.php:1731
 msgid "Improve site performance by loading Ajax Load More CSS inline."
 msgstr ""
 
-#: admin/admin.php:1723
+#: admin/admin.php:1747
 msgid "Add classes to your <strong>Load More</strong> button."
 msgstr ""
 
-#: admin/admin.php:1763
-msgid "On initial page load, move the user's browser window to the top of the screen."
+#: admin/admin.php:1781
+msgid "Enter custom JavaScript code."
 msgstr ""
 
-#: admin/admin.php:1764
-msgid "This may help prevent the loading of unnecessary posts."
-msgstr ""
-
-#: admin/admin.php:1783
-msgid "Disable REST API."
-msgstr ""
-
-#: admin/admin.php:1784
-msgid "Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax requests."
+#: admin/admin.php:1785
+msgid "JavaScript will be rendered with every Ajax Load More instance."
 msgstr ""
 
 #: admin/admin.php:1803
-msgid "Load legacy JavaScript callback functions."
+msgid "On initial page load, move the user's browser window to the top of the screen."
 msgstr ""
 
 #: admin/admin.php:1804
-msgid "Ajax Load More <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/\" target=\"_blank\">callback functions</a> were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility."
+msgid "This may help prevent the loading of unnecessary posts."
 msgstr ""
 
 #: admin/admin.php:1823
-msgid "Check this box if Ajax Load More should remove all of its data* when the plugin is deleted."
+msgid "Disable REST API."
 msgstr ""
 
 #: admin/admin.php:1824
+msgid "Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax requests."
+msgstr ""
+
+#: admin/admin.php:1843
+msgid "Load legacy JavaScript callback functions."
+msgstr ""
+
+#: admin/admin.php:1844
+msgid "Ajax Load More <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/\" target=\"_blank\">callback functions</a> were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility."
+msgstr ""
+
+#: admin/admin.php:1863
+msgid "Check this box if Ajax Load More should remove all of its data* when the plugin is deleted."
+msgstr ""
+
+#: admin/admin.php:1864
 msgid "* Database Tables, Options and Repeater Templates"
 msgstr ""
 
@@ -444,14 +457,14 @@ msgid "You are not allowed to be here"
 msgstr ""
 
 #: admin/includes/components/example-list.php:2
-#: admin/views/repeater-templates.php:134
-#: admin/views/repeater-templates.php:173
+#: admin/views/repeater-templates.php:125
+#: admin/views/repeater-templates.php:164
 msgid "Collapse All"
 msgstr ""
 
 #: admin/includes/components/example-list.php:2
-#: admin/views/repeater-templates.php:135
-#: admin/views/repeater-templates.php:174
+#: admin/views/repeater-templates.php:126
+#: admin/views/repeater-templates.php:165
 msgid "Expand All"
 msgstr ""
 
@@ -507,38 +520,16 @@ msgstr ""
 msgid "Apply Layout"
 msgstr ""
 
-#: admin/includes/components/layout-list.php:15
+#: admin/includes/components/layout-list.php:13
 msgid "Default Layout"
 msgstr ""
 
-#: admin/includes/components/layout-list.php:24
+#: admin/includes/components/layout-list.php:21
 msgid "Get predefined responsive layouts with the <strong>Layouts add-on</strong>"
 msgstr ""
 
-#: admin/includes/components/layout-list.php:26
+#: admin/includes/components/layout-list.php:23
 msgid "Get More Layouts"
-msgstr ""
-
-#: admin/includes/components/repeater-options.php:5
-#: admin/shortcode-builder/shortcode-builder.php:98
-msgid "Options"
-msgstr ""
-
-#: admin/includes/components/repeater-options.php:12
-msgid "Update Template from Database"
-msgstr ""
-
-#: admin/includes/components/repeater-options.php:12
-msgid "Update from Database"
-msgstr ""
-
-#: admin/includes/components/repeater-options.php:23
-#: admin/includes/components/repeater-options.php:24
-msgid "Download Template"
-msgstr ""
-
-#: admin/includes/components/repeater-options.php:30
-msgid "Copy Template Data"
 msgstr ""
 
 #: admin/includes/cta/about.php:2
@@ -1797,6 +1788,10 @@ msgstr ""
 msgid "Display Settings allow you create a custom Ajax Load More experience for your visitors."
 msgstr ""
 
+#: admin/shortcode-builder/shortcode-builder.php:98
+msgid "Options"
+msgstr ""
+
 #: admin/shortcode-builder/shortcode-builder.php:104
 msgid "ID"
 msgstr ""
@@ -1810,8 +1805,8 @@ msgid "Set a unique ID for this Ajax Load More instance."
 msgstr ""
 
 #: admin/shortcode-builder/shortcode-builder.php:106
-#: admin/views/repeater-templates.php:151
-#: admin/views/repeater-templates.php:502
+#: admin/views/repeater-templates.php:142
+#: admin/views/repeater-templates.php:493
 msgid "Learn More"
 msgstr ""
 
@@ -2631,60 +2626,60 @@ msgstr ""
 msgid "Theme Repeaters"
 msgstr ""
 
-#: admin/views/repeater-templates.php:105
-#: admin/views/repeater-templates.php:272
+#: admin/views/repeater-templates.php:95
+#: admin/views/repeater-templates.php:263
 msgid "Location"
 msgstr ""
 
-#: admin/views/repeater-templates.php:146
+#: admin/views/repeater-templates.php:137
 msgid "Theme Repeaters Not Found!"
 msgstr ""
 
-#: admin/views/repeater-templates.php:148
+#: admin/views/repeater-templates.php:139
 msgid "You'll need to create and upload templates to your theme directory before you can access them with Ajax Load More"
 msgstr ""
 
-#: admin/views/repeater-templates.php:152
+#: admin/views/repeater-templates.php:143
 msgid "Manage Settings"
 msgstr ""
 
-#: admin/views/repeater-templates.php:211
+#: admin/views/repeater-templates.php:202
 msgid "Default Template"
 msgstr ""
 
-#: admin/views/repeater-templates.php:220
+#: admin/views/repeater-templates.php:211
 msgid "Template Code:"
 msgstr ""
 
-#: admin/views/repeater-templates.php:221
+#: admin/views/repeater-templates.php:212
 msgid "Enter the PHP and HTML markup for this template."
 msgstr ""
 
-#: admin/views/repeater-templates.php:254
+#: admin/views/repeater-templates.php:245
 msgid "Save Template"
 msgstr ""
 
-#: admin/views/repeater-templates.php:270
+#: admin/views/repeater-templates.php:261
 msgid "It appears you are loading the <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/#default-template\" target=\"_blank\"><b>default template</b></a> (<em>default.php</em>) from your current theme directory. To modify this template, you must edit the file directly on your server."
 msgstr ""
 
-#: admin/views/repeater-templates.php:281
+#: admin/views/repeater-templates.php:272
 msgid "Repeater Templates editing has been disabled for this instance of Ajax Load More. To enable the template editing, please remove the <strong>ALM_DISABLE_REPEATER_TEMPLATES</strong> PHP constant in your wp-config.php and then re-activate this plugin."
 msgstr ""
 
-#: admin/views/repeater-templates.php:356
+#: admin/views/repeater-templates.php:347
 msgid "Saving template..."
 msgstr ""
 
-#: admin/views/repeater-templates.php:427
+#: admin/views/repeater-templates.php:418
 msgid "Updating template..."
 msgstr ""
 
-#: admin/views/repeater-templates.php:497
+#: admin/views/repeater-templates.php:488
 msgid "What's a Repeater Template?"
 msgstr ""
 
-#: admin/views/repeater-templates.php:499
+#: admin/views/repeater-templates.php:490
 msgid "A <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/\" target=\"_blank\">Repeater Template</a> is a snippet of code that will execute over and over within a <a href=\"http://codex.wordpress.org/The_Loop\" target=\"_blank\">WordPress loop</a>"
 msgstr ""
 
@@ -2721,15 +2716,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:280
+#: ajax-load-more.php:314
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:401
+#: ajax-load-more.php:435
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:402
+#: ajax-load-more.php:436
 msgid "No results found."
 msgstr ""
 

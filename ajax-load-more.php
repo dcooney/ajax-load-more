@@ -7,17 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.3
+ * Version: 5.5.4
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/* */
-
-define( 'ALM_VERSION', '5.5.3' );
-define( 'ALM_RELEASE', 'June 24, 2022' );
+define( 'ALM_VERSION', '5.5.4' );
+define( 'ALM_RELEASE', 'August 19, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 /**
@@ -55,7 +53,7 @@ function alm_create_table() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'alm';
 	$blog_id    = $wpdb->blogid;
-	$repeater   = '<li class="alm-item<?php if (!has_post_thumbnail()) { ?> no-img<?php } ?>">' . PHP_EOL . '   <?php if ( has_post_thumbnail() ) { the_post_thumbnail(\'alm-thumbnail\'); }?>' . PHP_EOL . '   <h3><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h3>' . PHP_EOL . '   <p class="entry-meta"><?php the_time("F d, Y"); ?></p>' . PHP_EOL . '   <?php the_excerpt(); ?>' . PHP_EOL . '</li>';
+	$repeater   = AjaxLoadMore::alm_get_default_repeater_markup();
 
 	// Create Base Repeater Directory.
 	$base_dir = AjaxLoadMore::alm_get_repeater_path();
@@ -189,9 +187,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			if ( ! defined( 'ALM_PREV_POST_ITEM_NAME' ) ) {
 				define( 'ALM_PREV_POST_ITEM_NAME', '9686' );
 			}
-			if ( ! defined( 'ALM_RESTAPI_ITEM_NAME' ) ) {
-				define( 'ALM_RESTAPI_ITEM_NAME', '17105' ); // Deprecated.
-			}
 			if ( ! defined( 'ALM_SEO_ITEM_NAME' ) ) {
 				define( 'ALM_SEO_ITEM_NAME', '3482' );
 			}
@@ -213,15 +208,18 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			if ( ! defined( 'ALM_ELEMENTOR_ITEM_NAME' ) ) {
 				define( 'ALM_ELEMENTOR_ITEM_NAME', '70951' );
 			}
+			if ( ! defined( 'ALM_RESTAPI_ITEM_NAME' ) ) {
+				define( 'ALM_RESTAPI_ITEM_NAME', '17105' ); // Deprecated.
+			}
 
 		}
 
 		/**
 		 * This function will build query results including pagination for users without JS enabled.
 		 *
-		 * @param array  $args The alm_query args.
-		 * @param string $container_element The container HTML element.
-		 * @param string $css_classes ALM classes.
+		 * @param array  $args                         The alm_query args.
+		 * @param string $container_element            The container HTML element.
+		 * @param string $css_classes                  ALM classes.
 		 * @param string $transition_container_classes Transition classes.
 		 * @return string $noscript
 		 * @since 3.7
@@ -238,7 +236,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * This function will build pagination for users without JS enabled.
 		 *
-		 * @param array   $query The current query.
+		 * @param array   $query   The current query.
 		 * @param boolean $filters Is this a filters query.
 		 * @return $return string
 		 * @since 3.7
@@ -253,15 +251,51 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		}
 
 		/**
-		 * Get absolute path to repeater directory base.
-		 * Multisite installs directories will be `uploads/sites/{id}/alm_templates`.
+		 * Return the default Repeater Template.
 		 *
-		 * @return $path;
+		 * @return string The repeater php/html as a string.
+		 * @since 5.5.4
+		 */
+		public static function alm_get_default_repeater_markup() {
+			$content = '';
+			$file = ALM_PATH . 'admin/includes/layout/default.php';
+			if ( file_exists( $file ) ) {
+				$content = file_get_contents( $file );
+			}
+			return $content;
+		}
+
+		/**
+		 * Get absolute path to repeater directory base.
+		 *
+		 * @return string The directory path.
 		 * @since 3.5
 		 */
 		public static function alm_get_repeater_path() {
 			$upload_dir = wp_upload_dir();
 			$path       = apply_filters( 'alm_repeater_path', $upload_dir['basedir'] . '/alm_templates' );
+			return $path;
+		}
+
+		/**
+		 * Get absolute path to theme repeater directory base.
+		 *
+		 * @return string The directory path.
+		 * @since 5.5.4
+		 */
+		public static function alm_get_theme_repeater_path() {
+			$options = get_option( 'alm_settings' );
+			if ( ! isset( $options['_alm_theme_repeaters_dir'] ) ) {
+				$options['_alm_theme_repeaters_dir'] = 'alm_templates';
+			}
+
+			// Get template location.
+			if ( is_child_theme() ) {
+				$path = get_stylesheet_directory() . '/' . $options['_alm_theme_repeaters_dir'];
+			} else {
+				$path = get_template_directory() . '/' . $options['_alm_theme_repeaters_dir'];
+			}
+
 			return $path;
 		}
 
@@ -685,8 +719,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							// - add 2 pages to maintain paging compatibility when returning to the same listing via filter.
 							// - set $page to $startpage.
 							if ( $is_filters && $preloaded === 'true' ) {
-									$startpage = $startpage + 1;
-									$page      = $page + 1;
+								$startpage = $startpage + 1;
+								$page      = $page + 1;
 							}
 
 							apply_filters( 'alm_cache_file', $cache_id, $page, $startpage, $data, $preloaded );
@@ -721,7 +755,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 	}
 
 	/**
-	 * The main function responsible for returning the one true AjaxLoadMore instance.
+	 * The main function responsible for returning a single AjaxLoadMore instance.
 	 *
 	 * @since 2.0.0
 	 */

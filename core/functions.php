@@ -67,15 +67,15 @@ function alm_do_inline_css( $setting ) {
 /**
  * This function will return HTML of a looped item.
  *
- * @param string  $repeater
- * @param string  $type
- * @param string  $theme_repeater
- * @param string  $alm_found_posts
- * @param string  $alm_page
- * @param string  $alm_item
- * @param string  $alm_current
- * @param array   $args
- * @param boolean $ob
+ * @param string  $repeater        The repeater name.
+ * @param string  $type            Type of template.
+ * @param string  $theme_repeater  Theme repeater name.
+ * @param string  $alm_found_posts Total posts found.
+ * @param string  $alm_page        The page number.
+ * @param string  $alm_item        Current item in loop.
+ * @param string  $alm_current     Current item in page.
+ * @param array   $args            The ALM Args.
+ * @param boolean $ob              Should the returned HTML be wrapped in ob_start PHP.
  * @return $html
  * @since 3.7
  */
@@ -177,6 +177,7 @@ function alm_get_default_repeater() {
 	} else {
 		$template_theme_file = get_template_directory() . '/' . $template_dir . '/default.php';
 	}
+
 	// If theme or child theme contains the template, use that file.
 	if ( file_exists( $template_theme_file ) ) {
 		$file = $template_theme_file;
@@ -375,7 +376,8 @@ function alm_get_canonical_url() {
 		if ( function_exists( 'pll_home_url' ) ) { // Polylang support
 			$canonical_url = pll_home_url();
 		} else {
-			$canonical_url = get_home_url() . '/';
+			$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
+			// e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false');
 		}
 	} elseif ( is_home() ) {
 		// Home (Blog Default).
@@ -409,7 +411,7 @@ function alm_get_canonical_url() {
 
 	} elseif ( is_search() ) {
 		// Search.
-		$canonical_url = get_home_url() . '/';
+		$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
 
 	} else {
 		// Fallback.
@@ -435,7 +437,7 @@ function alm_get_page_slug( $post ) {
 
 	if ( ! is_archive() ) {
 		// If not archive, set the post slug.
-		if ( is_front_page() || is_home() ) {
+		if ( is_front_page() || is_home() || is_404() ) {
 			$slug = 'home';
 		} else {
 			if ( is_search() ) {
@@ -510,7 +512,7 @@ function alm_get_page_id( $post ) {
 
 	if ( ! is_archive() ) {
 		// If not an archive page, set the post slug.
-		if ( is_front_page() || is_home() ) {
+		if ( is_front_page() || is_home() || is_404() ) {
 			$post_id = '0';
 		} else {
 			// Search.

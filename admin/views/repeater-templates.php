@@ -2,7 +2,7 @@
 	// @codingStandardsIgnoreStart
 	$theme_repeaters = false;
 	if ( isset( $_GET['theme-repeaters'] ) ) {
-		$theme_repeaters = ( 'true' === $_GET['theme-repeaters'] ) ? true : false;
+		$theme_repeaters = 'true' === $_GET['theme-repeaters'] ? true : false;
 	}
 ?>
 
@@ -42,17 +42,7 @@
 
 						if ( has_action( 'alm_get_theme_repeater' ) ) {
 
-							$options = get_option( 'alm_settings' );
-							if ( ! isset( $options['_alm_theme_repeaters_dir'] ) ) {
-								$options['_alm_theme_repeaters_dir'] = 'alm_templates';
-							}
-
-							// Get template location.
-							if ( is_child_theme() ) {
-								$dir = get_stylesheet_directory() . '/' . $options['_alm_theme_repeaters_dir'];
-							} else {
-								$dir = get_template_directory() . '/' . $options['_alm_theme_repeaters_dir'];
-							}
+							$dir = AjaxLoadMore::alm_get_theme_repeater_path();
 
 							$count = 0;
 							foreach ( glob( $dir . '/*' ) as $file ) {
@@ -75,9 +65,9 @@
 												<div class="column">
 													<?php
 														// Open file.
-														$template = fopen ($file, "r");
+														$template = fopen ( $file, "r" );
 														$tr_contents = '';
-														if(filesize ($file) != 0){
+														if ( filesize ( $file ) != 0 ) {
 															$tr_contents = fread ($template, filesize ($file));
 														}
 														fclose ($template);
@@ -110,7 +100,8 @@
 											<?php
 												$repeater_options = array(
 													'path' => $file,
-													'name' => basename($file),
+													'name' => basename( $file ),
+													'dir'  => $dir,
 													'type' => 'theme-repeater'
 												);
 												include( ALM_PATH . 'admin/includes/components/repeater-options.php');

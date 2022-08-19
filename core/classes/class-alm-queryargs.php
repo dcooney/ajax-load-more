@@ -121,15 +121,14 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 			// Post Status.
 			$post_status = ( isset( $a['post_status'] ) ) ? $a['post_status'] : 'publish';
-			if ( empty( $post_status ) ) {
-				$post_status = 'publish';
-			}
-			if ( $post_status != 'publish' && $post_status != 'inherit' ) {
-				// If not 'publish', confirm user has rights to view these old posts.
+			$post_status = empty( $post_status ) ? 'publish' : $post_status;
+			if ( $post_status !== 'publish' && $post_status !== 'inherit' ) {
+				// If not 'publish', confirm user has rights to view these posts.
 				if ( current_user_can( 'edit_theme_options' ) ) {
 					$post_status = $post_status;
 				} else {
-					$post_status = 'publish';
+					$post_status = apply_filters('alm_allow_future_posts', false ) ? $post_status : 'publish';
+					// e.g. add_filter('alm_allow_future_posts', '__return_true');
 				}
 			}
 
