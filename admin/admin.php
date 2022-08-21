@@ -1046,7 +1046,7 @@ function alm_save_repeater(){
 
 	   // Get _POST Vars
 		$c = Trim(stripslashes($_POST["value"])); // Repeater Value
-		$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
+		$n = Trim(stripslashes(str_replace('/', '', $_POST["repeater"]))); // Repeater name
 		$t = Trim(stripslashes($_POST["type"])); // Repeater name
 		$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
 
@@ -1091,6 +1091,9 @@ function alm_save_repeater(){
 
       // Write Repeater Template
 	   try {
+			if ((defined('DISALLOW_FILE_EDIT') && DISALLOW_FILE_EDIT) || defined('DISALLOW_FILE_MODS') && DISALLOW_FILE_MODS){
+				wp_die('Unable to save, DISALLOW_FILE_EDIT or DISALLOW_FILE_MODS has been set in wp-config');
+			}
 	      $o = fopen($f, 'w+' ); //Open file
 	      if ( !$o ) {
 	        throw new Exception(__( '[Ajax Load More] Unable to open repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more' ));
