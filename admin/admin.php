@@ -187,7 +187,7 @@ function alm_set_transient(){
 function alm_repeaters_export() {
 	if ( isset( $_POST['alm_repeaters_export'] ) && ! wp_doing_ajax() && current_user_can( 'edit_theme_options' ) ) {
 		$type = esc_attr( $_POST['alm_repeaters_export_type'] );
-		$name = esc_attr( $_POST['alm_repeaters_export_name'] );
+		$name = esc_attr( basename($_POST['alm_repeaters_export_name']) );
 
 		if ( $type === 'theme-repeater' ) {
 			$file = AjaxLoadMore::alm_get_theme_repeater_path() . '/' . $name;
@@ -416,7 +416,7 @@ function alm_get_layout() {
 	if ( current_user_can( 'edit_theme_options' ) ) {
 
 		$nonce = sanitize_text_field( $_GET["nonce"] );
-		$type = sanitize_text_field( $_GET["type"] );
+		$type = sanitize_text_field( basename($_GET["type"]) );
 		$custom = sanitize_text_field( $_GET["custom"] ) ;
 
 		// Check our nonce, if they don't match then bounce!
