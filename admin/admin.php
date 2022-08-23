@@ -187,7 +187,12 @@ function alm_set_transient(){
 function alm_repeaters_export() {
 	if ( isset( $_POST['alm_repeaters_export'] ) && ! wp_doing_ajax() && current_user_can( 'edit_theme_options' ) ) {
 		$type = esc_attr( $_POST['alm_repeaters_export_type'] );
-		$name = esc_attr( $_POST['alm_repeaters_export_name'] );
+		$name = sanitize_file_name( $_POST['alm_repeaters_export_name'] );
+
+		// Security check - confirm name does NOT contain relative path.
+		if ( false !== strpos( $name, './' ) ) {
+			wp_die( __( 'Something isn\'t right here...', 'ajax-load-more' ) );
+		}
 
 		if ( $type === 'theme-repeater' ) {
 			$file = AjaxLoadMore::alm_get_theme_repeater_path() . '/' . $name;
