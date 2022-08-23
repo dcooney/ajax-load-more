@@ -1024,8 +1024,6 @@ function alm_enqueue_admin_scripts(){
 
 }
 
-
-
 /**
 * Repeater Save function
 *
@@ -1096,7 +1094,6 @@ function alm_save_repeater(){
 	      }
 	   }
 
-
 		// Save to database
 
 		if($t === 'default' )	{
@@ -1129,54 +1126,45 @@ function alm_save_repeater(){
 	}
 }
 
-
-
-/*
-*  alm_update_repeater
-*  Update repeater template from database
-*  User case: User deletes plugin, then installs again and the version has not change. Click 'Update from DB' option to load template.
+/**
+* Update repeater template from database.
+* User case: User deletes plugin, then installs again and the version has not change. Click 'Update from DB' option to load template.
 *
-*  @return Database value
-*  @since 2.5.0
+* @return string The value of the Repeater Template.
+* @since 2.5.0
 */
-
 function alm_update_repeater(){
 
-	if (current_user_can( 'edit_theme_options' )){
-
+	if ( current_user_can( 'edit_theme_options' ) ) {
 		$nonce = $_POST["nonce"];
-		// Check our nonce
-		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){ // Check our nonce
-			die( 'Error - unable to verify nonce, please try again.' );
+		if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){ // Check our nonce
+			die( __( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
       }
 
 	   // Get _POST Vars
-		$n = Trim( stripslashes($_POST["repeater"] ) ); // Repeater name
-		$t = Trim( stripslashes($_POST["type"] ) ); // Repeater type (default | unlimited)
-
+		$n = Trim( stripslashes( str_replace( '/', '', $_POST["repeater"] ) ) ); // Repeater name
+		$t = Trim( stripslashes( $_POST["type"] ) ); // Repeater type (default | unlimited)
 
 		// Get value from database
 		global $wpdb;
 		$table_name = $wpdb->prefix . "alm";
 
-		if($t === 'default' )	$n = 'default';
-	   if($t === 'unlimited' ) $table_name = $wpdb->prefix . "alm_unlimited";
+		if ($t === 'default' ) {
+			$n = 'default';
+		}
+	   if ( $t === 'unlimited' ) {
+			$table_name = $wpdb->prefix . "alm_unlimited";
+		}
 
-	   //$the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
-	   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '".esc_sql($n)."'");
+	   $repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '".esc_sql($n)."'");
+	   echo $repeater; // Return repeater value.
 
-	   echo $the_repeater; // Return repeater value
-
-		die();
+		wp_die();
 
 	} else {
-
 		echo __( 'You don\'t belong here.', 'ajax-load-more' );
-
 	}
 }
-
-
 
 /**
 * Get taxonomy terms for shortcode builder and build the markup.
