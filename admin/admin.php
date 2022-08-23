@@ -1227,12 +1227,11 @@ function alm_layouts_dismiss(){
    }
 }
 
-/*
-*  alm_dismiss_sharing
-*  Dismiss sharing widget on plugin settings page.
-*
-*  @since 2.8.2.1
-*/
+/**
+ * Dismiss sharing widget on plugin settings page.
+ *
+ * @since 2.8.2.1
+ */
 function alm_dismiss_sharing(){
 
    if (current_user_can( 'edit_theme_options' )){
@@ -1250,13 +1249,11 @@ function alm_dismiss_sharing(){
    }
 }
 
-/*
-*  alm_filter_admin_footer_text
-*  Filter the WP Admin footer text only on ALM pages
-*
-*  @since 2.12.0
-*/
-
+/**
+ * Filter the WP Admin footer text only on ALM pages
+ *
+ * @since 2.12.0
+ */
 function alm_filter_admin_footer_text( $text ) {
 	$screen = alm_is_admin_screen();
 	if(!$screen){
@@ -1270,13 +1267,11 @@ function alm_filter_admin_footer_text( $text ) {
 	}
 }
 
-/*
-*  admin_init
-*  Initiate the plugin, create our setting variables.
-*
-*  @since 2.0.0
-*/
-
+/**
+ * Initiate the plugin, create the setting variables.
+ *
+ * @since 2.0.0
+ */
 add_action( 'admin_init', 'alm_admin_init' );
 function alm_admin_init(){
 
