@@ -187,7 +187,12 @@ function alm_set_transient(){
 function alm_repeaters_export() {
 	if ( isset( $_POST['alm_repeaters_export'] ) && ! wp_doing_ajax() && current_user_can( 'edit_theme_options' ) ) {
 		$type = esc_attr( $_POST['alm_repeaters_export_type'] );
-		$name = esc_attr( $_POST['alm_repeaters_export_name'] );
+		$name = sanitize_file_name( $_POST['alm_repeaters_export_name'] );
+
+		// Security check - confirm name does NOT contain relative path.
+		if ( false !== strpos( $name, './' ) ) {
+			wp_die( __( 'Something isn\'t right here...', 'ajax-load-more' ) );
+		}
 
 		if ( $type === 'theme-repeater' ) {
 			$file = AjaxLoadMore::alm_get_theme_repeater_path() . '/' . $name;
@@ -331,7 +336,7 @@ function alm_admin_notice_errors() {
 	 // Loop each addon
    foreach($addons as $addon){
 
-      if (has_action($addon['action'])){
+      if (has_action($addon['action'] ) ){
          $key = $addon['key']; // Option key
          $status = get_option($addon['status']); // license status
 
@@ -1019,95 +1024,75 @@ function alm_enqueue_admin_scripts(){
 
 }
 
-
-
-/*
-*  alm_save_repeater
-*  Repeater Save function
+/**
+* Repeater Save function
 *
-*  @return   response
-*  @since 2.0.0
-*  @updated 3.5
+* @return response
+* @since 2.0.0
 */
-
 function alm_save_repeater(){
 
-	if (current_user_can( 'edit_theme_options' )){
-
+	if ( current_user_can( 'edit_theme_options' ) ) {
 		global $wpdb;
 		$table_name = $wpdb->prefix . "alm";
-		$blog_id = $wpdb->blogid;
-		$options = get_option( 'alm_settings' ); //Get plugin options
-		$nonce = $_POST["nonce"];
+		$blog_id    = $wpdb->blogid;
+		$options    = get_option( 'alm_settings' ); //Get plugin options
+		$nonce      = $_POST["nonce"];
 
-		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){ // Check our nonce
-			die( 'Error - unable to verify nonce, please try again.' );
+		if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' ) ) {
+			die( __( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
       }
 
-	   // Get _POST Vars
-		$c = Trim(stripslashes($_POST["value"])); // Repeater Value
-		$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
-		$t = Trim(stripslashes($_POST["type"])); // Repeater name
-		$a = Trim(stripslashes($_POST["alias"])); // Repeater alias
+	   // Get _POST Vars.
+		$c = Trim( stripslashes( $_POST["value"] ) ); // Repeater Value
+		$n = Trim( stripslashes( str_replace( '/', '', $_POST["repeater"] ) ) ); // Repeater name
+		$t = Trim( stripslashes( $_POST["type"] ) ); // Repeater name
+		$a = Trim( stripslashes( $_POST["alias"] ) ); // Repeater alias
 
-
-		// Default
+		// Default.
 		if($t === 'default' ){
-
          // Create Base Repeater Dir (alm-templates)
          $base_dir = AjaxLoadMore::alm_get_repeater_path();
          AjaxLoadMore::alm_mkdir($base_dir);
-
 		   $f = $base_dir .'/default.php';
-
 	   }
 
-	   // Custom Repeaters v2
-	   elseif($t === 'unlimited' ){
-
+	   // Custom Repeaters v2.
+	   elseif( $t === 'unlimited' ) {
          // Custom Repeaters 2.5+
-         if(ALM_UNLIMITED_VERSION >= '2.5' ){
-
+         if( ALM_UNLIMITED_VERSION >= '2.5' ) {
    			// Get path to repeater dir (alm_templates)
    			$base_dir = AjaxLoadMore::alm_get_repeater_path();
    			AjaxLoadMore::alm_mkdir($base_dir);
-   			$f = $base_dir .'/'. $n .'.php';
-
+   			$f = $base_dir . '/' . $n . '.php';
          } else {
-
-            $f = ($blog_id > 1) ? ALM_UNLIMITED_PATH. 'repeaters/'. $blog_id .'/'. $n .'.php' : ALM_UNLIMITED_PATH. 'repeaters/'. $n .'.php';
-
+            $f = $blog_id > 1 ? ALM_UNLIMITED_PATH . 'repeaters/' . $blog_id . '/' . $n . '.php' : ALM_UNLIMITED_PATH . 'repeaters/' . $n . '.php';
          }
-
 	   }
 
-	   // Custom Repeaters v1
+	   // Custom Repeaters v1.
 		else{
-
-			$f = ALM_REPEATER_PATH. 'repeaters/'.$n .'.php';
-
+			$f = ALM_REPEATER_PATH . 'repeaters/' . $n . '.php';
 	   }
 
-
-      // Write Repeater Template
+      // Write Repeater Template.
 	   try {
-	      $o = fopen($f, 'w+' ); //Open file
-	      if ( !$o ) {
-	        throw new Exception(__( '[Ajax Load More] Unable to open repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more' ));
+	      $o = fopen( $f, 'w+' ); //Open file
+	      if ( ! $o ) {
+	        throw new Exception( __( '[Ajax Load More] Unable to open repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more' ) );
 	      }
 	      $w = fwrite($o, $c); //Save the file
-	      if ( !$w ) {
-	        throw new Exception(__( '[Ajax Load More] Error saving repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more' ));
+	      if ( ! $w ) {
+	        throw new Exception( __( '[Ajax Load More] Error saving repeater template - '.$f.' - Please check your file path and ensure your server is configured to allow Ajax Load More to read and write files.', 'ajax-load-more' ) );
 	      }
-	      fclose($o); //now close it
+	      fclose( $o ); //now close it
 
 	   } catch ( Exception $e ) {
 	      // Display error message in console.
-	      if(!isset($options['_alm_error_notices']) || $options['_alm_error_notices'] == '1' ){
+	      if(  isset( $options['_alm_error_notices'] ) || $options['_alm_error_notices'] == '1' ) {
 	         echo '<script>console.log("' .$e->getMessage(). '");</script>';
 	      }
 	   }
-
 
 		// Save to database
 
@@ -1141,54 +1126,45 @@ function alm_save_repeater(){
 	}
 }
 
-
-
-/*
-*  alm_update_repeater
-*  Update repeater template from database
-*  User case: User deletes plugin, then installs again and the version has not change. Click 'Update from DB' option to load template.
+/**
+* Update repeater template from database.
+* User case: User deletes plugin, then installs again and the version has not change. Click 'Update from DB' option to load template.
 *
-*  @return Database value
-*  @since 2.5.0
+* @return string The value of the Repeater Template.
+* @since 2.5.0
 */
-
 function alm_update_repeater(){
 
-	if (current_user_can( 'edit_theme_options' )){
-
+	if ( current_user_can( 'edit_theme_options' ) ) {
 		$nonce = $_POST["nonce"];
-		// Check our nonce
-		if (! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){ // Check our nonce
-			die( 'Error - unable to verify nonce, please try again.' );
+		if ( ! wp_verify_nonce( $nonce, 'alm_repeater_nonce' )){ // Check our nonce
+			die( __( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
       }
 
 	   // Get _POST Vars
-		$n = Trim(stripslashes($_POST["repeater"])); // Repeater name
-		$t = Trim(stripslashes($_POST["type"])); // Repeater type (default | unlimited)
-
+		$n = Trim( stripslashes( str_replace( '/', '', $_POST["repeater"] ) ) ); // Repeater name
+		$t = Trim( stripslashes( $_POST["type"] ) ); // Repeater type (default | unlimited)
 
 		// Get value from database
 		global $wpdb;
 		$table_name = $wpdb->prefix . "alm";
 
-		if($t === 'default' )	$n = 'default';
-	   if($t === 'unlimited' ) $table_name = $wpdb->prefix . "alm_unlimited";
+		if ($t === 'default' ) {
+			$n = 'default';
+		}
+	   if ( $t === 'unlimited' ) {
+			$table_name = $wpdb->prefix . "alm_unlimited";
+		}
 
-	   //$the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '$n'");
-	   $the_repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '".esc_sql($n)."'");
+	   $repeater = $wpdb->get_var("SELECT repeaterDefault FROM " . $table_name . " WHERE name = '".esc_sql($n)."'");
+	   echo $repeater; // Return repeater value.
 
-	   echo $the_repeater; // Return repeater value
-
-		die();
+		wp_die();
 
 	} else {
-
 		echo __( 'You don\'t belong here.', 'ajax-load-more' );
-
 	}
 }
-
-
 
 /**
 * Get taxonomy terms for shortcode builder and build the markup.
@@ -1251,12 +1227,11 @@ function alm_layouts_dismiss(){
    }
 }
 
-/*
-*  alm_dismiss_sharing
-*  Dismiss sharing widget on plugin settings page.
-*
-*  @since 2.8.2.1
-*/
+/**
+ * Dismiss sharing widget on plugin settings page.
+ *
+ * @since 2.8.2.1
+ */
 function alm_dismiss_sharing(){
 
    if (current_user_can( 'edit_theme_options' )){
@@ -1274,13 +1249,11 @@ function alm_dismiss_sharing(){
    }
 }
 
-/*
-*  alm_filter_admin_footer_text
-*  Filter the WP Admin footer text only on ALM pages
-*
-*  @since 2.12.0
-*/
-
+/**
+ * Filter the WP Admin footer text only on ALM pages
+ *
+ * @since 2.12.0
+ */
 function alm_filter_admin_footer_text( $text ) {
 	$screen = alm_is_admin_screen();
 	if(!$screen){
@@ -1294,13 +1267,11 @@ function alm_filter_admin_footer_text( $text ) {
 	}
 }
 
-/*
-*  admin_init
-*  Initiate the plugin, create our setting variables.
-*
-*  @since 2.0.0
-*/
-
+/**
+ * Initiate the plugin, create the setting variables.
+ *
+ * @since 2.0.0
+ */
 add_action( 'admin_init', 'alm_admin_init' );
 function alm_admin_init(){
 
@@ -1518,7 +1489,7 @@ function alm_sanitize_settings( $input ) {
  */
 function alm_disable_css_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_disable_css']))
+	if(!isset($options['_alm_disable_css'] ) )
 	   $options['_alm_disable_css'] = '0';
 
 	$html = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
@@ -1536,7 +1507,7 @@ function alm_disable_css_callback(){
  */
 function alm_hide_btn_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_hide_btn']))
+	if(!isset($options['_alm_hide_btn'] ) )
 	   $options['_alm_hide_btn'] = '0';
 
 	$html = '<input type="hidden" name="alm_settings[_alm_hide_btn]" value="0" /><input type="checkbox" id="alm_hide_btn" name="alm_settings[_alm_hide_btn]" value="1"'. (($options['_alm_hide_btn']) ? ' checked="checked"' : '' ) .' />';
@@ -1552,7 +1523,7 @@ function alm_hide_btn_callback(){
  */
 function _alm_error_notices_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_error_notices']))
+	if(!isset($options['_alm_error_notices'] ) )
 	   $options['_alm_error_notices'] = '1';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_error_notices]" value="0" />';
@@ -1569,7 +1540,7 @@ function _alm_error_notices_callback(){
  */
 function alm_disable_dynamic_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_disable_dynamic']))
+	if(!isset($options['_alm_disable_dynamic'] ) )
 	   $options['_alm_disable_dynamic'] = '0';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_disable_dynamic]" value="0" />';
@@ -1588,7 +1559,7 @@ function alm_container_type_callback() {
 
     $options = get_option( 'alm_settings' );
 
-    if(!isset($options['_alm_container_type']))
+    if(!isset($options['_alm_container_type'] ) )
 	   $options['_alm_container_type'] = '1';
 
     $html = '<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1"' . checked( 1, $options['_alm_container_type'], false ) . '/>';
@@ -1723,7 +1694,7 @@ function alm_btn_color_callback() {
  */
 function alm_inline_css_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_inline_css']))
+	if(!isset($options['_alm_inline_css'] ) )
 	   $options['_alm_inline_css'] = '1';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />';
@@ -1741,7 +1712,7 @@ function alm_inline_css_callback(){
 function alm_btn_class_callback(){
 	$options = get_option( 'alm_settings' );
 
-    if(!isset($options['_alm_btn_classname']))
+    if(!isset($options['_alm_btn_classname'] ) )
 	   $options['_alm_btn_classname'] = '';
 
 	$html  = '<label for="alm_settings[_alm_btn_classname]">'.__( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ).'</label>';
@@ -1794,7 +1765,7 @@ function alm_custom_js_callback(){
 */
 function _alm_scroll_top_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_scroll_top']))
+	if(!isset($options['_alm_scroll_top'] ) )
 	   $options['_alm_scroll_top'] = '0';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_scroll_top]" value="0" />';
@@ -1814,7 +1785,7 @@ function _alm_scroll_top_callback(){
  */
 function alm_use_rest_api_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_use_rest_api']))
+	if(!isset($options['_alm_use_rest_api'] ) )
 	   $options['_alm_use_rest_api'] = '0';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_use_rest_api]" value="0" />';
@@ -1834,7 +1805,7 @@ function alm_use_rest_api_callback(){
  */
 function alm_legacy_callbacks_callback(){
 	$options = get_option( 'alm_settings' );
-	if(!isset($options['_alm_legacy_callbacks']))
+	if(!isset($options['_alm_legacy_callbacks'] ) )
 	   $options['_alm_legacy_callbacks'] = '0';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_legacy_callbacks]" value="0" />';
@@ -1855,7 +1826,7 @@ function alm_legacy_callbacks_callback(){
 function alm_uninstall_callback(){
 	$options = get_option( 'alm_settings' );
 
-	if(!isset($options['_alm_uninstall']))
+	if(!isset($options['_alm_uninstall'] ) )
 	   $options['_alm_uninstall'] = '0';
 
 	$html =  '<input type="hidden" name="alm_settings[_alm_uninstall]" value="0" />';
