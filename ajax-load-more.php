@@ -14,6 +14,12 @@
  * @package AjaxLoadMore
  */
 
+/*
+* UPDATE: Removed requirement of `transition_container` to be present when using Preloaded.
+* SECURITY: Various security updates.
+*/
+
+
 define( 'ALM_VERSION', '5.5.4' );
 define( 'ALM_RELEASE', 'August 19, 2022' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

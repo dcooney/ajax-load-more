@@ -47,6 +47,7 @@
 					require_once('components/cta.php');
 					require_once('components/comments.php');
 					require_once('components/filters.php');
+					require_once('components/layouts.php');
 					require_once('components/nextpage.php');
 					require_once('components/paging.php');
 					require_once('components/preloaded.php');

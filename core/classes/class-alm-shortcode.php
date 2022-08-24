@@ -74,6 +74,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'woo_template'                 => '',
 						'tabs'                         => false,
 						'tab_template'                 => '',
+						'layouts'                      => false,
+						'layouts_cols'                 => '3',
 						'filters'                      => false,
 						'target'                       => '',
 						'filters_url'                  => 'true',
@@ -380,7 +382,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$single_post          = false;
 				$seo                  = false;
 				$nextpage             = false;
-				$transition_container = 'true'; // * Required.
 				if ( defined( 'ALM_FILTERS_PATH' ) ) {
 					include ALM_FILTERS_PATH . 'includes/initial-state-params.php';
 				}
@@ -389,7 +390,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$single_post = 'true' === $single_post ? true : false;
 
 			// Transition Container.
-			$transition_container = 'true' === $seo || $single_post || $filters ? 'true' : $transition_container;
+			// Required for SEO, Filters and Single Posts.
+			$transition_container = $seo === 'true' || $single_post || $filters ? 'true' : $transition_container;
 
 			// Transition Container Classes.
 			$transition_container_classes = ! empty( $transition_container_classes ) ? ' ' . $transition_container_classes : '';
@@ -408,6 +410,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// CSS Classes.
 			$css_classes = ! empty( $css_classes ) ? ' ' . $css_classes : '';
+			if ( $layouts === 'true' && has_filter( 'alm_get_layout_classes' ) ) {
+				// Add Layouts add-on classes.
+				$css_classes = apply_filters( 'alm_get_layout_classes', $layouts_cols, $css_classes );
+			}
 
 			// Override shortcode param.
 			$container_element = $container_type ? $container_type : $container_element;
@@ -808,11 +814,14 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			);
 
 			// Set `alm-listing` classname.
-			$listing_class = ( $comments === 'true' ) ? 'commentlist alm-comments' : 'alm-listing'; // If Comments
+			$listing_class = $comments === 'true' ? 'commentlist alm-comments' : 'alm-listing'; // If Comments.
 
-				// Open #ajax-load-more.
+			// Set class for when ALM has a transition container.
+			$has_transition_container_class = $transition_container === 'true' ? ' alm-has-transition' : ' alm-no-transition';
+
+			// Open #ajax-load-more.
 			$ajaxloadmore .= '<' . $container_element . ' aria-live="polite" aria-atomic="true"';
-			$ajaxloadmore .= ' class="' . $listing_class . ' alm-ajax' . $paging_container_class . $classname . $css_classes . '"' . $paging_transition . '';
+			$ajaxloadmore .= ' class="' . $listing_class . ' alm-ajax' . $has_transition_container_class . $paging_container_class . $classname . $css_classes . '"' . $paging_transition . '';
 
 			// Build container data atts.
 
@@ -870,6 +879,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Filters Add-on.
 			if ( has_action( 'alm_filters_installed' ) && $filters ) {
+				$seo = false;
 				$filters_return = apply_filters(
 					'alm_filters_shortcode_params',
 					$filters,
