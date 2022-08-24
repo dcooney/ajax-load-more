@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.0
-Stable tag: 5.5.4
+Stable tag: 5.5.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,10 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.4.1 - August 24, 2022 =
+* SECURITY: Patched and improved the data sanitization of some admin level operations.
+
 
 = 5.5.4 - August 19, 2022 =
 * NEW - Added new core setting for adding custom JavaScript. This new setting will allow for adding callbacks directly from the ALM settings page.
