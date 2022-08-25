@@ -30,7 +30,7 @@ if ( has_action( 'alm_layouts_installed' ) && defined( 'ALM_LAYOUTS_VERSION' ) &
 	      <div class="nested-component--inner">
             <section>
    	         <div class="shortcode-builder--label">
-   	            <h4><?php _e('Columns', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Layouts are responsive out of the box and will respond to mobile.','ajax-load-more'); ?>"></a></h4>
+   	            <h4><?php _e('Columns', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Layouts are responsive out of the box and will respond automatically from desktop to mobile.','ajax-load-more'); ?>"></a></h4>
    	   		 	<p><?php _e('Select the number of desktop columns for this layout.','ajax-load-more'); ?></p>
    	   		 </div>
 					<div class="shortcode-builder--fields">
