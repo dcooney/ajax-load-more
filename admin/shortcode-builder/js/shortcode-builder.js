@@ -376,9 +376,11 @@ jQuery(document).ready(function($) {
 		var layouts = $('.layouts input[name=layouts]:checked').val();
 		if (layouts !== 'false' && layouts !== undefined) {
 			var layouts_columns = $('#layouts-columns').val();
+			var layouts_gap = $('#layouts-gap').val();
 			$('.layouts_options').slideDown(250, 'alm_easeInOutQuad');
 			output += ' layouts="true"';
-			output += ' layouts_cols="' + layouts_columns + '"';
+			output += layouts_columns !== '3' ? ' layouts_cols="' + layouts_columns + '"' : '';
+			output += layouts_gap !== 'default' ? ' layouts_gap="' + layouts_gap + '"' : '';
 		} else {
 			$('.layouts_options').slideUp(250, 'alm_easeInOutQuad');
 		}

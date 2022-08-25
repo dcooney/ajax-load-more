@@ -76,6 +76,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'tab_template'                 => '',
 						'layouts'                      => false,
 						'layouts_cols'                 => '3',
+						'layouts_gap'                  => 'default',
 						'filters'                      => false,
 						'target'                       => '',
 						'filters_url'                  => 'true',
@@ -412,7 +413,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$css_classes = ! empty( $css_classes ) ? ' ' . $css_classes : '';
 			if ( $layouts === 'true' && has_filter( 'alm_get_layout_classes' ) ) {
 				// Add Layouts add-on classes.
-				$css_classes = apply_filters( 'alm_get_layout_classes', $layouts_cols, $css_classes );
+				$css_classes = apply_filters( 'alm_get_layout_classes', $layouts_cols, $layouts_gap, $css_classes );
 			}
 
 			// Override shortcode param.
