@@ -1108,6 +1108,11 @@ let alm_is_filtering = false;
 				}
 			}
 
+			// Set Filter Facets
+			if (alm.addons.filters && data.facets && typeof almFiltersFacets === 'function') {
+				window.almFiltersFacets(data.facets);
+			}
+
 			/**
 			 * Display alm_debug results
 			 */
@@ -2500,30 +2505,40 @@ let reset = function(props = {}) {
 export { reset };
 
 /**
- * Tabbed content for Ajax Load More instance.
+ * Get the total post count in the current query by ALM instance ID.
  *
- * @since 5.2
- * @param {*} data
- * @param {*} url
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
  */
-let tab = function(data = '', url = false) {
-	let transition = 'fade';
-	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
-
-	if (!data) {
-		return false;
+const getPostCount = function(id = 'default') {
+	const theID = window[`ajax_load_more_${id}_vars`];
+	if (!theID && !theID.post_count) {
+		return null;
 	}
-
-	alm_is_filtering = true;
-	almFilter(transition, speed, data, 'tab');
+	return parseInt(theID.post_count);
 };
-export { tab };
+export { getPostCount };
+
+/**
+ * Get the total number of posts by ALM instance ID.
+ *
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
+ */
+const getTotalPosts = function(id = 'default') {
+	const theID = window[`ajax_load_more_${id}_vars`];
+	if (!theID && !theID.total_posts) {
+		return null;
+	}
+	return parseInt(theID.total_posts);
+};
+export { getTotalPosts };
 
 /**
  * Track Page Views in Google Analytics.
  *
  * @since 5.0
- * @param {*} path
+ * @param {string} path The URL path.
  */
 let tracking = function(path) {
 	setTimeout(function() {
@@ -2567,6 +2582,26 @@ let tracking = function(path) {
 	}, 200);
 };
 export { tracking };
+
+/**
+ * Tabbed content for Ajax Load More instance.
+ *
+ * @since 5.2
+ * @param {*} data
+ * @param {*} url
+ */
+let tab = function(data = '', url = false) {
+	let transition = 'fade';
+	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
+
+	if (!data) {
+		return false;
+	}
+
+	alm_is_filtering = true;
+	almFilter(transition, speed, data, 'tab');
+};
+export { tab };
 
 /**
  * Trigger Ajax Load More from other events.

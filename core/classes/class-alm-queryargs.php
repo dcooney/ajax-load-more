@@ -67,9 +67,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			}
 
 			$taxonomy_relation = isset( $a['taxonomy_relation'] ) ? $a['taxonomy_relation'] : 'AND';
-			if ( empty( $taxonomy_relation ) ) {
-				$taxonomy_relation = 'AND';
-			}
+			$taxonomy_relation = empty( $taxonomy_relation ) ? 'AND' : $taxonomy_relation;
 
 			// Date.
 			$year  = isset( $a['year'] ) ? $a['year'] : '';
@@ -90,16 +88,16 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$meta_relation = empty( $meta_relation ) ? 'AND' : $meta_relation;
 
 			// Search.
-			$s = ( isset( $a['search'] ) ) ? $a['search'] : '';
+			$s = isset( $a['search'] ) ? $a['search'] : '';
 
 			// Custom Args.
-			$custom_args = ( isset( $a['custom_args'] ) ) ? $a['custom_args'] : '';
+			$custom_args = isset( $a['custom_args'] ) ? $a['custom_args'] : '';
 
 			// Custom Args.
-			$vars = ( isset( $a['vars'] ) ) ? $a['vars'] : '';
+			$vars = isset( $a['vars'] ) ? $a['vars'] : '';
 
 			// Author.
-			$author_id = ( isset( $a['author'] ) ) ? $a['author'] : '';
+			$author_id = isset( $a['author'] ) ? $a['author'] : '';
 
 			// Ordering.
 			$order   = isset( $a['order'] ) ? $a['order'] : 'DESC';
@@ -117,10 +115,10 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$exclude      = isset( $a['exclude'] ) ? $a['exclude'] : '';
 
 			// Offset.
-			$offset = ( isset( $a['offset'] ) ) ? $a['offset'] : 0;
+			$offset = isset( $a['offset'] ) ? $a['offset'] : 0;
 
 			// Post Status.
-			$post_status = ( isset( $a['post_status'] ) ) ? $a['post_status'] : 'publish';
+			$post_status = isset( $a['post_status'] ) ? $a['post_status'] : 'publish';
 			$post_status = empty( $post_status ) ? 'publish' : $post_status;
 			if ( $post_status !== 'publish' && $post_status !== 'inherit' ) {
 				// If not 'publish', confirm user has rights to view these posts.

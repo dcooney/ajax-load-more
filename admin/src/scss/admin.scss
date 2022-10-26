@@ -31,7 +31,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	#wpcontent {
 		padding-left: 0;
 		padding-bottom: 20px;
-		//background-color: #efefef;
+		//background-color: $light_border;
 	}
 	#wpbody-content {
 		padding-bottom: 0;
@@ -49,7 +49,7 @@ body.ajax-load-more_page_ajax-load-more-filters,
 body.ajax-load-more_page_ajax-load-more-pro,
 body.ajax-load-more_page_ajax-load-more-go-pro,
 body.ajax-load-more_page_ajax-load-more-woocommerce {
-	//background: #efefef;
+	//background: $light_border;
 	#wpfooter {
 		padding-top: 0;
 		padding-bottom: 0;
@@ -69,7 +69,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	margin: 0 !important;
 }
 .ajax-load-more-inner-wrapper {
-	padding: $padding $padding $padding * 3;
+	padding: $padding_lg $padding $padding * 3;
 	display: block;
 	clear: both;
 	max-width: 1440px;
@@ -462,7 +462,7 @@ a.button-small {
 }
 .ajax-load-more .border-top {
 	display: block;
-	border-top: 1px solid #efefef;
+	border-top: 1px solid $light_border;
 	width: 100%;
 	clear: both;
 	padding: 15px 0 0 !important;
@@ -792,13 +792,6 @@ a.button-small {
 	color: $grey_text;
 	font-style: italic;
 }
-
-.ajax-load-more input[type='text'],
-.ajax-load-more input[type='number'],
-.ajax-load-more input[type='email'],
-.ajax-load-more textarea {
-	//background: $light_grey;
-}
 .ajax-load-more .repeaters input[type='text'] {
 	padding: 9px 10px;
 }
@@ -894,7 +887,7 @@ a.button-small {
 
 .ajax-load-more .row {
 	padding: 0 !important;
-	margin: $padding/2 0 0;
+	margin: 10px 0 0;
 	height: auto;
 	width: 100%;
 	display: block;
@@ -987,7 +980,7 @@ a.button-small {
 .ajax-load-more .expand-wrap hr {
 	border: 0;
 	height: 0;
-	border-top: 1px solid #efefef;
+	border-top: 1px solid $light_border;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 hr.indented {
@@ -1056,7 +1049,7 @@ hr.indented {
 	padding: 0 4px;
 	border-radius: 2px;
 	background: $light_grey;
-	border: 1px solid #efefef;
+	border: 1px solid $light_border;
 	color: #666;
 }
 .ajax-load-more .section-title h4 {
@@ -1239,7 +1232,7 @@ hr.indented {
 	filter: alpha(opacity=90);
 	cursor: default;
 	border: 1px solid #ccc;
-	background: #efefef;
+	background: $light_border;
 	color: #666;
 	text-shadow: 1px 1px 0 #fff;
 	resize: none;
@@ -1320,7 +1313,7 @@ hr.indented {
 	.form-table th {
 		font-weight: 600;
 		background-color: $light_grey;
-		border-right: 1px solid $border;
+		border-right: 1px solid $light_border;
 		width: 25%;
 	}
 	.form-table p {
@@ -1333,7 +1326,6 @@ hr.indented {
 		overflow: hidden;
 		color: $grey_text;
 	}
-
 	.nextpage-option {
 		display: block;
 		padding: 10px;
@@ -1396,7 +1388,7 @@ hr.indented {
 .ajax-load-more h3.add-on-title {
 	padding: 0 0 10px;
 	margin: 0 0 20px;
-	border-bottom: 1px solid #efefef;
+	border-bottom: 1px solid $light_border;
 }
 .ajax-load-more h3 {
 	margin-bottom: 10px;
@@ -1523,7 +1515,7 @@ table.highlight {
 	border: 1px solid $border;
 	background-color: #fff;
 	border-radius: $radius;
-	padding: $gutter;
+	padding: $padding;
 	position: relative;
 	.toggle-all {
 		right: -1px;
@@ -1544,10 +1536,10 @@ table.highlight {
 	margin-top: 0;
 }
 .form-table tr {
-	border-top: 1px solid $border;
+	border-top: 1px solid $light_border;
 }
 .form-table {
-	border: 1px solid $border;
+	border: 1px solid $light_border;
 	margin: 0 0 20px;
 	br {
 		height: 1px;
@@ -1878,7 +1870,7 @@ a.cnkt-button.installed,
 span.cnkt-button.installed,
 .group span.cnkt-button.installed {
 	background: $light_grey !important;
-	border-color: #efefef !important;
+	border-color: $light_border !important;
 	color: #888 !important;
 	box-shadow: none !important;
 }
@@ -2083,7 +2075,7 @@ span.cnkt-button.installed i,
 	.alm-file-location:not(input) {
 		padding-top: 15px;
 		margin-top: 15px;
-		border-top: 1px solid #efefef;
+		border-top: 1px solid $light_border;
 		input {
 			font-size: 11px;
 			font-family: Consolas, monaco, monospace;
@@ -2151,11 +2143,13 @@ span.cnkt-button.installed i,
 	margin-top: 0;
 }
 .ajax-load-more .cnkt-sidebar h3 {
-	padding: 13px $padding_sm;
+	padding: $padding_sm 0;
 	margin: 0;
 	display: block;
-	font-size: 14px;
+	font-size: 15px;
 	text-transform: none;
+	border-bottom: 1px solid $light_border;
+	margin: 0 $padding_sm;
 }
 
 .ajax-load-more .cnkt-sidebar .item {
@@ -2234,7 +2228,7 @@ span.cnkt-button.installed i,
 	text-decoration: none;
 	padding: 10px 0;
 	display: block;
-	border-top: 1px dashed $border;
+	border-top: 1px solid $light_border;
 }
 .ajax-load-more .cnkt-sidebar .cta.resources li:first-of-type a {
 	border: none;
@@ -2370,7 +2364,7 @@ span.cnkt-button.installed i,
 .admin.ajax-load-more .row.unlimited.new {
 	/* New Row */
 	background: url('../../img/loader-unlimited.gif') no-repeat center center;
-	border-color: #efefef !important;
+	border-color: $light_border !important;
 	min-height: 60px;
 	display: none;
 }
@@ -2439,8 +2433,8 @@ span.cnkt-button.installed i,
 			opacity: 0.5;
 			cursor: default;
 			color: #333 !important;
-			background: #efefef !important;
-			border-color: #efefef !important;
+			background: $light_border !important;
+			border-color: $light_border !important;
 			i {
 				color: $grey;
 			}
@@ -2529,7 +2523,7 @@ span.cnkt-button.installed i,
 
 	hr {
 		margin: 32px 0 25px;
-		border-top-color: #efefef;
+		border-top-color: $light_border;
 		border-bottom: none;
 	}
 
@@ -3341,7 +3335,7 @@ span.dismiss a {
 	text-align: center;
 	display: block;
 	background: $light_grey;
-	border: 1px solid #efefef;
+	border: 1px solid $light_border;
 	padding: 15px;
 	margin: -5px 0 20px;
 	border-radius: 2px;
@@ -3722,7 +3716,7 @@ span.dismiss a {
 	display: block;
 	clear: both;
 	margin: 0;
-	padding: 2px $gutter 0;
+	padding: 2px 0 0;
 	overflow: hidden;
 	position: relative;
 	top: 1px;
@@ -3805,7 +3799,7 @@ span.dismiss a {
 @media screen and (max-width: 782px) {
 	.admin.ajax-load-more.settings .form-table th {
 		border: none;
-		border-bottom: 1px solid $border;
+		border-bottom: 1px solid $light_border;
 		width: 100%;
 	}
 	.share-alm .sharing {

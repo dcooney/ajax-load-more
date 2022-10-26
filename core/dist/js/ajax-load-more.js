@@ -1441,7 +1441,7 @@ function getContainerCount(container) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tracking = exports.tab = exports.reset = exports.filter = undefined;
+exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -2672,6 +2672,11 @@ var alm_is_filtering = false;
 						}
 					}
 				}
+			}
+
+			// Set Filter Facets
+			if (alm.addons.filters && data.facets && typeof almFiltersFacets === 'function') {
+				window.almFiltersFacets(data.facets);
 			}
 
 			/**
@@ -4153,34 +4158,46 @@ var reset = function reset() {
 exports.reset = reset;
 
 /**
- * Tabbed content for Ajax Load More instance.
+ * Get the total post count in the current query by ALM instance ID.
  *
- * @since 5.2
- * @param {*} data
- * @param {*} url
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
  */
 
-var tab = function tab() {
-	var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-	var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+var getPostCount = function getPostCount() {
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
 
-	var transition = 'fade';
-	var speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
-
-	if (!data) {
-		return false;
+	var theID = window['ajax_load_more_' + id + '_vars'];
+	if (!theID && !theID.post_count) {
+		return null;
 	}
-
-	alm_is_filtering = true;
-	(0, _filtering2.default)(transition, speed, data, 'tab');
+	return parseInt(theID.post_count);
 };
-exports.tab = tab;
+exports.getPostCount = getPostCount;
+
+/**
+ * Get the total number of posts by ALM instance ID.
+ *
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
+ */
+
+var getTotalPosts = function getTotalPosts() {
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+
+	var theID = window['ajax_load_more_' + id + '_vars'];
+	if (!theID && !theID.total_posts) {
+		return null;
+	}
+	return parseInt(theID.total_posts);
+};
+exports.getTotalPosts = getTotalPosts;
 
 /**
  * Track Page Views in Google Analytics.
  *
  * @since 5.0
- * @param {*} path
+ * @param {string} path The URL path.
  */
 
 var tracking = function tracking(path) {
@@ -4225,6 +4242,30 @@ var tracking = function tracking(path) {
 	}, 200);
 };
 exports.tracking = tracking;
+
+/**
+ * Tabbed content for Ajax Load More instance.
+ *
+ * @since 5.2
+ * @param {*} data
+ * @param {*} url
+ */
+
+var tab = function tab() {
+	var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+	var transition = 'fade';
+	var speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
+
+	if (!data) {
+		return false;
+	}
+
+	alm_is_filtering = true;
+	(0, _filtering2.default)(transition, speed, data, 'tab');
+};
+exports.tab = tab;
 
 /**
  * Trigger Ajax Load More from other events.
@@ -5055,6 +5096,7 @@ function almGetAjaxParams(alm, action, queryType) {
 	if (alm.addons.filters) {
 		data.filters = alm.addons.filters;
 		data.filters_startpage = alm.addons.filters_startpage;
+		data.filters_target = alm.addons.filters_target;
 	}
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;

@@ -117,14 +117,12 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 		 * Display the admin notice
 		 */
 		public function display_admin_notice() {
-
 			$query_params = $this->get_admin_querystring_array();
 			$query_string = '?' . http_build_query( array_merge( $query_params, array( ALM_Nag::OPTION_ADMIN_NOTICE_KEY => '1' ) ) );
 
 			echo '<div class="updated" style="padding: 15px;">';
 				printf( __( "<p style='padding: 0; margin: 0 0 15px;'>You've been using <b style='color: #222;'><a href='%1\$s'>Ajax Load More</a></b> for some time now, could you please give it a review at wordpress.org?<br/>All reviews, both good and bad are important as they help the plugin grow and improve over time.</p><p style='padding: 0; margin: 0 0 15px;'><a href='%2\$s' target='_blank' class='button button-primary'>Yes, I'll leave a review</a> &nbsp; <a href='%3\$s' class='button'>No thanks</a> &nbsp; <a href='%4\$s' class='button-no'>I've already done this</a></p><p style='padding: 10px 0 0; margin: 0;'><small><a href='http://connekthq.com/plugins/' target='_blank'>Check out our other <b>Connekt</b> WordPress plugins</a></small></p>" ), get_admin_url() . 'admin.php?page=ajax-load-more', 'http://wordpress.org/support/view/plugin-reviews/ajax-load-more', $query_string, $query_string );
 			echo '</div>';
-
 		}
 	}
 

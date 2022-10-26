@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignore
 /**
  * Plugin Name: Ajax Load More
  * Plugin URI: https://connekthq.com/plugins/ajax-load-more
@@ -16,7 +16,27 @@
 
 /*
 * UPDATE: Removed requirement of `transition_container` to be present when using Preloaded.
-* SECURITY: Various security updates.
+* UPDATE: Various updates required for the new 2.0 Layouts add-on release.
+* UPDATE: Removed legacy loading style `circles` and reference from the CSS.
+* NEW: Add new `getTotalPosts` and `getPostsCount` public JS functions that will return data from the localized window variables.
+* NEW: Added Ajax Load More plugin navigation to the header on all plugin pages.
+
+ADDONS
+
+- LAYOUTS
+* UPGRADE NOTICE: Rebuilt add-on now using CSS Grid for layout and additional shortcode parameters for configuration.
+* UPDATE: Replaced flexbox layout with CSS Grid.
+* UPDATE: Added new Layout shortcode parameters to style the ALM container.
+`[ajax_load_more layout="true" layouts_cols="2"]`
+
+
+- Next Page
+* UPDATE: Various code and build updates.
+* FIX: Added DOM loaded event that double checks browser URL vs HTML stored URL for scrolling purposes.
+
+- Filters
+	- Facet updates
+
 */
 
 
@@ -382,7 +402,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				);
 				$links     = array_merge( $links, $new_links );
 			}
-			 return $links;
+			return $links;
 		}
 
 		/**
@@ -483,7 +503,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$post_id           = isset( $_GET['post_id'] ) ? $_GET['post_id'] : '';
 			$slug              = isset( $_GET['slug'] ) ? $_GET['slug'] : '';
 			$canonical_url     = isset( $_GET['canonical_url'] ) ? esc_url( $_GET['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] );
-			$is_filters        = isset( $_GET['filters'] ) ? true : false;
+			$is_filters        = isset( $_GET['filters'] ) && has_action( 'alm_filters_installed' ) ? true : false;
+			$filters_target    = $is_filters && isset( $_GET['filters_target'] ) ? $_GET['filters_target'] : 0;
 			$filters_startpage = isset( $_GET['filters_startpage'] ) && $is_filters ? $_GET['filters_startpage'] : 0;
 
 			// Ajax Query Type.
@@ -503,7 +524,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$theme_repeater = isset( $_GET['theme_repeater'] ) ? sanitize_file_name( $_GET['theme_repeater'] ) : 'null';
 
 			// Post Type.
-			$postType = ( isset( $_GET['post_type'] ) ) ? $_GET['post_type'] : 'post';
+			$postType = isset( $_GET['post_type'] ) ? $_GET['post_type'] : 'post';
 
 			// Page Parameters.
 			$posts_per_page = isset( $_GET['posts_per_page'] ) ? $_GET['posts_per_page'] : 5;
@@ -557,19 +578,19 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$seo_start_page = isset( $_GET['seo_start_page'] ) ? $_GET['seo_start_page'] : 1;
 
 			// WooCommerce Add-on.
-			$woocommerce = ( isset( $_GET['woocommerce'] ) ) ? $_GET['woocommerce'] : false;
+			$woocommerce = isset( $_GET['woocommerce'] ) ? $_GET['woocommerce'] : false;
 			if ( $woocommerce ) {
-				$woocommerce_template = ( isset( $woocommerce['template'] ) ) ? sanitize_file_name( $cta_data['template'] ) : null;
+				$woocommerce_template = isset( $woocommerce['template'] ) ? sanitize_file_name( $cta_data['template'] ) : null;
 			}
 
 			// Set up initial WP_Query $args.
 			$args = ALM_QUERY_ARGS::alm_build_queryargs( $_GET, true );
 
-			$args['paged']  = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+			$args['paged']  = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 			$args['offset'] = $offset + ( $posts_per_page * $page );
 
 			// Get current page number for determining item number.
-			$alm_page_count = ( $page == 0 ) ? 1 : $page + 1;
+			$alm_page_count = $page == 0 ? 1 : $page + 1;
 
 			/**
 			 * Single Post Add-on hook
@@ -577,7 +598,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 *
 			 * @return $args;
 			 */
-			$args = ( $single_post && has_action( 'alm_single_post_installed' ) ) ? apply_filters( 'alm_single_post_args', $single_post_id, $postType ) : $args;
+			$args = $single_post && has_action( 'alm_single_post_installed' ) ? apply_filters( 'alm_single_post_args', $single_post_id, $postType ) : $args;
 
 			/**
 			 * ALM Core Query Filter Hook
@@ -598,7 +619,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 * Custom `alm_query` parameter in the WP_Query
 			 * Value is accessed elsewhere for filters & hooks etc.
 			 */
-			$args['alm_query'] = ( $single_post ) ? 'single_posts' : 'alm';
+			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
 			/**
 			 *  Custom WP_Query.
@@ -651,10 +672,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			} else {
 
 				/**
-			  * ALM Core Filter Hook
-			  *
-			  * @return $alm_query/false;
-			  */
+				 * ALM Core Filter Hook
+				 *
+				 * @return $alm_query/false;
+				 */
 				$debug = apply_filters( 'alm_debug', false ) ? $args : false;
 
 				// Run the loop
@@ -697,8 +718,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							$alm_has_cta = true;
 						}
 
-						endwhile;
-					wp_reset_query(); // phpcs:ignore
+					endwhile; wp_reset_query(); // phpcs:ignore
+
 					// End ALM Loop.
 
 					$data = ob_get_clean();
@@ -728,10 +749,11 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 								$startpage = $startpage + 1;
 								$page      = $page + 1;
 							}
-
 							apply_filters( 'alm_cache_file', $cache_id, $page, $startpage, $data, $preloaded );
 						}
 					}
+
+					//alm_print($args);
 
 					$return = array(
 						'html' => $data,
@@ -741,6 +763,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							'debug'      => $debug,
 						),
 					);
+
+					// Get filter facet options.
+					if ( $is_filters && $filters_target && function_exists( 'alm_filters_get_facets' ) ) {
+						$return['facets'] = alm_filters_get_facets( $args, $filters_target );
+					}
+
 					wp_send_json( $return );
 
 				} else {
@@ -752,6 +780,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 							'debug'      => $debug,
 						),
 					);
+
+					// Get filter facet options.
+					if ( $is_filters && $filters_target && function_exists( 'alm_filters_get_facets' ) ) {
+						$return['facets'] = alm_filters_get_facets( $args, $filters_target );
+					}
+
 					wp_send_json( $return );
 
 				}
@@ -768,10 +802,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 	function AjaxLoadMore() {
 		global $ajax_load_more;
 		if ( ! isset( $ajax_load_more ) ) {
-			 $ajax_load_more = new AjaxLoadMore();
+			$ajax_load_more = new AjaxLoadMore();
 		}
 		return $ajax_load_more;
 	}
-	AjaxLoadMore(); // initialize
+	AjaxLoadMore();
 
-endif; // class_exists check
+endif;

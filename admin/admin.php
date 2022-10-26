@@ -643,188 +643,187 @@ function alm_update_template_files() {
 */
 add_action( 'admin_menu', 'alm_admin_menu' );
 function alm_admin_menu() {
-   $icon = 'dashicons-plus-alt';
-   $icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.svg";
+	$icon = ALM_ADMIN_URL . "/img/alm-logo-16x16.svg";
 
-   $alm_page = add_menu_page(
+	$alm_page = add_menu_page(
 		'Ajax Load More',
 		'Ajax Load More',
 		'edit_theme_options',
 		'ajax-load-more',
 		'alm_settings_page',
 		$icon
-   );
+	);
 
-   $alm_settings_page = add_submenu_page(
+	$alm_settings_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Settings', 'ajax-load-more' ),
 		__( 'Settings', 'ajax-load-more' ),
 		'edit_theme_options',
 		'ajax-load-more',
 		'alm_settings_page'
-   );
+	);
 
-   $alm_template_page = add_submenu_page(
+	$alm_template_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Repeater Templates', 'ajax-load-more' ),
 		__( 'Repeater Templates', 'ajax-load-more' ),
 		'edit_theme_options',
 		'ajax-load-more-repeaters',
 		'alm_repeater_page'
-   );
+	);
 
-   $alm_shortcode_page = add_submenu_page(
+	$alm_shortcode_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Shortcode Builder', 'ajax-load-more' ),
 		__( 'Shortcode Builder', 'ajax-load-more' ),
 		'edit_theme_options',
 		'ajax-load-more-shortcode-builder',
 		'alm_shortcode_builder_page'
-   );
+	);
 
 	if ( ! has_action( 'alm_pro_installed' ) ) { // Not Pro.
-	   $alm_addons_page = add_submenu_page(
+		$alm_addons_page = add_submenu_page(
 			'ajax-load-more',
 			__( 'Add-ons', 'ajax-load-more' ),
 			__( 'Add-ons', 'ajax-load-more' ),
 			'edit_theme_options',
 			'ajax-load-more-add-ons',
 			'alm_add_ons_page'
-	   );
-   }
+		);
+	}
 
-   $alm_extensions_page = add_submenu_page(
-      'ajax-load-more',
-      __( 'Extensions', 'ajax-load-more' ),
-      __( 'Extensions', 'ajax-load-more' ),
-      'edit_theme_options',
-      'ajax-load-more-extensions',
-      'alm_extensions_page'
-   );
+	$alm_extensions_page = add_submenu_page(
+		'ajax-load-more',
+		__( 'Extensions', 'ajax-load-more' ),
+		__( 'Extensions', 'ajax-load-more' ),
+		'edit_theme_options',
+		'ajax-load-more-extensions',
+		'alm_extensions_page'
+	);
 
-   $alm_help_page = add_submenu_page(
-      'ajax-load-more',
-      __( 'Help', 'ajax-load-more' ),
-      __( 'Help', 'ajax-load-more' ),
-      'edit_theme_options',
-      'ajax-load-more-help',
-      'alm_help_page'
-   );
+	$alm_help_page = add_submenu_page(
+		'ajax-load-more',
+		__( 'Help', 'ajax-load-more' ),
+		__( 'Help', 'ajax-load-more' ),
+		'edit_theme_options',
+		'ajax-load-more-help',
+		'alm_help_page'
+	);
 
 	$license_title = ( has_action( 'alm_pro_installed' ) ) ? __( 'License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
-   $alm_licenses_page = add_submenu_page(
-      'ajax-load-more',
-      $license_title,
-      $license_title,
-      'edit_theme_options',
-      'ajax-load-more-licenses',
-      'alm_licenses_page'
-   );
+	$alm_licenses_page = add_submenu_page(
+		'ajax-load-more',
+		$license_title,
+		$license_title,
+		'edit_theme_options',
+		'ajax-load-more-licenses',
+		'alm_licenses_page'
+	);
 
-   $before_link = '<span style="display:block; border-top: 1px solid #555; padding-top: 8px;">';
+	$before_link = '<span style="display:block; border-top: 1px solid #555; padding-top: 8px;">';
 	$after_link = '</span>';
 	$style_link_icon = 'style="opacity: 0.6; font-size: 18px; height: 18px; width: 18px; position: relative; left: -2px;"';
 
 	// Pro.
 	if ( has_action( 'alm_pro_installed' ) ) {
-	   $alm_pro_page = add_submenu_page(
-	      'ajax-load-more',
-	      __( 'Pro', 'ajax-load-more' ),
-	      $before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' .  __( 'Pro', 'ajax-load-more' ) . $after_link,
-	      'edit_theme_options',
-	      'ajax-load-more-pro',
-	      'alm_pro_page'
-	   );
-   } else {
-	   $alm_go_pro_page = add_submenu_page(
-	      'ajax-load-more',
-	      __( 'Pro', 'ajax-load-more' ),
-	      $before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' . __( 'Go Pro', 'ajax-load-more' ) . $after_link,
-	      'edit_theme_options',
-	      'ajax-load-more-go-pro',
-	      'alm_go_pro_page'
-	   );
-   }
+		$alm_pro_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'Pro', 'ajax-load-more' ),
+			$before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' .  __( 'Pro', 'ajax-load-more' ) . $after_link,
+			'edit_theme_options',
+			'ajax-load-more-pro',
+			'alm_pro_page'
+		);
+	} else {
+		$alm_go_pro_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'Pro', 'ajax-load-more' ),
+			$before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' . __( 'Go Pro', 'ajax-load-more' ) . $after_link,
+			'edit_theme_options',
+			'ajax-load-more-go-pro',
+			'alm_go_pro_page'
+		);
+	}
 
 	// Cache.
-   if ( has_action( 'alm_cache_installed' ) ) {
-      $alm_cache_page = add_submenu_page(
-         'ajax-load-more',
-         __( 'Cache', 'ajax-load-more' ),
-         $before_link . '<span class="dashicons dashicons-admin-generic" '.$style_link_icon.'></span> ' .__( 'Cache', 'ajax-load-more' ) . $after_link,
-         'edit_theme_options',
-         'ajax-load-more-cache',
-         'alm_cache_page'
-      );
-      add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
-      add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
-      add_action( 'load-' . $alm_cache_page, 'alm_set_admin_nonce' );
-   }
+	if ( has_action( 'alm_cache_installed' ) ) {
+		$alm_cache_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'Cache', 'ajax-load-more' ),
+			$before_link . '<span class="dashicons dashicons-admin-generic" '.$style_link_icon.'></span> ' .__( 'Cache', 'ajax-load-more' ) . $after_link,
+			'edit_theme_options',
+			'ajax-load-more-cache',
+			'alm_cache_page'
+		);
+		add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
+		add_action( 'load-' . $alm_cache_page, 'alm_set_admin_nonce' );
+	}
 
 	// Filters.
-   if ( has_action( 'alm_filters_installed' ) ) {
+	if ( has_action( 'alm_filters_installed' ) ) {
 
-	   if ( has_action( 'alm_cache_installed' ) ) {
-		   $before_link = '<span style="display:block;">';
+		if ( has_action( 'alm_cache_installed' ) ) {
+			$before_link = '<span style="display:block;">';
 		}
 
-      $alm_filters_page = add_submenu_page(
-         'ajax-load-more',
-         __( 'Filters', 'ajax-load-more' ),
-         $before_link . '<span class="dashicons dashicons-filter" '.$style_link_icon.'></span> '. __( 'Filters', 'ajax-load-more' ) . $after_link,
-         'edit_theme_options',
-         'ajax-load-more-filters',
-         'alm_filters_page'
-      );
-      add_action( 'load-' . $alm_filters_page, 'alm_load_admin_js' );
-      add_action( 'load-' . $alm_filters_page, 'alm_load_filters_admin_scripts' );
-      add_action( 'load-' . $alm_filters_page, 'alm_set_admin_nonce' );
-   }
+		$alm_filters_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'Filters', 'ajax-load-more' ),
+			$before_link . '<span class="dashicons dashicons-filter" '.$style_link_icon.'></span> '. __( 'Filters', 'ajax-load-more' ) . $after_link,
+			'edit_theme_options',
+			'ajax-load-more-filters',
+			'alm_filters_page'
+		);
+		add_action( 'load-' . $alm_filters_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_filters_page, 'alm_load_filters_admin_scripts' );
+		add_action( 'load-' . $alm_filters_page, 'alm_set_admin_nonce' );
+	}
 
 	// WooCommerce.
-   if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
+	if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
-	   if(has_action( 'alm_cache_installed' ) || has_action( 'alm_filters_installed' )){
-		   $before_link = '<span style="display:block;">';
+		if(has_action( 'alm_cache_installed' ) || has_action( 'alm_filters_installed' )){
+			$before_link = '<span style="display:block;">';
 		}
 		$wooIcon = '<style>.dashicons.alm-woo:before{font-family: WooCommerce!important; content: "\e03d"; font-size: 16px; margin-top: 2px;}</style>';
 
-      $alm_woocommerce_page = add_submenu_page(
-         'ajax-load-more',
-         __( 'WooCommerce', 'ajax-load-more' ),
-         $before_link . $wooIcon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" '.$style_link_icon.'></span> '. __( 'WooCommerce', 'ajax-load-more' ) . $after_link,
-         'edit_theme_options',
-         'ajax-load-more-woocommerce',
-         'alm_woocommerce_page'
-      );
-      add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
-      add_action( 'load-' . $alm_woocommerce_page, 'alm_set_admin_nonce' );
-   }
+		$alm_woocommerce_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'WooCommerce', 'ajax-load-more' ),
+			$before_link . $wooIcon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" '.$style_link_icon.'></span> '. __( 'WooCommerce', 'ajax-load-more' ) . $after_link,
+			'edit_theme_options',
+			'ajax-load-more-woocommerce',
+			'alm_woocommerce_page'
+		);
+		add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_woocommerce_page, 'alm_set_admin_nonce' );
+	}
 
-   //Add our admin scripts
-   add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
-   add_action( 'load-' . $alm_settings_page, 'alm_set_admin_nonce' );
-   add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
-   add_action( 'load-' . $alm_template_page, 'alm_set_admin_nonce' );
-   add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
-   add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_nonce' );
-   add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
-   add_action( 'load-' . $alm_help_page, 'alm_set_admin_nonce' );
+	//Add our admin scripts
+	add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_settings_page, 'alm_set_admin_nonce' );
+	add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_template_page, 'alm_set_admin_nonce' );
+	add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_nonce' );
+	add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_help_page, 'alm_set_admin_nonce' );
 
-   // Pro
-   if ( has_action( 'alm_pro_installed' ) ) {
-   	add_action( 'load-' . $alm_pro_page, 'alm_load_admin_js' );
-      add_action( 'load-' . $alm_pro_page, 'alm_load_pro_admin_js' );
+	// Pro
+	if ( has_action( 'alm_pro_installed' ) ) {
+		add_action( 'load-' . $alm_pro_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_pro_page, 'alm_load_pro_admin_js' );
 		add_action( 'load-' . $alm_pro_page, 'alm_set_admin_nonce' );
 
-   } else {
-   	add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
+	} else {
+		add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
 		add_action( 'load-' . $alm_addons_page, 'alm_set_admin_nonce' );
-	   add_action( 'load-' . $alm_go_pro_page, 'alm_load_admin_js' );
-	   add_action( 'load-' . $alm_go_pro_page, 'alm_set_admin_nonce' );
-   }
-   add_action( 'load-' . $alm_extensions_page, 'alm_load_admin_js' );
-   add_action( 'load-' . $alm_extensions_page, 'alm_set_admin_nonce' );
+		add_action( 'load-' . $alm_go_pro_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_go_pro_page, 'alm_set_admin_nonce' );
+	}
+	add_action( 'load-' . $alm_extensions_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_extensions_page, 'alm_set_admin_nonce' );
 	add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
 	add_action( 'load-' . $alm_licenses_page, 'alm_set_admin_nonce' );
 
@@ -836,7 +835,7 @@ function alm_admin_menu() {
  * @since 2.0.0
  */
 function alm_settings_page(){
-   include_once ALM_PATH . 'admin/views/settings.php';
+	include_once ALM_PATH . 'admin/views/settings.php';
 }
 
 /**
@@ -845,7 +844,7 @@ function alm_settings_page(){
  *  @since 2.0.0
  */
 function alm_repeater_page(){
-   include_once ALM_PATH . 'admin/views/repeater-templates.php';
+	include_once ALM_PATH . 'admin/views/repeater-templates.php';
 }
 
 /**
@@ -854,7 +853,7 @@ function alm_repeater_page(){
  * @since 2.0.0
  */
 function alm_shortcode_builder_page(){
-   include_once ALM_PATH . 'admin/views/shortcode-builder.php';
+	include_once ALM_PATH . 'admin/views/shortcode-builder.php';
 }
 
 /**
@@ -863,7 +862,7 @@ function alm_shortcode_builder_page(){
  * @since 2.0.0
  */
 function alm_add_ons_page(){
-   include_once ALM_PATH . 'admin/views/add-ons.php';
+	include_once ALM_PATH . 'admin/views/add-ons.php';
 }
 
 /**
@@ -872,7 +871,7 @@ function alm_add_ons_page(){
  *  @since 3.0.0
  */
 function alm_extensions_page(){
-   include_once ALM_PATH . 'admin/views/extensions.php';
+	include_once ALM_PATH . 'admin/views/extensions.php';
 }
 
 /**
@@ -881,7 +880,7 @@ function alm_extensions_page(){
  *  @since 4.0.0
  */
 function alm_go_pro_page(){
-   include_once ALM_PATH . 'admin/views/go-pro.php';
+	include_once ALM_PATH . 'admin/views/go-pro.php';
 }
 
 /**
@@ -890,7 +889,7 @@ function alm_go_pro_page(){
  * @since 2.0.0
  */
 function alm_examples_page(){
-   include_once ALM_PATH . 'admin/views/examples.php';
+	include_once ALM_PATH . 'admin/views/examples.php';
 }
 
 /**
@@ -900,7 +899,7 @@ function alm_examples_page(){
  */
 
 function alm_help_page(){
-   include_once ALM_PATH . 'admin/views/help.php';
+	include_once ALM_PATH . 'admin/views/help.php';
 }
 
 /**
@@ -909,7 +908,7 @@ function alm_help_page(){
  * @since 2.7.0
  */
 function alm_licenses_page(){
-   include_once ALM_PATH . 'admin/views/licenses.php';
+	include_once ALM_PATH . 'admin/views/licenses.php';
 }
 
 /**
@@ -918,7 +917,7 @@ function alm_licenses_page(){
  *  @since 3.6.0
  */
 function alm_pro_page(){
-   include_once ALM_PRO_ADMIN_PATH . 'admin/views/pro.php';
+	include_once ALM_PRO_ADMIN_PATH . 'admin/views/pro.php';
 }
 
 /**
@@ -927,7 +926,7 @@ function alm_pro_page(){
  * @since 2.6.0
  */
 function alm_cache_page(){
-   include_once ALM_CACHE_ADMIN_PATH . 'admin/views/cache.php';
+	include_once ALM_CACHE_ADMIN_PATH . 'admin/views/cache.php';
 }
 
 /**
@@ -936,8 +935,8 @@ function alm_cache_page(){
  *  @since 3.4.0
  */
 function alm_filters_page(){
-   include_once ALM_FILTERS_PATH . 'admin/functions.php';
-   include_once ALM_FILTERS_PATH . 'admin/views/filters.php';
+	include_once ALM_FILTERS_PATH . 'admin/functions.php';
+	include_once ALM_FILTERS_PATH . 'admin/views/filters.php';
 }
 
 /**
@@ -946,7 +945,7 @@ function alm_filters_page(){
  * @since 5.3.0
  */
 function alm_woocommerce_page(){
-   include_once ALM_WOO_PATH. 'admin/views/woocommerce.php';
+	include_once ALM_WOO_PATH. 'admin/views/woocommerce.php';
 }
 
 
@@ -964,20 +963,20 @@ function alm_load_admin_js(){
 // Pro Scripts
 function alm_load_pro_admin_js(){
 	if(class_exists( 'ALMPro' )){
-   	ALMPro::alm_enqueue_pro_admin_scripts();
-   }
+		ALMPro::alm_enqueue_pro_admin_scripts();
+	}
 }
 // Cache Scripts
 function alm_load_cache_admin_js(){
 	if(class_exists( 'ALMCache' )){
-   	ALMCache::alm_enqueue_cache_admin_scripts();
-   }
+		ALMCache::alm_enqueue_cache_admin_scripts();
+	}
 }
 // Filters Scripts
 function alm_load_filters_admin_scripts(){
 	if(class_exists( 'ALMFilters' )){
-   	ALMFilters::alm_enqueue_filters_admin_scripts();
-   }
+		ALMFilters::alm_enqueue_filters_admin_scripts();
+	}
 }
 
 
