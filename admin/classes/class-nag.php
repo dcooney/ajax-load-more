@@ -18,7 +18,6 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			$this->bind();
 		}
 
-
 		/**
 		 * Catch the hide nag request
 		 */
@@ -48,7 +47,6 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			}
 		}
 
-
 		/**
 		 * Bind nag message
 		 */
@@ -70,7 +68,6 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			}
 		}
 
-
 		/**
 		 * Get the install data
 		 *
@@ -85,18 +82,17 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			return new DateTime( $date_string );
 		}
 
-
 		/**
 		 * Parse the admin query string
 		 *
 		 * @return array
 		 */
 		private function get_admin_querystring_array() {
-			parse_str( $_SERVER['QUERY_STRING'], $params );
-
-			return $params;
+			if( isset( $_SERVER['QUERY_STRING'] ) ) {
+				parse_str( $_SERVER['QUERY_STRING'], $params );
+				return $params;
+			}
 		}
-
 
 		/**
 		 * Insert the install date
@@ -112,7 +108,6 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			}
 		}
 
-
 		/**
 		 * Display the admin notice
 		 */
@@ -125,7 +120,6 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 			echo '</div>';
 		}
 	}
-
 
 	function alm_nag_notice() {
 		$alm_nag = new ALM_NAG();

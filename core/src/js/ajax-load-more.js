@@ -331,10 +331,13 @@ let alm_is_filtering = false;
 			alm.addons.filters_analtyics = alm.listing.dataset.filtersAnalytics;
 			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
 			alm.addons.filters_startpage = 0;
+			alm.facets = alm.listing.dataset.facets === 'true' ? true : false;
 
-			// Display warning if `filters_target` parameter is missing.
+			// Display warning when `filters_target` parameter is missing.
 			if (!alm.addons.filters_target) {
-				console.warn('Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More.');
+				console.warn(
+					'Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More - e.g. [ajax_load_more filters="true" target="filters"]'
+				);
 			}
 
 			// Get Paged Querystring Val
@@ -1109,7 +1112,7 @@ let alm_is_filtering = false;
 			}
 
 			// Set Filter Facets
-			if (alm.addons.filters && data.facets && typeof almFiltersFacets === 'function') {
+			if (alm.addons.filters && alm.facets && data.facets && typeof almFiltersFacets === 'function') {
 				window.almFiltersFacets(data.facets);
 			}
 
@@ -2327,8 +2330,9 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Window Load (Masonry + Preloaded).
+			// Window Load.
 			alm.window.addEventListener('load', function() {
+				// Masonry & Preloaded.
 				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
 					// Wrap almMasonry in anonymous async/await function
 					(async function() {
@@ -2338,6 +2342,15 @@ let alm_is_filtering = false;
 						console.log('There was an error with ALM Masonry');
 					});
 				}
+
+				//  Filters, Facets & Preloaded Facets
+				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
+					if (typeof almFiltersFacets === 'function') {
+						const facets = alm.localize && alm.localize.facets;
+						facets && window.almFiltersFacets(facets);
+					}
+				}
+
 				if (typeof almOnLoad === 'function') {
 					window.almOnLoad(alm);
 				}

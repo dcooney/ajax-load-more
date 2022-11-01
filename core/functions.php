@@ -593,7 +593,10 @@ function alm_pretty_print( $query ) {
  * @since 5.5.1
  * @param object $query The current WP_Query.
  */
-function alm_print( $query ) {
+function alm_print( $query = '', $title = '' ) {
+	if ( $title ) {
+		echo $title;
+	}
 	alm_pretty_print( $query );
 }
 

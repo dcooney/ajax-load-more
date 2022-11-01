@@ -79,6 +79,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'layouts_gap'                  => 'default',
 						'filters'                      => false,
 						'target'                       => '',
+						'facets'                       => false,
 						'filters_url'                  => 'true',
 						'filters_paging'               => 'true',
 						'filters_scroll'               => 'false',
@@ -444,7 +445,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Get loading style (color/style).
 			$alm_loading_style = isset( $options['_alm_btn_color'] ) ? ' ' . $options['_alm_btn_color'] : ' default';
-			$alm_loading_style = '' !== $loading_style ? ' ' . $loading_style : $alm_loading_style;
+			$alm_loading_style = $loading_style !== '' ? ' ' . $loading_style : $alm_loading_style;
 
 			// Get paging color.
 			$paging_color = isset( $options['_alm_paging_color'] ) && has_action( 'alm_paging_installed' ) && $paging === 'true' ? ' alm-paging paging-' . $options['_alm_paging_color'] : '';
@@ -893,7 +894,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$filters_debug,
 					$options
 				);
-				$ajaxloadmore  .= $filters_return;
+				$ajaxloadmore .= $filters_return;
+				$ajaxloadmore .= $facets === 'true' ? ' data-facets="true"' : '';
 			}
 
 			// Nextpage Post Add-on.

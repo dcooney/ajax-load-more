@@ -709,7 +709,6 @@ disabled look for disabled choices in the results dropdown
 .ajax-load-more .header-wrap nav ul li a.current {
   background-color: #fff;
   color: #000;
-  text-decoration: underline;
   font-weight: 600;
 }
 .ajax-load-more .header-wrap nav ul li a span {
@@ -719,6 +718,11 @@ disabled look for disabled choices in the results dropdown
 .ajax-load-more .header-wrap nav ul li a span.dashicons {
   opacity: 0.35 !important;
   display: none;
+}
+@media screen and (min-width: 1400px) {
+  .ajax-load-more .header-wrap nav ul li a span.dashicons {
+    display: inline-block;
+  }
 }
 .ajax-load-more .header-wrap nav ul li a:hover, .ajax-load-more .header-wrap nav ul li a:focus {
   background-color: #fff;

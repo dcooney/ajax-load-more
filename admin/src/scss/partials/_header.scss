@@ -104,7 +104,6 @@
 					&.current{
 						background-color: #fff;
 						color: #000;
-						text-decoration: underline;
 						font-weight: 600;
 					}
 					span{
@@ -113,6 +112,9 @@
 						&.dashicons{
 							opacity: 0.35 !important;
 							display: none;
+							@media screen and (min-width: 1400px) {
+								display: inline-block;
+							}
 						}
 					}
 					&:hover,
