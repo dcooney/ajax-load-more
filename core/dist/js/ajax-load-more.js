@@ -3973,6 +3973,7 @@ var alm_is_filtering = false;
 					}
 				}
 
+				// Window Load Callback.
 				if (typeof almOnLoad === 'function') {
 					window.almOnLoad(alm);
 				}

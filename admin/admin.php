@@ -948,10 +948,7 @@ function alm_woocommerce_page(){
 	include_once ALM_WOO_PATH. 'admin/views/woocommerce.php';
 }
 
-
-
 /**
-* alm_load_admin_js
 * Load Admin JS
 *
 * @since 2.0.15
@@ -990,41 +987,41 @@ function alm_load_filters_admin_scripts(){
 
 function alm_enqueue_admin_scripts(){
 
-   // Admin CSS
-   wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL. 'dist/css/admin.css', '', ALM_VERSION);
-   wp_enqueue_style( 'alm-core', ALM_URL. '/core/dist/css/ajax-load-more.css', '', ALM_VERSION);
+	// Admin CSS
+	wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL. 'dist/css/admin.css', '', ALM_VERSION);
+	wp_enqueue_style( 'alm-core', ALM_URL. '/core/dist/css/ajax-load-more.css', '', ALM_VERSION);
 
 	// disable ACF select2 on ALM pages
-   wp_dequeue_style( 'acf-input' );
+	wp_dequeue_style( 'acf-input' );
 
-   // CodeMirror Syntax Highlighting if on Repater Template page
-   $screen = get_current_screen();
-   if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters' ) ) ){
+	// CodeMirror Syntax Highlighting if on Repater Template page
+	$screen = get_current_screen();
+	if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters' ) ) ){
 
-      //CodeMirror CSS
-      wp_enqueue_style( 'alm-codemirror-css', ALM_ADMIN_URL. 'codemirror/lib/codemirror.css' );
+		//CodeMirror CSS
+		wp_enqueue_style( 'alm-codemirror-css', ALM_ADMIN_URL. 'codemirror/lib/codemirror.css' );
 
-      //CodeMirror JS
-      wp_enqueue_script( 'alm-codemirror', ALM_ADMIN_URL. 'codemirror/lib/codemirror.js' );
-      wp_enqueue_script( 'alm-codemirror-matchbrackets', ALM_ADMIN_URL. 'codemirror/addon/edit/matchbrackets.js' );
-      wp_enqueue_script( 'alm-codemirror-htmlmixed', ALM_ADMIN_URL. 'codemirror/mode/htmlmixed/htmlmixed.js' );
-      wp_enqueue_script( 'alm-codemirror-xml', ALM_ADMIN_URL. 'codemirror/mode/xml/xml.js' );
-      wp_enqueue_script( 'alm-codemirror-javascript', ALM_ADMIN_URL. 'codemirror/mode/javascript/javascript.js' );
-      wp_enqueue_script( 'alm-codemirror-mode-css', ALM_ADMIN_URL. 'codemirror/mode/css/css.js' );
-      wp_enqueue_script( 'alm-codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
-      wp_enqueue_script( 'alm-codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
+		//CodeMirror JS
+		wp_enqueue_script( 'alm-codemirror', ALM_ADMIN_URL. 'codemirror/lib/codemirror.js' );
+		wp_enqueue_script( 'alm-codemirror-matchbrackets', ALM_ADMIN_URL. 'codemirror/addon/edit/matchbrackets.js' );
+		wp_enqueue_script( 'alm-codemirror-htmlmixed', ALM_ADMIN_URL. 'codemirror/mode/htmlmixed/htmlmixed.js' );
+		wp_enqueue_script( 'alm-codemirror-xml', ALM_ADMIN_URL. 'codemirror/mode/xml/xml.js' );
+		wp_enqueue_script( 'alm-codemirror-javascript', ALM_ADMIN_URL. 'codemirror/mode/javascript/javascript.js' );
+		wp_enqueue_script( 'alm-codemirror-mode-css', ALM_ADMIN_URL. 'codemirror/mode/css/css.js' );
+		wp_enqueue_script( 'alm-codemirror-clike', ALM_ADMIN_URL. 'codemirror/mode/clike/clike.js' );
+		wp_enqueue_script( 'alm-codemirror-php', ALM_ADMIN_URL. 'codemirror/mode/php/php.js' );
 
-   }
+	}
 
-   // Admin JS
-   wp_enqueue_script( 'jquery-form' );
-   wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'dist/js/admin.js', array( 'jquery' ), ALM_VERSION);
-   wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ), ALM_VERSION);
+	// Admin JS
+	wp_enqueue_script( 'jquery-form' );
+	wp_enqueue_script( 'alm-admin', ALM_ADMIN_URL. 'dist/js/admin.js', array( 'jquery' ), ALM_VERSION);
+	wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL. 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ), ALM_VERSION);
 
 }
 
 /**
-* Repeater Save function
+* Repeater Save function.
 *
 * @return response
 * @since 2.0.0
