@@ -3,7 +3,7 @@
  * Ajax Load More Shortcode.
  * Returns a parsed [ajax_load_more {params}] shortcode.
  *
- * @package  ajaxloadmore
+ * @package  AjaxLoadMore
  * @since    2.10.1
  */
 

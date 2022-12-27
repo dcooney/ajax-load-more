@@ -2,7 +2,7 @@
 /**
  * Class that generates a wp_query for injection into <noscript />.
  *
- * @package  ajaxloadmore
+ * @package  AjaxLoadMore
  * @since    3.7
  */
 

@@ -20,10 +20,11 @@
 * UPDATE: Removed legacy loading style `circles` and reference from the CSS.
 * NEW: Add new `getTotalPosts` and `getPostsCount` public JS functions that will return data from the localized window variables.
 * NEW: Added Ajax Load More plugin navigation to the header on all admin plugin pages.
-* FIX: Fixed various issue with Filters add-on and JS `<noscript/>` fallback URLs when accessing paged results.
 * NEW: Added ability to add add-on licenses via wp-config constants. License activation will still need to be triggered from the License admin screen. `ALM_CACHE_LICENSE_KEY="xxxxxxxxxx"`
 * NEW: Added `alm_mask_license_keys` filter to mask the license keys rendering in the WP admin. `add_filter( 'alm_mask_license_keys', '__return_true' );`
 * UPDATE: Improved security of shortcode output by sanatizing all fields before render.
+* UPDATE: Code cleanup and organization.
+* FIX: Fixed various issue with Filters add-on and JS `<noscript/>` fallback URLs when accessing paged results.
 
 ADDONS
 

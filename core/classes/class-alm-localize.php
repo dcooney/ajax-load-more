@@ -16,7 +16,7 @@ if(!class_exists('ALM_LOCALIZE')):
 
    class ALM_LOCALIZE {
 
-	   static $vars = array();
+	   static $vars = [];
 
 		/**
 		 *  add_localized_var

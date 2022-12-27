@@ -2,7 +2,7 @@
 /**
  * Ajax Load More Enqueue scripts class.
  *
- * @package  ajaxloadmore
+ * @package  AjaxLoadMore
  * @since    2.10.1
  */
 
