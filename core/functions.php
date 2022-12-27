@@ -585,8 +585,8 @@ function alm_pretty_print( $query ) {
 		print_r( $query ); // phpcs:ignore
 		echo '</pre>';
 	}
-
 }
+
 /**
  * Shorter debug helper for printing variables to screen.
  *

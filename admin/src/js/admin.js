@@ -417,7 +417,6 @@ jQuery(document).ready(function($) {
 	var almActivating = false;
 	$(document).on('click', '.license-btn', function(e) {
 		e.preventDefault();
-
 		if (!almActivating) {
 			$('.license-btn-wrap .msg').remove();
 			almActivating = true;

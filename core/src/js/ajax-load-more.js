@@ -659,7 +659,7 @@ let alm_is_filtering = false;
 						})
 						.catch(function(error) {
 							// Error || Page does not yet exist
-							console.log(error);
+							// console.log(error);
 							alm.AjaxLoadMore.ajax();
 						});
 				} else {
@@ -1703,7 +1703,7 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 *	Automatically trigger nested ALM instances (Requies `.alm-reveal` container.
+		 *	Automatically trigger nested ALM instances - requires `.alm-reveal` container.
 		 *
 		 * @param {object} instance
 		 * @since 5.0

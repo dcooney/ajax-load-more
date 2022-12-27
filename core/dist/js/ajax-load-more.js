@@ -2224,7 +2224,7 @@ var alm_is_filtering = false;
 						alm.AjaxLoadMore.success(response.data, true);
 					}).catch(function (error) {
 						// Error || Page does not yet exist
-						console.log(error);
+						// console.log(error);
 						alm.AjaxLoadMore.ajax();
 					});
 				} else {
@@ -3317,7 +3317,7 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   *	Automatically trigger nested ALM instances (Requies `.alm-reveal` container.
+   *	Automatically trigger nested ALM instances - requires `.alm-reveal` container.
    *
    * @param {object} instance
    * @since 5.0
@@ -5109,6 +5109,7 @@ function almGetAjaxParams(alm, action, queryType) {
 		data.filters = alm.addons.filters;
 		data.filters_startpage = alm.addons.filters_startpage;
 		data.filters_target = alm.addons.filters_target;
+		data.facets = alm.facets;
 	}
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;

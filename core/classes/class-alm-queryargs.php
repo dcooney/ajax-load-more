@@ -6,7 +6,6 @@
  * @since    3.7
  */
 
-
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -21,18 +20,19 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		/**
 		 * This function will return a generated $args array.
 		 *
-		 * @param Array   $a The query param array.
+		 * @param array   $a The query param array.
 		 * @param Boolean $is_ajax Is this an ajax request or server side.
-		 * @return Array Query constructed arags.
+		 * @return array Query constructed arags.
 		 */
-
 		public static function alm_build_queryargs( $a, $is_ajax = true ) {
-
 			// ID.
 			$id = isset( $a['id'] ) ? $a['id'] : '';
 
 			// Post ID.
 			$post_id = isset( $a['post_id'] ) ? $a['post_id'] : '';
+
+			// Filters.
+			$facets = isset( $a['facets'] ) && $a['facets'] ? true : false;
 
 			// Posts Per Page.
 			$posts_per_page = isset( $a['posts_per_page'] ) ? $a['posts_per_page'] : 5;
@@ -67,7 +67,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			}
 
 			$taxonomy_relation = isset( $a['taxonomy_relation'] ) ? $a['taxonomy_relation'] : 'AND';
-			$taxonomy_relation = empty( $taxonomy_relation ) ? 'AND' : $taxonomy_relation;
+			$taxonomy_relation = empty( $taxonomy_relation ) || $facets ? 'AND' : $taxonomy_relation;
 
 			// Date.
 			$year  = isset( $a['year'] ) ? $a['year'] : '';
@@ -85,7 +85,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$meta_type = empty( $meta_type ) ? 'CHAR' : $meta_type;
 
 			$meta_relation = isset( $a['meta_relation'] ) ? $a['meta_relation'] : '';
-			$meta_relation = empty( $meta_relation ) ? 'AND' : $meta_relation;
+			$meta_relation = empty( $meta_relation ) || $facets ? 'AND' : $meta_relation;
 
 			// Search.
 			$s = isset( $a['search'] ) ? $a['search'] : '';
@@ -125,8 +125,8 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				if ( current_user_can( 'edit_theme_options' ) ) {
 					$post_status = $post_status;
 				} else {
-					$post_status = apply_filters('alm_allow_future_posts', false ) ? $post_status : 'publish';
-					// e.g. add_filter('alm_allow_future_posts', '__return_true');
+					$post_status = apply_filters( 'alm_allow_future_posts', false ) ? $post_status : 'publish';
+					// e.g. add_filter('alm_allow_future_posts', '__return_true');.
 				}
 			}
 
@@ -141,7 +141,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 					$acf_parent_field_name = ( isset( $a['acf']['parent_field_name'] ) ) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name
 				}
 			} else {
-					  // If Preloaded, $a needs to access acf data differently.
+				// If Preloaded, $a needs to access acf data differently.
 				if ( isset( $a['acf'] ) ) {
 					if ( $a['acf'] === 'true' ) {
 						$acf_post_id           = ( isset( $a['acf_post_id'] ) ) ? $a['acf_post_id'] : ''; // Post ID
@@ -305,7 +305,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$post__not_in         = explode( ',', $post__not_in );
 				$args['post__not_in'] = $post__not_in;
 			}
-			if ( ! empty( $exclude ) ) { // Deprecate this soon - 2.8.5 */
+			if ( ! empty( $exclude ) ) { // Deprecate this soon.
 				$exclude              = explode( ',', $exclude );
 				$args['post__not_in'] = $exclude;
 			}
@@ -438,16 +438,14 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		 * Parse `custom_args` string parameter into array.
 		 *
 		 * @param object $args The current $args array.
-		 * @param string $argument The parameter to parse.
+		 * @param string $param The parameter to parse.
 		 */
 		public static function parse_custom_args( $args, $param ) {
-
 			// Split the $param at `;`.
 			$array = explode( ';', $param );
 
 			// Loop each $argument.
 			foreach ( $array as $arg ) {
-
 				$arg          = preg_replace( '/\s+/', '', $arg ); // Remove all whitespace.
 				$arg          = explode( ':', $arg );  // Split at `:`.
 				$argument_arr = explode( ',', $arg[1] );  // explode $argument[1] at `,`.

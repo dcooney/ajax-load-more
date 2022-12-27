@@ -32,6 +32,7 @@ export function almGetAjaxParams(alm, action, queryType) {
 		data.filters = alm.addons.filters;
 		data.filters_startpage = alm.addons.filters_startpage;
 		data.filters_target = alm.addons.filters_target;
+		data.facets = alm.facets;
 	}
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;

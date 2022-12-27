@@ -88,7 +88,7 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 		 * @return array
 		 */
 		private function get_admin_querystring_array() {
-			if( isset( $_SERVER['QUERY_STRING'] ) ) {
+			if ( isset( $_SERVER['QUERY_STRING'] ) ) {
 				parse_str( $_SERVER['QUERY_STRING'], $params );
 				return $params;
 			}

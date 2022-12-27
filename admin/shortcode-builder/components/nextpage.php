@@ -73,7 +73,7 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
 									<h4><?php _e('Template Tags', 'ajax-load-more'); ?></h4>
 									<ul>
 										<li><pre>{page}</pre> <?php _e('Current Page Number', 'ajax-load-more'); ?></li>
-										<li><pre>{pages}</pre> <?php _e('Total Number of Pages', 'ajax-load-more'); ?></li>
+										<li><pre>{total}</pre> <?php _e('Total Number of Pages', 'ajax-load-more'); ?></li>
 										<li><pre>{post-title}</pre> <?php _e('Title of Post', 'ajax-load-more'); ?></li>
 										<li><pre>{site-title}</pre> <?php _e('Site Title', 'ajax-load-more'); ?></li>
 										<li><pre>{tagline}</pre> <?php _e('Site Tagline', 'ajax-load-more'); ?></li>

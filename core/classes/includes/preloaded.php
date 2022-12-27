@@ -12,13 +12,13 @@
 $preloaded_output = '';
 $preload_offset   = $offset;
 
-// .alm-reveal default
-$alm_reveal = '<div class="alm-reveal alm-preloaded' . $transition_container_classes . '">';
+// .alm-reveal default.
+$alm_reveal = '<div class="alm-reveal alm-preloaded' . esc_attr( $transition_container_classes ) . '">';
 
 // Paging Add-on.
 // Set $preloaded_amount to $posts_per_page.
 if ( $paging === 'true' ) {
-	$preload_offset   = $query_args['paged'] > 1 ? $preloaded_amount * ( $query_args['paged'] - 1 ) : $preload_offset;
+	$preload_offset = $query_args['paged'] > 1 ? $preloaded_amount * ( $query_args['paged'] - 1 ) : $preload_offset;
 }
 
 // CTA Add-on.
@@ -47,7 +47,7 @@ if ( $tabs ) {
 	 *
 	 * @return $preloaded_tabs;
 	 */
-	$preloaded_tabs   = apply_filters( 'alm_tabs_preloaded', $tab_template );
+	$preloaded_tabs    = apply_filters( 'alm_tabs_preloaded', $tab_template );
 	$preloaded_output .= $alm_reveal . $preloaded_tabs . '</div>';
 
 }
@@ -75,8 +75,8 @@ elseif ( $comments ) {
 		// Open .alm-reveal
 		$preloaded_output .= $alm_reveal;
 
-		  // Append content
-		  $preloaded_output .= $preloaded_comments;
+		// Append content
+		$preloaded_output .= $preloaded_comments;
 
 		// Close .alm-reveal
 		$preloaded_output .= '</div>';
@@ -112,7 +112,7 @@ elseif ( $users ) {
 		// Open .alm-reveal
 
 		if ( $seo === 'true' ) {
-			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonicalURL . '">';
+			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonical_url . '">';
 		}
 
 		// Open .alm-reveal
@@ -152,7 +152,7 @@ elseif ( $term_query ) {
 
 		// Open .alm-reveal
 		if ( $seo === 'true' ) {
-			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonicalURL . '">';
+			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonical_url . '">';
 		}
 
 		// Open .alm-reveal
@@ -189,14 +189,14 @@ elseif ( $acf && ( $acf_field_type !== 'relationship' ) ) {
 
 		// Open .alm-reveal
 		if ( $seo === 'true' ) {
-			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonicalURL . '">';
+			$alm_reveal = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $canonical_url . '">';
 		}
 
 		// Open .alm-reveal
 		$preloaded_output .= $alm_reveal;
 
-		  // Append content
-			$preloaded_output .= $preloaded_acf;
+		// Append content
+		$preloaded_output .= $preloaded_acf;
 
 		// Close .alm-reveal
 		$preloaded_output .= ( $seo === 'true' || $transition_container_classes !== 'false' ) ? '</div>' : '';
@@ -268,7 +268,7 @@ else {
 
 			// Call to Action [Before].
 			if ( $cta === 'true' && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' ) {
-				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
+				$output .= (string) $alm_current === (string) $cta_val ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
 			}
 
 			// Repeater Template.
@@ -276,11 +276,10 @@ else {
 
 			// Call to Action [After].
 			if ( $cta === 'true' && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' ) {
-				$output .= ( $alm_current == $cta_val ) ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
+				$output .= (string) $alm_current === (string) $cta_val ? apply_filters( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, true, $args ) : '';
 			}
 
-		endwhile;
-		wp_reset_query();
+		endwhile; wp_reset_query();
 
 		/**
 		 * SEO - create <noscript/> pagination of current query.
@@ -305,7 +304,6 @@ else {
 		ALM_LOCALIZE::add_localized_var( 'facets', alm_filters_get_facets( $args, $target ), $localize_id );
 	}
 
-
 	if ( $seo === 'true' ) {
 		// SEO, not Paging.
 		$querystring = $_SERVER['QUERY_STRING']; // Get querystring.
@@ -315,25 +313,25 @@ else {
 
 		// Append querystring to data-url.
 		$querystring = $querystring ? '?' . $querystring : '';
-		$cleaned_url = esc_url( $canonicalURL . '' . $querystring );
+		$cleaned_url = esc_url( $canonical_url . '' . $querystring );
 
 		$alm_reveal     = '<div class="alm-reveal alm-seo alm-preloaded' . $transition_container_classes . '" data-page="1" data-url="' . $cleaned_url . '" data-total-posts="' . $alm_preload_query->found_posts . '">';
 		$alm_reveal_end = '</div>';
 
 	} elseif ( $filters && has_filter( 'alm_filters_reveal_open' ) ) {
 		// Filters.
-		$alm_reveal     = apply_filters( 'alm_filters_reveal_open', $transition_container_classes, $canonicalURL, true, $alm_preload_query->found_posts );
+		$alm_reveal     = apply_filters( 'alm_filters_reveal_open', $transition_container_classes, $canonical_url, true, $alm_preload_query->found_posts );
 		$alm_reveal_end = '</div>';
 
 	} else {
 		// Standard.
-		$alm_reveal = $transition_container === 'true' ? '<div class="alm-reveal alm-preloaded' . $transition_container_classes . '" data-total-posts="' . $alm_preload_query->found_posts . '">' : '';
+		$alm_reveal     = $transition_container === 'true' ? '<div class="alm-reveal alm-preloaded' . $transition_container_classes . '" data-total-posts="' . $alm_preload_query->found_posts . '">' : '';
 		$alm_reveal_end = $transition_container === 'true' ? '</div>' : '';
 
 	}
 
 	// Open .alm-reveal.
-	$preloaded_output .= $alm_reveal . $output .  $alm_reveal_end;
+	$preloaded_output .= $alm_reveal . $output . $alm_reveal_end;
 
 }
 
