@@ -59,8 +59,8 @@ function alm_css_disabled( $setting ) {
  * @since 3.3.1
  */
 function alm_do_inline_css( $setting ) {
-	// Exit if this is a REST API request.
 	if ( defined( 'REST_REQUEST' ) ) {
+		// Exit if this is a REST API request.
 		if ( REST_REQUEST ) {
 			return false;
 		}

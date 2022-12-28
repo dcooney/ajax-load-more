@@ -1800,33 +1800,6 @@ jQuery(document).ready(function ($) {
 	});
 
 	/**
-  * Dismiss Sharing (Transient).
-  *
-  * @since 2.8.7
-  */
-	$(document).on('click', '.alm-notification--dismiss', function (e) {
-		e.preventDefault();
-		var el = $(this),
-		    container = el.parent('.cta');
-
-		// Get value from Ajax
-		$.ajax({
-			type: 'POST',
-			url: alm_admin_localize.ajax_admin_url,
-			data: {
-				action: 'alm_dismiss_sharing',
-				nonce: alm_admin_localize.alm_admin_nonce
-			},
-			success: function success(data) {
-				container.fadeOut();
-			},
-			error: function error(xhr, status, _error3) {
-				console.log(status);
-			}
-		});
-	});
-
-	/**
   * Set Transient (Transient).
   *
   * @since 4.0
@@ -1851,7 +1824,7 @@ jQuery(document).ready(function ($) {
 			success: function success(data) {
 				container.fadeOut();
 			},
-			error: function error(xhr, status, _error4) {
+			error: function error(xhr, status, _error3) {
 				console.log(status);
 			}
 		});

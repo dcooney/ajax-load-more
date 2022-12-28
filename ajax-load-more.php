@@ -53,6 +53,11 @@ ADDONS
 - Users
 * FIX - Attempted fix for Cache and Users bug causing fatal error.
 * UPDATE - Code cleanup.
+
+- Custom Repeaters
+* UPDATE: Code cleanup.
+* UPDATE: Fixing data sanitization and function organization.
+* UPDATE: Improved update routine for when plugin is updated.
 */
 
 define( 'ALM_VERSION', '5.5.4.1' );
@@ -107,10 +112,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			define( 'ALM_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'ALM_URL', plugins_url( '', __FILE__ ) );
 			define( 'ALM_ADMIN_URL', plugins_url( 'admin/', __FILE__ ) );
-			define( 'ALM_NAME', '_ajax_load_more' );
 			define( 'ALM_TITLE', 'Ajax Load More' );
 			define( 'ALM_SLUG', 'ajax-load-more' );
 			define( 'ALM_REST_NAMESPACE', 'ajaxloadmore' );
+			define( 'ALM_SETTINGS', 'alm_settings' );
 
 			if ( ! defined( 'ALM_CACHE_ITEM_NAME' ) ) {
 				define( 'ALM_CACHE_ITEM_NAME', '4878' );
@@ -192,24 +197,24 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * This function will build pagination for users without JS enabled.
 		 *
-		 * @param array   $query   The current query.
-		 * @param boolean $filters Is this a filters query.
+		 * @param array   $query      The current query.
+		 * @param boolean $is_filters Is this a filters query.
 		 * @return $return string
 		 * @since 3.7
 		 */
-		public function alm_noscript_pagination( $query, $filters ) {
+		public function alm_noscript_pagination( $query, $is_filters ) {
 			if ( is_admin() || apply_filters( 'alm_disable_noscript', false ) ) {
 				return;
 			}
 			include_once ALM_PATH . 'core/classes/class-alm-noscript.php'; // Load Noscript Class.
-			$noscript = ALM_NOSCRIPT::build_noscript_paging( $query, $filters );
+			$noscript = ALM_NOSCRIPT::build_noscript_paging( $query, $is_filters );
 			return '<noscript>' . $noscript . '</noscript>';
 		}
 
 		/**
 		 * Return the default Repeater Template.
 		 *
-		 * @return string The repeater php/html as a string.
+		 * @return string The repeater php & html as a string.
 		 * @since 5.5.4
 		 */
 		public static function alm_get_default_repeater_markup() {
