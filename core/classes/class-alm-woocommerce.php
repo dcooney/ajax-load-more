@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'ALM_WOOCOMMERCE' ) ) :
 
 	/**
-	 * WooCommerce class.
+	 * Initiate the class.
 	 */
 	class ALM_WOOCOMMERCE {
 
@@ -26,13 +26,12 @@ if ( ! class_exists( 'ALM_WOOCOMMERCE' ) ) :
 		 */
 		public static function hide_pagination( $woocommerce ) {
 			if ( ! $woocommerce ) {
-				 return false;
+				return false;
 			}
 			$hide_pagination = apply_filters( 'alm_woo_hide_pagination', true );
 			$classname       = apply_filters( 'alm_woo_pagination_class', 'woocommerce-pagination' );
 			return $classname && $hide_pagination ? '<style>.' . $classname . '{display:none;}</style>' : '';
 		}
-
 
 		/**
 		 * Hide the woocommerce orderby filter on ALM pages.

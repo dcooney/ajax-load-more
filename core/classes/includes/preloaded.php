@@ -6,7 +6,7 @@
  * @since 2.0
  */
 
-// @codingStandardsIgnoreStart
+// phpcs:ignorefile
 
 // Initial vars.
 $preloaded_output = '';

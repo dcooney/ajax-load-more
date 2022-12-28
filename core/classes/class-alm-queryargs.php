@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 	/**
-	 * Ajax Load More Query Args class.
+	 * Initiate the class.
 	 */
 	class ALM_QUERY_ARGS {
 

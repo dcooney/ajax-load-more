@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 
 	/**
-	 * ALM No Script class for rendering </noscript> content.
+	 * Initiate the class.
 	 */
 	class ALM_NOSCRIPT {
 

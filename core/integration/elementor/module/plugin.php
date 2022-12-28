@@ -1,6 +1,8 @@
 <?php
 namespace ALMElementor;
 
+// phpcs:ignorefile
+
 /**
  * Class ALMPlugin
  *

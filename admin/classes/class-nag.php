@@ -1,5 +1,7 @@
 <?php
 
+// phpcs:ignorefile
+
 if ( ! class_exists( 'ALM_NAG' ) ) :
 
 	class ALM_NAG {
@@ -9,12 +11,10 @@ if ( ! class_exists( 'ALM_NAG' ) ) :
 		const OPTION_NAG_DELAY        = '-7 days';
 
 		/**
-		 * Setup the class
+		 * Setup the class.
 		 */
 		public function setup() {
-			// catch nag hide
 			$this->catch_hide_notice();
-			// bind nag
 			$this->bind();
 		}
 
