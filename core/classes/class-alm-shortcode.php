@@ -1045,7 +1045,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$ajaxloadmore .= wp_kses_post( $single_post_return );
 			}
 
-			// Term Query.
+			// Term Query Extension.
 			if ( has_action( 'alm_terms_installed' ) && $term_query ) {
 				$term_query_return = apply_filters(
 					'alm_terms_shortcode',
@@ -1058,7 +1058,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$ajaxloadmore .= wp_kses_post( $term_query_return );
 			}
 
-			// Users Add-on.
+			// Users Extension.
 			if ( has_action( 'alm_users_installed' ) && $users ) {
 				$posts_per_page = $users_per_page; // Update $posts_per_page var to be $users_per_page.
 				$users_return   = apply_filters(
@@ -1381,8 +1381,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				if ( $theme_repeater !== 'null' && has_action( 'alm_get_rest_theme_repeater' ) ) {
 					do_action( 'alm_get_rest_theme_repeater', $theme_repeater );
 				} else {
-					$rest_type = alm_get_repeater_type( $repeater );
-					do_action( 'alm_get_rest_api_template', $repeater, $rest_type );
+					do_action( 'alm_get_rest_api_template', $repeater, alm_get_repeater_type( $repeater ) );
 				}
 			}
 

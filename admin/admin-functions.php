@@ -87,7 +87,7 @@ function alm_has_extension_shortcodes() {
 
 /**
  * Check if any add-on installed and activated.
- * License Page.
+ * Note: Used on the license screen.
  *
  * @return boolean
  * @since 2.13.0
