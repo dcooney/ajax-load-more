@@ -590,6 +590,7 @@ add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' );
  */
 function alm_filter_admin_footer_text( $text ) {
 	$screen = alm_is_admin_screen();
+
 	if ( ! $screen ) {
 		return;
 	}
