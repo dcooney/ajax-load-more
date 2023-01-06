@@ -21,6 +21,30 @@ define( 'ALM_STORE_URL', 'https://connekthq.com' );
 // Plugin installation helpers.
 require_once plugin_dir_path( __FILE__ ) . 'core/install.php';
 
+/**
+ * Activation hook - Create table & repeater.
+ *
+ * @param Boolean $network_wide Enable the plugin for all sites in the network or just the current site. Multisite only.
+ * @since 2.0.0
+ */
+function alm_install( $network_wide ) {
+	global $wpdb;
+	add_option( 'alm_version', ALM_VERSION ); // Add setting to options table.
+	if ( is_multisite() && $network_wide ) {
+		// Get all blogs in the network and activate plugin on each one.
+		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		foreach ( $blog_ids as $blog_id ) {
+			switch_to_blog( $blog_id );
+			alm_create_table();
+			restore_current_blog();
+		}
+	} else {
+		alm_create_table();
+	}
+}
+register_activation_hook( __FILE__, 'alm_install' );
+add_action( 'wpmu_new_blog', 'alm_install' );
+
 if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 	/**
