@@ -91,7 +91,6 @@
 				<p class="back2top"><a href="#wpcontent" class="group no-shadow"><i class="fa fa-angle-up"></i> <?php _e('Back to Top', 'ajax-load-more'); ?></a></p>
    	   </div>
    	   <aside class="cnkt-sidebar">
-   			<?php //include_once( ALM_PATH . 'admin/includes/cta/sharing.php' ); ?>
    			<?php //include_once( ALM_PATH . 'admin/includes/cta/test.php' );	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/resources.php' );	?>
    			<?php include_once( ALM_PATH . 'admin/includes/cta/dyk.php' );	?>

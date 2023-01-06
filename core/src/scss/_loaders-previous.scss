@@ -64,13 +64,6 @@
 					}
 				}
 			}
-			&.circles {
-				&.loading {
-					&:before {
-						background-image: url('../../img/spinner-circles.gif');
-					}
-				}
-			}
 			&.chasing-arrows {
 				&.loading {
 					&:before {

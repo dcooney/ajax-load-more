@@ -331,10 +331,13 @@ let alm_is_filtering = false;
 			alm.addons.filters_analtyics = alm.listing.dataset.filtersAnalytics;
 			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
 			alm.addons.filters_startpage = 0;
+			alm.facets = alm.listing.dataset.facets === 'true' ? true : false;
 
-			// Display warning if `filters_target` parameter is missing.
+			// Display warning when `filters_target` parameter is missing.
 			if (!alm.addons.filters_target) {
-				console.warn('Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More.');
+				console.warn(
+					'Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More - e.g. [ajax_load_more filters="true" target="filters"]'
+				);
 			}
 
 			// Get Paged Querystring Val
@@ -656,7 +659,7 @@ let alm_is_filtering = false;
 						})
 						.catch(function(error) {
 							// Error || Page does not yet exist
-							console.log(error);
+							// console.log(error);
 							alm.AjaxLoadMore.ajax();
 						});
 				} else {
@@ -1106,6 +1109,11 @@ let alm_is_filtering = false;
 						}
 					}
 				}
+			}
+
+			// Set Filter Facets
+			if (alm.addons.filters && alm.facets && data.facets && typeof almFiltersFacets === 'function') {
+				window.almFiltersFacets(data.facets);
 			}
 
 			/**
@@ -1695,7 +1703,7 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 *	Automatically trigger nested ALM instances (Requies `.alm-reveal` container.
+		 *	Automatically trigger nested ALM instances - requires `.alm-reveal` container.
 		 *
 		 * @param {object} instance
 		 * @since 5.0
@@ -2322,8 +2330,9 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Window Load (Masonry + Preloaded).
+			// Window Load.
 			alm.window.addEventListener('load', function() {
+				// Masonry & Preloaded.
 				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
 					// Wrap almMasonry in anonymous async/await function
 					(async function() {
@@ -2333,6 +2342,16 @@ let alm_is_filtering = false;
 						console.log('There was an error with ALM Masonry');
 					});
 				}
+
+				//  Filters, Facets & Preloaded Facets
+				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
+					if (typeof almFiltersFacets === 'function') {
+						const facets = alm.localize && alm.localize.facets;
+						facets && window.almFiltersFacets(facets);
+					}
+				}
+
+				// Window Load Callback.
 				if (typeof almOnLoad === 'function') {
 					window.almOnLoad(alm);
 				}
@@ -2500,30 +2519,40 @@ let reset = function(props = {}) {
 export { reset };
 
 /**
- * Tabbed content for Ajax Load More instance.
+ * Get the total post count in the current query by ALM instance ID.
  *
- * @since 5.2
- * @param {*} data
- * @param {*} url
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
  */
-let tab = function(data = '', url = false) {
-	let transition = 'fade';
-	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
-
-	if (!data) {
-		return false;
+const getPostCount = function(id = 'default') {
+	const theID = window[`ajax_load_more_${id}_vars`];
+	if (!theID && !theID.post_count) {
+		return null;
 	}
-
-	alm_is_filtering = true;
-	almFilter(transition, speed, data, 'tab');
+	return parseInt(theID.post_count);
 };
-export { tab };
+export { getPostCount };
+
+/**
+ * Get the total number of posts by ALM instance ID.
+ *
+ * @param  {string} id The ALM ID.
+ * @return {Number}    The results from the localized variable.
+ */
+const getTotalPosts = function(id = 'default') {
+	const theID = window[`ajax_load_more_${id}_vars`];
+	if (!theID && !theID.total_posts) {
+		return null;
+	}
+	return parseInt(theID.total_posts);
+};
+export { getTotalPosts };
 
 /**
  * Track Page Views in Google Analytics.
  *
  * @since 5.0
- * @param {*} path
+ * @param {string} path The URL path.
  */
 let tracking = function(path) {
 	setTimeout(function() {
@@ -2567,6 +2596,26 @@ let tracking = function(path) {
 	}, 200);
 };
 export { tracking };
+
+/**
+ * Tabbed content for Ajax Load More instance.
+ *
+ * @since 5.2
+ * @param {*} data
+ * @param {*} url
+ */
+let tab = function(data = '', url = false) {
+	let transition = 'fade';
+	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
+
+	if (!data) {
+		return false;
+	}
+
+	alm_is_filtering = true;
+	almFilter(transition, speed, data, 'tab');
+};
+export { tab };
 
 /**
  * Trigger Ajax Load More from other events.

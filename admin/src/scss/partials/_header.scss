@@ -9,8 +9,12 @@
 		background: #fff url('../../img/alm-logo-48x48.svg') no-repeat $padding $padding;
 		font-size: 18px;
 		font-weight: 800;
-		border-bottom: 1px solid $border;
+		border-bottom: 1px solid $light_border;
+		//border-bottom: 1px solid $border;
 		width: 100%;
+		@media screen and (max-width: 900px) {
+			border-bottom: 1px solid $border;
+		}
 		@media screen and (min-width: 768px) {
 			font-size: 21px;
 		}
@@ -46,6 +50,83 @@
 			top: 3px;
 		}
 	}
+
+	nav {
+		position: relative;
+		z-index: 2;
+		scroll-behavior: smooth;
+		background-color: #fff;
+		border-bottom: 1px solid $border;
+		padding: 0 5px 1px;
+		@media screen and (max-width: 900px) {
+			display: none;
+		}
+		ul {
+			display: flex;
+			flex-wrap: nowrap;
+			width: 100%;
+			overflow-x: auto;
+			overflow-y: hidden;
+			scroll-behavior: smooth;
+			-webkit-overflow-scrolling: touch;
+			white-space: nowrap;
+			margin-block: 0;
+			padding: 0 $padding_sm;
+
+			&::-webkit-scrollbar {
+				height: 6px;
+				width: 6px;
+				background: #fff;
+			}
+
+			&::-webkit-scrollbar-thumb:horizontal {
+				background: $border;
+				border-radius: 10px;
+				&:hover{
+					background-color: $border_hover;
+				}
+			}
+			.wp-submenu-head{
+				display: none;
+			}
+			li {
+				margin: 0;
+				padding: 0;
+				a{
+					display: block;
+					padding: $padding_sm 10px;
+					@media screen and (min-width: 1400px){
+						padding: $padding_sm;
+					}
+					white-space: nowrap;
+					color: $paragraph;
+					text-decoration: none;
+					&.current{
+						background-color: #fff;
+						color: #000;
+						font-weight: 600;
+					}
+					span{
+						border: none !important;
+						padding: 0 !important;
+						&.dashicons{
+							opacity: 0.35 !important;
+							display: none;
+							@media screen and (min-width: 1400px) {
+								display: inline-block;
+							}
+						}
+					}
+					&:hover,
+					&:focus{
+						background-color: #fff;
+						color: $grey;
+					}
+				}
+			}
+		}
+	}
+
 	.notice {
 		margin: $padding;
 	}

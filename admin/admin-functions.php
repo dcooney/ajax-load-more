@@ -1,17 +1,21 @@
 <?php
+/**
+ * ALM admin helpers.
+ *
+ * @package  AjaxLoadMore
+ * @since    2.0.0
+ */
 
-/*
-*  alm_is_admin_screen
-*  Determine whether user is on an ALM admin screen
-*
-*  @return boolean
-*  @since 2.12.0
-*/
-
-function alm_is_admin_screen(){
+/**
+ * Determine whether user is on an ALM admin screen.
+ *
+ * @return boolean
+ * @since 2.12.0
+ */
+function alm_is_admin_screen() {
 	$return = false;
 	$screen = get_current_screen();
-	if($screen->parent_base === 'ajax-load-more'){
+	if ( $screen->parent_base === 'ajax-load-more' ) {
 		$return = true;
 	}
 	return $return;
@@ -36,7 +40,7 @@ function alm_has_addon_shortcodes() {
 		'alm_prev_post_installed',
 		'alm_seo_installed',
 		'alm_single_post_installed',
-		'alm_users_installed'
+		'alm_users_installed',
 	);
 
 	// Loop actions to determine if add-on/extension is installed.
@@ -64,7 +68,7 @@ function alm_has_extension_shortcodes() {
 	$actions   = array(
 		'alm_acf_installed',
 		'alm_rest_api_installed',
-		'alm_terms_installed'
+		'alm_terms_installed',
 	);
 
 	// Loop actions to determine if add-on/extension is installed.
@@ -81,23 +85,18 @@ function alm_has_extension_shortcodes() {
 	}
 }
 
-
-
-
-/*
-*  alm_has_addon
-*  Does user have add-ons installed and activated
-*  License Page
-*
-*  @return boolean
-*  @since 2.13.0
-*  @depreacted 3.3.0
-*/
-
-function alm_has_addon(){
-	if(has_action('alm_cta_installed') || has_action('alm_comments_installed') || has_action('alm_unlimited_installed') || has_action('alm_layouts_installed') || has_action('alm_nextpage_installed') || has_action('alm_preload_installed') || has_action('alm_paging_installed') || has_action('alm_prev_post_installed') || has_action('alm_single_post_installed') || has_action('alm_rest_api_installed') || has_action('alm_seo_installed') || has_action('alm_tabs_installed') || has_action('alm_theme_repeaters_installed') || has_action('alm_users_installed')) {
-   	return true;
+/**
+ * Check if any add-on installed and activated.
+ * Note: Used on the license screen.
+ *
+ * @return boolean
+ * @since 2.13.0
+ * @depreacted 3.3.0
+ */
+function alm_has_addon() {
+	if ( has_action( 'alm_cta_installed' ) || has_action( 'alm_comments_installed' ) || has_action( 'alm_unlimited_installed' ) || has_action( 'alm_layouts_installed' ) || has_action( 'alm_nextpage_installed' ) || has_action( 'alm_preload_installed' ) || has_action( 'alm_paging_installed' ) || has_action( 'alm_prev_post_installed' ) || has_action( 'alm_single_post_installed' ) || has_action( 'alm_rest_api_installed' ) || has_action( 'alm_seo_installed' ) || has_action( 'alm_tabs_installed' ) || has_action( 'alm_theme_repeaters_installed' ) || has_action( 'alm_users_installed' ) ) {
+		return true;
 	} else {
-   	return false;
+		return false;
 	}
 }

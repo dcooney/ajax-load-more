@@ -47,6 +47,7 @@
 					require_once('components/cta.php');
 					require_once('components/comments.php');
 					require_once('components/filters.php');
+					require_once('components/layouts.php');
 					require_once('components/nextpage.php');
 					require_once('components/paging.php');
 					require_once('components/preloaded.php');
@@ -842,10 +843,14 @@
 										<ul class="alm-post-type-list">
 										<?php
 										foreach( $types as $type ){
-										$typeobj = get_post_type_object( $type );
-										$name = $typeobj->name;
-										if( $name != 'revision' && $name != 'nav_menu_item' && $name != 'acf'){
-												echo '<li><input class="alm_element" type="checkbox" name="chk-'.$typeobj->name.'" id="chk-'.$typeobj->name.'" data-type="'.$typeobj->name.'"><label for="chk-'.$typeobj->name.'">'.$typeobj->labels->singular_name.'</label></li>';
+											$typeobj = get_post_type_object( $type );
+											$name = $typeobj->name;
+											if ( $name !== 'revision' && $name !== 'nav_menu_item' && $name !== 'acf' ) {
+												echo '<li><input class="alm_element" type="checkbox" name="chk-'.$typeobj->name.'" id="chk-'.$typeobj->name.'" data-type="'.$typeobj->name.'">';
+												echo '<label for="chk-'.$typeobj->name.'">';
+												echo $typeobj->labels->singular_name;
+												echo '</label>';
+												echo '</li>';
 											}
 										}
 										?>

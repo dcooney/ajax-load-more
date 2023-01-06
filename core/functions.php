@@ -1,4 +1,14 @@
 <?php
+/**
+ * ALM functions and core helpers.
+ *
+ * @package  AjaxLoadMore
+ * @since    2.0.0
+ */
+
+/**
+ * Include these files.
+ */
 require_once ALM_PATH . 'core/functions/addons.php';
 require_once ALM_PATH . 'core/functions/masonry.php';
 require_once ALM_PATH . 'core/functions/deprecated.php';
@@ -6,18 +16,19 @@ require_once ALM_PATH . 'core/functions/deprecated.php';
 /**
  * If progress bar, add the CSS styles for the bar.
  *
- * @param $counter              int
- * @param $progress_bar         string
- * @param $progress_bar_color   string
+ * @param int    $counter  The current ALM instance count.
+ * @param string $progress Is progress bar enabled.
+ * @param string $color    The progress bar color.
+ * @return string          Style tag as raw HTML.
  * @since 3.1.0
  */
-function alm_progress_css( $counter, $progress_bar, $progress_bar_color ) {
-	if ( $counter == 1 && $progress_bar === 'true' ) {
+function alm_progress_css( $counter, $progress, $color ) {
+	if ( $counter === 1 && $progress === 'true' ) {
 		$style = '
 <style>
 .pace { -webkit-pointer-events: none; pointer-events: none; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
 .pace-inactive { display: none; }
-.pace .pace-progress { background: #' . $progress_bar_color . '; position: fixed; z-index: 2000; top: 0; right: 100%; width: 100%; height: 5px; -webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
+.pace .pace-progress { background: #' . $color . '; position: fixed; z-index: 2000; top: 0; right: 100%; width: 100%; height: 5px; -webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
 </style>';
 		return $style;
 	}
@@ -27,8 +38,8 @@ add_filter( 'alm_progress_css', 'alm_progress_css', 10, 3 );
 /**
  * Is ALM CSS disabled.
  *
- * @param $setting name of the setting field
- * @return boolean
+ * @param  string $setting The name of the setting field.
+ * @return boolean         Is it enabed or disabled.
  * @since 3.3.1
  */
 function alm_css_disabled( $setting ) {
@@ -43,14 +54,13 @@ function alm_css_disabled( $setting ) {
 /**
  * Load ALM CSS inline.
  *
- * @param $setting name of the setting field
- * @return boolean
+ * @param string $setting The name of the setting field.
+ * @return boolean         Is it inline or in a file.
  * @since 3.3.1
  */
 function alm_do_inline_css( $setting ) {
-
-	// Exit if this is a REST API request.
 	if ( defined( 'REST_REQUEST' ) ) {
+		// Exit if this is a REST API request.
 		if ( REST_REQUEST ) {
 			return false;
 		}
@@ -75,22 +85,21 @@ function alm_do_inline_css( $setting ) {
  * @param string  $alm_item        Current item in loop.
  * @param string  $alm_current     Current item in page.
  * @param array   $args            The ALM Args.
- * @param boolean $ob              Should the returned HTML be wrapped in ob_start PHP.
- * @return $html
+ * @param boolean $ob              Should the loop return as an output buffer.
+ * @return string
  * @since 3.7
  */
 function alm_loop( $repeater, $type, $theme_repeater, $alm_found_posts = '', $alm_page = '', $alm_item = '', $alm_current = '', $args = [], $ob = true ) {
-
 	if ( $ob ) { // If Output Buffer is true.
 		ob_start();
 	}
 
-	// Theme Repeaters.
 	if ( $theme_repeater !== 'null' && has_filter( 'alm_get_theme_repeater' ) ) {
+		// Theme Repeaters.
 		do_action( 'alm_get_theme_repeater', $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, $args );
-	}
-	// Standard Repeater Templates.
-	else {
+
+	} else {
+		// Standard Repeater Template.
 		$file = alm_get_current_repeater( $repeater, $type );
 		include $file;
 	}
@@ -185,7 +194,7 @@ function alm_get_default_repeater() {
 
 	// @since 2.0.
 	// @updated 3.5.
-	if ( $file == null ) {
+	if ( $file === null ) {
 		$file = AjaxLoadMore::alm_get_repeater_path() . '/default.php';
 	}
 
@@ -204,7 +213,8 @@ function alm_get_post_format( $post_format ) {
 		$format = "post-format-$post_format";
 		// If query is for standard then we need to filter by NOT IN.
 		if ( 'post-format-standard' === $format ) {
-			if ( ( $post_formats = get_theme_support( 'post-formats' ) ) && is_array( $post_formats[0] ) && count( $post_formats[0] ) ) {
+			$post_formats = get_theme_support( 'post-formats' );
+			if ( $post_formats && is_array( $post_formats[0] ) && count( $post_formats[0] ) ) {
 				$terms = array();
 				foreach ( $post_formats[0] as $format ) {
 					$terms[] = 'post-format-' . $format;
@@ -230,17 +240,20 @@ function alm_get_post_format( $post_format ) {
 /**
  * Query for custom taxonomy.
  *
+ * @param  string $taxonomy The taxonomy slug.
+ * @param  string $terms    The taxonomy terms.
+ * @param  string $operator The taxonomy operator.
+ * @return array            The taxonomy query array.
  * @since 2.8.5
- * @return array
  */
-function alm_get_taxonomy_query( $taxonomy, $taxonomy_terms, $taxonomy_operator ) {
-	if ( ! empty( $taxonomy ) && ! empty( $taxonomy_terms ) ) {
-		$taxonomy_term_values = alm_parse_tax_terms( $taxonomy_terms );
-		$return               = array(
+function alm_get_taxonomy_query( $taxonomy, $terms, $operator ) {
+	if ( ! empty( $taxonomy ) && ! empty( $terms ) ) {
+		$values = alm_parse_tax_terms( $terms );
+		$return = array(
 			'taxonomy' => $taxonomy,
 			'field'    => 'slug',
-			'terms'    => $taxonomy_term_values,
-			'operator' => $taxonomy_operator,
+			'terms'    => $values,
+			'operator' => $operator,
 		);
 		return $return;
 	}
@@ -373,11 +386,11 @@ function alm_get_canonical_url() {
 		}
 	} elseif ( is_front_page() ) {
 		// Frontpage.
-		if ( function_exists( 'pll_home_url' ) ) { // Polylang support
+		if ( function_exists( 'pll_home_url' ) ) { // Polylang support.
 			$canonical_url = pll_home_url();
 		} else {
 			$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
-			// e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false');
+			// e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false').
 		}
 	} elseif ( is_home() ) {
 		// Home (Blog Default).
@@ -585,15 +598,19 @@ function alm_pretty_print( $query ) {
 		print_r( $query ); // phpcs:ignore
 		echo '</pre>';
 	}
-
 }
+
 /**
  * Shorter debug helper for printing variables to screen.
  *
- * @since 5.5.1
  * @param object $query The current WP_Query.
+ * @param string $title Optional display title.
+ * @since 5.5.1
  */
-function alm_print( $query ) {
+function alm_print( $query = '', $title = '' ) {
+	if ( $title ) {
+		echo esc_html( $title );
+	}
 	alm_pretty_print( $query );
 }
 

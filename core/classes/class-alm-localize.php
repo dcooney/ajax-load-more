@@ -6,54 +6,55 @@
  * @since    3.7
  */
 
-// @codingStandardsIgnoreStart
-
-if (!defined( 'ABSPATH')){
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if(!class_exists('ALM_LOCALIZE')):
+if ( ! class_exists( 'ALM_LOCALIZE' ) ) :
 
-   class ALM_LOCALIZE {
-
-	   static $vars = array();
+	/**
+	 * Initiate the class.
+	 */
+	class ALM_LOCALIZE {
 
 		/**
-		 *  add_localized_var
-		 *  Create <script> variables for use with Preloaded addon
+		 * Variable array.
 		 *
-		 *  @param $key   string
-		 *  @param $value string
-		 *  @return $array
-		 *  @return $position string (meta, param) This allows for nesting of params.
-		 *  @since 3.7
+		 * @var $vars
 		 */
-		public static function add_localized_var($key = '', $value = '', $id = 'ajax-load-more', $position = ''){
+		public static $vars = [];
 
+		/**
+		 * Create <script> variables for use with Preloaded addon.
+		 *
+		 * @param string $key   The array key.
+		 * @param string $value The value.
+		 * @param string $id The ALM id.
+		 * @param string $position Array key for nesting of params.
+		 * @since 3.7
+		 */
+		public static function add_localized_var( $key = '', $value = '', $id = 'ajax-load-more', $position = '' ) {
 			if ( $position ) {
-				self::$vars[$id][$position][$key] = $value; // Add key & val
+				// Add key & value.
+				self::$vars[ $id ][ $position ][ $key ] = $value;
 			} else {
-				self::$vars[$id][$key] = $value; // Add key & val
+				// Add key & value.
+				self::$vars[ $id ][ $key ] = $value;
 			}
 		}
 
 		/**
-		 *  create_script_vars
-		 *  Create <script> variables for use with Preloaded addon
+		 *  Create <script> variables for use with Preloaded addon.
 		 *
-		 *  @param $id   string
-		 *  @param $vars array
+		 *  @param string $id The ALM ID.
 		 *  @since 3.7
 		 */
-		public static function create_script_vars($id){
-			if ( ! empty( self::$vars ) && isset( self::$vars[$id] ) && is_array( self::$vars[$id] ) ) {
-
+		public static function create_script_vars( $id ) {
+			if ( ! empty( self::$vars ) && isset( self::$vars[ $id ] ) && is_array( self::$vars[ $id ] ) ) {
 				// Render wp_localize_script vars with 'ajax-load-more' script handle.
-				wp_localize_script( 'ajax-load-more', alm_convert_dashes_to_underscore($id) .'_vars', self::$vars[$id] );
-
+				wp_localize_script( 'ajax-load-more', alm_convert_dashes_to_underscore( $id ) . '_vars', self::$vars[ $id ] );
 			}
 		}
 
-   }
-
+	}
 endif;

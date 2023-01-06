@@ -2,37 +2,36 @@
 /**
  * Generate args that pass into the ALM WP_Query.
  *
- * @package  ajaxloadmore
+ * @package  AjaxLoadMore
  * @since    3.7
  */
-
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
 if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
-
 	/**
-	 * Ajax Load More Query Args class.
+	 * Initiate the class.
 	 */
 	class ALM_QUERY_ARGS {
 
 		/**
 		 * This function will return a generated $args array.
 		 *
-		 * @param Array   $a The query param array.
+		 * @param array   $a The query param array.
 		 * @param Boolean $is_ajax Is this an ajax request or server side.
-		 * @return Array Query constructed arags.
+		 * @return array Query constructed arags.
 		 */
-
 		public static function alm_build_queryargs( $a, $is_ajax = true ) {
-
 			// ID.
 			$id = isset( $a['id'] ) ? $a['id'] : '';
 
 			// Post ID.
 			$post_id = isset( $a['post_id'] ) ? $a['post_id'] : '';
+
+			// Filters.
+			$facets = isset( $a['facets'] ) && $a['facets'] ? true : false;
 
 			// Posts Per Page.
 			$posts_per_page = isset( $a['posts_per_page'] ) ? $a['posts_per_page'] : 5;
@@ -67,9 +66,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			}
 
 			$taxonomy_relation = isset( $a['taxonomy_relation'] ) ? $a['taxonomy_relation'] : 'AND';
-			if ( empty( $taxonomy_relation ) ) {
-				$taxonomy_relation = 'AND';
-			}
+			$taxonomy_relation = empty( $taxonomy_relation ) || $facets ? 'AND' : $taxonomy_relation;
 
 			// Date.
 			$year  = isset( $a['year'] ) ? $a['year'] : '';
@@ -87,19 +84,19 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$meta_type = empty( $meta_type ) ? 'CHAR' : $meta_type;
 
 			$meta_relation = isset( $a['meta_relation'] ) ? $a['meta_relation'] : '';
-			$meta_relation = empty( $meta_relation ) ? 'AND' : $meta_relation;
+			$meta_relation = empty( $meta_relation ) || $facets ? 'AND' : $meta_relation;
 
 			// Search.
-			$s = ( isset( $a['search'] ) ) ? $a['search'] : '';
+			$s = isset( $a['search'] ) ? $a['search'] : '';
 
 			// Custom Args.
-			$custom_args = ( isset( $a['custom_args'] ) ) ? $a['custom_args'] : '';
+			$custom_args = isset( $a['custom_args'] ) ? $a['custom_args'] : '';
 
 			// Custom Args.
-			$vars = ( isset( $a['vars'] ) ) ? $a['vars'] : '';
+			$vars = isset( $a['vars'] ) ? $a['vars'] : '';
 
 			// Author.
-			$author_id = ( isset( $a['author'] ) ) ? $a['author'] : '';
+			$author_id = isset( $a['author'] ) ? $a['author'] : '';
 
 			// Ordering.
 			$order   = isset( $a['order'] ) ? $a['order'] : 'DESC';
@@ -117,18 +114,18 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$exclude      = isset( $a['exclude'] ) ? $a['exclude'] : '';
 
 			// Offset.
-			$offset = ( isset( $a['offset'] ) ) ? $a['offset'] : 0;
+			$offset = isset( $a['offset'] ) ? $a['offset'] : 0;
 
 			// Post Status.
-			$post_status = ( isset( $a['post_status'] ) ) ? $a['post_status'] : 'publish';
+			$post_status = isset( $a['post_status'] ) ? $a['post_status'] : 'publish';
 			$post_status = empty( $post_status ) ? 'publish' : $post_status;
 			if ( $post_status !== 'publish' && $post_status !== 'inherit' ) {
 				// If not 'publish', confirm user has rights to view these posts.
 				if ( current_user_can( 'edit_theme_options' ) ) {
 					$post_status = $post_status;
 				} else {
-					$post_status = apply_filters('alm_allow_future_posts', false ) ? $post_status : 'publish';
-					// e.g. add_filter('alm_allow_future_posts', '__return_true');
+					$post_status = apply_filters( 'alm_allow_future_posts', false ) ? $post_status : 'publish';
+					// e.g. add_filter('alm_allow_future_posts', '__return_true').
 				}
 			}
 
@@ -137,25 +134,25 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			if ( $is_ajax ) {
 				$acf = ( isset( $a['acf'] ) ) ? true : false;
 				if ( $acf ) {
-					$acf_post_id           = ( isset( $a['acf']['post_id'] ) ) ? $a['acf']['post_id'] : ''; // Post ID
-					$acf_field_type        = ( isset( $a['acf']['field_type'] ) ) ? $a['acf']['field_type'] : ''; // Field Type
-					$acf_field_name        = ( isset( $a['acf']['field_name'] ) ) ? $a['acf']['field_name'] : ''; // Field Name
-					$acf_parent_field_name = ( isset( $a['acf']['parent_field_name'] ) ) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name
+					$acf_post_id           = ( isset( $a['acf']['post_id'] ) ) ? $a['acf']['post_id'] : ''; // Post ID.
+					$acf_field_type        = ( isset( $a['acf']['field_type'] ) ) ? $a['acf']['field_type'] : ''; // Field Type.
+					$acf_field_name        = ( isset( $a['acf']['field_name'] ) ) ? $a['acf']['field_name'] : ''; // Field Name.
+					$acf_parent_field_name = ( isset( $a['acf']['parent_field_name'] ) ) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name.
 				}
 			} else {
-					  // If Preloaded, $a needs to access acf data differently.
+				// If Preloaded, $a needs to access acf data differently.
 				if ( isset( $a['acf'] ) ) {
 					if ( $a['acf'] === 'true' ) {
-						$acf_post_id           = ( isset( $a['acf_post_id'] ) ) ? $a['acf_post_id'] : ''; // Post ID
-						$acf_field_type        = ( isset( $a['acf_field_type'] ) ) ? $a['acf_field_type'] : ''; // Field Type
-						$acf_field_name        = ( isset( $a['acf_field_name'] ) ) ? $a['acf_field_name'] : ''; // Field Name
-						$acf_parent_field_name = ( isset( $a['acf_parent_field_name'] ) ) ? $a['acf_parent_field_name'] : ''; // Parent Field Name
+						$acf_post_id           = ( isset( $a['acf_post_id'] ) ) ? $a['acf_post_id'] : ''; // Post ID.
+						$acf_field_type        = ( isset( $a['acf_field_type'] ) ) ? $a['acf_field_type'] : ''; // Field Type.
+						$acf_field_name        = ( isset( $a['acf_field_name'] ) ) ? $a['acf_field_name'] : ''; // Field Name.
+						$acf_parent_field_name = ( isset( $a['acf_parent_field_name'] ) ) ? $a['acf_parent_field_name'] : ''; // Parent Field Name.
 					}
 				}
 			}
 
 			// Create $args array.
-			$args = array(
+			$args = [
 				'post_type'           => $post_type,
 				'posts_per_page'      => $posts_per_page,
 				'offset'              => $offset,
@@ -163,36 +160,36 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				'orderby'             => $orderby,
 				'post_status'         => $post_status,
 				'ignore_sticky_posts' => true,
-			);
+			];
 
 			// Post Format & Taxonomy.
 			// Both use tax_query, so we need to combine these queries.
 			if ( ! empty( $post_format ) || ! empty( $taxonomy ) ) {
 
-				$tax_query_total   = count( explode( ':', $taxonomy ) ); // Total $taxonomy objects
-				$taxonomy          = explode( ':', $taxonomy ); // convert to array
-				$taxonomy_terms    = explode( ':', $taxonomy_terms ); // convert to array
-				$taxonomy_operator = explode( ':', $taxonomy_operator ); // convert to array
+				$tax_query_total   = count( explode( ':', $taxonomy ) ); // Total $taxonomy objects.
+				$taxonomy          = explode( ':', $taxonomy ); // convert to array.
+				$taxonomy_terms    = explode( ':', $taxonomy_terms ); // convert to array.
+				$taxonomy_operator = explode( ':', $taxonomy_operator ); // convert to array.
 
 				if ( empty( $taxonomy ) ) {
 
 					// Post Format only.
-					$args['tax_query'] = array(
+					$args['tax_query'] = [
 						alm_get_post_format( $post_format ),
-					);
+					];
 
 				} else {
 
 					// Post Format.
 					if ( ! empty( $post_format ) ) {
-						$args['tax_query'] = array(
+						$args['tax_query'] = [
 							'relation' => $taxonomy_relation,
 							alm_get_post_format( $post_format ),
-						);
+						];
 					} else {
-						$args['tax_query'] = array(
+						$args['tax_query'] = [
 							'relation' => $taxonomy_relation,
-						);
+						];
 					}
 
 					// Loop Taxonomies.
@@ -216,7 +213,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$args['category__not_in'] = $exclude_cats;
 			}
 
-			// Tag
+			// Tag.
 			if ( ! empty( $tag ) ) {
 				$args['tag'] = $tag;
 			}
@@ -270,7 +267,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 			// Meta_key, used for ordering by meta value.
 			if ( ! empty( $meta_key ) ) {
-				if ( strpos( $orderby, 'meta_value' ) !== false ) { // Only order by meta_key, if $orderby is set to meta_value{_num}
+				if ( strpos( $orderby, 'meta_value' ) !== false ) { // Only order by meta_key, if $orderby is set to meta_value{_num}.
 					$meta_key_single  = explode( ':', $meta_key );
 					$args['meta_key'] = $meta_key_single[0];
 				}
@@ -307,7 +304,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$post__not_in         = explode( ',', $post__not_in );
 				$args['post__not_in'] = $post__not_in;
 			}
-			if ( ! empty( $exclude ) ) { // Deprecate this soon - 2.8.5 */
+			if ( ! empty( $exclude ) ) { // Deprecate this soon.
 				$exclude              = explode( ',', $exclude );
 				$args['post__not_in'] = $exclude;
 			}
@@ -392,18 +389,18 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 							$acf_post_ids = alm_acf_loop_relationship_rows( $acf_parent_field_name, $acf_field_name, $acf_post_id );
 						}
 					}
-					$args['post__in'] = ( $acf_post_ids ) ? $acf_post_ids : array( 0 );
+					$args['post__in'] = ( $acf_post_ids ) ? $acf_post_ids : [ 0 ];
 				}
 			}
 
 			/**
-			 * Custom `alm_id` query parameter in the WP_Query
-			 * This allows pre_get_posts to parse based on ALM ID
+			 * Custom `alm_id` query parameter in the WP_Query.
+			 * Note: This allows `pre_get_posts` to parse based on ALM ID.
 			 */
 			$args['alm_id'] = $id;
 
+			// Return the arguments.
 			return $args;
-
 		}
 
 		/**
@@ -439,22 +436,20 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 		/**
 		 * Parse `custom_args` string parameter into array.
 		 *
-		 * @param object $args The current $args array.
-		 * @param string $argument The parameter to parse.
+		 * @param  array  $args  The current argument array.
+		 * @param  string $param The parameter to parse.
+		 * @return array         The modified arguments.
 		 */
 		public static function parse_custom_args( $args, $param ) {
-
-			// Split the $param at `;`.
-			$array = explode( ';', $param );
+			$array = explode( ';', $param ); // Split the $param at `;`.
 
 			// Loop each $argument.
 			foreach ( $array as $arg ) {
-
-				$arg          = preg_replace( '/\s+/', '', $arg ); // Remove all whitespace.
-				$arg          = explode( ':', $arg );  // Split at `:`.
-				$argument_arr = explode( ',', $arg[1] );  // explode $argument[1] at `,`.
-				if ( sizeof( $argument_arr ) > 1 ) {
-					$args[ $arg[0] ] = $argument_arr;
+				$arg     = preg_replace( '/\s+/', '', $arg ); // Remove all whitespace.
+				$arg     = explode( ':', $arg );  // Split at each colon.
+				$arg_arr = explode( ',', $arg[1] );  // Split at each comma.
+				if ( count( $arg_arr ) > 1 ) {
+					$args[ $arg[0] ] = $arg_arr;
 				} else {
 					$args[ $arg[0] ] = $arg[1];
 				}

@@ -31,7 +31,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	#wpcontent {
 		padding-left: 0;
 		padding-bottom: 20px;
-		//background-color: #efefef;
+		//background-color: $light_border;
 	}
 	#wpbody-content {
 		padding-bottom: 0;
@@ -49,7 +49,7 @@ body.ajax-load-more_page_ajax-load-more-filters,
 body.ajax-load-more_page_ajax-load-more-pro,
 body.ajax-load-more_page_ajax-load-more-go-pro,
 body.ajax-load-more_page_ajax-load-more-woocommerce {
-	//background: #efefef;
+	//background: $light_border;
 	#wpfooter {
 		padding-top: 0;
 		padding-bottom: 0;
@@ -69,7 +69,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	margin: 0 !important;
 }
 .ajax-load-more-inner-wrapper {
-	padding: $padding $padding $padding * 3;
+	padding: $padding_lg $padding $padding * 3;
 	display: block;
 	clear: both;
 	max-width: 1440px;
@@ -462,7 +462,7 @@ a.button-small {
 }
 .ajax-load-more .border-top {
 	display: block;
-	border-top: 1px solid #efefef;
+	border-top: 1px solid $light_border;
 	width: 100%;
 	clear: both;
 	padding: 15px 0 0 !important;
@@ -722,8 +722,6 @@ a.button-small {
 	border-radius: 0;
 }
 
-.checkboxes {
-}
 .checkboxes input,
 .radio input {
 	margin-top: 2px;
@@ -791,13 +789,6 @@ a.button-small {
 .ajax-load-more :-ms-input-placeholder {
 	color: $grey_text;
 	font-style: italic;
-}
-
-.ajax-load-more input[type='text'],
-.ajax-load-more input[type='number'],
-.ajax-load-more input[type='email'],
-.ajax-load-more textarea {
-	//background: $light_grey;
 }
 .ajax-load-more .repeaters input[type='text'] {
 	padding: 9px 10px;
@@ -894,7 +885,7 @@ a.button-small {
 
 .ajax-load-more .row {
 	padding: 0 !important;
-	margin: $padding/2 0 0;
+	margin: 10px 0 0;
 	height: auto;
 	width: 100%;
 	display: block;
@@ -987,7 +978,7 @@ a.button-small {
 .ajax-load-more .expand-wrap hr {
 	border: 0;
 	height: 0;
-	border-top: 1px solid #efefef;
+	border-top: 1px solid $light_border;
 	border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 hr.indented {
@@ -1056,7 +1047,7 @@ hr.indented {
 	padding: 0 4px;
 	border-radius: 2px;
 	background: $light_grey;
-	border: 1px solid #efefef;
+	border: 1px solid $light_border;
 	color: #666;
 }
 .ajax-load-more .section-title h4 {
@@ -1239,7 +1230,7 @@ hr.indented {
 	filter: alpha(opacity=90);
 	cursor: default;
 	border: 1px solid #ccc;
-	background: #efefef;
+	background: $light_border;
 	color: #666;
 	text-shadow: 1px 1px 0 #fff;
 	resize: none;
@@ -1320,7 +1311,7 @@ hr.indented {
 	.form-table th {
 		font-weight: 600;
 		background-color: $light_grey;
-		border-right: 1px solid $border;
+		border-right: 1px solid $light_border;
 		width: 25%;
 	}
 	.form-table p {
@@ -1333,7 +1324,6 @@ hr.indented {
 		overflow: hidden;
 		color: $grey_text;
 	}
-
 	.nextpage-option {
 		display: block;
 		padding: 10px;
@@ -1396,7 +1386,7 @@ hr.indented {
 .ajax-load-more h3.add-on-title {
 	padding: 0 0 10px;
 	margin: 0 0 20px;
-	border-bottom: 1px solid #efefef;
+	border-bottom: 1px solid $light_border;
 }
 .ajax-load-more h3 {
 	margin-bottom: 10px;
@@ -1523,7 +1513,7 @@ table.highlight {
 	border: 1px solid $border;
 	background-color: #fff;
 	border-radius: $radius;
-	padding: $gutter;
+	padding: $padding;
 	position: relative;
 	.toggle-all {
 		right: -1px;
@@ -1544,10 +1534,10 @@ table.highlight {
 	margin-top: 0;
 }
 .form-table tr {
-	border-top: 1px solid $border;
+	border-top: 1px solid $light_border;
 }
 .form-table {
-	border: 1px solid $border;
+	border: 1px solid $light_border;
 	margin: 0 0 20px;
 	br {
 		height: 1px;
@@ -1878,7 +1868,7 @@ a.cnkt-button.installed,
 span.cnkt-button.installed,
 .group span.cnkt-button.installed {
 	background: $light_grey !important;
-	border-color: #efefef !important;
+	border-color: $light_border !important;
 	color: #888 !important;
 	box-shadow: none !important;
 }
@@ -1900,171 +1890,190 @@ span.cnkt-button.installed i,
 	overflow: hidden;
 	margin: 0;
 	display: block;
-	padding: 20px 0 0;
+	padding: $padding_sm 0 0;
 	position: relative;
-}
+	&:first-of-type {
+		padding: 10px 0 0;
+	}
+	.license-title {
+		border-radius: 3px 3px 0 0;
+		padding: $padding_sm;
+		border: 1px solid $border;
+		background-color: $light_grey;
+		position: relative;
+		display: flex;
+		align-items: center;
+		width: 100%;
+		.status {
+			width: 10px;
+			height: 10px;
+			border-radius: 100%;
+			background: #d45656;
+			box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+			margin-right: 8px;
+			&.valid {
+				background-color: $green;
+			}
+		}
+		h3 {
+			margin: 0;
+			padding: 0;
+			font-size: 15px;
+			font-weight: 600;
+			line-height: 1;
+		}
+		.fa.tooltip{
+			top: 0;
+			margin-left: auto;
+		}
+	}
+	p,
+	label {
+		font-size: 400;
+		font-size: 14px;
+	}
+	.cnkt-button {
+		position: absolute;
+		top: 9px;
+		right: 15px;
+		padding: 5px 7px !important;
+	}
+	a.cnkt-button.installed {
+		background-color: none !important;
+		box-shadow: none !important;
+		border-color: transparent !important;
+	}
+	.no-license {
+		display: block;
+		padding: 12px;
+		margin: 0 0 $padding_sm;
+		border: 1px solid #e7e7c6;
+		background-color: #ffffe5;
+		border-radius: 2px;
+		h4 {
+			margin: 0 0 3px;
+		}
+		p {
+			margin: 5px 0 0;
+			padding: 0;
+		}
+	}
 
-.license:first-of-type {
-	padding: 10px 0 0;
-}
-.license-title {
-	border-radius: 3px 3px 0 0;
-	border: 1px solid $border;
-	background-color: $light_grey;
-	position: relative;
-}
-.license-title .status {
-	width: 13px;
-	height: 13px;
-	border-radius: 100%;
-	background: #d45656;
-	position: absolute;
-	left: 15px;
-	top: 50%;
-	margin-top: -7px;
-	box-shadow: inset 0 -6px 6px rgba(0, 0, 0, 0.05), 0 1px 0 #fff;
-}
-.license-title .status.valid {
-	background-color: $green;
-}
-.license h2 {
-	margin: 0;
-	padding: 15px 15px 15px 38px;
-	font-size: 16px;
-	font-weight: 700;
-	line-height: 1.2;
-}
-.license p,
-.license label {
-	font-size: 400;
-	font-size: 14px;
-}
-.license .cnkt-button {
-	position: absolute;
-	top: 9px;
-	right: 15px;
-	padding: 5px 7px !important;
-}
-.license a.cnkt-button.installed {
-	background-color: none !important;
-	box-shadow: none !important;
-	border-color: transparent !important;
-}
+	.loading {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(255, 255, 255, 0.6) url('../../img/loader.gif') no-repeat center center;
+		z-index: 9;
+		display: none;
+	}
+	.license-btn.hide,
+	.renew-btn.hide {
+		display: none;
+	}
+	.license-btn-wrap {
+		display: flex;
+		width: 100%;
+		align-items: center;
+		gap: 6px;
+		.msg {
+			display: block;
+			padding: 15px 0 0;
+			font-size: 14px;
+			line-height: 24px;
+			position: relative;
+			top: 4px;
+			strong {
+				display: block;
+			}
+			em {
+				opacity: 0.7;
+				font-style: normal;
+			}
+		}
+	}
 
-.license .no-license {
-	display: block;
-	padding: 12px;
-	margin: 0 0 20px;
-	border: 1px solid #e7e7c6;
-	background-color: #ffffe5;
-	border-radius: 2px;
-}
-.license .no-license h4 {
-	margin: 0 0 3px;
-}
-.license .no-license p {
-	margin: 5px 0 0;
-	padding: 0;
-}
+	.license-wrap,
+	.license-no-addons {
+		overflow: hidden;
+		display: block;
+		padding: 18px 15px;
+		border: 1px solid $border;
+		border-top: none;
+		background-color: #fff;
+		border-radius: 0 0 3px 3px;
+	}
+	.license-wrap{
+		label {
+			font-weight: 600;
+			top: -3px;
+		}
+		input[type='text'],
+		input[type='password'] {
+			margin: 0;
+			width: 100% !important;
+			padding: $padding_sm;
+			min-height: 0;
+			border-color: $border;
+			line-height: 1;
+			&[disabled]{
+				color: #ccc;
+				cursor: not-allowed;
+			}
+			&:focus{
+				border-color: $border_hover;
+			}
+		}
+		.button-primary {
+			margin-right: 10px;
+		}
+	}
+	.license-key-field {
+		position: relative;
+		display: block;
+		margin: 0 0 $padding_sm;
+	}
+	.license-key-field .status {
+		position: absolute;
+		right: 10px;
+		top: 50%;
+		transform: translateY(-50%);
+		display: inline-block;
+		border-radius: $radius;
+		padding: 6px 10px;
+		line-height: 1.35;
+		color: #fff;
+		cursor: default;
+		font-weight: 500;
+	}
+	.license-key-field .status.active {
+		background-color: $green;
+	}
+	.license-key-field .status.inactive {
+		background-color: #d45656;
+	}
 
-.license .loading {
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-	background: rgba(255, 255, 255, 0.6) url('../../img/loader.gif') no-repeat center center;
-	z-index: 9;
-	display: none;
-}
-.license-btn.hide,
-.renew-btn.hide {
-	display: none;
-}
-.license-btn-wrap {
-	display: block;
-}
-.license-btn-wrap .msg {
-	display: block;
-	padding: 15px 0 0;
-	font-size: 14px;
-	line-height: 24px;
-	position: relative;
-	top: 4px;
-}
-.license-btn-wrap .msg strong {
-	display: block;
-}
-.license-btn-wrap .msg em {
-	opacity: 0.7;
-	font-style: normal;
-}
+	.ajax-load-more .alm-nav {
+		font-size: 600;
+		font-size: 14px;
+		margin: 0 !important;
+		padding: 5px 0 5px;
+	}
+	.ajax-load-more .alm-nav a {
+		display: inline-block;
+	}
 
-.license-wrap,
-.license-no-addons {
-	overflow: hidden;
-	display: block;
-	padding: 18px 15px;
-	border: 1px solid $border;
-	border-top: none;
-	background-color: #fff;
-	border-radius: 0 0 3px 3px;
-}
-.license-wrap label {
-	font-weight: 600;
-	top: -3px;
-}
-.license-wrap input[type='text'] {
-	margin: 0;
-	width: 100% !important;
-	padding: 14px;
-}
-.license-wrap .button-primary {
-	margin-right: 5px;
-}
-.license-key-field {
-	position: relative;
-	display: block;
-	margin: 0 0 20px;
-}
-.license-key-field .status {
-	position: absolute;
-	right: 10px;
-	top: 50%;
-	transform: translateY(-50%);
-	display: inline-block;
-	border-radius: 2px;
-	padding: 6px 12px;
-	line-height: 1.3;
-	color: #fff;
-	border-color: $grey_text;
-	cursor: default;
-}
-.license-key-field .status.active {
-	background-color: $green;
-}
-.license-key-field .status.inactive {
-	background-color: #d45656;
-}
-
-.ajax-load-more .alm-nav {
-	font-size: 600;
-	font-size: 14px;
-	margin: 0 !important;
-	padding: 5px 0 5px;
-}
-.ajax-load-more .alm-nav a {
-	display: inline-block;
-}
-
-.license-no-addons {
-	border: 1px solid #bad0da;
-	border-radius: 3px;
-	background-color: #e0f5ff;
-}
-.license-no-addons p {
-	margin: 0;
-	padding: 0;
+	.license-no-addons {
+		border: 1px solid #bad0da;
+		border-radius: 3px;
+		background-color: #e0f5ff;
+	}
+	.license-no-addons p {
+		margin: 0;
+		padding: 0;
+	}
 }
 
 /*
@@ -2083,7 +2092,7 @@ span.cnkt-button.installed i,
 	.alm-file-location:not(input) {
 		padding-top: 15px;
 		margin-top: 15px;
-		border-top: 1px solid #efefef;
+		border-top: 1px solid $light_border;
 		input {
 			font-size: 11px;
 			font-family: Consolas, monaco, monospace;
@@ -2151,11 +2160,13 @@ span.cnkt-button.installed i,
 	margin-top: 0;
 }
 .ajax-load-more .cnkt-sidebar h3 {
-	padding: 13px $padding_sm;
+	padding: $padding_sm 0;
 	margin: 0;
 	display: block;
-	font-size: 14px;
+	font-size: 15px;
 	text-transform: none;
+	border-bottom: 1px solid $light_border;
+	margin: 0 $padding_sm;
 }
 
 .ajax-load-more .cnkt-sidebar .item {
@@ -2234,7 +2245,7 @@ span.cnkt-button.installed i,
 	text-decoration: none;
 	padding: 10px 0;
 	display: block;
-	border-top: 1px dashed $border;
+	border-top: 1px solid $light_border;
 }
 .ajax-load-more .cnkt-sidebar .cta.resources li:first-of-type a {
 	border: none;
@@ -2370,7 +2381,7 @@ span.cnkt-button.installed i,
 .admin.ajax-load-more .row.unlimited.new {
 	/* New Row */
 	background: url('../../img/loader-unlimited.gif') no-repeat center center;
-	border-color: #efefef !important;
+	border-color: $light_border !important;
 	min-height: 60px;
 	display: none;
 }
@@ -2439,8 +2450,8 @@ span.cnkt-button.installed i,
 			opacity: 0.5;
 			cursor: default;
 			color: #333 !important;
-			background: #efefef !important;
-			border-color: #efefef !important;
+			background: $light_border !important;
+			border-color: $light_border !important;
 			i {
 				color: $grey;
 			}
@@ -2529,7 +2540,7 @@ span.cnkt-button.installed i,
 
 	hr {
 		margin: 32px 0 25px;
-		border-top-color: #efefef;
+		border-top-color: $light_border;
 		border-bottom: none;
 	}
 
@@ -3341,7 +3352,7 @@ span.dismiss a {
 	text-align: center;
 	display: block;
 	background: $light_grey;
-	border: 1px solid #efefef;
+	border: 1px solid $light_border;
 	padding: 15px;
 	margin: -5px 0 20px;
 	border-radius: 2px;
@@ -3722,7 +3733,7 @@ span.dismiss a {
 	display: block;
 	clear: both;
 	margin: 0;
-	padding: 2px $gutter 0;
+	padding: 2px 0 0;
 	overflow: hidden;
 	position: relative;
 	top: 1px;
@@ -3805,7 +3816,7 @@ span.dismiss a {
 @media screen and (max-width: 782px) {
 	.admin.ajax-load-more.settings .form-table th {
 		border: none;
-		border-bottom: 1px solid $border;
+		border-bottom: 1px solid $light_border;
 		width: 100%;
 	}
 	.share-alm .sharing {

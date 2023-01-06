@@ -4,8 +4,8 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.0
-Stable tag: 5.5.4.1
+Tested up to: 6.1
+Stable tag: 5.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,19 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.5.5 - January 5, 2013 =
+* UPDATE: Removed requirement of `transition_container` to be present when using Preloaded.
+* UPDATE: Various updates required for the new 2.0 Layouts add-on release.
+* UPDATE: Removed legacy loading style `circles` and reference from the CSS.
+* NEW: Add new `getTotalPosts` and `getPostsCount` public JS functions that will return data from the localized window variables.
+* NEW: Added Ajax Load More plugin navigation to the header on all admin plugin pages.
+* NEW: Added ability to add add-on licenses via wp-config constants. License activation will still need to be triggered from the License admin screen. `ALM_CACHE_LICENSE_KEY="xxxxxxxxxx"`
+* NEW: Added `alm_mask_license_keys` filter to mask the license keys rendering in the WP admin. `add_filter( 'alm_mask_license_keys', '__return_true' );`
+* UPDATE: Improved security of shortcode output by sanitizing all fields before render.
+* UPDATE: Code cleanup and organization.
+* FIX: Fixed various issue with Filters add-on and JS `<noscript/>` fallback URLs when accessing paged results.
+
 
 = 5.5.4.1 - August 24, 2022 =
 * SECURITY: Patched and improved the data sanitization of some admin level operations.

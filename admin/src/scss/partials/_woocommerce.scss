@@ -8,12 +8,12 @@
 		align-items: center;
 		padding-top: 20px;
 		margin-top: 20px;
-		border-top: 1px solid #efefef; 
+		border-top: 1px solid $light_border;
 		div{
 			flex: 1;
 			padding: 20px 20px 20px 30px;
 			@media screen and (max-width: 600px){
-				padding: 20px 0;	
+				padding: 20px 0;
 			}
 		}
 		.img{
@@ -24,7 +24,7 @@
 				display: none;
 			}
 			img{
-				border: 1px solid #efefef;
+				border: 1px solid $light_border;
 				padding: 2px;
 				border-radius: 4px;
 			}

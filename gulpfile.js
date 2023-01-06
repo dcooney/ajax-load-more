@@ -6,7 +6,7 @@ var gulp = require('gulp'),
 	jshint = require('gulp-jshint'),
 	watch = require('gulp-watch'),
 	notify = require('gulp-notify'),
-	sass = require('gulp-sass'),
+	sass = require('gulp-sass')(require('sass')),
 	cleanCSS = require('gulp-clean-css'),
 	rename = require('gulp-rename'),
 	prefix = require('gulp-autoprefixer');
@@ -19,7 +19,7 @@ const admin_dist = './admin/dist';
 
 // Sass [Core Compile]
 gulp.task('sass', () => {
-	setTimeout(function () {
+	setTimeout(function() {
 		gulp
 			.src('./core/src/scss/*.scss')
 			.pipe(sass())
@@ -55,7 +55,7 @@ gulp.task('admin_scripts', () => {
 
 // Sass [Admin Compile]
 gulp.task('admin_sass', () => {
-	setTimeout(function () {
+	setTimeout(function() {
 		gulp
 			.src('./admin/src/scss/admin.scss')
 			.pipe(sass())
@@ -68,7 +68,7 @@ gulp.task('admin_sass', () => {
 /* Gulp Run Tasks */
 
 // Watch
-gulp.task('watch', function () {
+gulp.task('watch', function() {
 	gulp.watch('core/src/scss/**/*.scss', ['sass']);
 	gulp.watch('admin/src/js/**/*.js', ['admin_lint', 'admin_scripts']);
 	gulp.watch('admin/src/scss/**/*.scss', ['admin_sass']);

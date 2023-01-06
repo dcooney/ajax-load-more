@@ -1,10 +1,10 @@
 var _alm = _alm || {};
 
-jQuery(document).ready(function ($) {
+jQuery(document).ready(function($) {
 	'use strict';
 
 	_alm.options = {
-		speed: 200,
+		speed: 200
 	};
 
 	/*
@@ -17,17 +17,40 @@ jQuery(document).ready(function ($) {
 			type: 'GET',
 			url: alm_admin_localize.restapi.url + alm_admin_localize.restapi.namespace + '/test/',
 			dataType: 'json',
-			success: function (data) {
+			success: function(data) {
 				if (data.success) {
 					console.log('Ajax Load More successfully connected to the WordPress REST API.');
 				}
 			},
-			error: function (xhr, status, error) {
+			error: function(status) {
 				console.log(status);
 				$('.restapi-access').fadeIn();
-			},
+			}
 		});
 	}
+
+	/**
+	 * Build the header admin menu based on the sidebar.
+	 */
+	function createAdminMenu() {
+		let adminmenu = document.querySelector('#adminmenu .toplevel_page_ajax-load-more > ul');
+		if (!adminmenu) {
+			return;
+		}
+
+		let alm_header = document.querySelector('.ajax-load-more header.header-wrap');
+		if (!alm_header) {
+			return;
+		}
+
+		let menu = adminmenu.cloneNode(true);
+		menu.setAttribute('class', '');
+
+		let nav = document.createElement('nav');
+		nav.appendChild(menu);
+		alm_header.appendChild(nav);
+	}
+	createAdminMenu();
 
 	/**
 	 * Tabbed Navigation Elements
@@ -56,10 +79,10 @@ jQuery(document).ready(function ($) {
 					sections[index].focus({ preventScroll: true });
 					$('html, body').animate(
 						{
-							scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45,
+							scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45
 						},
 						350,
-						function () {
+						function() {
 							var section = parseInt(index) + 1;
 							window.location.hash = 'alm-section-' + section;
 						}
@@ -77,8 +100,8 @@ jQuery(document).ready(function ($) {
 		}
 		let tabbedNav = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--nav button');
 		if (tabbedNav) {
-			tabbedNav.forEach(function (item, index) {
-				item.addEventListener('click', function () {
+			tabbedNav.forEach(function(item, index) {
+				item.addEventListener('click', function() {
 					openTabbedItem(this, index, almTabbedWrapper);
 				});
 			});
@@ -110,11 +133,13 @@ jQuery(document).ready(function ($) {
 	 */
 	document.addEventListener(
 		'keydown',
-		function (e) {
+		function(e) {
 			if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.keyCode == 83) {
 				if (e.target.nodeName === 'TEXTAREA' && $(e.target).closest('.repeater-wrap')) {
 					console.log('Saving template...');
-					var btn = $(e.target).closest('.repeater-wrap').find('input.save-repeater');
+					var btn = $(e.target)
+						.closest('.repeater-wrap')
+						.find('input.save-repeater');
 					if (btn) {
 						btn.click();
 					}
@@ -130,7 +155,7 @@ jQuery(document).ready(function ($) {
 	 *  Set focus in code mirror editor
 	 *  @since 5.1
 	 */
-	$('label.trigger-codemirror').on('click', function () {
+	$('label.trigger-codemirror').on('click', function() {
 		var el = $(this);
 		var id = el.data('id');
 		var cm = window['editor_' + id];
@@ -154,7 +179,7 @@ jQuery(document).ready(function ($) {
 		document.body.appendChild(settingsTarget);
 	}
 
-	_alm.saveSettings = function () {
+	_alm.saveSettings = function() {
 		if (savingSettings) return false;
 
 		savingSettings = true;
@@ -164,9 +189,9 @@ jQuery(document).ready(function ($) {
 
 		almSettings.ajaxSubmit({
 			// Success
-			success: function () {
+			success: function() {
 				// Delay for effect
-				setTimeout(function () {
+				setTimeout(function() {
 					settingsTarget.classList.remove('--saving');
 					settingsTarget.classList.add('--saved');
 					settingsTarget.innerHTML = alm_admin_localize.settings_saved;
@@ -174,16 +199,16 @@ jQuery(document).ready(function ($) {
 					//console.log(alm_admin_localize.ajax_load_more +' - '+ alm_admin_localize.settings_saved);
 					savingSettings = false;
 
-					setTimeout(function () {
+					setTimeout(function() {
 						settingsTarget.classList.remove('--saved');
 					}, 2500);
 				}, 500);
 			},
 
 			// Error
-			error: function () {
+			error: function() {
 				// Delay for effect
-				setTimeout(function () {
+				setTimeout(function() {
 					settingsTarget.classList.remove('--saving');
 					settingsTarget.classList.add('--error');
 					settingsTarget.innerHTML = alm_admin_localize.settings_error;
@@ -191,21 +216,21 @@ jQuery(document).ready(function ($) {
 					console.log(alm_admin_localize.ajax_load_more + ' - ' + alm_admin_localize.settings_error);
 					savingSettings = false;
 
-					setTimeout(function () {
+					setTimeout(function() {
 						settingsTarget.classList.remove('--error');
 					}, 2500);
 				}, 500);
-			},
+			}
 		});
 		return false;
 	};
 
 	// On Change, save the settings
 	let settingsTimer;
-	$(document).on('change', '#alm_OptionsForm input, #alm_OptionsForm textarea, #alm_OptionsForm select', function () {
+	$(document).on('change', '#alm_OptionsForm input, #alm_OptionsForm textarea, #alm_OptionsForm select', function() {
 		// Set a timer to avoid updating settings to frequently
 		if (settingsTimer) clearTimeout(settingsTimer);
-		settingsTimer = setTimeout(function () {
+		settingsTimer = setTimeout(function() {
 			_alm.saveSettings();
 		}, 500);
 	});
@@ -216,7 +241,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 3.6
 	 */
-	$('.download-repeater').on('click', function () {
+	$('.download-repeater').on('click', function() {
 		let el = this;
 		el.closest('form').submit();
 	});
@@ -227,12 +252,12 @@ jQuery(document).ready(function ($) {
 	 * @see http://iamceege.github.io/tooltipster/
 	 * @since 2.8.4
 	 */
-	$('.ajax-load-more-inner-wrapper').on('mouseenter', '.tooltip:not(.tooltipstered)', function () {
+	$('.ajax-load-more-inner-wrapper').on('mouseenter', '.tooltip:not(.tooltipstered)', function() {
 		$(this)
 			.tooltipster({
 				delay: 100,
 				speed: 150,
-				maxWidth: 325,
+				maxWidth: 325
 			})
 			.tooltipster('show');
 	});
@@ -243,7 +268,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 2.8.4
 	 */
-	$('select#alm_settings_btn_color').on('change', function () {
+	$('select#alm_settings_btn_color').on('change', function() {
 		var color = jQuery(this).val();
 		// Remove other colors
 		var wrap = $('.ajax-load-more-wrap');
@@ -258,32 +283,43 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	$('select#alm_settings_btn_color').click(function (e) {
+	$('select#alm_settings_btn_color').click(function(e) {
 		e.preventDefault();
 	});
 
-	$('.alm-template-listing li a').click(function (e) {
+	$('.alm-template-listing li a').click(function(e) {
 		e.preventDefault();
 		var el = $(this),
 			val = el.data('path');
-		el.parent().parent().next('.template-selection').val(val);
+		el.parent()
+			.parent()
+			.next('.template-selection')
+			.val(val);
 	});
 
-	$('.alm-template-section-nav li a').click(function (e) {
+	$('.alm-template-section-nav li a').click(function(e) {
 		e.preventDefault();
 		var el = $(this),
 			index = el.parent().index(),
-			parent = el.parent().parent().parent('.repeater-wrap');
+			parent = el
+				.parent()
+				.parent()
+				.parent('.repeater-wrap');
 
 		if (!el.hasClass('active')) {
-			el.parent().addClass('active').siblings().removeClass('active');
+			el.parent()
+				.addClass('active')
+				.siblings()
+				.removeClass('active');
 			$('.alm-template-toggle', parent).hide();
-			$('.alm-template-toggle', parent).eq(index).show();
+			$('.alm-template-toggle', parent)
+				.eq(index)
+				.show();
 		}
 	});
 
 	// Copy to Clipboard
-	$('.copy-to-clipboard').on('click', function () {
+	$('.copy-to-clipboard').on('click', function() {
 		var btn = $(this).get(0);
 		var input = document.querySelector('#shortcode_output');
 
@@ -300,7 +336,7 @@ jQuery(document).ready(function ($) {
 			// Set Text of Button
 			btn.innerHTML = copied_txt;
 
-			setTimeout(function () {
+			setTimeout(function() {
 				btn.innerHTML = old_txt;
 				input.disabled = false;
 				btn.disabled = false;
@@ -308,12 +344,12 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	_alm.copyToClipboard = function (text) {
+	_alm.copyToClipboard = function(text) {
 		window.prompt('Copy link to your clipboard: Press Ctrl + C then hit Enter to copy.', text);
 	};
 
 	// Copy link on repeater templates
-	$('.alm-dropdown .copy a').click(function () {
+	$('.alm-dropdown .copy a').click(function() {
 		var container = $(this).closest('.repeater-wrap'), // find closet wrap
 			el = container.data('name'); // get template name
 
@@ -328,25 +364,25 @@ jQuery(document).ready(function ($) {
 	 *  @since 2.0.0
 	 */
 
-	$(document).on('click', 'h3.heading', function () {
+	$(document).on('click', 'h3.heading', function() {
 		var el = $(this);
 		if ($(el).hasClass('open')) {
 			$(el)
 				.next('.expand-wrap')
-				.slideDown(_alm.options.speed, 'alm_easeInOutQuad', function () {
+				.slideDown(_alm.options.speed, 'alm_easeInOutQuad', function() {
 					$(el).removeClass('open');
 				});
 		} else {
 			$(el)
 				.next('.expand-wrap')
-				.slideUp(_alm.options.speed, 'alm_easeInOutQuad', function () {
+				.slideUp(_alm.options.speed, 'alm_easeInOutQuad', function() {
 					$(el).addClass('open');
 				});
 		}
 	});
 
 	// Toggle Links.
-	$(document).on('click', '.toggle-all', function () {
+	$(document).on('click', '.toggle-all', function() {
 		var el = $(this);
 		if (el.hasClass('closed')) {
 			el.removeClass('closed');
@@ -364,7 +400,7 @@ jQuery(document).ready(function ($) {
 	});
 
 	// Trigger click events on enter/return
-	$('h3.heading, h2.shortcode-title').on('keypress', function (e) {
+	$('h3.heading, h2.shortcode-title').on('keypress', function(e) {
 		var key = e.which;
 		if (key == 13) {
 			// the enter key code
@@ -379,9 +415,8 @@ jQuery(document).ready(function ($) {
 	 * @since 2.8.3
 	 */
 	var almActivating = false;
-	$(document).on('click', '.license-btn', function (e) {
+	$(document).on('click', '.license-btn', function(e) {
 		e.preventDefault();
-
 		if (!almActivating) {
 			$('.license-btn-wrap .msg').remove();
 			almActivating = true;
@@ -414,40 +449,54 @@ jQuery(document).ready(function ($) {
 					url: url,
 					upgrade: upgrade,
 					key: key,
-					license: license,
+					license: license
 				},
 
-				success: function (data) {
+				success: function(data) {
 					if (data.msg) {
 						$('.license-btn-wrap', parent).append('<div class="msg">' + data.msg + '</div>');
 					}
 
 					if (data.license === 'valid') {
-						$('.license-key-field .status', parent).addClass('active').removeClass('inactive').text(alm_admin_localize.active);
-						$('.license-title .status', parent).addClass('valid').removeClass('invalid');
+						$('.license-key-field .status', parent)
+							.addClass('active')
+							.removeClass('inactive')
+							.text(alm_admin_localize.active);
+						$('.license-title .status', parent)
+							.addClass('valid')
+							.removeClass('invalid');
 						$('.activate.license-btn', parent).addClass('hide');
 						$('.check-licence.license-btn', parent).addClass('hide');
 						$('.deactivate.license-btn', parent).removeClass('hide');
 						$('.renew-btn', parent).addClass('hide');
 						$('.no-license', parent).slideUp(200);
 					} else {
-						$('.license-key-field .status', parent).removeClass('active').addClass('inactive').text(alm_admin_localize.inactive);
-						$('.license-title .status', parent).removeClass('valid').addClass('invalid');
+						$('.license-key-field .status', parent)
+							.removeClass('active')
+							.addClass('inactive')
+							.text(alm_admin_localize.inactive);
+						$('.license-title .status', parent)
+							.removeClass('valid')
+							.addClass('invalid');
 						$('.activate.license-btn', parent).removeClass('hide');
 						$('.check-licence.license-btn', parent).addClass('hide');
 						$('.deactivate.license-btn', parent).addClass('hide');
 						$('.no-license', parent).slideDown(200);
 					}
 
-					$('.loading', parent).delay(250).fadeOut(300);
+					$('.loading', parent)
+						.delay(250)
+						.fadeOut(300);
 					almActivating = false;
 				},
 
-				error: function (status, error) {
+				error: function(status, error) {
 					console.log(status, error);
-					$('.loading', parent).delay(250).fadeOut(300);
+					$('.loading', parent)
+						.delay(250)
+						.fadeOut(300);
 					almActivating = false;
-				},
+				}
 			});
 		}
 	});
@@ -457,7 +506,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 2.8.7
 	 */
-	$(document).on('click', '.alm-layout-selection li a.layout', function (e) {
+	$(document).on('click', '.alm-layout-selection li a.layout', function(e) {
 		e.preventDefault();
 		var el = $(this),
 			type = el.data('type'),
@@ -488,55 +537,30 @@ jQuery(document).ready(function ($) {
 					action: 'alm_get_layout',
 					type: type,
 					custom: custom,
-					nonce: alm_admin_localize.alm_admin_nonce,
+					nonce: alm_admin_localize.alm_admin_nonce
 				},
 				dataType: 'JSON',
-				success: function (data) {
+				success: function(data) {
 					eid.setValue(data.value);
 
 					// Clear button styles
-					setTimeout(function () {
+					setTimeout(function() {
 						el.text(alm_admin_localize.template_updated).blur();
-						setTimeout(function () {
-							el.removeClass('updating').html(layout_btn_text).blur(); // CLose drop menu
+						setTimeout(function() {
+							el.removeClass('updating')
+								.html(layout_btn_text)
+								.blur(); // CLose drop menu
 							el.closest('.alm-drop-btn').trigger('click');
 							textarea.removeClass('loading');
 						}, 400);
 					}, 400);
 				},
-				error: function (xhr, status, error) {
+				error: function(xhr, status, error) {
 					console.log(status);
 					textarea.removeClass('loading');
-				},
+				}
 			});
 		}
-	});
-
-	/**
-	 * Dismiss Sharing (Transient).
-	 *
-	 * @since 2.8.7
-	 */
-	$(document).on('click', '.alm-notification--dismiss', function (e) {
-		e.preventDefault();
-		var el = $(this),
-			container = el.parent('.cta');
-
-		// Get value from Ajax
-		$.ajax({
-			type: 'POST',
-			url: alm_admin_localize.ajax_admin_url,
-			data: {
-				action: 'alm_dismiss_sharing',
-				nonce: alm_admin_localize.alm_admin_nonce,
-			},
-			success: function (data) {
-				container.fadeOut();
-			},
-			error: function (xhr, status, error) {
-				console.log(status);
-			},
-		});
 	});
 
 	/**
@@ -544,7 +568,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 4.0
 	 */
-	$(document).on('click', '.alm-transient button.notice-dismiss', function (e) {
+	$(document).on('click', '.alm-transient button.notice-dismiss', function(e) {
 		e.preventDefault();
 		var el = $(this),
 			container = el.parent('.alm-transient'),
@@ -559,14 +583,14 @@ jQuery(document).ready(function ($) {
 				action: 'alm_set_transient',
 				nonce: alm_admin_localize.alm_admin_nonce,
 				transient_name: transient_name,
-				duration: duration,
+				duration: duration
 			},
-			success: function (data) {
+			success: function(data) {
 				container.fadeOut();
 			},
-			error: function (xhr, status, error) {
+			error: function(xhr, status, error) {
 				console.log(status);
-			},
+			}
 		});
 	});
 
@@ -575,7 +599,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 2.7.3
 	 */
-	$(document).on('change', '#alm-settings-nav', function (e) {
+	$(document).on('change', '#alm-settings-nav', function(e) {
 		e.preventDefault();
 		var el = $(this),
 			index = $('option:selected', el).index();
@@ -583,7 +607,10 @@ jQuery(document).ready(function ($) {
 			index = index - 1;
 			$('html, body').animate(
 				{
-					scrollTop: $('#alm_OptionsForm h2').eq(index).offset().top - 40,
+					scrollTop:
+						$('#alm_OptionsForm h2')
+							.eq(index)
+							.offset().top - 40
 				},
 				500
 			);

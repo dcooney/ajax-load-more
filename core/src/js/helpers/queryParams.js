@@ -20,7 +20,7 @@ export function almGetAjaxParams(alm, action, queryType) {
 		offset: alm.offset,
 		post_type: alm.post_type,
 		repeater: alm.repeater,
-		seo_start_page: alm.start_page,
+		seo_start_page: alm.start_page
 	};
 
 	// Addons & Extensions
@@ -31,6 +31,8 @@ export function almGetAjaxParams(alm, action, queryType) {
 	if (alm.addons.filters) {
 		data.filters = alm.addons.filters;
 		data.filters_startpage = alm.addons.filters_startpage;
+		data.filters_target = alm.addons.filters_target;
+		data.facets = alm.facets;
 	}
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;
@@ -216,7 +218,7 @@ export function almGetRestParams(alm) {
 		lang: alm.lang,
 		preloaded: alm.addons.preloaded,
 		preloaded_amount: alm.addons.preloaded_amount,
-		seo_start_page: alm.start_page,
+		seo_start_page: alm.start_page
 	};
 
 	return data;
