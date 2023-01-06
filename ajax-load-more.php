@@ -7,7 +7,7 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.4.1
+ * Version: 5.5.5
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
