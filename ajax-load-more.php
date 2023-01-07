@@ -14,6 +14,10 @@
  * @package AjaxLoadMore
  */
 
+/*
+* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
+*/
+
 define( 'ALM_VERSION', '5.5.5' );
 define( 'ALM_RELEASE', 'January 5, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

@@ -1,6 +1,8 @@
 <?php
 /**
- * A class for adding localize ALM JS variables to the screen.
+ * A class for adding localized ALM JS variables to the screen.
+ * Note: Localized data is used by the ALM JS to access information about the query instance.
+ *       Post count, total posts etc are all stored in localized variables.
  *
  * @package  ajaxloadmore
  * @since    3.7
@@ -44,16 +46,12 @@ if ( ! class_exists( 'ALM_LOCALIZE' ) ) :
 		}
 
 		/**
-		 *  Create <script> variables for use with Preloaded addon.
+		 * Return the localized data.
 		 *
-		 *  @param string $id The ALM ID.
-		 *  @since 3.7
+		 * @return array The localized data.
 		 */
-		public static function create_script_vars( $id ) {
-			if ( ! empty( self::$vars ) && isset( self::$vars[ $id ] ) && is_array( self::$vars[ $id ] ) ) {
-				// Render wp_localize_script vars with 'ajax-load-more' script handle.
-				wp_localize_script( 'ajax-load-more', alm_convert_dashes_to_underscore( $id ) . '_vars', self::$vars[ $id ] );
-			}
+		public static function return_localized_data() {
+			return self::$vars;
 		}
 
 	}

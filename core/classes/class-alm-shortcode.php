@@ -1385,15 +1385,25 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				}
 			}
 
-			// Add localized vars.
+			/**
+			 * Build localized script variables for each ALM instance.
+			 */
+
+			// Add basic localized vars.
 			ALM_LOCALIZE::add_localized_var( 'id', $master_id, $localize_id );
+			ALM_LOCALIZE::add_localized_var( 'script', alm_convert_dashes_to_underscore( $localize_id ) . '_vars', $localize_id );
+
+			// Get the localized data.
+			$localized_data = ALM_LOCALIZE::return_localized_data( $localize_id );
 
 			/**
-			 * Build localized script vars for each ALM instance.
+			 * Append the localized data `<script/>` using `wp_footer`.
 			 *
-			 * @return <script>
+			 * @see https://developer.wordpress.org/reference/functions/wp_add_inline_script/#comment-5828
 			 */
-			ALM_LOCALIZE::create_script_vars( $localize_id );
+			add_action('wp_footer', function() use ( $localized_data, $localize_id ) {
+				printf('<script type="text/javascript" id="' . $localized_data[$localize_id]['script'] .'">var ' . $localized_data[$localize_id]['script'] .' = %s</script>', json_encode( $localized_data[$localize_id] ) );
+			});
 
 			// End $ajaxloadmore element.
 			return $ajaxloadmore;
