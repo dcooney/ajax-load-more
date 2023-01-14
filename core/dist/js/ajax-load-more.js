@@ -4181,12 +4181,15 @@ exports.reset = reset;
 var getPostCount = function getPostCount() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
+	// Get the ALM localized variable name.
 	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
-	var theID = window[localize_var];
-	if (!theID && !theID.post_count) {
+
+	// Get the value from the window object.
+	var localized = window[localize_var];
+	if (!localized && !localized.post_count) {
 		return null;
 	}
-	return parseInt(theID.post_count);
+	return parseInt(localized.post_count);
 };
 exports.getPostCount = getPostCount;
 
@@ -4200,12 +4203,15 @@ exports.getPostCount = getPostCount;
 var getTotalPosts = function getTotalPosts() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
+	// Get the ALM localized variable name.
 	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
-	var theID = window[localize_var];
-	if (!theID && !theID.total_posts) {
+
+	// Get the value from the window object.
+	var localized = window[localize_var];
+	if (!localized && !localized.total_posts) {
 		return null;
 	}
-	return parseInt(theID.total_posts);
+	return parseInt(localized.total_posts);
 };
 exports.getTotalPosts = getTotalPosts;
 

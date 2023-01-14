@@ -236,9 +236,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$atts
 				)
 			);
+			// phpcs:enable
 
 			// Elementor.
-			$elementor = ( 'true' === $elementor ) ? 'single' : $elementor;
+			$elementor = $elementor === 'true' ? 'single' : $elementor;
 			if ( 'single' === $elementor ) { // Single Template.
 				if ( ! is_singular( $post_type ) ) {
 					// Exit if not singular template.
@@ -248,7 +249,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$offset            = '1';
 			}
 
-			if ( 'posts' === $elementor && ! empty( $elementor_target ) ) { // Posts Grid.
+			if ( $elementor === 'posts' && ! empty( $elementor_target ) ) { // Posts Grid.
 				$container_element = 'div';
 				$pause             = 'true';
 			}
@@ -258,11 +259,11 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$woocommerce = 'true' === $woocommerce ? true : false; // Standard ALM.
 
 			// Archives.
-			$archive = 'true' === $archive ? true : false;
+			$archive = $archive === 'true' ? true : false;
 
 			// Backwards compat.
 			// If $previous_post_ is true, set the $single_post_{value} params.
-			if ( 'true' === $previous_post ) {
+			if ( $previous_post === 'true' ) {
 				$single_post                = 'true';
 				$single_post_id             = $previous_post_id;
 				$single_post_order          = $previous_post_order;
@@ -302,7 +303,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Next Page.
-			if ( has_action( 'alm_nextpage_installed' ) &&  $nextpage === 'true' ) {
+			if ( has_action( 'alm_nextpage_installed' ) && $nextpage === 'true' ) {
 				wp_enqueue_script( 'ajax-load-more-nextpage' );
 			}
 
@@ -400,7 +401,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$transition_container_classes = ! empty( $transition_container_classes ) ? ' ' . esc_attr( $transition_container_classes ) : '';
 
 			// REST API.
-			if ( $restapi=== 'true' ) {
+			if ( $restapi === 'true' ) {
 				$restapi   = true;
 				$preloaded = false;
 			}
@@ -1112,124 +1113,124 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Repeaters.
 			if ( ! $woo && $elementor !== 'posts' ) {
-				$ajaxloadmore .= $theme_repeater === 'null' ? ' data-repeater="' . $repeater . '"' : '';
-				$ajaxloadmore .= $theme_repeater !== 'null' ? ' data-theme-repeater="' . $theme_repeater . '"' : '';
+				$ajaxloadmore .= $theme_repeater === 'null' ? ' data-repeater="' . esc_attr( $repeater ) . '"' : '';
+				$ajaxloadmore .= $theme_repeater !== 'null' ? ' data-theme-repeater="' . esc_attr( $theme_repeater ) . '"' : '';
 			}
 
 			// Post Type.
-			$ajaxloadmore .= ' data-post-type="' . $post_type . '"';
+			$ajaxloadmore .= ' data-post-type="' . esc_attr( $post_type ) . '"';
 
 			// Sticky posts.
-			$ajaxloadmore .= $sticky_posts === 'true' ? ' data-sticky-posts="' . $sticky_posts . '"' : '';
+			$ajaxloadmore .= $sticky_posts === 'true' ? ' data-sticky-posts="' . esc_attr( $sticky_posts ) . '"' : '';
 
 			// Post Format.
-			$ajaxloadmore .= ! empty( $post_format ) ? ' data-post-format="' . $post_format . '"' : '';
+			$ajaxloadmore .= ! empty( $post_format ) ? ' data-post-format="' . esc_attr( $post_format ) . '"' : '';
 
 			// Category.
-			$ajaxloadmore .= ! empty( $category ) ? ' data-category="' . $category . '"' : '';
-			$ajaxloadmore .= ! empty( $category__and ) ? ' data-category-and="' . $category__and . '"' : '';
-			$ajaxloadmore .= ! empty( $category__not_in ) ? ' data-category-not-in="' . $category__not_in . '"' : '';
+			$ajaxloadmore .= ! empty( $category ) ? ' data-category="' . esc_attr( $category ) . '"' : '';
+			$ajaxloadmore .= ! empty( $category__and ) ? ' data-category-and="' . esc_attr( $category__and ) . '"' : '';
+			$ajaxloadmore .= ! empty( $category__not_in ) ? ' data-category-not-in="' . esc_attr( $category__not_in ) . '"' : '';
 
 			// Tag.
-			$ajaxloadmore .= ! empty( $tag ) ? ' data-tag="' . $tag . '"' : '';
-			$ajaxloadmore .= ! empty( $tag__and ) ? ' data-tag-and="' . $tag__and . '"' : '';
-			$ajaxloadmore .= ! empty( $tag__not_in ) ? ' data-tag-not-in="' . $tag__not_in . '"' : '';
+			$ajaxloadmore .= ! empty( $tag ) ? ' data-tag="' . esc_attr( $tag ) . '"' : '';
+			$ajaxloadmore .= ! empty( $tag__and ) ? ' data-tag-and="' . esc_attr( $tag__and ) . '"' : '';
+			$ajaxloadmore .= ! empty( $tag__not_in ) ? ' data-tag-not-in="' . esc_attr( $tag__not_in ) . '"' : '';
 
 			// Taxonomy.
-			$ajaxloadmore .= ! empty( $taxonomy ) ? ' data-taxonomy="' . $taxonomy . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_terms ) ? ' data-taxonomy-terms="' . $taxonomy_terms . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_operator ) ? ' data-taxonomy-operator="' . $taxonomy_operator . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_relation ) ? ' data-taxonomy-relation="' . $taxonomy_relation . '"' : '';
+			$ajaxloadmore .= ! empty( $taxonomy ) ? ' data-taxonomy="' . esc_attr( $taxonomy ) . '"' : '';
+			$ajaxloadmore .= ! empty( $taxonomy_terms ) ? ' data-taxonomy-terms="' . esc_attr( $taxonomy_terms ) . '"' : '';
+			$ajaxloadmore .= ! empty( $taxonomy_operator ) ? ' data-taxonomy-operator="' . esc_attr( $taxonomy_operator ) . '"' : '';
+			$ajaxloadmore .= ! empty( $taxonomy_relation ) ? ' data-taxonomy-relation="' . esc_attr( $taxonomy_relation ) . '"' : '';
 
 			// Meta Query.
-			$ajaxloadmore .= ! empty( $meta_key ) ? ' data-meta-key="' . $meta_key . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_value || $meta_value === '0' ) ? ' data-meta-value="' . $meta_value . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_compare ) ? ' data-meta-compare="' . $meta_compare . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_relation ) ? ' data-meta-relation="' . $meta_relation . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_type ) ? ' data-meta-type="' . $meta_type . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_key ) ? ' data-meta-key="' . esc_attr( $meta_key ) . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_value || $meta_value === '0' ) ? ' data-meta-value="' . esc_attr( $meta_value ) . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_compare ) ? ' data-meta-compare="' . esc_attr( $meta_compare ) . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_relation ) ? ' data-meta-relation="' . esc_attr( $meta_relation ) . '"' : '';
+			$ajaxloadmore .= ! empty( $meta_type ) ? ' data-meta-type="' . esc_attr( $meta_type ) . '"' : '';
 
 			// Dates.
-			$ajaxloadmore .= ! empty( $year ) ? ' data-year="' . $year . '"' : '';
-			$ajaxloadmore .= ! empty( $month ) ? ' data-month="' . $month . '"' : '';
-			$ajaxloadmore .= ! empty( $day ) ? ' data-day="' . $day . '"' : '';
+			$ajaxloadmore .= ! empty( $year ) ? ' data-year="' . esc_attr( $year ) . '"' : '';
+			$ajaxloadmore .= ! empty( $month ) ? ' data-month="' . esc_attr( $month ) . '"' : '';
+			$ajaxloadmore .= ! empty( $day ) ? ' data-day="' . esc_attr( $day ) . '"' : '';
 
 			// Author.
-			$ajaxloadmore .= ! empty( $author ) ? ' data-author="' . $author . '"' : '';
+			$ajaxloadmore .= ! empty( $author ) ? ' data-author="' . esc_attr( $author ) . '"' : '';
 
 			// Post Parameters.
-			$ajaxloadmore .= ! empty( $post__in ) ? ' data-post-in="' . $post__in . '"' : '';
-			$ajaxloadmore .= ! empty( $post__not_in ) ? ' data-post-not-in="' . $post__not_in . '"' : '';
-			$ajaxloadmore .= ! empty( $exclude ) ? ' data-exclude="' . $exclude . '"' : '';
+			$ajaxloadmore .= ! empty( $post__in ) ? ' data-post-in="' . esc_attr( $post__in ) . '"' : '';
+			$ajaxloadmore .= ! empty( $post__not_in ) ? ' data-post-not-in="' . esc_attr( $post__not_in ) . '"' : '';
+			$ajaxloadmore .= ! empty( $exclude ) ? ' data-exclude="' . esc_attr( $exclude ) . '"' : '';
 
 			// Search.
-			$ajaxloadmore .= ! empty( $search ) ? ' data-search="' . $search . '"' : '';
+			$ajaxloadmore .= ! empty( $search ) ? ' data-search="' . esc_attr( $search ) . '"' : '';
 
 			// Custom Args.
-			$ajaxloadmore .= ! empty( $custom_args ) ? ' data-custom-args="' . $custom_args . '"' : '';
+			$ajaxloadmore .= ! empty( $custom_args ) ? ' data-custom-args="' . esc_attr( $custom_args ) . '"' : '';
 
 			// Vars.
-			$ajaxloadmore .= ! empty( $vars ) ? ' data-vars="' . $vars . '"' : '';
+			$ajaxloadmore .= ! empty( $vars ) ? ' data-vars="' . esc_attr( $vars ) . '"' : '';
 
 			// Status.
-			$ajaxloadmore .= ! empty( $post_status ) ? ' data-post-status="' . $post_status . '"' : '';
+			$ajaxloadmore .= ! empty( $post_status ) ? ' data-post-status="' . esc_attr( $post_status ) . '"' : '';
 
 			// Order.
-			$ajaxloadmore .= ' data-order="' . $order . '"';
-			$ajaxloadmore .= ' data-orderby="' . $orderby . '"';
+			$ajaxloadmore .= ' data-order="' . esc_attr( $order ) . '"';
+			$ajaxloadmore .= ' data-orderby="' . esc_attr( $orderby ) . '"';
 
 			// Offset.
-			$ajaxloadmore .= ' data-offset="' . $offset . '"';
+			$ajaxloadmore .= ' data-offset="' . esc_attr( $offset ) . '"';
 
 			// Posts Per Page.
-			$ajaxloadmore .= ' data-posts-per-page="' . $posts_per_page . '"';
+			$ajaxloadmore .= ' data-posts-per-page="' . esc_attr( $posts_per_page ) . '"';
 
 			// Lang.
-			$ajaxloadmore .= ! empty( $lang ) ? ' data-lang="' . $lang . '"' : '';
+			$ajaxloadmore .= ! empty( $lang ) ? ' data-lang="' . esc_attr( $lang ) . '"' : '';
 
 			// Scroll.
 			if ( $paging !== 'true' ) {
-				$ajaxloadmore .= ' data-scroll="' . $scroll . '"';
+				$ajaxloadmore .= ' data-scroll="' . esc_attr( $scroll ) . '"';
 				if ( $scroll === 'true' ) {
-					$ajaxloadmore .= ' data-scroll-distance="' . $scroll_distance . '"';
-					$ajaxloadmore .= ! empty( $scroll_container ) ? ' data-scroll-container="' . $scroll_container . '"' : '';
-					$ajaxloadmore .= ! empty( $scroll_direction ) ? ' data-scroll-direction="' . $scroll_direction . '"' : '';
+					$ajaxloadmore .= ' data-scroll-distance="' . esc_attr( $scroll_distance ) . '"';
+					$ajaxloadmore .= ! empty( $scroll_container ) ? ' data-scroll-container="' . esc_attr( $scroll_container ) . '"' : '';
+					$ajaxloadmore .= ! empty( $scroll_direction ) ? ' data-scroll-direction="' . esc_attr( $scroll_direction ) . '"' : '';
 					$ajaxloadmore .= ' data-max-pages="' . $max_pages . '"';
-					$ajaxloadmore .= ! empty( $pause_override ) ? ' data-pause-override="' . $pause_override . '"' : '';
+					$ajaxloadmore .= ! empty( $pause_override ) ? ' data-pause-override="' . esc_attr( $pause_override ) . '"' : '';
 				}
 			}
 
 			// Pause.
-			$ajaxloadmore .= ' data-pause="' . $pause . '"';
+			$ajaxloadmore .= ' data-pause="' . esc_attr( $pause ) . '"';
 
 			// Button.
-			$ajaxloadmore .= ' data-button-label="' . $button_label . '"';
-			$ajaxloadmore .= ! empty( $button_loading_label ) ? ' data-button-loading-label="' . $button_loading_label . '"' : '';
-			$ajaxloadmore .= ! empty( $button_done_label ) ? ' data-button-done-label="' . $button_done_label . '"' : '';
+			$ajaxloadmore .= ' data-button-label="' . wp_kses_post( $button_label ) . '"';
+			$ajaxloadmore .= ! empty( $button_loading_label ) ? ' data-button-loading-label="' . wp_kses_post( $button_loading_label ) . '"' : '';
+			$ajaxloadmore .= ! empty( $button_done_label ) ? ' data-button-done-label="' . wp_kses_post( $button_done_label ) . '"' : '';
 
 			// Destroy After.
-			$ajaxloadmore .= ! empty( $destroy_after ) ? ' data-destroy-after="' . $destroy_after . '"' : '';
+			$ajaxloadmore .= ! empty( $destroy_after ) ? ' data-destroy-after="' . esc_attr( $destroy_after ) . '"' : '';
 
 			// Transition.
-			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . $transition . '"' : '';
-			$ajaxloadmore .= $transition_container === 'false' ? ' data-transition-container="' . $transition_container . '"' : '';
-			$ajaxloadmore .= ! empty( $transition_container_classes ) ? ' data-transition-container-classes="' . $transition_container_classes . '"' : '';
+			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . esc_attr( $transition ) . '"' : '';
+			$ajaxloadmore .= $transition_container === 'false' ? ' data-transition-container="' . esc_attr( $transition_container ) . '"' : '';
+			$ajaxloadmore .= ! empty( $transition_container_classes ) ? ' data-transition-container-classes="' . esc_attr( $transition_container_classes ) . '"' : '';
 
 			// Masonry.
 			if ( 'masonry' === $transition ) {
 				$masonry_config = [
-					'selector'        => $masonry_selector,
-					'columnwidth'     => $masonry_columnwidth,
-					'animation'       => $masonry_animation,
-					'horizontalorder' => $masonry_horizontalorder,
+					'selector'        => esc_attr( $masonry_selector ),
+					'columnwidth'     => esc_attr( $masonry_columnwidth ),
+					'animation'       => esc_attr( $masonry_animation ),
+					'horizontalorder' => esc_attr( $masonry_horizontalorder ),
 				];
 				$ajaxloadmore  .= ' data-masonry-config="' . htmlspecialchars( wp_json_encode( $masonry_config ), ENT_QUOTES, 'UTF-8' ) . '"';
 			}
 
 			// Images Loaded.
-			$ajaxloadmore .= $images_loaded !== 'false' ? ' data-images-loaded="' . $images_loaded . '"' : '';
+			$ajaxloadmore .= $images_loaded !== 'false' ? ' data-images-loaded="' . esc_attr( $images_loaded ) . '"' : '';
 
 			// Lazy Load Images.
-			$ajaxloadmore .= $lazy_images !== false ? ' data-lazy-images="' . $lazy_images . '"' : '';
+			$ajaxloadmore .= $lazy_images !== false ? ' data-lazy-images="' . esc_attr( $lazy_images ) . '"' : '';
 
 			// Primary.
 			$ajaxloadmore .= $primary !== false ? ' data-primary="true"' : '';
@@ -1239,7 +1240,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// SEO Offset.
 			if ( $seo_offset === 'true' ) {
-				$ajaxloadmore .= '<div class="alm-reveal alm-seo' . $transition_container_classes . '" data-page="1" data-url="' . $canonical_url . '">';
+				$ajaxloadmore .= '<div class="alm-reveal alm-seo' . esc_attr( $transition_container_classes ) . '" data-page="1" data-url="' . esc_attr( $canonical_url ) . '">';
 			}
 
 			// Preloaded.
@@ -1281,7 +1282,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Next Page Add-on.
 			if ( has_action( 'alm_nextpage_installed' ) && $nextpage ) {
-				$nextpage_start = alm_get_startpage(); // Located in `core/functions.php`.
+				$nextpage_start    = alm_get_startpage(); // Located in `core/functions.php`.
 				$nextpage_is_paged = $nextpage_start > 1 ? true : false;
 
 				/**
@@ -1289,7 +1290,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				 *
 				 * @return boolean;
 				 */
-				$nextpage_is_paged   = apply_filters( 'alm_nextpage_paged', $nextpage_is_paged );
+				$nextpage_is_paged = apply_filters( 'alm_nextpage_paged', $nextpage_is_paged );
 
 				$ajaxloadmore .= apply_filters( 'alm_init_nextpage', $nextpage_post_id, $nextpage_start, $nextpage_is_paged, $paging, $div_id, $id, $nested );
 
@@ -1400,9 +1401,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 *
 			 * @see https://developer.wordpress.org/reference/functions/wp_add_inline_script/#comment-5828
 			 */
-			add_action('wp_footer', function() use ( $localized_data, $localize_id ) {
-				printf('<script type="text/javascript" id="' . $localized_data[$localize_id]['script'] .'">var ' . $localized_data[$localize_id]['script'] .' = %s</script>', json_encode( $localized_data[$localize_id] ) );
-			});
+			add_action(
+				'wp_footer',
+				function() use ( $localized_data, $localize_id ) {
+					printf( '<script type="text/javascript" id="' . $localized_data[ $localize_id ]['script'] . '">var ' . $localized_data[ $localize_id ]['script'] . ' = %s</script>', json_encode( $localized_data[ $localize_id ] ) );
+				}
+			);
 
 			// End $ajaxloadmore element.
 			return $ajaxloadmore;

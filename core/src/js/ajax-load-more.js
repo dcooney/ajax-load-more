@@ -2527,12 +2527,15 @@ export { reset };
  * @return {Number}    The results from the localized variable.
  */
 const getPostCount = function (id = '') {
+	// Get the ALM localized variable name.
 	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
-	const theID = window[localize_var];
-	if (!theID && !theID.post_count) {
+
+	// Get the value from the window object.
+	const localized = window[localize_var];
+	if (!localized && !localized.post_count) {
 		return null;
 	}
-	return parseInt(theID.post_count);
+	return parseInt(localized.post_count);
 };
 export { getPostCount };
 
@@ -2543,12 +2546,15 @@ export { getPostCount };
  * @return {Number}    The results from the localized variable.
  */
 const getTotalPosts = function (id = '') {
+	// Get the ALM localized variable name.
 	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
-	const theID = window[localize_var];
-	if (!theID && !theID.total_posts) {
+
+	// Get the value from the window object.
+	const localized = window[localize_var];
+	if (!localized && !localized.total_posts) {
 		return null;
 	}
-	return parseInt(theID.total_posts);
+	return parseInt(localized.total_posts);
 };
 export { getTotalPosts };
 
