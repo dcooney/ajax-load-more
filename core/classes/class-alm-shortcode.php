@@ -38,11 +38,11 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			/**
 			 * Override default ALM Settings.
-			 * ALM Core Filter Hook
+			 * ALM Core Filter Hook.
 			 *
-			 * @return $options;
+			 * @return array $options Options array.
 			 */
-			$options = ( has_filter( 'alm_settings' ) ) ? apply_filters( 'alm_settings', $options ) : $options;
+			$options = has_filter( 'alm_settings' ) ? apply_filters( 'alm_settings', $options ) : $options;
 
 			self::$counter++; // Counter.
 			$slug              = apply_filters( 'alm_page_slug', alm_get_page_slug( $post ) ); // Define page slug.
@@ -526,7 +526,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Generate ALM ID.
 			$div_id = self::$counter > 1 ? 'ajax-load-more-' . self::$counter : 'ajax-load-more';
 
-			// Localized ID - ID used for storin glocalized variables.
+			// Localized ID - ID used for storing localized variables.
 			$localize_id = empty( $id ) ? $div_id : 'ajax-load-more-' . $id;
 
 			// Master ID - Manual or generated ALM ID.
@@ -1395,7 +1395,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Get the localized data.
 			$localized_data = ALM_LOCALIZE::return_localized_data( $localize_id );
-
 			/**
 			 * Append the localized data `<script/>` using `wp_footer`.
 			 *

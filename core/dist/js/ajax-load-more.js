@@ -1441,7 +1441,7 @@ function getContainerCount(container) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
+exports.click = exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -4170,16 +4170,19 @@ var reset = function reset() {
 exports.reset = reset;
 
 /**
- * Get the total post count in the current query by ALM instance ID.
+ * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
  *
- * @param  {string} id The ALM ID.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ *
+ * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 
 var getPostCount = function getPostCount() {
-	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	var theID = window['ajax_load_more_' + id + '_vars'];
+	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+	var theID = window[localize_var];
 	if (!theID && !theID.post_count) {
 		return null;
 	}
@@ -4188,16 +4191,17 @@ var getPostCount = function getPostCount() {
 exports.getPostCount = getPostCount;
 
 /**
- * Get the total number of posts by ALM instance ID.
+ * Get the total number of posts by ALM instance ID from the ALM Localized variables.
  *
- * @param  {string} id The ALM ID.
+ * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 
 var getTotalPosts = function getTotalPosts() {
-	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	var theID = window['ajax_load_more_' + id + '_vars'];
+	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+	var theID = window[localize_var];
 	if (!theID && !theID.total_posts) {
 		return null;
 	}
@@ -4347,6 +4351,32 @@ var render = function render(el) {
 	// console.log(el, options);
 };
 exports.render = render;
+
+/**
+ * Trigger a click event to load Ajax Load More content.
+ *
+ * @param {string} id The Ajax Load More ID.
+ */
+
+var click = function click() {
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	var alm = document.querySelector('.ajax-load-more-wrap');
+	var button = '';
+	if (!id && alm) {
+		// Default ALM element.
+		button = alm.querySelector('button.alm-load-more-btn');
+		button && button.click();
+	} else {
+		// Ajax Load More by ID.
+		alm = document.querySelector('.ajax-load-more-wrap[data-id="' + id + '"]');
+		if (alm) {
+			button = alm.querySelector('button.alm-load-more-btn');
+			button && button.click();
+		}
+	}
+};
+exports.click = click;
 
 /***/ }),
 

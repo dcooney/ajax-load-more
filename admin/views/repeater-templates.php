@@ -1,4 +1,13 @@
 <?php
+/**
+ * Repeater Templates Page.
+ *
+ * @package AjaxLoadMore
+ * @since   2.0.0
+ */
+
+?>
+<?php
 	// @codingStandardsIgnoreStart
 	$theme_repeaters = false;
 	if ( isset( $_GET['theme-repeaters'] ) ) {

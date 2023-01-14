@@ -16,6 +16,15 @@
 
 /*
 * FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
+* NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
+
+ADD-ONS
+
+LAYOUTS
+* FIX - Added missing Gallery layout to layout listing.
+* UPDATES - Added suppor for Paging addon and new layouts.
+* FIX - Fixed issue with gap spacing and load more elements.
+* FIX - Various spacing and alignment tweaks using minmax for columns.
 */
 
 define( 'ALM_VERSION', '5.5.5' );

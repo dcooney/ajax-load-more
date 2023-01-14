@@ -1,4 +1,11 @@
 <?php
+/**
+ * Settings Page.
+ *
+ * @package AjaxLoadMore
+ * @since   2.0.0
+ */
+
 // @codingStandardsIgnoreStart
 ?>
 <div class="alm-settings-feedback"></div>

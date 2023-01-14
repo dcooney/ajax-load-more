@@ -1,3 +1,13 @@
+<?php
+/**
+ * Add-ons Page.
+ *
+ * @package AjaxLoadMore
+ * @since   2.0.0
+ */
+
+?>
+
 <?php $target = 'target="_blank"'; ?>
 <div class="admin ajax-load-more" id="alm-add-ons">
 	<div class="wrap main-cnkt-wrap">
