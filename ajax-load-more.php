@@ -15,8 +15,9 @@
  */
 
 /*
-* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
 * NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
+* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
+* UPDATE - Security fiox for escaping data attributes from shortcode.
 
 ADD-ONS
 
