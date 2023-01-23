@@ -2,11 +2,10 @@ import getQueryVariable from '../helpers/getQueryVariable';
 const FILTERS_CLASSNAME = 'alm-filters';
 
 /**
- * parseQuerystring
- * Parse a filter querystring for returning caches directories
+ * Parse a filter querystring for returning caches directories.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 export function parseQuerystring(path) {
@@ -47,11 +46,11 @@ export function parseQuerystring(path) {
 }
 
 /**
- * Build new paging URL for filters
+ * Build new paging URL for filters.
  *
- * @param {Object} alm
- * @param {String} querystring
- * @param {Int} page
+ * @param {object} alm         The ALM object.
+ * @param {string} querystring The current querystring.
+ * @param {number} page        The page number.
  * @since 5.3.5
  */
 export function buildFilterURL(alm, querystring = '', page = 0) {
@@ -82,10 +81,10 @@ export function buildFilterURL(alm, querystring = '', page = 0) {
 }
 
 /**
- * Create data attributes for Filters paged results
+ * Create data attributes for Filters paged results.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 export function createMasonryFiltersPage(alm, element) {
@@ -104,8 +103,8 @@ export function createMasonryFiltersPage(alm, element) {
 /**
  * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm     The ALM object.
+ * @param {array} elements An array of filter elements.
  * @since 5.3.1
  */
 export function createMasonryFiltersPages(alm, elements) {
@@ -146,7 +145,15 @@ export function createMasonryFiltersPages(alm, elements) {
 	return elements;
 }
 
-// Create the attributes (page, url, classes)  for the masonry items
+/**
+ * Create the attributes (page, url, classes)  for the masonry items.
+ *
+ * @param {object}  alm         The ALM object.
+ * @param {Element} element     The container element.
+ * @param {string}  querystring The current querystring.
+ * @param {number}  page        The page number.
+ * @returns
+ */
 function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	element.classList.add(FILTERS_CLASSNAME);
 	element.dataset.page = pagenum;

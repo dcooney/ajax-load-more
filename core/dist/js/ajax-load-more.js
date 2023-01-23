@@ -2980,7 +2980,7 @@ var alm_is_filtering = false;
 									}
 								}
 							}, _callee4, this);
-						}))().catch(function (e) {
+						}))().catch(function () {
 							console.log('There was an error with ALM Masonry');
 						});
 					}
@@ -4399,17 +4399,16 @@ exports.click = click;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+var nodeNameArray = ['#text', '#comment'];
+
 /**
  * Append a child element to a container
  *
- * @param {*} target | Target element to append items
- * @param {*} element | The element to append
- * @param {*} transition | The transiton
+ * @param {Element} target | Target element to append items
+ * @param {Element} element | The element to append
+ * @param {string} transition | The transiton
  * @since 5.0
  */
-
-var nodeNameArray = ['#text', '#comment'];
-
 var almAppendChild = function almAppendChild() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -4458,9 +4457,9 @@ function _interopRequireDefault(obj) {
 /**
  * Loop array of elements and append to target
  *
- * @param {*} target | Target element to append items
- * @param {*} array | An array of elements
- * @param {*} transition | The transiton
+ * @param {Element} target | Target element to append items
+ * @param {Element} array | An array of elements
+ * @param {string} transition | The transiton
  * @since 5.0
  */
 
@@ -4657,16 +4656,16 @@ exports.default = getCacheUrl;
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 var getParameterByName = function getParameterByName(name, url) {
-   if (!url) url = window.location.href;
-   name = name.replace(/[\[\]]/g, "\\$&");
-   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-       results = regex.exec(url);
-   if (!results) return null;
-   if (!results[2]) return '';
-   return decodeURIComponent(results[2].replace(/\+/g, " "));
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[\]]/g, '\\$&');
+	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+	    results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 exports.default = getParameterByName;
 
@@ -5399,7 +5398,7 @@ exports.default = srcsetPolyfill;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 /**
  * Remove empty HTML nodes from array of nodes
@@ -5410,22 +5409,22 @@ Object.defineProperty(exports, "__esModule", {
  * @since 5.1.3
  */
 var stripEmptyNodes = function stripEmptyNodes() {
-  var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-  if (!nodes) {
-    return false;
-  }
+	if (!nodes) {
+		return false;
+	}
 
-  // Exclude these nodeNames from being rendered
-  var nodeNameArray = ['#text', '#comment'];
+	// Exclude these nodeNames from being rendered
+	var nodeNameArray = ['#text', '#comment'];
 
-  // Filter data by nodeName 
-  var results = nodes.filter(function (node) {
-    return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
-  });
+	// Filter data by nodeName
+	var results = nodes.filter(function (node) {
+		return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
+	});
 
-  // Send the results
-  return results;
+	// Send the results
+	return results;
 };
 exports.default = stripEmptyNodes;
 
@@ -5442,25 +5441,25 @@ exports.default = stripEmptyNodes;
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 /**
  * Wrap `table` containers in tbody elements
  * innerHTML and DOMParser do not work with <tr/> <td/> elements etc.
  *
- * @param {*} html | Plain text
+ * @param {string} html Plain text HTML.
  * @since 5.0
  */
 var tableWrap = function tableWrap() {
-   var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-   if (!html) {
-      return false;
-   }
-   var table_reveal = document.createElement('tbody');
-   table_reveal.innerHTML = html;
-   var table_reveal_array = [table_reveal];
-   return table_reveal_array; // Return new array
+	if (!html) {
+		return false;
+	}
+	var table_reveal = document.createElement('tbody');
+	table_reveal.innerHTML = html;
+	var table_reveal_array = [table_reveal];
+	return table_reveal_array; // Return new array
 };
 exports.default = tableWrap;
 
@@ -5930,7 +5929,7 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * getScrollPercentage
  * Get the scroll distance in pixels from a percentage
- * 
+ *
  * @param {Object} alm
  * @return {NUMBER} newdistance
  * @since 5.2
@@ -5941,13 +5940,13 @@ var getScrollPercentage = function getScrollPercentage(alm) {
 		return false;
 	}
 
-	var is_negative = alm.scroll_distance_orig.toString().indexOf("-") === -1 ? false : true; // Is this a negative number   
-	var raw_distance = alm.scroll_distance_orig.toString().replace("-", "").replace("%", ""); // Remove - and perc 	
+	var is_negative = alm.scroll_distance_orig.toString().indexOf('-') === -1 ? false : true; // Is this a negative number
+	var raw_distance = alm.scroll_distance_orig.toString().replace('-', '').replace('%', ''); // Remove - and perc
 	var wh = alm.window.innerHeight; // window height
 
 	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
 
-	var newdistance = is_negative ? "-" + height : height; // Set the distance	
+	var newdistance = is_negative ? '-' + height : height; // Set the distance
 	//console.log(parseInt(newdistance));
 
 	return parseInt(newdistance);
@@ -5982,11 +5981,10 @@ function _interopRequireDefault(obj) {
  * insertScript
  * Search nodes for <script/> tags and run scripts.
  * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
- * 
+ *
  * @since 5.0
  */
 var insertScript = {
-
 	init: function init(node) {
 		if (this.isScript(node) === true) {
 			node.parentNode.replaceChild(this.clone(node), node);
@@ -6026,14 +6024,13 @@ var insertScript = {
 	},
 
 	clone: function clone(node) {
-		var script = document.createElement("script");
+		var script = document.createElement('script');
 		script.text = node.innerHTML;
 		for (var i = node.attributes.length - 1; i >= 0; i--) {
 			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
 		}
 		return script;
 	}
-
 };
 exports.default = insertScript;
 
@@ -6642,9 +6639,9 @@ function almMasonryConfig(alm) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-/**  
+/**
  * Set the results text if required.
- * 
+ *
  * @param {*} target The target HTML element
  * @param {*} html The HTML
  * @since 5.1
@@ -6653,7 +6650,7 @@ var almNoResults = function almNoResults(target) {
 	var html = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
 	if (html === '') {
-		return false; // exit if empty	
+		return false; // exit if empty
 	}
 
 	// Remove empty <p/> tags
@@ -6900,8 +6897,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 /**
- * setFocus
- * Set user focus to improve accessibility after load events
+ * Set user focus to improve accessibility after load events.
  *
  * @param {Object} alm
  * @param {HTMLElement} preloaded
@@ -6909,7 +6905,6 @@ Object.defineProperty(exports, "__esModule", {
  * @param {Boolean} is_filtering
  * @since 5.1
  */
-
 var setFocus = function setFocus(alm) {
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 	var total = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -7053,17 +7048,15 @@ function _interopRequireWildcard(obj) {
 	}
 }
 
-/**  
+/**
  * Set localized variables
  *
  * @param {object} alm     Global alm object
- * @since 4.1 
+ * @since 4.1
  */
 
 var setLocalizedVars = function setLocalizedVars(alm) {
-
 	return new Promise(function (resolve) {
-
 		var type = 'standard';
 
 		// Current Page `page`
@@ -7114,7 +7107,7 @@ function almSetPostCount(alm) {
 	var count = pc + pa;
 	count = alm.start_page > 1 ? count - pa : count; // SEO
 	count = alm.addons.filters_startpage > 1 ? count - pa : count; // Filters
-	count = alm.addons.single_post ? count + 1 : count; // Single Posts	
+	count = alm.addons.single_post ? count + 1 : count; // Single Posts
 	count = alm.addons.nextpage ? count + 1 : count; // Next Page
 
 	return count;

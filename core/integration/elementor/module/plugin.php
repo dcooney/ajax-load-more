@@ -1,8 +1,6 @@
 <?php
 namespace ALMElementor;
 
-// phpcs:ignorefile
-
 /**
  * Class ALMPlugin
  *
@@ -92,7 +90,7 @@ class Plugin {
     add_action( 'elementor/frontend/after_register_scripts', [ $this, 'widget_scripts' ] );
 
     // Register widgets
-    add_action( 'elementor/widgets/widgets_registered', [ $this, 'register_widgets' ] );
+    add_action( 'elementor/widgets/register', [ $this, 'register_widgets' ] );
   }
 }
 

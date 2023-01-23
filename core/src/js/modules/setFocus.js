@@ -1,6 +1,5 @@
 /**
- * setFocus
- * Set user focus to improve accessibility after load events
+ * Set user focus to improve accessibility after load events.
  *
  * @param {Object} alm
  * @param {HTMLElement} preloaded
@@ -8,8 +7,7 @@
  * @param {Boolean} is_filtering
  * @since 5.1
  */
-
-let setFocus = (alm, element = null, total = 0, is_filtering = false) => {
+const setFocus = (alm, element = null, total = 0, is_filtering = false) => {
 	if (!alm_localize.a11y_focus) {
 		return false;
 	}
@@ -51,7 +49,7 @@ export default setFocus;
  * @since 5.1
  */
 
-let moveFocus = (init = true, preloaded = 'false', element, is_filtering = false, isSafari = false) => {
+const moveFocus = (init = true, preloaded = 'false', element, is_filtering = false, isSafari = false) => {
 	if (!is_filtering) {
 		if ((init || !element) && preloaded !== 'true') {
 			return false; // Exit if first run

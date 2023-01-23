@@ -114,8 +114,8 @@ export function almInitResultsText(alm, type = 'standard') {
  *  @param {string}  per_page    Total amount of posts per page.
  *  @since 4.1
  */
-let almRenderResultsText = function(el, page, pages, post_count, total_posts, per_page) {
-	el.forEach(function(result) {
+const almRenderResultsText = function (el, page, pages, post_count, total_posts, per_page) {
+	el.forEach(function (result) {
 		pages = parseInt(pages);
 		let text = pages > 0 ? alm_localize.results_text : alm_localize.no_results_text;
 

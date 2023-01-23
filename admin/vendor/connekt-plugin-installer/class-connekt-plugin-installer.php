@@ -62,9 +62,9 @@ if ( ! class_exists( 'Connekt_Plugin_Installer' ) ) {
 
 				$api = plugins_api(
 					'plugin_information',
-					array(
+					[
 						'slug'   => sanitize_file_name( $plugin['slug'] ),
-						'fields' => array(
+						'fields' => [
 							'short_description' => true,
 							'sections'          => false,
 							'requires'          => false,
@@ -77,8 +77,8 @@ if ( ! class_exists( 'Connekt_Plugin_Installer' ) ) {
 							'donate_link'       => false,
 							'icons'             => true,
 							'banners'           => true,
-						),
-					)
+						],
+					]
 				);
 
 				if ( ! is_wp_error( $api ) ) {
@@ -208,10 +208,10 @@ if ( ! class_exists( 'Connekt_Plugin_Installer' ) ) {
 				$msg    = 'There was an error installing ' . $api->name . '.';
 			}
 
-			$json = array(
+			$json = [
 				'status' => $status,
 				'msg'    => $msg,
-			);
+			];
 
 			wp_send_json( $json );
 		}
@@ -278,10 +278,10 @@ if ( ! class_exists( 'Connekt_Plugin_Installer' ) ) {
 				$msg    = 'There was an error activating ' . $api->name . '.';
 			}
 
-			$json = array(
+			$json = [
 				'status' => $status,
 				'msg'    => $msg,
-			);
+			];
 			wp_send_json( $json );
 		}
 
@@ -339,14 +339,14 @@ if ( ! class_exists( 'Connekt_Plugin_Installer' ) ) {
 			wp_localize_script(
 				'plugin-installer',
 				'cnkt_installer_localize',
-				array(
+				[
 					'ajax_url'      => admin_url( 'admin-ajax.php' ),
 					'admin_nonce'   => wp_create_nonce( 'cnkt_installer_nonce' ),
 					'install_now'   => __( 'Are you sure you want to install this plugin?', 'cnkt-installer' ),
 					'install_btn'   => __( 'Install Now', 'cnkt-installer' ),
 					'activate_btn'  => __( 'Activate', 'cnkt-installer' ),
 					'installed_btn' => __( 'Activated', 'cnkt-installer' ),
-				)
+				]
 			);
 			wp_enqueue_style( 'plugin-installer', CNKT_INSTALLER_PATH . 'assets/installer.css', '', CNKT_INSTALLER_VERSION );
 		}

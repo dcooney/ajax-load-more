@@ -7,29 +7,27 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.5
+ * Version: 5.6.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
-* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
-* UPDATE - Security fiox for escaping data attributes from shortcode.
+ /*
+ TODO:
+ - Add shortcode builder setting for `facets="true"` [DONE]
+ - Fix issue if `facets !== true` in shortcode. The filters are shut down. [DONE]
+ - Add better explaniation in filter listing about Facets ON/OFF [DONE]
+ - Add filter to change transient length [DONE]
+ - Add Show More to display in radio/checkboxes for long lists.
 
-ADD-ONS
+ Elementor - Fix deprecation warning. [DONE]
 
-LAYOUTS
-* FIX - Added missing Gallery layout to layout listing.
-* UPDATES - Added suppor for Paging addon and new layouts.
-* FIX - Fixed issue with gap spacing and load more elements.
-* FIX - Various spacing and alignment tweaks using minmax for columns.
-*/
+ */
 
-define( 'ALM_VERSION', '5.5.5' );
-define( 'ALM_RELEASE', 'January 5, 2023' );
+define( 'ALM_VERSION', '5.6.0' );
+define( 'ALM_RELEASE', 'January 23, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

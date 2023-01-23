@@ -5,7 +5,7 @@
  * @param {object} alm     Global alm object
  * @since 5.1.6
  */
-let almDebug = function (alm) {
+const almDebug = function (alm) {
 	if (alm && alm.debug) {
 		let obj = {
 			query: alm.debug,

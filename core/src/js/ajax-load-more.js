@@ -1111,21 +1111,21 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Set Filter Facets
+			/**
+			 * Set Filter Facets.
+			 */
 			if (alm.addons.filters && alm.facets && data.facets && typeof almFiltersFacets === 'function') {
 				window.almFiltersFacets(data.facets);
 			}
 
 			/**
-			 * Display alm_debug results
+			 * Display alm_debug results.
 			 */
-
 			almDebug(alm);
 
 			/**
-			 * Set localized variables and Results Text
+			 * Set localized variables and Results Text.
 			 */
-
 			(async () => {
 				await setLocalizedVars(alm);
 			})();
@@ -1133,7 +1133,6 @@ let alm_is_filtering = false;
 			/**
 			 * Render results
 			 */
-
 			if (total > 0) {
 				// We have results!
 
@@ -1368,7 +1367,7 @@ let alm_is_filtering = false;
 
 							// Lazy load images if necessary.
 							lazyImages(alm);
-						})().catch((e) => {
+						})().catch(() => {
 							console.log('There was an error with ALM Masonry');
 						});
 					}
