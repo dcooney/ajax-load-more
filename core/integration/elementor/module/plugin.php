@@ -73,7 +73,7 @@ class Plugin {
     $this->include_widgets_files();
 
     // Register Widgets
-    \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\ALMElementor() );
+    \Elementor\Plugin::instance()->widgets_manager->register( new Widgets\ALMElementor() );
   }
 
   /**
