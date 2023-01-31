@@ -904,7 +904,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$options
 				);
 				$ajaxloadmore  .= wp_kses_post( $filters_return );
-				$ajaxloadmore  .= $facets === 'true' ? ' data-facets="true"' : '';
+				$facets         = function_exists( 'alm_filters_has_facet' ) && alm_filters_has_facet( $target ) ? true : false;
 			}
 
 			// Nextpage Post Add-on.
@@ -1404,6 +1404,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			add_action(
 				'wp_footer',
 				function() use ( $localized_data, $localize_id ) {
+					// phpcs:ignore
 					printf( '<script type="text/javascript" id="' . $localized_data[ $localize_id ]['script'] . '">var ' . $localized_data[ $localize_id ]['script'] . ' = %s</script>', json_encode( $localized_data[ $localize_id ] ) );
 				}
 			);

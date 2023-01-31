@@ -637,11 +637,10 @@ function _interopRequireDefault(obj) {
 var FILTERS_CLASSNAME = 'alm-filters';
 
 /**
- * parseQuerystring
- * Parse a filter querystring for returning caches directories
+ * Parse a filter querystring for returning caches directories.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 function parseQuerystring(path) {
@@ -682,11 +681,11 @@ function parseQuerystring(path) {
 }
 
 /**
- * Build new paging URL for filters
+ * Build new paging URL for filters.
  *
- * @param {Object} alm
- * @param {String} querystring
- * @param {Int} page
+ * @param {object} alm         The ALM object.
+ * @param {string} querystring The current querystring.
+ * @param {number} page        The page number.
  * @since 5.3.5
  */
 function buildFilterURL(alm) {
@@ -720,10 +719,10 @@ function buildFilterURL(alm) {
 }
 
 /**
- * Create data attributes for Filters paged results
+ * Create data attributes for Filters paged results.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 function createMasonryFiltersPage(alm, element) {
@@ -742,8 +741,8 @@ function createMasonryFiltersPage(alm, element) {
 /**
  * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm     The ALM object.
+ * @param {array} elements An array of filter elements.
  * @since 5.3.1
  */
 function createMasonryFiltersPages(alm, elements) {
@@ -784,7 +783,15 @@ function createMasonryFiltersPages(alm, elements) {
 	return elements;
 }
 
-// Create the attributes (page, url, classes)  for the masonry items
+/**
+ * Create the attributes (page, url, classes)  for the masonry items.
+ *
+ * @param {object}  alm         The ALM object.
+ * @param {Element} element     The container element.
+ * @param {string}  querystring The current querystring.
+ * @param {number}  page        The page number.
+ * @returns
+ */
 function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	element.classList.add(FILTERS_CLASSNAME);
 	element.dataset.page = pagenum;
@@ -1631,7 +1638,7 @@ var alm_is_filtering = false;
 	/**
   * Initiate Ajax Load More.
   *
-  * @param {HTMLElement} el The Ajax Load More DOM element/container.
+  * @param {Element} el The Ajax Load More DOM element/container.
   * @param {Number} index The current index number of the Ajax Load More instance.
   */
 
@@ -1670,6 +1677,9 @@ var alm_is_filtering = false;
 		// Get localized <script/> variables
 		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
 		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+
+		// Add ALM object to the global window scope.
+		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
 
 		// ALM Element Containers
 		alm.main = el; // Top level DOM element
@@ -2675,21 +2685,21 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Set Filter Facets
+			/**
+    * Set Filter Facets.
+    */
 			if (alm.addons.filters && alm.facets && data.facets && typeof almFiltersFacets === 'function') {
 				window.almFiltersFacets(data.facets);
 			}
 
 			/**
-    * Display alm_debug results
+    * Display alm_debug results.
     */
-
 			(0, _almDebug2.default)(alm);
 
 			/**
-    * Set localized variables and Results Text
+    * Set localized variables and Results Text.
     */
-
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 				return regeneratorRuntime.wrap(function _callee$(_context) {
 					while (1) {
@@ -2709,7 +2719,6 @@ var alm_is_filtering = false;
 			/**
     * Render results
     */
-
 			if (total > 0) {
 				// We have results!
 
@@ -3577,7 +3586,7 @@ var alm_is_filtering = false;
 		/**
    * Set the Load Previous button to alm object.
    *
-   * @param {HTMLElement} button The button element.
+   * @param {Element} button The button element.
    * @since 5.5.0
    */
 		alm.AjaxLoadMore.setPreviousButton = function (button) {
@@ -4293,7 +4302,7 @@ exports.tab = tab;
  * Trigger Ajax Load More from other events.
  *
  * @since 5.0
- * @param {*} el
+ * @param {Element} el
  */
 
 var start = function start(el) {
@@ -4308,7 +4317,7 @@ exports.start = start;
  *  Scroll window to position (global function).
  *
  *  @since 5.0
- *  @param {*} position
+ *  @param {string} position The position of the scrollto.
  */
 
 var almScroll = function almScroll(position) {
@@ -5894,9 +5903,9 @@ var getButtonURL = exports.getButtonURL = function getButtonURL(alm) {
 /**
  * Set button dataset attributes.
  *
- * @param {*} button The HTML element.
- * @param {*} page The current page number.
- * @param {*} url The URL for updating.
+ * @param {Element} button The HTML element.
+ * @param {number} page The current page number.
+ * @param {string} url The URL for updating.
  */
 var setButtonAtts = exports.setButtonAtts = function setButtonAtts(button, page, url) {
 	if (!button) {
@@ -5927,11 +5936,10 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 /**
- * getScrollPercentage
- * Get the scroll distance in pixels from a percentage
+ * Get the scroll distance in pixels from a percentage.
  *
- * @param {Object} alm
- * @return {NUMBER} newdistance
+ * @param {object} alm The Ajax Load More object.
+ * @return {number} The new distance.
  * @since 5.2
  */
 
@@ -5943,11 +5951,8 @@ var getScrollPercentage = function getScrollPercentage(alm) {
 	var is_negative = alm.scroll_distance_orig.toString().indexOf('-') === -1 ? false : true; // Is this a negative number
 	var raw_distance = alm.scroll_distance_orig.toString().replace('-', '').replace('%', ''); // Remove - and perc
 	var wh = alm.window.innerHeight; // window height
-
 	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
-
 	var newdistance = is_negative ? '-' + height : height; // Set the distance
-	//console.log(parseInt(newdistance));
 
 	return parseInt(newdistance);
 };

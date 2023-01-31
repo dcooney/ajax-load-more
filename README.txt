@@ -266,10 +266,11 @@ How to install Ajax Load More.
 = 5.6.0 - January 23, 2023 =
 * NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
 * NEW: Added support for new Filter facets in Filters add-on version 2.0.
+* NEW: Added alm JavaScript object to the global `window` object so accessing config params can be done in browser. e.g. `window.ajax_load_more`
 * FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
 * FIX: Fixed deprecation notice in Elementor widgetregistration
 * UPDATE: Security fix for escaping data attributes in shortcode.
-* UPDATE: Code cleanup..
+* UPDATE: Code cleanup.
 
 
 = 5.5.5 - January 5, 2013 =

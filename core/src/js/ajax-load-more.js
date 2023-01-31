@@ -62,10 +62,10 @@ let alm_is_filtering = false;
 	/**
 	 * Initiate Ajax Load More.
 	 *
-	 * @param {HTMLElement} el The Ajax Load More DOM element/container.
+	 * @param {Element} el The Ajax Load More DOM element/container.
 	 * @param {Number} index The current index number of the Ajax Load More instance.
 	 */
-	let ajaxloadmore = function (el, index) {
+	const ajaxloadmore = function (el, index) {
 		// Move user to top of page to prevent loading of unnessasry posts
 		if (alm_localize && alm_localize.scrolltop === 'true') {
 			window.scrollTo(0, 0);
@@ -100,6 +100,9 @@ let alm_is_filtering = false;
 		// Get localized <script/> variables
 		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
 		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+
+		// Add ALM object to the global window scope.
+		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
 
 		// ALM Element Containers
 		alm.main = el; // Top level DOM element
@@ -1963,7 +1966,7 @@ let alm_is_filtering = false;
 		/**
 		 * Set the Load Previous button to alm object.
 		 *
-		 * @param {HTMLElement} button The button element.
+		 * @param {Element} button The button element.
 		 * @since 5.5.0
 		 */
 		alm.AjaxLoadMore.setPreviousButton = function (button) {
@@ -2457,7 +2460,7 @@ let alm_is_filtering = false;
 	 *
 	 * @since 2.1.2
 	 */
-	let alm_instances = document.querySelectorAll('.ajax-load-more-wrap');
+	const alm_instances = document.querySelectorAll('.ajax-load-more-wrap');
 	if (alm_instances.length) {
 		[...alm_instances].forEach((alm, index) => {
 			new ajaxloadmore(alm, index);
@@ -2630,7 +2633,7 @@ export { tab };
  * Trigger Ajax Load More from other events.
  *
  * @since 5.0
- * @param {*} el
+ * @param {Element} el
  */
 const start = function (el) {
 	if (!el) {
@@ -2644,7 +2647,7 @@ export { start };
  *  Scroll window to position (global function).
  *
  *  @since 5.0
- *  @param {*} position
+ *  @param {string} position The position of the scrollto.
  */
 const almScroll = function (position) {
 	if (!position) {

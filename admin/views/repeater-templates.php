@@ -329,7 +329,8 @@
 									repeater = container.data('name'), // Get templete name
 									type = container.data('type'), // Get template type (default/repeater/unlimited)
 									alias = ($('input._alm_repeater_alias', container).length) ? $('input._alm_repeater_alias', container).val() : '',
-									responseText = $(".saved-response", container);
+									responseText = $(".saved-response", container),
+									warning = $('.missing-template', container);
 
 	                     if(type === undefined) // Fix for custom repeaters v1
 	                        type = 'undefined';
@@ -374,6 +375,9 @@
 										  setTimeout(function() {
 											   responseText.delay(500).html(response).removeClass('loading');
 											   textarea.removeClass('loading');
+												if(warning){
+													warning.remove();
+												}
 										  }, 250);
 
 										  setTimeout(function() {

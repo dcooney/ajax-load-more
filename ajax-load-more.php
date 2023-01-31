@@ -1,4 +1,4 @@
-<?php // phpcs:ignore
+<?php
 /**
  * Plugin Name: Ajax Load More
  * Plugin URI: https://connekthq.com/plugins/ajax-load-more
@@ -15,6 +15,16 @@
  */
 
  /*
+LAYOUTS
+
+FILTERS
+
+ELEMENTOR
+
+CUSTOM REPEATERS
+* FIX: Added fix and warning message if Repeater Template is missing from the filesystem. This fix prevents a fatal error on the Repeater Template admin listing page.
+
+
  TODO:
  - Add shortcode builder setting for `facets="true"` [DONE]
  - Fix issue if `facets !== true` in shortcode. The filters are shut down. [DONE]
@@ -67,7 +77,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * Shortcode attributes.
 		 *
-		 * @var $shortcode_atts
+		 * @var array|null
 		 */
 		public static $shortcode_atts = null;
 

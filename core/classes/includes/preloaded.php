@@ -299,7 +299,7 @@ else {
 	ALM_LOCALIZE::add_localized_var( 'post_count', $alm_post_count, $localize_id );
 
 	// Get Filter Facets.
-	if ( $filters && $facets === 'true' && function_exists( 'alm_filters_get_facets' ) && ! empty( $target ) ) {
+	if ( $filters && $facets && function_exists( 'alm_filters_get_facets' ) && ! empty( $target ) ) {
 		ALM_LOCALIZE::add_localized_var( 'facets', alm_filters_get_facets( $args, $target ), $localize_id );
 	}
 
