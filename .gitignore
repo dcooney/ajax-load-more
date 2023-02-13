@@ -9,3 +9,5 @@ npm-shrinkwrap.json
 *.map
 _out
 /vendor
+.nvmrc.old
+
