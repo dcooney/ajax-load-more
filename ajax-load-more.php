@@ -14,30 +14,8 @@
  * @package AjaxLoadMore
  */
 
- /*
-LAYOUTS
-
-FILTERS
-
-ELEMENTOR
-
-CUSTOM REPEATERS
-* FIX: Added fix and warning message if Repeater Template is missing from the filesystem. This fix prevents a fatal error on the Repeater Template admin listing page.
-
-
- TODO:
- - Add shortcode builder setting for `facets="true"` [DONE]
- - Fix issue if `facets !== true` in shortcode. The filters are shut down. [DONE]
- - Add better explaniation in filter listing about Facets ON/OFF [DONE]
- - Add filter to change transient length [DONE]
- - Add Show More to display in radio/checkboxes for long lists.
-
- Elementor - Fix deprecation warning. [DONE]
-
- */
-
 define( 'ALM_VERSION', '5.6.0' );
-define( 'ALM_RELEASE', 'January 23, 2023' );
+define( 'ALM_RELEASE', 'February 7, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

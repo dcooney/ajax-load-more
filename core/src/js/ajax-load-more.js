@@ -1,4 +1,4 @@
-/*
+/**
  * Ajax Load More
  * https://connekthq.com/plugins/ajax-load-more/
  * Author: Darren Cooney
@@ -267,8 +267,8 @@ let alm_is_filtering = false;
 		// Extension Shortcode Params
 
 		// REST API.
-		alm.extensions.restapi = alm.listing.dataset.restapi;
-		if (alm.extensions.restapi === 'true') {
+		alm.extensions.restapi = alm.listing.dataset.restapi === 'true' ? true : false;
+		if (alm.extensions.restapi) {
 			alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
 			alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
 			alm.extensions.restapi_endpoint = alm.listing.dataset.restapiEndpoint;
@@ -277,26 +277,24 @@ let alm_is_filtering = false;
 		}
 
 		// ACF.
-		alm.extensions.acf = alm.listing.dataset.acf;
-		if (alm.extensions.acf === 'true') {
+		alm.extensions.acf = alm.listing.dataset.acf === 'true' ? true : false;
+		if (alm.extensions.acf) {
 			alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 			alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 			alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
 			alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
-			alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
-			// if field type, name or post ID is empty
+			// if field type, name or post ID is empty.
 			if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
 				alm.extensions.acf = false;
 			}
 		}
 
 		// Term Query.
-		alm.extensions.term_query = alm.listing.dataset.termQuery;
-		if (alm.extensions.term_query === 'true') {
+		alm.extensions.term_query = alm.listing.dataset.termQuery === 'true' ? true : false;
+		if (alm.extensions.term_query) {
 			alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
 			alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
 			alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
-			alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
 		}
 
 		// Paging.
@@ -379,17 +377,12 @@ let alm_is_filtering = false;
 		} else {
 			alm.addons.tabs = false;
 		}
-		/* End Tabs  */
 
 		/* REST API */
-		if (alm.extensions.restapi === 'true') {
-			alm.extensions.restapi = true;
+		if (alm.extensions.restapi) {
 			alm.extensions.restapi_debug = alm.extensions.restapi_debug === undefined ? false : alm.extensions.restapi_debug;
 			alm.extensions.restapi = alm.extensions.restapi_template_id === '' ? false : alm.extensions.restapi;
-		} else {
-			alm.extensions.restapi = false;
 		}
-		/* End REST API  */
 
 		/* Preloaded */
 		if (alm.addons.preloaded === 'true') {

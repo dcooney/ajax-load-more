@@ -20,7 +20,7 @@ export function almGetAjaxParams(alm, action, queryType) {
 		offset: alm.offset,
 		post_type: alm.post_type,
 		repeater: alm.repeater,
-		seo_start_page: alm.start_page
+		seo_start_page: alm.start_page,
 	};
 
 	// Addons & Extensions
@@ -103,6 +103,9 @@ export function almGetAjaxParams(alm, action, queryType) {
 	}
 	if (alm.listing.dataset.taxonomyOperator) {
 		data.taxonomy_operator = alm.listing.dataset.taxonomyOperator;
+	}
+	if (alm.listing.dataset.taxonomyIncludeChildren) {
+		data.taxonomy_include_children = alm.listing.dataset.taxonomyIncludeChildren;
 	}
 	if (alm.listing.dataset.taxonomyRelation) {
 		data.taxonomy_relation = alm.listing.dataset.taxonomyRelation;
@@ -218,7 +221,7 @@ export function almGetRestParams(alm) {
 		lang: alm.lang,
 		preloaded: alm.addons.preloaded,
 		preloaded_amount: alm.addons.preloaded_amount,
-		seo_start_page: alm.start_page
+		seo_start_page: alm.start_page,
 	};
 
 	return data;

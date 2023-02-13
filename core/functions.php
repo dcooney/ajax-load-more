@@ -240,22 +240,27 @@ function alm_get_post_format( $post_format ) {
 /**
  * Query for custom taxonomy.
  *
- * @param  string $taxonomy The taxonomy slug.
- * @param  string $terms    The taxonomy terms.
- * @param  string $operator The taxonomy operator.
- * @return array            The taxonomy query array.
+ * @see https://developer.wordpress.org/reference/classes/wp_query/#taxonomy-parameters
+ *
+ * @param  string  $taxonomy Taxonomy slug.
+ * @param  string  $terms    Taxonomy terms.
+ * @param  string  $operator Taxonomy operator.
+ * @param  boolean $children Taxonomy include_children.
+ * @return array             Taxonomy query array.
  * @since 2.8.5
  */
-function alm_get_taxonomy_query( $taxonomy, $terms, $operator ) {
+function alm_get_taxonomy_query( $taxonomy = '', $terms = '', $operator = 'IN', $children = true ) {
 	if ( ! empty( $taxonomy ) && ! empty( $terms ) ) {
-		$values = alm_parse_tax_terms( $terms );
-		$return = array(
-			'taxonomy' => $taxonomy,
-			'field'    => 'slug',
-			'terms'    => $values,
-			'operator' => $operator,
-		);
-		return $return;
+		$values           = alm_parse_tax_terms( $terms );
+		$include_children = $children !== 'false' ? true : false;
+		$query            = [
+			'taxonomy'         => $taxonomy,
+			'field'            => 'slug',
+			'terms'            => $values,
+			'operator'         => $operator,
+			'include_children' => $include_children,
+		];
+		return $query;
 	}
 }
 

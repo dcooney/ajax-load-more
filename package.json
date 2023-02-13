@@ -4,6 +4,7 @@
 	"description": "Ajax Load More WordPress Plugin",
 	"main": "core/src/js/ajax-load-more.js",
 	"scripts": {
+		"dev": "npm run start",
 		"start": "webpack -w --mode development --config=webpack/dev.config.js",
 		"build": "webpack -p --mode production --config=webpack/prod.config.js && npm run clean && mkdirp ./_out && npm run pot && npm run build:files && npm run build:dirs",
 		"pot": "composer run pot",
