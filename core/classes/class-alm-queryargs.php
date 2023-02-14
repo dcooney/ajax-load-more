@@ -257,13 +257,13 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 				// Loop and build the Meta Query.
 				for ( $i = 0; $i < $meta_query_total; $i++ ) {
-					$meta_array           = [
+					$meta_array = [
 						'key'     => isset( $meta_keys[ $i ] ) ? $meta_keys[ $i ] : '',
 						'value'   => isset( $meta_value[ $i ] ) ? $meta_value[ $i ] : '',
 						'compare' => isset( $meta_compare[ $i ] ) ? $meta_compare[ $i ] : 'IN',
 						'type'    => isset( $meta_type[ $i ] ) ? $meta_type[ $i ] : 'CHAR',
 					];
-					$args['meta_query'][] = alm_get_meta_query( $meta_array );
+					$args['meta_query'][ alm_create_meta_clause( $meta_keys[ $i ] ) ] = alm_get_meta_query( $meta_array );
 				}
 			}
 

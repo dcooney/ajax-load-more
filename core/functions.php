@@ -289,7 +289,6 @@ function alm_parse_tax_terms( $terms ) {
  * @return array        The WP_Query args.
  */
 function alm_get_meta_query( $array ) {
-
 	$meta_key     = esc_sql( $array['key'] );
 	$meta_value   = esc_sql( $array['value'] );
 	$meta_compare = esc_sql( $array['compare'] );
@@ -306,27 +305,42 @@ function alm_get_meta_query( $array ) {
 		$meta_values = alm_parse_meta_value( $meta_value, $meta_compare );
 
 		// Clear $meta_values if empty.
-		if ( '' === $meta_values ) {
+		if ( $meta_values === '' ) {
 			unset( $meta_values );
 		}
 
 		if ( isset( $meta_values ) ) {
-			$args = array(
+			$args = [
 				'key'     => $meta_key,
 				'value'   => $meta_values,
 				'compare' => $meta_compare,
 				'type'    => $meta_type,
-			);
+			];
 		} else {
 			// If $meta_values is empty, don't query for 'value'.
-			$args = array(
+			$args = [
 				'key'     => $meta_key,
 				'compare' => $meta_compare,
 				'type'    => $meta_type,
-			);
+			];
 		}
 		return $args;
 	}
+}
+
+/**
+ * Create the name for the meta query.
+ * Note: This is required to use custom ordering.
+ * eg. `Country Code` = `country_code_clause`
+ *
+ * @see https://wordpress.stackexchange.com/questions/246355/order-by-multiple-meta-key-and-meta-value/246358#246358
+ *
+ * @param string $key The meta key name.
+ * @return string     Formatted meta name.
+ */
+function alm_create_meta_clause( $key ) {
+	$key = preg_replace( '/\s+/', '_', $key );
+	return strtolower( $key . '_clause' );
 }
 
 /**

@@ -15,44 +15,44 @@ require('./helpers/polyfills.js');
 let qs = require('qs');
 let imagesLoaded = require('imagesloaded');
 import axios from 'axios';
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import smoothscroll from 'smoothscroll-polyfill'; // Smooth scrolling polyfill
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 smoothscroll.polyfill();
 
 // ALM Modules
 import './helpers/helpers';
 //import commentReplyFix from './helpers/commentReplyFix';
-import getParameterByName from './helpers/getParameterByName';
+import { createCacheFile } from './addons/cache';
+import { elementor, elementorCreateParams, elementorGetContent, elementorInit, elementorLoaded } from './addons/elementor';
+import { buildFilterURL } from './addons/filters';
+import { createSEOAttributes, getSEOPageNum } from './addons/seo';
+import { singlePostHTML } from './addons/singleposts';
+import { woocommerce, woocommerceLoaded, wooGetContent, wooInit, wooReset } from './addons/woocommerce';
 import almAppendChildren from './helpers/almAppendChildren';
-import tableWrap from './helpers/tableWrap';
-import getCacheUrl from './helpers/getCacheUrl';
 import almDomParser from './helpers/almDomParser';
-import stripEmptyNodes from './helpers/stripEmptyNodes';
+import getCacheUrl from './helpers/getCacheUrl';
+import getParameterByName from './helpers/getParameterByName';
 import * as queryParams from './helpers/queryParams';
-import * as resultsText from './modules/resultsText';
-import { tableOfContents } from './modules/tableofcontents';
-import setLocalizedVars from './modules/setLocalizedVars';
-import insertScript from './modules/insertScript';
-import setFocus from './modules/setFocus';
-import { getButtonURL } from './modules/getButtonURL';
-import { almMasonryConfig, almMasonry } from './modules/masonry';
+import srcsetPolyfill from './helpers/srcsetPolyfill';
+import stripEmptyNodes from './helpers/stripEmptyNodes';
+import tableWrap from './helpers/tableWrap';
+import almDebug from './modules/almDebug';
 import almFadeIn from './modules/fadeIn';
 import almFadeOut from './modules/fadeOut';
 import almFilter from './modules/filtering';
-import almNoResults from './modules/noResults';
-import almDebug from './modules/almDebug';
+import { getButtonURL } from './modules/getButtonURL';
 import getScrollPercentage from './modules/getScrollPercentage';
-import srcsetPolyfill from './helpers/srcsetPolyfill';
-import { showPlaceholder, hidePlaceholder } from './modules/placeholder';
+import insertScript from './modules/insertScript';
 import { lazyImages } from './modules/lazyImages';
-import { singlePostHTML } from './addons/singleposts';
-import { createCacheFile } from './addons/cache';
-import { wooInit, woocommerce, wooGetContent, wooReset, woocommerceLoaded } from './addons/woocommerce';
-import { elementorCreateParams, elementorGetContent, elementorInit, elementor, elementorLoaded } from './addons/elementor';
-import { buildFilterURL } from './addons/filters';
-import { createSEOAttributes, getSEOPageNum } from './addons/seo';
+import { almMasonry, almMasonryConfig } from './modules/masonry';
+import almNoResults from './modules/noResults';
+import { hidePlaceholder, showPlaceholder } from './modules/placeholder';
+import * as resultsText from './modules/resultsText';
+import setFocus from './modules/setFocus';
+import setLocalizedVars from './modules/setLocalizedVars';
+import { tableOfContents } from './modules/tableofcontents';
 
-// Global filtering var
+// Global filtering state.
 let alm_is_filtering = false;
 
 // Start ALM
@@ -62,7 +62,7 @@ let alm_is_filtering = false;
 	/**
 	 * Initiate Ajax Load More.
 	 *
-	 * @param {Element} el The Ajax Load More DOM element/container.
+	 * @param {Element} el   The Ajax Load More DOM element/container.
 	 * @param {Number} index The current index number of the Ajax Load More instance.
 	 */
 	const ajaxloadmore = function (el, index) {
@@ -93,13 +93,14 @@ let alm_is_filtering = false;
 		alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
 		alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
 
-		alm.master_id = el.dataset.id ? `ajax-load-more-${el.dataset.id}` : el.id; // The defined or generated ID of the ALM instance
 		el.classList.add('alm-' + index); // Add unique classname.
 		el.setAttribute('data-alm-id', index); // Add unique data id.
 
-		// Get localized <script/> variables
-		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
-		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+		// The defined or generated ID for the ALM instance.
+		alm.master_id = el.dataset.id ? `ajax_load_more_${el.dataset.id}` : el.id;
+
+		// Localized <script/> variables.
+		alm.localize = window[alm.master_id + '_vars'];
 
 		// Add ALM object to the global window scope.
 		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
@@ -2477,6 +2478,16 @@ let filter = function (transition = 'fade', speed = '200', data = '') {
 	almFilter(transition, speed, data, 'filter');
 };
 export { filter };
+export { reset };
+export { getPostCount };
+export { getTotalPosts };
+export { tracking };
+export { tab };
+export { start };
+export { almScroll };
+export { getOffset };
+export { render };
+export { click };
 
 /**
  * Reset an Ajax Load More instance.
@@ -2511,7 +2522,6 @@ let reset = function (props = {}) {
 		almFilter('fade', '200', data, 'filter');
 	}
 };
-export { reset };
 
 /**
  * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
@@ -2532,7 +2542,6 @@ const getPostCount = function (id = '') {
 	}
 	return parseInt(localized.post_count);
 };
-export { getPostCount };
 
 /**
  * Get the total number of posts by ALM instance ID from the ALM Localized variables.
@@ -2551,7 +2560,6 @@ const getTotalPosts = function (id = '') {
 	}
 	return parseInt(localized.total_posts);
 };
-export { getTotalPosts };
 
 /**
  * Track Page Views in Google Analytics.
@@ -2600,7 +2608,6 @@ const tracking = function (path) {
 		}
 	}, 200);
 };
-export { tracking };
 
 /**
  * Tabbed content for Ajax Load More instance.
@@ -2620,7 +2627,6 @@ const tab = function (data = '', url = false) {
 	alm_is_filtering = true;
 	almFilter(transition, speed, data, 'tab');
 };
-export { tab };
 
 /**
  * Trigger Ajax Load More from other events.
@@ -2634,7 +2640,6 @@ const start = function (el) {
 	}
 	window.almInit(el);
 };
-export { start };
 
 /**
  *  Scroll window to position (global function).
@@ -2651,7 +2656,6 @@ const almScroll = function (position) {
 		behavior: 'smooth',
 	});
 };
-export { almScroll };
 
 /**
  *  Get the current top/left coordinates of an element relative to the document.
@@ -2668,7 +2672,6 @@ const getOffset = function (el = null) {
 		scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 	return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
 };
-export { getOffset };
 
 /**
  *  ALM Render (in progress)
@@ -2681,7 +2684,6 @@ const render = function (el, options = null) {
 	}
 	// console.log(el, options);
 };
-export { render };
 
 /**
  * Trigger a click event to load Ajax Load More content.
@@ -2704,4 +2706,3 @@ const click = function (id = '') {
 		}
 	}
 };
-export { click };
