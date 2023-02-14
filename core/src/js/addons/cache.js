@@ -51,6 +51,5 @@ export function wooCache(alm, content) {
 
 	axios.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for post: ' + alm.canonical_url);
-		//console.log(response);
 	});
 }

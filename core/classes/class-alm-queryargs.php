@@ -60,10 +60,9 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$taxonomy          = isset( $a['taxonomy'] ) ? $a['taxonomy'] : '';
 			$taxonomy_terms    = isset( $a['taxonomy_terms'] ) ? $a['taxonomy_terms'] : '';
 			$taxonomy_operator = isset( $a['taxonomy_operator'] ) ? $a['taxonomy_operator'] : '';
-
-			if ( empty( $taxonomy_operator ) ) {
-				$taxonomy_operator = 'IN';
-			}
+			$taxonomy_operator = empty( $taxonomy_operator ) ? 'IN' : $taxonomy_operator;
+			$taxonomy_children = isset( $a['taxonomy_include_children'] ) ? $a['taxonomy_include_children'] : '';
+			$taxonomy_children = empty( $taxonomy_children ) ? true : $taxonomy_children;
 
 			$taxonomy_relation = isset( $a['taxonomy_relation'] ) ? $a['taxonomy_relation'] : 'AND';
 			$taxonomy_relation = empty( $taxonomy_relation ) || $facets ? 'AND' : $taxonomy_relation;
@@ -151,7 +150,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				}
 			}
 
-			// Create $args array.
+			// Create initial $args array.
 			$args = [
 				'post_type'           => $post_type,
 				'posts_per_page'      => $posts_per_page,
@@ -161,43 +160,6 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				'post_status'         => $post_status,
 				'ignore_sticky_posts' => true,
 			];
-
-			// Post Format & Taxonomy.
-			// Both use tax_query, so we need to combine these queries.
-			if ( ! empty( $post_format ) || ! empty( $taxonomy ) ) {
-
-				$tax_query_total   = count( explode( ':', $taxonomy ) ); // Total $taxonomy objects.
-				$taxonomy          = explode( ':', $taxonomy ); // convert to array.
-				$taxonomy_terms    = explode( ':', $taxonomy_terms ); // convert to array.
-				$taxonomy_operator = explode( ':', $taxonomy_operator ); // convert to array.
-
-				if ( empty( $taxonomy ) ) {
-
-					// Post Format only.
-					$args['tax_query'] = [
-						alm_get_post_format( $post_format ),
-					];
-
-				} else {
-
-					// Post Format.
-					if ( ! empty( $post_format ) ) {
-						$args['tax_query'] = [
-							'relation' => $taxonomy_relation,
-							alm_get_post_format( $post_format ),
-						];
-					} else {
-						$args['tax_query'] = [
-							'relation' => $taxonomy_relation,
-						];
-					}
-
-					// Loop Taxonomies.
-					for ( $tax_i = 0; $tax_i < $tax_query_total; $tax_i++ ) {
-						$args['tax_query'][] = alm_get_taxonomy_query( $taxonomy[ $tax_i ], $taxonomy_terms[ $tax_i ], $taxonomy_operator[ $tax_i ] );
-					}
-				}
-			}
 
 			// Category.
 			if ( ! empty( $category ) ) {
@@ -238,6 +200,46 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$args['day'] = $day;
 			}
 
+			// Taxonomy & Post Format.
+			// Both use tax_query, so we need to combine the queries.
+			if ( ! empty( $post_format ) || ! empty( $taxonomy ) ) {
+				$tax_query_total   = count( explode( ':', $taxonomy ) ); // Total $taxonomy objects.
+				$taxonomy          = explode( ':', $taxonomy ); // Convert to array.
+				$taxonomy_terms    = explode( ':', $taxonomy_terms ); // Convert to array.
+				$taxonomy_operator = explode( ':', $taxonomy_operator ); // Convert to array.
+				$taxonomy_children = explode( ':', $taxonomy_children ); // Convert to array.
+
+				if ( empty( $taxonomy ) ) {
+					// Post Format only.
+					$args['tax_query'] = [
+						alm_get_post_format( $post_format ),
+					];
+
+				} else {
+					// Post Format.
+					if ( ! empty( $post_format ) ) {
+						$args['tax_query'] = [
+							'relation' => $taxonomy_relation,
+							alm_get_post_format( $post_format ),
+						];
+					} else {
+						$args['tax_query'] = [
+							'relation' => $taxonomy_relation,
+						];
+					}
+
+					// Loop Taxonomies.
+					for ( $i = 0; $i < $tax_query_total; $i++ ) {
+						$args['tax_query'][] = alm_get_taxonomy_query(
+							$taxonomy[ $i ],
+							$taxonomy_terms[ $i ],
+							$taxonomy_operator[ $i ],
+							isset( $taxonomy_children[ $i ] ) ? $taxonomy_children[ $i ] : true
+						);
+					}
+				}
+			}
+
 			// Meta Query.
 			if ( ! empty( $meta_key ) && isset( $meta_value ) || ! empty( $meta_key ) && $meta_compare !== 'IN' ) {
 
@@ -255,13 +257,13 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 				// Loop and build the Meta Query.
 				for ( $i = 0; $i < $meta_query_total; $i++ ) {
-					$meta_array           = [
+					$meta_array = [
 						'key'     => isset( $meta_keys[ $i ] ) ? $meta_keys[ $i ] : '',
 						'value'   => isset( $meta_value[ $i ] ) ? $meta_value[ $i ] : '',
 						'compare' => isset( $meta_compare[ $i ] ) ? $meta_compare[ $i ] : 'IN',
 						'type'    => isset( $meta_type[ $i ] ) ? $meta_type[ $i ] : 'CHAR',
 					];
-					$args['meta_query'][] = alm_get_meta_query( $meta_array );
+					$args['meta_query'][ alm_create_meta_clause( $meta_keys[ $i ] ) ] = alm_get_meta_query( $meta_array );
 				}
 			}
 
@@ -320,14 +322,11 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$sticky_post__not_in = isset( $args['post__not_in'] ) ? $args['post__not_in'] : '';
 
 				if ( $is_ajax ) { // Ajax Query.
-
-					$sticky_query_args = $args;
-
+					$sticky_query_args                   = $args;
 					$sticky_query_args['post__not_in']   = $sticky_posts;
 					$sticky_query_args['posts_per_page'] = apply_filters( 'alm_max_sticky_per_page', 50 ); // Set a maximum to prevent fatal query errors.
 					$sticky_query_args['fields']         = 'ids';
-
-					$sticky_query = new WP_Query( $sticky_query_args ); // Query all non-sticky posts.
+					$sticky_query                        = new WP_Query( $sticky_query_args ); // Query all non-sticky posts.
 
 					// If has sticky and regular posts.
 					if ( $sticky_posts && $sticky_query->posts ) {

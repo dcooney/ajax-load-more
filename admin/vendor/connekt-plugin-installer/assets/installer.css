@@ -4,7 +4,7 @@
    display: -moz-box;
    display: -ms-flexbox;
    display: -webkit-flex;
-   display: flex;  
+   display: flex;
    -webkit-flex-wrap: wrap;
    flex-wrap: wrap;
    flex-flow: row wrap;
@@ -19,7 +19,7 @@
       flex: auto;
    }
    .cnkt-plugin-installer * {
-      box-sizing: border-box;      
+      box-sizing: border-box;
    }
    .cnkt-plugin-installer .plugin{
       width: 31.333%;
@@ -35,7 +35,7 @@
       .cnkt-plugin-installer .plugin:hover{
          border-color: #cecece;
       }
-      
+
    .cnkt-plugin-installer .plugin-wrap{
       padding: 20px 20px 95px 145px;
       min-height: 214px;
@@ -44,7 +44,7 @@
    }
    .cnkt-plugin-installer li a,
    .cnkt-plugin-installer .plugin-wrap a{
-      text-decoration: none;  
+      text-decoration: none;
    }
    .cnkt-plugin-installer .plugin-wrap img{
       display: block;
@@ -60,7 +60,7 @@
       padding: 0;
       margin: 0;
       font-size: 17px;
-      font-weight: 600;  
+      font-weight: 600;
       color: #333;
       line-height: 1.4;
    }
@@ -68,15 +68,15 @@
       padding: 10px 0 0;
       margin: 0;
       font-size: 14px;
-      font-weight: 400; 
+      font-weight: 400;
       color: #777;
    }
    .cnkt-plugin-installer .plugin-wrap p.plugin-author{
       font-size: 13px;
       padding-top: 20px;
       font-style: italic;
-   } 
-   
+   }
+
 .cnkt-plugin-installer .activation-row{
       display: block;
       margin: 0;
@@ -101,10 +101,10 @@
 
 @media screen and (max-width: 1170px){
    .cnkt-plugin-installer .plugin{
-      width: 48%; 
+      width: 48%;
       margin: 0 1% 15px;
    }
-}   
+}
 @media screen and (max-width: 960px){
    .cnkt-plugin-installer .plugin-wrap{
       padding: 20px 20px 95px 115px;
@@ -112,9 +112,9 @@
    }
    .cnkt-plugin-installer .plugin-wrap img{
       max-width: 78px;
-      max-height: 78px;         
+      max-height: 78px;
    }
-}   
+}
 @media screen and (max-width: 640px){
 	.cnkt-plugin-installer{
 		width: 100%;
@@ -122,8 +122,8 @@
 	}
    .cnkt-plugin-installer .plugin{
       width: 100%;
-      margin: 0 0 20px;  
+      margin: 0 0 20px;
    }
 }
-   
-   
+
+

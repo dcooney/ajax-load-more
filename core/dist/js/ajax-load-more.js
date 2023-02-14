@@ -164,7 +164,6 @@ function wooCache(alm, content) {
 
 	_axios2.default.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for post: ' + alm.canonical_url);
-		//console.log(response);
 	});
 }
 
@@ -637,11 +636,10 @@ function _interopRequireDefault(obj) {
 var FILTERS_CLASSNAME = 'alm-filters';
 
 /**
- * parseQuerystring
- * Parse a filter querystring for returning caches directories
+ * Parse a filter querystring for returning caches directories.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 function parseQuerystring(path) {
@@ -682,11 +680,11 @@ function parseQuerystring(path) {
 }
 
 /**
- * Build new paging URL for filters
+ * Build new paging URL for filters.
  *
- * @param {Object} alm
- * @param {String} querystring
- * @param {Int} page
+ * @param {object} alm         The ALM object.
+ * @param {string} querystring The current querystring.
+ * @param {number} page        The page number.
  * @since 5.3.5
  */
 function buildFilterURL(alm) {
@@ -720,10 +718,10 @@ function buildFilterURL(alm) {
 }
 
 /**
- * Create data attributes for Filters paged results
+ * Create data attributes for Filters paged results.
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm      The ALM object.
+ * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
 function createMasonryFiltersPage(alm, element) {
@@ -742,8 +740,8 @@ function createMasonryFiltersPage(alm, element) {
 /**
  * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
  *
- * @param {Object} alm
- * @param {Array} elements
+ * @param {object} alm     The ALM object.
+ * @param {array} elements An array of filter elements.
  * @since 5.3.1
  */
 function createMasonryFiltersPages(alm, elements) {
@@ -784,7 +782,15 @@ function createMasonryFiltersPages(alm, elements) {
 	return elements;
 }
 
-// Create the attributes (page, url, classes)  for the masonry items
+/**
+ * Create the attributes (page, url, classes)  for the masonry items.
+ *
+ * @param {object}  alm         The ALM object.
+ * @param {Element} element     The container element.
+ * @param {string}  querystring The current querystring.
+ * @param {number}  page        The page number.
+ * @returns
+ */
 function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	element.classList.add(FILTERS_CLASSNAME);
 	element.dataset.page = pagenum;
@@ -1441,7 +1447,7 @@ function getContainerCount(container) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
+exports.click = exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -1595,7 +1601,7 @@ function _asyncToGenerator(fn) {
 	};
 }
 
-/*
+/**
  * Ajax Load More
  * https://connekthq.com/plugins/ajax-load-more/
  * Author: Darren Cooney
@@ -1631,7 +1637,7 @@ var alm_is_filtering = false;
 	/**
   * Initiate Ajax Load More.
   *
-  * @param {HTMLElement} el The Ajax Load More DOM element/container.
+  * @param {Element} el The Ajax Load More DOM element/container.
   * @param {Number} index The current index number of the Ajax Load More instance.
   */
 
@@ -1670,6 +1676,9 @@ var alm_is_filtering = false;
 		// Get localized <script/> variables
 		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
 		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+
+		// Add ALM object to the global window scope.
+		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
 
 		// ALM Element Containers
 		alm.main = el; // Top level DOM element
@@ -1834,8 +1843,8 @@ var alm_is_filtering = false;
 		// Extension Shortcode Params
 
 		// REST API.
-		alm.extensions.restapi = alm.listing.dataset.restapi;
-		if (alm.extensions.restapi === 'true') {
+		alm.extensions.restapi = alm.listing.dataset.restapi === 'true' ? true : false;
+		if (alm.extensions.restapi) {
 			alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
 			alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
 			alm.extensions.restapi_endpoint = alm.listing.dataset.restapiEndpoint;
@@ -1844,26 +1853,24 @@ var alm_is_filtering = false;
 		}
 
 		// ACF.
-		alm.extensions.acf = alm.listing.dataset.acf;
-		if (alm.extensions.acf === 'true') {
+		alm.extensions.acf = alm.listing.dataset.acf === 'true' ? true : false;
+		if (alm.extensions.acf) {
 			alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 			alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 			alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
 			alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
-			alm.extensions.acf = alm.extensions.acf === 'true' ? true : false;
-			// if field type, name or post ID is empty
+			// if field type, name or post ID is empty.
 			if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
 				alm.extensions.acf = false;
 			}
 		}
 
 		// Term Query.
-		alm.extensions.term_query = alm.listing.dataset.termQuery;
-		if (alm.extensions.term_query === 'true') {
+		alm.extensions.term_query = alm.listing.dataset.termQuery === 'true' ? true : false;
+		if (alm.extensions.term_query) {
 			alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
 			alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
 			alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
-			alm.extensions.term_query = alm.extensions.term_query === 'true' ? true : false;
 		}
 
 		// Paging.
@@ -1944,17 +1951,12 @@ var alm_is_filtering = false;
 		} else {
 			alm.addons.tabs = false;
 		}
-		/* End Tabs  */
 
 		/* REST API */
-		if (alm.extensions.restapi === 'true') {
-			alm.extensions.restapi = true;
+		if (alm.extensions.restapi) {
 			alm.extensions.restapi_debug = alm.extensions.restapi_debug === undefined ? false : alm.extensions.restapi_debug;
 			alm.extensions.restapi = alm.extensions.restapi_template_id === '' ? false : alm.extensions.restapi;
-		} else {
-			alm.extensions.restapi = false;
 		}
-		/* End REST API  */
 
 		/* Preloaded */
 		if (alm.addons.preloaded === 'true') {
@@ -2675,21 +2677,21 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Set Filter Facets
+			/**
+    * Set Filter Facets.
+    */
 			if (alm.addons.filters && alm.facets && data.facets && typeof almFiltersFacets === 'function') {
 				window.almFiltersFacets(data.facets);
 			}
 
 			/**
-    * Display alm_debug results
+    * Display alm_debug results.
     */
-
 			(0, _almDebug2.default)(alm);
 
 			/**
-    * Set localized variables and Results Text
+    * Set localized variables and Results Text.
     */
-
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 				return regeneratorRuntime.wrap(function _callee$(_context) {
 					while (1) {
@@ -2709,7 +2711,6 @@ var alm_is_filtering = false;
 			/**
     * Render results
     */
-
 			if (total > 0) {
 				// We have results!
 
@@ -2980,7 +2981,7 @@ var alm_is_filtering = false;
 									}
 								}
 							}, _callee4, this);
-						}))().catch(function (e) {
+						}))().catch(function () {
 							console.log('There was an error with ALM Masonry');
 						});
 					}
@@ -3577,7 +3578,7 @@ var alm_is_filtering = false;
 		/**
    * Set the Load Previous button to alm object.
    *
-   * @param {HTMLElement} button The button element.
+   * @param {Element} button The button element.
    * @since 5.5.0
    */
 		alm.AjaxLoadMore.setPreviousButton = function (button) {
@@ -4170,38 +4171,48 @@ var reset = function reset() {
 exports.reset = reset;
 
 /**
- * Get the total post count in the current query by ALM instance ID.
+ * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
  *
- * @param  {string} id The ALM ID.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ *
+ * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 
 var getPostCount = function getPostCount() {
-	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	var theID = window['ajax_load_more_' + id + '_vars'];
-	if (!theID && !theID.post_count) {
+	// Get the ALM localized variable name.
+	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+
+	// Get the value from the window object.
+	var localized = window[localize_var];
+	if (!localized && !localized.post_count) {
 		return null;
 	}
-	return parseInt(theID.post_count);
+	return parseInt(localized.post_count);
 };
 exports.getPostCount = getPostCount;
 
 /**
- * Get the total number of posts by ALM instance ID.
+ * Get the total number of posts by ALM instance ID from the ALM Localized variables.
  *
- * @param  {string} id The ALM ID.
+ * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 
 var getTotalPosts = function getTotalPosts() {
-	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'default';
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	var theID = window['ajax_load_more_' + id + '_vars'];
-	if (!theID && !theID.total_posts) {
+	// Get the ALM localized variable name.
+	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+
+	// Get the value from the window object.
+	var localized = window[localize_var];
+	if (!localized && !localized.total_posts) {
 		return null;
 	}
-	return parseInt(theID.total_posts);
+	return parseInt(localized.total_posts);
 };
 exports.getTotalPosts = getTotalPosts;
 
@@ -4283,7 +4294,7 @@ exports.tab = tab;
  * Trigger Ajax Load More from other events.
  *
  * @since 5.0
- * @param {*} el
+ * @param {Element} el
  */
 
 var start = function start(el) {
@@ -4298,7 +4309,7 @@ exports.start = start;
  *  Scroll window to position (global function).
  *
  *  @since 5.0
- *  @param {*} position
+ *  @param {string} position The position of the scrollto.
  */
 
 var almScroll = function almScroll(position) {
@@ -4348,6 +4359,32 @@ var render = function render(el) {
 };
 exports.render = render;
 
+/**
+ * Trigger a click event to load Ajax Load More content.
+ *
+ * @param {string} id The Ajax Load More ID.
+ */
+
+var click = function click() {
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	var alm = document.querySelector('.ajax-load-more-wrap');
+	var button = '';
+	if (!id && alm) {
+		// Default ALM element.
+		button = alm.querySelector('button.alm-load-more-btn');
+		button && button.click();
+	} else {
+		// Ajax Load More by ID.
+		alm = document.querySelector('.ajax-load-more-wrap[data-id="' + id + '"]');
+		if (alm) {
+			button = alm.querySelector('button.alm-load-more-btn');
+			button && button.click();
+		}
+	}
+};
+exports.click = click;
+
 /***/ }),
 
 /***/ "./core/src/js/helpers/almAppendChild.js":
@@ -4363,17 +4400,16 @@ exports.render = render;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+var nodeNameArray = ['#text', '#comment'];
+
 /**
  * Append a child element to a container
  *
- * @param {*} target | Target element to append items
- * @param {*} element | The element to append
- * @param {*} transition | The transiton
+ * @param {Element} target | Target element to append items
+ * @param {Element} element | The element to append
+ * @param {string} transition | The transiton
  * @since 5.0
  */
-
-var nodeNameArray = ['#text', '#comment'];
-
 var almAppendChild = function almAppendChild() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
@@ -4422,9 +4458,9 @@ function _interopRequireDefault(obj) {
 /**
  * Loop array of elements and append to target
  *
- * @param {*} target | Target element to append items
- * @param {*} array | An array of elements
- * @param {*} transition | The transiton
+ * @param {Element} target | Target element to append items
+ * @param {Element} array | An array of elements
+ * @param {string} transition | The transiton
  * @since 5.0
  */
 
@@ -4621,16 +4657,16 @@ exports.default = getCacheUrl;
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 var getParameterByName = function getParameterByName(name, url) {
-   if (!url) url = window.location.href;
-   name = name.replace(/[\[\]]/g, "\\$&");
-   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-       results = regex.exec(url);
-   if (!results) return null;
-   if (!results[2]) return '';
-   return decodeURIComponent(results[2].replace(/\+/g, " "));
+	if (!url) url = window.location.href;
+	name = name.replace(/[\[\]]/g, '\\$&');
+	var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+	    results = regex.exec(url);
+	if (!results) return null;
+	if (!results[2]) return '';
+	return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 exports.default = getParameterByName;
 
@@ -5181,6 +5217,9 @@ function almGetAjaxParams(alm, action, queryType) {
 	if (alm.listing.dataset.taxonomyOperator) {
 		data.taxonomy_operator = alm.listing.dataset.taxonomyOperator;
 	}
+	if (alm.listing.dataset.taxonomyIncludeChildren) {
+		data.taxonomy_include_children = alm.listing.dataset.taxonomyIncludeChildren;
+	}
 	if (alm.listing.dataset.taxonomyRelation) {
 		data.taxonomy_relation = alm.listing.dataset.taxonomyRelation;
 	}
@@ -5363,7 +5402,7 @@ exports.default = srcsetPolyfill;
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 /**
  * Remove empty HTML nodes from array of nodes
@@ -5374,22 +5413,22 @@ Object.defineProperty(exports, "__esModule", {
  * @since 5.1.3
  */
 var stripEmptyNodes = function stripEmptyNodes() {
-  var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+	var nodes = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-  if (!nodes) {
-    return false;
-  }
+	if (!nodes) {
+		return false;
+	}
 
-  // Exclude these nodeNames from being rendered
-  var nodeNameArray = ['#text', '#comment'];
+	// Exclude these nodeNames from being rendered
+	var nodeNameArray = ['#text', '#comment'];
 
-  // Filter data by nodeName 
-  var results = nodes.filter(function (node) {
-    return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
-  });
+	// Filter data by nodeName
+	var results = nodes.filter(function (node) {
+		return nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1;
+	});
 
-  // Send the results
-  return results;
+	// Send the results
+	return results;
 };
 exports.default = stripEmptyNodes;
 
@@ -5406,25 +5445,25 @@ exports.default = stripEmptyNodes;
 
 
 Object.defineProperty(exports, "__esModule", {
-   value: true
+	value: true
 });
 /**
  * Wrap `table` containers in tbody elements
  * innerHTML and DOMParser do not work with <tr/> <td/> elements etc.
  *
- * @param {*} html | Plain text
+ * @param {string} html Plain text HTML.
  * @since 5.0
  */
 var tableWrap = function tableWrap() {
-   var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var html = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
-   if (!html) {
-      return false;
-   }
-   var table_reveal = document.createElement('tbody');
-   table_reveal.innerHTML = html;
-   var table_reveal_array = [table_reveal];
-   return table_reveal_array; // Return new array
+	if (!html) {
+		return false;
+	}
+	var table_reveal = document.createElement('tbody');
+	table_reveal.innerHTML = html;
+	var table_reveal_array = [table_reveal];
+	return table_reveal_array; // Return new array
 };
 exports.default = tableWrap;
 
@@ -5859,9 +5898,9 @@ var getButtonURL = exports.getButtonURL = function getButtonURL(alm) {
 /**
  * Set button dataset attributes.
  *
- * @param {*} button The HTML element.
- * @param {*} page The current page number.
- * @param {*} url The URL for updating.
+ * @param {Element} button The HTML element.
+ * @param {number} page The current page number.
+ * @param {string} url The URL for updating.
  */
 var setButtonAtts = exports.setButtonAtts = function setButtonAtts(button, page, url) {
 	if (!button) {
@@ -5892,11 +5931,10 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 /**
- * getScrollPercentage
- * Get the scroll distance in pixels from a percentage
- * 
- * @param {Object} alm
- * @return {NUMBER} newdistance
+ * Get the scroll distance in pixels from a percentage.
+ *
+ * @param {object} alm The Ajax Load More object.
+ * @return {number} The new distance.
  * @since 5.2
  */
 
@@ -5905,14 +5943,11 @@ var getScrollPercentage = function getScrollPercentage(alm) {
 		return false;
 	}
 
-	var is_negative = alm.scroll_distance_orig.toString().indexOf("-") === -1 ? false : true; // Is this a negative number   
-	var raw_distance = alm.scroll_distance_orig.toString().replace("-", "").replace("%", ""); // Remove - and perc 	
+	var is_negative = alm.scroll_distance_orig.toString().indexOf('-') === -1 ? false : true; // Is this a negative number
+	var raw_distance = alm.scroll_distance_orig.toString().replace('-', '').replace('%', ''); // Remove - and perc
 	var wh = alm.window.innerHeight; // window height
-
 	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
-
-	var newdistance = is_negative ? "-" + height : height; // Set the distance	
-	//console.log(parseInt(newdistance));
+	var newdistance = is_negative ? '-' + height : height; // Set the distance
 
 	return parseInt(newdistance);
 };
@@ -5946,11 +5981,10 @@ function _interopRequireDefault(obj) {
  * insertScript
  * Search nodes for <script/> tags and run scripts.
  * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
- * 
+ *
  * @since 5.0
  */
 var insertScript = {
-
 	init: function init(node) {
 		if (this.isScript(node) === true) {
 			node.parentNode.replaceChild(this.clone(node), node);
@@ -5990,14 +6024,13 @@ var insertScript = {
 	},
 
 	clone: function clone(node) {
-		var script = document.createElement("script");
+		var script = document.createElement('script');
 		script.text = node.innerHTML;
 		for (var i = node.attributes.length - 1; i >= 0; i--) {
 			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
 		}
 		return script;
 	}
-
 };
 exports.default = insertScript;
 
@@ -6606,9 +6639,9 @@ function almMasonryConfig(alm) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-/**  
+/**
  * Set the results text if required.
- * 
+ *
  * @param {*} target The target HTML element
  * @param {*} html The HTML
  * @since 5.1
@@ -6617,7 +6650,7 @@ var almNoResults = function almNoResults(target) {
 	var html = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
 	if (html === '') {
-		return false; // exit if empty	
+		return false; // exit if empty
 	}
 
 	// Remove empty <p/> tags
@@ -6864,8 +6897,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 /**
- * setFocus
- * Set user focus to improve accessibility after load events
+ * Set user focus to improve accessibility after load events.
  *
  * @param {Object} alm
  * @param {HTMLElement} preloaded
@@ -6873,7 +6905,6 @@ Object.defineProperty(exports, "__esModule", {
  * @param {Boolean} is_filtering
  * @since 5.1
  */
-
 var setFocus = function setFocus(alm) {
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 	var total = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
@@ -7017,17 +7048,15 @@ function _interopRequireWildcard(obj) {
 	}
 }
 
-/**  
+/**
  * Set localized variables
  *
  * @param {object} alm     Global alm object
- * @since 4.1 
+ * @since 4.1
  */
 
 var setLocalizedVars = function setLocalizedVars(alm) {
-
 	return new Promise(function (resolve) {
-
 		var type = 'standard';
 
 		// Current Page `page`
@@ -7078,7 +7107,7 @@ function almSetPostCount(alm) {
 	var count = pc + pa;
 	count = alm.start_page > 1 ? count - pa : count; // SEO
 	count = alm.addons.filters_startpage > 1 ? count - pa : count; // Filters
-	count = alm.addons.single_post ? count + 1 : count; // Single Posts	
+	count = alm.addons.single_post ? count + 1 : count; // Single Posts
 	count = alm.addons.nextpage ? count + 1 : count; // Next Page
 
 	return count;

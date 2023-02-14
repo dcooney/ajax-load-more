@@ -1,4 +1,4 @@
-<?php // phpcs:ignore
+<?php
 /**
  * Plugin Name: Ajax Load More
  * Plugin URI: https://connekthq.com/plugins/ajax-load-more
@@ -7,19 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.5.5
+ * Version: 5.6.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
-*/
-
-define( 'ALM_VERSION', '5.5.5' );
-define( 'ALM_RELEASE', 'January 5, 2023' );
+define( 'ALM_VERSION', '5.6.0' );
+define( 'ALM_RELEASE', 'February 14, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -59,7 +55,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		/**
 		 * Shortcode attributes.
 		 *
-		 * @var $shortcode_atts
+		 * @var array|null
 		 */
 		public static $shortcode_atts = null;
 

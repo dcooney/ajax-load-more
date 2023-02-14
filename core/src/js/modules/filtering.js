@@ -12,7 +12,7 @@ import { clearTOC } from './tableofcontents';
  * @since 2.6.1
  */
 
-let almFilter = function (transition, speed, data, type = 'filter') {
+const almFilter = function (transition, speed, data, type = 'filter') {
 	if (data.target) {
 		// if a target has been specified
 		let target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
@@ -42,7 +42,7 @@ export default almFilter;
  * @param {*} type string;
  * @since 2.13.1
  */
-let almFilterTransition = function (transition, speed, data, el, type) {
+const almFilterTransition = function (transition, speed, data, el, type) {
 	if (transition === 'fade' || transition === 'masonry') {
 		// Fade, Masonry transition
 
@@ -82,7 +82,7 @@ let almFilterTransition = function (transition, speed, data, el, type) {
  * @param {*} type string;
  * @since 3.3
  */
-let almCompleteFilterTransition = (speed, data, el, type) => {
+const almCompleteFilterTransition = (speed, data, el, type) => {
 	// Get `.alm-btn-wrap` element
 	let btnWrap = el.querySelector('.alm-btn-wrap');
 
@@ -122,7 +122,7 @@ let almCompleteFilterTransition = (speed, data, el, type) => {
  * @updated 3.3
  * @since 2.6.1
  */
-let almSetFilters = function (speed = 150, data, el, type) {
+const almSetFilters = function (speed = 150, data, el, type) {
 	// Get `alm-listing` container
 	let listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
 	if (!listing) {

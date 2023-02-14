@@ -1,4 +1,13 @@
 <?php
+/**
+ * Licenses Page.
+ *
+ * @package AjaxLoadMore
+ * @since   2.0.0
+ */
+
+?>
+<?php
 	$alm_pg_title = ( has_action( 'alm_pro_installed' ) ) ? __( 'Pro License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
 	$alm_pg_desc  = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro license key to enable updates from the plugins dashboard', 'ajax-load-more' ) : __( 'Enter your license keys below to enable <a href="admin.php?page=ajax-load-more-add-ons">add-on</a> updates from the plugins dashboard', 'ajax-load-more' );
 ?>
@@ -80,7 +89,11 @@
 							<?php settings_fields( $settings_field ); ?>
 							<label class="description offscreen" for="<?php echo $key; ?>"><?php esc_html_e( 'Enter License Key', 'ajax-load-more' ); ?></label>
 							<div class="license-key-field">
-								<input <?php if( defined( $constant ) ) { echo 'disabled'; } ?>
+								<input
+								<?php
+								if ( defined( $constant ) ) {
+									echo 'disabled'; }
+								?>
 									id="<?php echo esc_html( $key ); ?>"
 									name="<?php echo esc_html( $key ); ?>"
 									type="<?php echo $input_type; ?>"
@@ -143,7 +156,7 @@
 				<?php
 				// No add-ons installed.
 				if ( $addon_count === 0 ) :
-				?>
+					?>
 				<div class="spacer"></div>
 				<div class="license-no-addons">
 					<p><?php esc_html_e( 'You do not have any Ajax Load More add-ons installed', 'ajax-load-more' ); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e( 'Browse Add-ons', 'ajax-load-more' ); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e( 'Go Pro', 'ajax-load-more' ); ?></strong></a></p>

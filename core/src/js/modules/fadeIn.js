@@ -3,7 +3,7 @@
  * @param {*} element
  * @param {*} speed
  */
-let almFadeIn = (element, speed) => {
+const almFadeIn = (element, speed) => {
 	if (speed == 0) {
 		element.style.opacity = 1;
 		element.style.height = 'auto';

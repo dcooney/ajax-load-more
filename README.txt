@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 5.5.5
+Stable tag: 5.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,7 +128,6 @@ The following [add-ons](https://connekthq.com/plugins/ajax-load-more/add-ons/) a
 -  **[SEO](https://connekthq.com/plugins/ajax-load-more/add-ons/search-engine-optimization/)**: Generate unique paging URLs with each Ajax Load More query.
 -  **[Single Post](https://connekthq.com/plugins/ajax-load-more/add-ons/single-post/)**: Enable infinite scrolling of single posts on your WordPress post templates.
 -  **[Theme Repeaters](https://connekthq.com/plugins/ajax-load-more/add-ons/theme-repeaters/)**: Manage Ajax Load More repeater templates from within your current theme directory.
--  **[Users](https://connekthq.com/plugins/ajax-load-more/add-ons/users/)**: Lazy loading WordPress Users with Ajax Load More.
 -  **[WooCommerce](https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/)**: Infinite scroll WooCommerce products with Ajax Load More.
 
 ### Extensions
@@ -139,7 +138,8 @@ The following free [extensions](https://connekthq.com/plugins/ajax-load-more/ext
 -  **[Relevanssi](https://connekthq.com/plugins/ajax-load-more/extensions/relevanssi/)**: Display Relevanssi search results with Ajax Load More.
 -  **[REST API](https://connekthq.com/plugins/ajax-load-more/extensions/rest-api/)**: Enable compatibility with the WordPress REST API.
 -  **[SearchWP](https://connekthq.com/plugins/ajax-load-more/extensions/searchwp/)**: Display SearchWP query results with Ajax Load More.
--  **[Term Query](https://wordpress.org/plugins/ajax-load-more-for-terms/)**: Infinite scroll WordPress Terms.
+-  **[Term Query](https://connekthq.com/plugins/ajax-load-more/extensions/terms/)**: Infinite scroll WordPress Terms.
+-  **[Users](https://connekthq.com/plugins/ajax-load-more/extensions/users/)**: Lazy loading WordPress Users with Ajax Load More.
 
 ### Callback Functions
 
@@ -262,6 +262,17 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.6.0 - February 14, 2023 =
+* NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
+* NEW: Added support for new Filter facets in Filters add-on version 2.0.
+* NEW: Added alm JavaScript object to the global `window` object so accessing config params can be done in browser. e.g. `window.ajax_load_more`
+* NEW: Added support for `include_children` when running a taxonomy query.
+* FIX: Fixed issue with localized data variables not working in Full Site Editing (FSE) themes.
+* FIX: Fixed deprecation notice in Elementor widgetregistration
+* UPDATE: Security fix for escaping data attributes in shortcode.
+* UPDATE: Code cleanup.
+
 
 = 5.5.5 - January 5, 2013 =
 * UPDATE: Removed requirement of `transition_container` to be present when using Preloaded.

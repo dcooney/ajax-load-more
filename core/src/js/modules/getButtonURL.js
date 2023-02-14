@@ -21,9 +21,9 @@ export const getButtonURL = (alm, rel = 'next') => {
 /**
  * Set button dataset attributes.
  *
- * @param {*} button The HTML element.
- * @param {*} page The current page number.
- * @param {*} url The URL for updating.
+ * @param {Element} button The HTML element.
+ * @param {number} page The current page number.
+ * @param {string} url The URL for updating.
  */
 export const setButtonAtts = (button, page, url) => {
 	if (!button) {

@@ -167,8 +167,8 @@ elseif ( $term_query ) {
 	}
 }
 
-// Advanced Custom Fields (Repeater, Gallery, Flex Content)
-elseif ( $acf && ( $acf_field_type !== 'relationship' ) ) {
+// Advanced Custom Fields (Repeater, Gallery, Flex Content).
+elseif ( $acf && $acf_field_type !== 'relationship' ) {
 
 	if ( has_action( 'alm_acf_installed' ) && $acf ) {
 
@@ -178,7 +178,6 @@ elseif ( $acf && ( $acf_field_type !== 'relationship' ) ) {
 		 * @return $preloaded_acf;
 		 */
 		$preloaded_acf = apply_filters( 'alm_acf_preloaded', $query_args, $repeater, $theme_repeater ); // located in ACF add-on
-
 
 		// Add total_posts to localized ALM JS variables
 		$acf_total_rows = apply_filters( 'alm_acf_total_rows', $query_args );
@@ -300,7 +299,7 @@ else {
 	ALM_LOCALIZE::add_localized_var( 'post_count', $alm_post_count, $localize_id );
 
 	// Get Filter Facets.
-	if ( $filters && $facets === 'true' && function_exists( 'alm_filters_get_facets' ) && ! empty( $target ) ) {
+	if ( $filters && $facets && function_exists( 'alm_filters_get_facets' ) && ! empty( $target ) ) {
 		ALM_LOCALIZE::add_localized_var( 'facets', alm_filters_get_facets( $args, $target ), $localize_id );
 	}
 

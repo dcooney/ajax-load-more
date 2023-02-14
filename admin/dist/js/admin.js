@@ -1406,9 +1406,8 @@ jQuery(document).ready(function ($) {
   * @since 5.1
   */
 	document.addEventListener('keydown', function (e) {
-		if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.keyCode == 83) {
+		if ((window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) && e.keyCode === 83) {
 			if (e.target.nodeName === 'TEXTAREA' && $(e.target).closest('.repeater-wrap')) {
-				console.log('Saving template...');
 				var btn = $(e.target).closest('.repeater-wrap').find('input.save-repeater');
 				if (btn) {
 					btn.click();

@@ -444,7 +444,9 @@ function alm_cache_page() {
  *  @since 3.4.0
  */
 function alm_filters_page() {
-	include_once ALM_FILTERS_PATH . 'admin/functions.php';
+	if ( ! function_exists( 'alm_list_all_filters' ) ) {
+		include_once ALM_FILTERS_PATH . 'admin/functions.php'; // Deprecated: This is loaded in Filters add-on.
+	}
 	include_once ALM_FILTERS_PATH . 'admin/views/filters.php';
 }
 

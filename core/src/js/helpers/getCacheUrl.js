@@ -7,7 +7,7 @@ import { parseQuerystring } from '../addons/filters';
  * @since 5.0
  * @supports Standard, SEO, Filters, Nextpage, Single Posts
  */
-let getCacheUrl = function (alm) {
+const getCacheUrl = function (alm) {
 	if (!alm) {
 		return false;
 	}
