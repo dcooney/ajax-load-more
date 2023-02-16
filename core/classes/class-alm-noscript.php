@@ -172,7 +172,7 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 		 * @return HTMLElement
 		 */
 		public static function render( $output, $container, $paging, $css_classes, $transition_container_classes ) {
-			return ( ! empty( $output ) ) ? '<' . self::$element . '><' . $container . ' class="alm-listing alm-noscript' . $css_classes . '"><div class="alm-reveal' . $transition_container_classes . '">' . $output . '</div></' . $container . '>' . $paging . '</' . self::$element . '>' : '';
+			return ( ! empty( $output ) ) ? '<' . esc_attr( self::$element ) . '><' . esc_attr( $container ) . ' class="alm-listing alm-noscript' . esc_attr( $css_classes ) . '"><div class="alm-reveal' . esc_attr( $transition_container_classes ) . '">' . $output . '</div></' . esc_attr( $container ) . '>' . $paging . '</' . esc_attr( self::$element ) . '>' : '';
 		}
 
 		/**

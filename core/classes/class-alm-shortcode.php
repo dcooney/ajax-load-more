@@ -197,7 +197,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'scroll_container'             => '',
 						'scroll_direction'             => '',
 						'max_pages'                    => '0',
-						'pause_override'               => 'false',
+						'pause_override'               => '',
 						'pause'                        => 'false',
 						'destroy_after'                => '',
 						'transition'                   => 'fade',
@@ -533,9 +533,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Master ID - Manual or generated ALM ID.
 			$master_id = empty( $id ) ? $div_id : $id;
 
-			// Unique ALM ID and object variable.
-			$unique_id      = ! empty( $id ) ? 'data-id="' . $id . '"' : '';
-			$alm_object_var = ! empty( $id ) ? 'data-alm-object="ajax_load_more_' . $id . '"' : '';
+			// Unique ALM ID.
+			$unique_id = ! empty( $id ) ? 'data-id="' . $id . '"' : '';
 
 			// Search atts - Used with SEO.
 			$is_search = is_search() ? 'data-search="true"' : '';
@@ -562,7 +561,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Start $ajaxloadmore element.
-			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_tabs ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . esc_attr( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" ' . $alm_object_var . '">';
+			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_tabs ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . esc_attr( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" data-alm-object="' . alm_convert_dashes_to_underscore( $localize_id ) . '">';
 
 			// Masonry Hook (Before).
 			$ajaxloadmore .= apply_filters( 'alm_masonry_before', $transition );
@@ -584,7 +583,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				/**
 				 * WooCommerce hook to filter columns, per_page, classes etc
 				 *
-				 * @return $config;
+				 * @return array
 				 */
 				$woo_config = apply_filters( 'alm_woo_config', $woo_config );
 
@@ -636,9 +635,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 							if ( ! empty( $custom_options ) ) {
 								foreach ( $custom_options as $option ) {
 									if ( isset( $option['name'] ) && $option['name'] === $woo_orderby_value ) {
-										$meta_key = ( isset( $option['meta_key'] ) ) ? wc_clean( $option['meta_key'] ) : $meta_key;
-										$orderby  = ( isset( $option['orderby'] ) ) ? wc_clean( $option['orderby'] ) : $orderby;
-										$order    = ( isset( $option['order'] ) ) ? wc_clean( $option['order'] ) : $order;
+										$meta_key = isset( $option['meta_key'] ) ? wc_clean( $option['meta_key'] ) : $meta_key;
+										$orderby  = isset( $option['orderby'] ) ? wc_clean( $option['orderby'] ) : $orderby;
+										$order    = isset( $option['order'] ) ? wc_clean( $option['order'] ) : $order;
 									}
 								}
 							}
@@ -844,7 +843,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$post_id,
 					$acf_parent_field_name
 				);
-				$ajaxloadmore .= $acf_return;
+				$ajaxloadmore .= wp_kses_post( $acf_return );
 			}
 
 			// Cache Add-on.
@@ -967,7 +966,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Preloaded Add-on.
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
-
 				$preloaded = $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ? 'true' : esc_attr( $preloaded ); // SEO page 1.
 
 				// SEO > page 1.
@@ -1126,97 +1124,93 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= $sticky_posts === 'true' ? ' data-sticky-posts="' . esc_attr( $sticky_posts ) . '"' : '';
 
 			// Post Format.
-			$ajaxloadmore .= ! empty( $post_format ) ? ' data-post-format="' . esc_attr( $post_format ) . '"' : '';
+			$ajaxloadmore .= $post_format ? ' data-post-format="' . esc_attr( $post_format ) . '"' : '';
 
 			// Category.
-			$ajaxloadmore .= ! empty( $category ) ? ' data-category="' . esc_attr( $category ) . '"' : '';
-			$ajaxloadmore .= ! empty( $category__and ) ? ' data-category-and="' . esc_attr( $category__and ) . '"' : '';
-			$ajaxloadmore .= ! empty( $category__not_in ) ? ' data-category-not-in="' . esc_attr( $category__not_in ) . '"' : '';
+			$ajaxloadmore .= $category ? ' data-category="' . esc_attr( $category ) . '"' : '';
+			$ajaxloadmore .= $category__and ? ' data-category-and="' . esc_attr( $category__and ) . '"' : '';
+			$ajaxloadmore .= $category__not_in ? ' data-category-not-in="' . esc_attr( $category__not_in ) . '"' : '';
 
 			// Tag.
-			$ajaxloadmore .= ! empty( $tag ) ? ' data-tag="' . esc_attr( $tag ) . '"' : '';
-			$ajaxloadmore .= ! empty( $tag__and ) ? ' data-tag-and="' . esc_attr( $tag__and ) . '"' : '';
-			$ajaxloadmore .= ! empty( $tag__not_in ) ? ' data-tag-not-in="' . esc_attr( $tag__not_in ) . '"' : '';
+			$ajaxloadmore .= $tag ? ' data-tag="' . esc_attr( $tag ) . '"' : '';
+			$ajaxloadmore .= $tag__and ? ' data-tag-and="' . esc_attr( $tag__and ) . '"' : '';
+			$ajaxloadmore .= $tag__not_in ? ' data-tag-not-in="' . esc_attr( $tag__not_in ) . '"' : '';
 
 			// Taxonomy.
-			$ajaxloadmore .= ! empty( $taxonomy ) ? ' data-taxonomy="' . esc_attr( $taxonomy ) . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_terms ) ? ' data-taxonomy-terms="' . esc_attr( $taxonomy_terms ) . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_operator ) ? ' data-taxonomy-operator="' . esc_attr( $taxonomy_operator ) . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_include_children ) ? ' data-taxonomy-include-children="' . esc_attr( $taxonomy_include_children ) . '"' : '';
-			$ajaxloadmore .= ! empty( $taxonomy_relation ) ? ' data-taxonomy-relation="' . esc_attr( $taxonomy_relation ) . '"' : '';
+			$ajaxloadmore .= $taxonomy ? ' data-taxonomy="' . esc_attr( $taxonomy ) . '"' : '';
+			$ajaxloadmore .= $taxonomy_terms ? ' data-taxonomy-terms="' . esc_attr( $taxonomy_terms ) . '"' : '';
+			$ajaxloadmore .= $taxonomy_operator ? ' data-taxonomy-operator="' . esc_attr( $taxonomy_operator ) . '"' : '';
+			$ajaxloadmore .= $taxonomy_include_children ? ' data-taxonomy-include-children="' . esc_attr( $taxonomy_include_children ) . '"' : '';
+			$ajaxloadmore .= $taxonomy_relation ? ' data-taxonomy-relation="' . esc_attr( $taxonomy_relation ) . '"' : '';
 
 			// Meta Query.
-			$ajaxloadmore .= ! empty( $meta_key ) ? ' data-meta-key="' . esc_attr( $meta_key ) . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_value || $meta_value === '0' ) ? ' data-meta-value="' . esc_attr( $meta_value ) . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_compare ) ? ' data-meta-compare="' . esc_attr( $meta_compare ) . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_relation ) ? ' data-meta-relation="' . esc_attr( $meta_relation ) . '"' : '';
-			$ajaxloadmore .= ! empty( $meta_type ) ? ' data-meta-type="' . esc_attr( $meta_type ) . '"' : '';
+			$ajaxloadmore .= $meta_key ? ' data-meta-key="' . esc_attr( $meta_key ) . '"' : '';
+			$ajaxloadmore .= $meta_value || $meta_value === '0' ? ' data-meta-value="' . esc_attr( $meta_value ) . '"' : '';
+			$ajaxloadmore .= $meta_compare ? ' data-meta-compare="' . esc_attr( $meta_compare ) . '"' : '';
+			$ajaxloadmore .= $meta_relation ? ' data-meta-relation="' . esc_attr( $meta_relation ) . '"' : '';
+			$ajaxloadmore .= $meta_type ? ' data-meta-type="' . esc_attr( $meta_type ) . '"' : '';
 
 			// Dates.
-			$ajaxloadmore .= ! empty( $year ) ? ' data-year="' . esc_attr( $year ) . '"' : '';
-			$ajaxloadmore .= ! empty( $month ) ? ' data-month="' . esc_attr( $month ) . '"' : '';
-			$ajaxloadmore .= ! empty( $day ) ? ' data-day="' . esc_attr( $day ) . '"' : '';
+			$ajaxloadmore .= $year ? ' data-year="' . esc_attr( $year ) . '"' : '';
+			$ajaxloadmore .= $month ? ' data-month="' . esc_attr( $month ) . '"' : '';
+			$ajaxloadmore .= $day ? ' data-day="' . esc_attr( $day ) . '"' : '';
 
 			// Author.
-			$ajaxloadmore .= ! empty( $author ) ? ' data-author="' . esc_attr( $author ) . '"' : '';
+			$ajaxloadmore .= $author ? ' data-author="' . esc_attr( $author ) . '"' : '';
 
 			// Post Parameters.
-			$ajaxloadmore .= ! empty( $post__in ) ? ' data-post-in="' . esc_attr( $post__in ) . '"' : '';
-			$ajaxloadmore .= ! empty( $post__not_in ) ? ' data-post-not-in="' . esc_attr( $post__not_in ) . '"' : '';
-			$ajaxloadmore .= ! empty( $exclude ) ? ' data-exclude="' . esc_attr( $exclude ) . '"' : '';
+			$ajaxloadmore .= $post__in ? ' data-post-in="' . esc_attr( $post__in ) . '"' : '';
+			$ajaxloadmore .= $post__not_in ? ' data-post-not-in="' . esc_attr( $post__not_in ) . '"' : '';
+			$ajaxloadmore .= $exclude ? ' data-exclude="' . esc_attr( $exclude ) . '"' : '';
 
 			// Search.
-			$ajaxloadmore .= ! empty( $search ) ? ' data-search="' . esc_attr( $search ) . '"' : '';
+			$ajaxloadmore .= $search ? ' data-search="' . esc_attr( $search ) . '"' : '';
 
 			// Custom Args.
-			$ajaxloadmore .= ! empty( $custom_args ) ? ' data-custom-args="' . esc_attr( $custom_args ) . '"' : '';
+			$ajaxloadmore .= $custom_args ? ' data-custom-args="' . esc_attr( $custom_args ) . '"' : '';
 
 			// Vars.
-			$ajaxloadmore .= ! empty( $vars ) ? ' data-vars="' . esc_attr( $vars ) . '"' : '';
+			$ajaxloadmore .= $vars ? ' data-vars="' . esc_attr( $vars ) . '"' : '';
 
 			// Status.
-			$ajaxloadmore .= ! empty( $post_status ) ? ' data-post-status="' . esc_attr( $post_status ) . '"' : '';
+			$ajaxloadmore .= $post_status ? ' data-post-status="' . esc_attr( $post_status ) . '"' : '';
 
 			// Order.
-			$ajaxloadmore .= ' data-order="' . esc_attr( $order ) . '"';
-			$ajaxloadmore .= ' data-orderby="' . esc_attr( $orderby ) . '"';
-
-			// Offset.
-			$ajaxloadmore .= ' data-offset="' . esc_attr( $offset ) . '"';
-
-			// Posts Per Page.
-			$ajaxloadmore .= ' data-posts-per-page="' . esc_attr( $posts_per_page ) . '"';
+			$ajaxloadmore .= ' data-order="' . esc_attr( $order ) . '"'; // Order.
+			$ajaxloadmore .= ' data-orderby="' . esc_attr( $orderby ) . '"'; // Orderby.
+			$ajaxloadmore .= ' data-offset="' . esc_attr( $offset ) . '"'; // Offset.
+			$ajaxloadmore .= ' data-posts-per-page="' . esc_attr( $posts_per_page ) . '"'; // Posts Per Page.
 
 			// Lang.
-			$ajaxloadmore .= ! empty( $lang ) ? ' data-lang="' . esc_attr( $lang ) . '"' : '';
+			$ajaxloadmore .= $lang ? ' data-lang="' . esc_attr( $lang ) . '"' : '';
 
 			// Scroll.
 			if ( $paging !== 'true' ) {
-				$ajaxloadmore .= ' data-scroll="' . esc_attr( $scroll ) . '"';
+				$ajaxloadmore .= $scroll === 'false' ? ' data-scroll="false"' : '';
 				if ( $scroll === 'true' ) {
 					$ajaxloadmore .= ' data-scroll-distance="' . esc_attr( $scroll_distance ) . '"';
-					$ajaxloadmore .= ! empty( $scroll_container ) ? ' data-scroll-container="' . esc_attr( $scroll_container ) . '"' : '';
-					$ajaxloadmore .= ! empty( $scroll_direction ) ? ' data-scroll-direction="' . esc_attr( $scroll_direction ) . '"' : '';
-					$ajaxloadmore .= ' data-max-pages="' . $max_pages . '"';
-					$ajaxloadmore .= ! empty( $pause_override ) ? ' data-pause-override="' . esc_attr( $pause_override ) . '"' : '';
+					$ajaxloadmore .= $scroll_container ? ' data-scroll-container="' . esc_attr( $scroll_container ) . '"' : '';
+					$ajaxloadmore .= $scroll_direction ? ' data-scroll-direction="' . esc_attr( $scroll_direction ) . '"' : '';
+					$ajaxloadmore .= $max_pages && $max_pages !== '0' ? ' data-max-pages="' . esc_attr( $max_pages ) . '"' : '';
+					$ajaxloadmore .= $pause_override ? ' data-pause-override="' . esc_attr( $pause_override ) . '"' : '';
 				}
 			}
 
 			// Pause.
-			$ajaxloadmore .= ' data-pause="' . esc_attr( $pause ) . '"';
+			$ajaxloadmore .= $pause === 'true' ? ' data-pause="true"' : '';
 
 			// Button.
 			$ajaxloadmore .= ' data-button-label="' . wp_kses_post( $button_label ) . '"';
-			$ajaxloadmore .= ! empty( $button_loading_label ) ? ' data-button-loading-label="' . wp_kses_post( $button_loading_label ) . '"' : '';
-			$ajaxloadmore .= ! empty( $button_done_label ) ? ' data-button-done-label="' . wp_kses_post( $button_done_label ) . '"' : '';
+			$ajaxloadmore .= $button_loading_label ? ' data-button-loading-label="' . wp_kses_post( $button_loading_label ) . '"' : '';
+			$ajaxloadmore .= $button_done_label ? ' data-button-done-label="' . wp_kses_post( $button_done_label ) . '"' : '';
 
 			// Destroy After.
-			$ajaxloadmore .= ! empty( $destroy_after ) ? ' data-destroy-after="' . esc_attr( $destroy_after ) . '"' : '';
+			$ajaxloadmore .= $destroy_after ? ' data-destroy-after="' . esc_attr( $destroy_after ) . '"' : '';
 
 			// Transition.
 			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . esc_attr( $transition ) . '"' : '';
 			$ajaxloadmore .= $transition_container === 'false' ? ' data-transition-container="' . esc_attr( $transition_container ) . '"' : '';
-			$ajaxloadmore .= ! empty( $transition_container_classes ) ? ' data-transition-container-classes="' . esc_attr( $transition_container_classes ) . '"' : '';
+			$ajaxloadmore .= $transition_container_classes ? ' data-transition-container-classes="' . esc_attr( $transition_container_classes ) . '"' : '';
 
 			// Masonry.
 			if ( 'masonry' === $transition ) {
@@ -1252,16 +1246,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				include ALM_PATH . 'core/classes/includes/preloaded.php';
 			}
 
-			// Single Post
+			// Single Post.
 			// Get first post and append to alm object.
 			if ( has_action( 'alm_single_post_installed' ) && $single_post ) {
-
 				$repeater_type = preg_split( '/(?=\d)/', $repeater, 2 ); // split $repeater at number to retrieve type.
-				$repeater_type = $repeater_type[0]; // default / repeater / template_{x} .
+				$repeater_type = $repeater_type[0]; // default / repeater / template_{x}.
+				$repeater_type = $theme_repeater !== 'null' && has_filter( 'alm_get_theme_repeater' ) ? null : $repeater_type;
 
-				if ( $theme_repeater !== 'null' && has_filter( 'alm_get_theme_repeater' ) ) {
-					$repeater_type = null;
-				}
 				// Get current permalink - (including querystring).
 				$single_post_permanlink = $_SERVER['QUERY_STRING'] ? get_permalink( $single_post_id ) . '?' . esc_attr( $_SERVER['QUERY_STRING'] ) : get_permalink( $single_post_id );
 
@@ -1280,7 +1271,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 				$single_post_output .= '</div>';
 				$ajaxloadmore       .= $single_post_output; // Append $single_post_output data to $ajaxloadmore.
-
 			}
 
 			// Next Page Add-on.
@@ -1296,14 +1286,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$nextpage_is_paged = apply_filters( 'alm_nextpage_paged', $nextpage_is_paged );
 
 				$ajaxloadmore .= apply_filters( 'alm_init_nextpage', $nextpage_post_id, $nextpage_start, $nextpage_is_paged, $paging, $div_id, $id, $nested );
-
 			}
 
 			// Masonry Hook (After).
 			$ajaxloadmore .= apply_filters( 'alm_masonry_after', $transition );
 
 			// Close ALM container element.
-			$ajaxloadmore .= '</' . $container_element . '>';
+			$ajaxloadmore .= '</' . esc_attr( $container_element ) . '>';
 
 			// Create Placeholder.
 			$ajaxloadmore .= self::alm_render_placeholder( $placeholder, $paging );
@@ -1344,7 +1333,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// No results text.
 			if ( $no_results_text !== '' && ! empty( $no_results_text ) ) {
-				$ajaxloadmore .= '<div class="alm-no-results" style="display: none;">' . html_entity_decode( $no_results_text ) . '</div>';
+				$ajaxloadmore .= '<div class="alm-no-results" style="display: none;">' . wp_kses_post( $no_results_text ) . '</div>';
 			}
 
 			// Render <noscript> pagination for Nextpage addon.
@@ -1364,7 +1353,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * After Container.
 			 * ALM Core Filter Hook.
 			 *
-			 * @return html
+			 * @return string
 			 */
 			$ajaxloadmore .= apply_filters( 'alm_after_container', '' );
 
@@ -1372,15 +1361,20 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * ALM Core Filter Hook.
 			 * Progress Bar CSS.
 			 *
-			 * @return html
+			 * @return string
 			 */
 			$ajaxloadmore .= apply_filters( 'alm_progress_css', self::$counter, $progress_bar, $progress_bar_color );
 
-			// Custom JavaScript - ALM Setting.
-			$ajaxloadmore .= isset( $options['_alm_custom_js'] ) && ! empty( $options['_alm_custom_js'] ) ? '<script>' . $options['_alm_custom_js'] . '</script>' : '';
+			/**
+			 * Custom JavaScript.
+			 * ALM core setting parameter.
+			 */
+			$ajaxloadmore .= isset( $options['_alm_custom_js'] ) && ! empty( $options['_alm_custom_js'] ) ? '<script>' . esc_html( $options['_alm_custom_js'] ) . '</script>' : '';
 
-			// REST API Add-on$ajaxloadmore
-			// add <script/> template to page.
+			/**
+			 * REST API Add-on
+			 * Add <script/> template to page.
+			 */
 			if ( has_action( 'alm_rest_api_installed' ) && $restapi ) {
 				if ( $theme_repeater !== 'null' && has_action( 'alm_get_rest_theme_repeater' ) ) {
 					do_action( 'alm_get_rest_theme_repeater', $theme_repeater );
@@ -1399,6 +1393,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Get the localized data.
 			$localized_data = ALM_LOCALIZE::return_localized_data( $localize_id );
+
 			/**
 			 * Append the localized data `<script/>` using `wp_footer`.
 			 *
@@ -1438,7 +1433,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			$html .= '</div>';
-			return $html;
+			return wp_kses_post( $html );
 		}
 
 		/**
@@ -1446,15 +1441,15 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 *
 		 * @param string $placeholder The value of the placeholder.
 		 * @param string $paging      Is paging true.
-		 * @return html               The generated HTML.
+		 * @return string             Raw HTML string.
 		 * @since 5.1.7
 		 */
 		public static function alm_render_placeholder( $placeholder, $paging ) {
 			if ( isset( $placeholder ) && ! empty( $placeholder ) && $paging !== 'true' ) {
-				$placeholder_url = ( $placeholder === 'true' ) ? ALM_URL . '/core/img/placeholder.png' : $placeholder;
+				$placeholder_url = $placeholder === 'true' ? ALM_URL . '/core/img/placeholder.png' : $placeholder;
 				if ( $placeholder_url ) {
-					$html = '<div class="alm-placeholder"><img src="' . esc_attr( $placeholder_url ) . '" alt=""></div>';
-					return $html;
+					$html = '<div class="alm-placeholder"><img src="' . esc_url( $placeholder_url ) . '" alt=""></div>';
+					return wp_kses_post( $html );
 				}
 			}
 		}
