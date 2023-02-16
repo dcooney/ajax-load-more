@@ -505,7 +505,7 @@ let alm_is_filtering = false;
 		alm.repeater = alm.repeater === undefined ? 'default' : alm.repeater;
 		alm.theme_repeater = alm.theme_repeater === undefined ? false : alm.theme_repeater;
 
-		/* Max Pages (while scrolling) */
+		/* Max Pages */
 		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 9999 : alm.max_pages;
 
 		/* Scroll Distance */

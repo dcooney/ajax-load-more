@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 5.6.0
+Stable tag: 5.6.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,12 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.6.0.1 - February 16, 2023 =
+* FIX: Added security fix for missing escaping on various shortcode params.
+* FIX: Added fix for new alm object parameter.
+* UPDATE: HTML data-attribute clean up on rendered shortcode parameters.
+
 
 = 5.6.0 - February 14, 2023 =
 * NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.

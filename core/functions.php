@@ -28,7 +28,7 @@ function alm_progress_css( $counter, $progress, $color ) {
 <style>
 .pace { -webkit-pointer-events: none; pointer-events: none; -webkit-user-select: none; -moz-user-select: none; user-select: none; }
 .pace-inactive { display: none; }
-.pace .pace-progress { background: #' . $color . '; position: fixed; z-index: 2000; top: 0; right: 100%; width: 100%; height: 5px; -webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
+.pace .pace-progress { background: #' . esc_attr( $color ) . '; position: fixed; z-index: 2000; top: 0; right: 100%; width: 100%; height: 5px; -webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.3); box-shadow: 0 0 2px rgba(255, 255, 255, 0.3); }
 </style>';
 		return $style;
 	}
