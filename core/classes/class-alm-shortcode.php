@@ -549,13 +549,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$alm_wrapper_class = $woocommerce ? 'ajax-load-more-wrap ' . ALM_WOOCOMMERCE::get_wrapper_class() : 'ajax-load-more-wrap';
 
 			// ALM Direction.
-			$alm_direction = ! empty( $scroll_direction ) ? ' alm-' . $scroll_direction : '';
+			$alm_direction = $scroll_direction ? ' alm-' . $scroll_direction : '';
 
 			// Append Inline CSS.
 			$ajaxloadmore .= $inline_css . $inline_layouts_css . $inline_paging_css . $inline_tabs_css . $inline_single_posts_css;
 
 			// Horizontal Scroll CSS.
-			if ( $scroll_direction === 'horizontal' && ! empty( $scroll_container ) ) {
+			if ( $scroll_direction === 'horizontal' && $scroll_container ) {
 				// Add style for overflow style of the container.
 				$ajaxloadmore .= '<style>' . $scroll_container . '{ height: auto; width: 100%; overflow: hidden; overflow-x: auto; -webkit-overflow-scrolling: touch; }</style>';
 			}

@@ -98,6 +98,7 @@ let alm_is_filtering = false;
 
 		// The defined or generated ID for the ALM instance.
 		alm.master_id = el.dataset.id ? `ajax_load_more_${el.dataset.id}` : el.id;
+		alm.master_id = alm.master_id.replace(/-/g, '_');
 
 		// Localized <script/> variables.
 		alm.localize = window[alm.master_id + '_vars'];
@@ -2470,24 +2471,13 @@ let alm_is_filtering = false;
  * @param {*} speed
  * @param {*} data
  */
-let filter = function (transition = 'fade', speed = '200', data = '') {
+export const filter = function (transition = 'fade', speed = '200', data = '') {
 	if (!transition || !speed || !data) {
 		return false;
 	}
 	alm_is_filtering = true;
 	almFilter(transition, speed, data, 'filter');
 };
-export { filter };
-export { reset };
-export { getPostCount };
-export { getTotalPosts };
-export { tracking };
-export { tab };
-export { start };
-export { almScroll };
-export { getOffset };
-export { render };
-export { click };
 
 /**
  * Reset an Ajax Load More instance.
@@ -2495,7 +2485,7 @@ export { click };
  * @since 5.3.8
  * @param {*} target
  */
-let reset = function (props = {}) {
+export const reset = function (props = {}) {
 	let data = {};
 	alm_is_filtering = true;
 
@@ -2531,7 +2521,7 @@ let reset = function (props = {}) {
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
-const getPostCount = function (id = '') {
+export const getPostCount = function (id = '') {
 	// Get the ALM localized variable name.
 	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
 
@@ -2549,7 +2539,7 @@ const getPostCount = function (id = '') {
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
-const getTotalPosts = function (id = '') {
+export const getTotalPosts = function (id = '') {
 	// Get the ALM localized variable name.
 	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
 
@@ -2567,7 +2557,7 @@ const getTotalPosts = function (id = '') {
  * @since 5.0
  * @param {string} path The URL path.
  */
-const tracking = function (path) {
+export const tracking = function (path) {
 	setTimeout(function () {
 		// Delay to allow for state change.
 		path = path.replace(/\/\//g, '/'); // Replace instance of a double backslash.
@@ -2616,7 +2606,7 @@ const tracking = function (path) {
  * @param {*} data
  * @param {*} url
  */
-const tab = function (data = '', url = false) {
+export const tab = function (data = '', url = false) {
 	let transition = 'fade';
 	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
 
@@ -2634,7 +2624,7 @@ const tab = function (data = '', url = false) {
  * @since 5.0
  * @param {Element} el
  */
-const start = function (el) {
+export const start = function (el) {
 	if (!el) {
 		return false;
 	}
@@ -2647,7 +2637,7 @@ const start = function (el) {
  *  @since 5.0
  *  @param {string} position The position of the scrollto.
  */
-const almScroll = function (position) {
+export const almScroll = function (position) {
 	if (!position) {
 		return false;
 	}
@@ -2663,7 +2653,7 @@ const almScroll = function (position) {
  *  @since 5.0
  *  @param {*} el
  */
-const getOffset = function (el = null) {
+export const getOffset = function (el = null) {
 	if (!el) {
 		return false;
 	}
@@ -2678,7 +2668,7 @@ const getOffset = function (el = null) {
  *
  *  @since 5.0
  */
-const render = function (el, options = null) {
+export const render = function (el, options = null) {
 	if (!el) {
 		return false;
 	}
@@ -2690,7 +2680,7 @@ const render = function (el, options = null) {
  *
  * @param {string} id The Ajax Load More ID.
  */
-const click = function (id = '') {
+export const click = function (id = '') {
 	let alm = document.querySelector('.ajax-load-more-wrap');
 	let button = '';
 	if (!id && alm) {

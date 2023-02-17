@@ -1459,55 +1459,53 @@ var _smoothscrollPolyfill2 = _interopRequireDefault(_smoothscrollPolyfill);
 
 __webpack_require__(/*! ./helpers/helpers */ "./core/src/js/helpers/helpers.js");
 
-var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName */ "./core/src/js/helpers/getParameterByName.js");
+var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
 
-var _getParameterByName2 = _interopRequireDefault(_getParameterByName);
+var _elementor = __webpack_require__(/*! ./addons/elementor */ "./core/src/js/addons/elementor.js");
+
+var _filters = __webpack_require__(/*! ./addons/filters */ "./core/src/js/addons/filters.js");
+
+var _seo = __webpack_require__(/*! ./addons/seo */ "./core/src/js/addons/seo.js");
+
+var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/js/addons/singleposts.js");
+
+var _woocommerce = __webpack_require__(/*! ./addons/woocommerce */ "./core/src/js/addons/woocommerce.js");
 
 var _almAppendChildren = __webpack_require__(/*! ./helpers/almAppendChildren */ "./core/src/js/helpers/almAppendChildren.js");
 
 var _almAppendChildren2 = _interopRequireDefault(_almAppendChildren);
 
-var _tableWrap = __webpack_require__(/*! ./helpers/tableWrap */ "./core/src/js/helpers/tableWrap.js");
+var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/src/js/helpers/almDomParser.js");
 
-var _tableWrap2 = _interopRequireDefault(_tableWrap);
+var _almDomParser2 = _interopRequireDefault(_almDomParser);
 
 var _getCacheUrl = __webpack_require__(/*! ./helpers/getCacheUrl */ "./core/src/js/helpers/getCacheUrl.js");
 
 var _getCacheUrl2 = _interopRequireDefault(_getCacheUrl);
 
-var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/src/js/helpers/almDomParser.js");
+var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName */ "./core/src/js/helpers/getParameterByName.js");
 
-var _almDomParser2 = _interopRequireDefault(_almDomParser);
-
-var _stripEmptyNodes = __webpack_require__(/*! ./helpers/stripEmptyNodes */ "./core/src/js/helpers/stripEmptyNodes.js");
-
-var _stripEmptyNodes2 = _interopRequireDefault(_stripEmptyNodes);
+var _getParameterByName2 = _interopRequireDefault(_getParameterByName);
 
 var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
 
 var queryParams = _interopRequireWildcard(_queryParams);
 
-var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/js/modules/resultsText.js");
+var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
-var resultsText = _interopRequireWildcard(_resultsText);
+var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
 
-var _tableofcontents = __webpack_require__(/*! ./modules/tableofcontents */ "./core/src/js/modules/tableofcontents.js");
+var _stripEmptyNodes = __webpack_require__(/*! ./helpers/stripEmptyNodes */ "./core/src/js/helpers/stripEmptyNodes.js");
 
-var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ "./core/src/js/modules/setLocalizedVars.js");
+var _stripEmptyNodes2 = _interopRequireDefault(_stripEmptyNodes);
 
-var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
+var _tableWrap = __webpack_require__(/*! ./helpers/tableWrap */ "./core/src/js/helpers/tableWrap.js");
 
-var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
+var _tableWrap2 = _interopRequireDefault(_tableWrap);
 
-var _insertScript2 = _interopRequireDefault(_insertScript);
+var _almDebug = __webpack_require__(/*! ./modules/almDebug */ "./core/src/js/modules/almDebug.js");
 
-var _setFocus = __webpack_require__(/*! ./modules/setFocus */ "./core/src/js/modules/setFocus.js");
-
-var _setFocus2 = _interopRequireDefault(_setFocus);
-
-var _getButtonURL = __webpack_require__(/*! ./modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
-
-var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
+var _almDebug2 = _interopRequireDefault(_almDebug);
 
 var _fadeIn = __webpack_require__(/*! ./modules/fadeIn */ "./core/src/js/modules/fadeIn.js");
 
@@ -1521,37 +1519,39 @@ var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/m
 
 var _filtering2 = _interopRequireDefault(_filtering);
 
-var _noResults = __webpack_require__(/*! ./modules/noResults */ "./core/src/js/modules/noResults.js");
-
-var _noResults2 = _interopRequireDefault(_noResults);
-
-var _almDebug = __webpack_require__(/*! ./modules/almDebug */ "./core/src/js/modules/almDebug.js");
-
-var _almDebug2 = _interopRequireDefault(_almDebug);
+var _getButtonURL = __webpack_require__(/*! ./modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
 
 var _getScrollPercentage = __webpack_require__(/*! ./modules/getScrollPercentage */ "./core/src/js/modules/getScrollPercentage.js");
 
 var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
 
-var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
+var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
 
-var _srcsetPolyfill2 = _interopRequireDefault(_srcsetPolyfill);
-
-var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
+var _insertScript2 = _interopRequireDefault(_insertScript);
 
 var _lazyImages = __webpack_require__(/*! ./modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
 
-var _singleposts = __webpack_require__(/*! ./addons/singleposts */ "./core/src/js/addons/singleposts.js");
+var _masonry = __webpack_require__(/*! ./modules/masonry */ "./core/src/js/modules/masonry.js");
 
-var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
+var _noResults = __webpack_require__(/*! ./modules/noResults */ "./core/src/js/modules/noResults.js");
 
-var _woocommerce = __webpack_require__(/*! ./addons/woocommerce */ "./core/src/js/addons/woocommerce.js");
+var _noResults2 = _interopRequireDefault(_noResults);
 
-var _elementor = __webpack_require__(/*! ./addons/elementor */ "./core/src/js/addons/elementor.js");
+var _placeholder = __webpack_require__(/*! ./modules/placeholder */ "./core/src/js/modules/placeholder.js");
 
-var _filters = __webpack_require__(/*! ./addons/filters */ "./core/src/js/addons/filters.js");
+var _resultsText = __webpack_require__(/*! ./modules/resultsText */ "./core/src/js/modules/resultsText.js");
 
-var _seo = __webpack_require__(/*! ./addons/seo */ "./core/src/js/addons/seo.js");
+var resultsText = _interopRequireWildcard(_resultsText);
+
+var _setFocus = __webpack_require__(/*! ./modules/setFocus */ "./core/src/js/modules/setFocus.js");
+
+var _setFocus2 = _interopRequireDefault(_setFocus);
+
+var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ "./core/src/js/modules/setLocalizedVars.js");
+
+var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
+
+var _tableofcontents = __webpack_require__(/*! ./modules/tableofcontents */ "./core/src/js/modules/tableofcontents.js");
 
 function _interopRequireWildcard(obj) {
 	if (obj && obj.__esModule) {
@@ -1617,9 +1617,8 @@ __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfil
 // External Modules
 var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
 var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-
-_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // Smooth scrolling polyfill
+_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 _smoothscrollPolyfill2.default.polyfill();
 
 // ALM Modules
@@ -1627,7 +1626,7 @@ _smoothscrollPolyfill2.default.polyfill();
 //import commentReplyFix from './helpers/commentReplyFix';
 
 
-// Global filtering var
+// Global filtering state.
 var alm_is_filtering = false;
 
 // Start ALM
@@ -1637,7 +1636,7 @@ var alm_is_filtering = false;
 	/**
   * Initiate Ajax Load More.
   *
-  * @param {Element} el The Ajax Load More DOM element/container.
+  * @param {Element} el   The Ajax Load More DOM element/container.
   * @param {Number} index The current index number of the Ajax Load More instance.
   */
 
@@ -1669,13 +1668,15 @@ var alm_is_filtering = false;
 		alm.vendor = window.navigator.vendor ? window.navigator.vendor : ''; // Browser Vendor
 		alm.isSafari = /Safari/i.test(alm.ua) && /Apple Computer/.test(alm.vendor) && !/Mobi|Android/i.test(alm.ua);
 
-		alm.master_id = el.dataset.id ? 'ajax-load-more-' + el.dataset.id : el.id; // The defined or generated ID of the ALM instance
 		el.classList.add('alm-' + index); // Add unique classname.
 		el.setAttribute('data-alm-id', index); // Add unique data id.
 
-		// Get localized <script/> variables
-		alm.master_id = alm.master_id.replace(/-/g, '_'); // Convert dashes to underscores for the var name
-		alm.localize = window[alm.master_id + '_vars']; // Get localize vars
+		// The defined or generated ID for the ALM instance.
+		alm.master_id = el.dataset.id ? 'ajax_load_more_' + el.dataset.id : el.id;
+		alm.master_id = alm.master_id.replace(/-/g, '_');
+
+		// Localized <script/> variables.
+		alm.localize = window[alm.master_id + '_vars'];
 
 		// Add ALM object to the global window scope.
 		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
@@ -2078,7 +2079,7 @@ var alm_is_filtering = false;
 		alm.repeater = alm.repeater === undefined ? 'default' : alm.repeater;
 		alm.theme_repeater = alm.theme_repeater === undefined ? false : alm.theme_repeater;
 
-		/* Max Pages (while scrolling) */
+		/* Max Pages */
 		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 9999 : alm.max_pages;
 
 		/* Scroll Distance */
@@ -4101,7 +4102,7 @@ var alm_is_filtering = false;
  * @param {*} speed
  * @param {*} data
  */
-var filter = function filter() {
+var filter = exports.filter = function filter() {
 	var transition = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'fade';
 	var speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '200';
 	var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
@@ -4112,7 +4113,6 @@ var filter = function filter() {
 	alm_is_filtering = true;
 	(0, _filtering2.default)(transition, speed, data, 'filter');
 };
-exports.filter = filter;
 
 /**
  * Reset an Ajax Load More instance.
@@ -4120,8 +4120,7 @@ exports.filter = filter;
  * @since 5.3.8
  * @param {*} target
  */
-
-var reset = function reset() {
+var reset = exports.reset = function reset() {
 	var props = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 	var data = {};
@@ -4168,7 +4167,6 @@ var reset = function reset() {
 		(0, _filtering2.default)('fade', '200', data, 'filter');
 	}
 };
-exports.reset = reset;
 
 /**
  * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
@@ -4178,8 +4176,7 @@ exports.reset = reset;
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
-
-var getPostCount = function getPostCount() {
+var getPostCount = exports.getPostCount = function getPostCount() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
 	// Get the ALM localized variable name.
@@ -4192,7 +4189,6 @@ var getPostCount = function getPostCount() {
 	}
 	return parseInt(localized.post_count);
 };
-exports.getPostCount = getPostCount;
 
 /**
  * Get the total number of posts by ALM instance ID from the ALM Localized variables.
@@ -4200,8 +4196,7 @@ exports.getPostCount = getPostCount;
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
-
-var getTotalPosts = function getTotalPosts() {
+var getTotalPosts = exports.getTotalPosts = function getTotalPosts() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
 	// Get the ALM localized variable name.
@@ -4214,7 +4209,6 @@ var getTotalPosts = function getTotalPosts() {
 	}
 	return parseInt(localized.total_posts);
 };
-exports.getTotalPosts = getTotalPosts;
 
 /**
  * Track Page Views in Google Analytics.
@@ -4222,8 +4216,7 @@ exports.getTotalPosts = getTotalPosts;
  * @since 5.0
  * @param {string} path The URL path.
  */
-
-var tracking = function tracking(path) {
+var tracking = exports.tracking = function tracking(path) {
 	setTimeout(function () {
 		// Delay to allow for state change.
 		path = path.replace(/\/\//g, '/'); // Replace instance of a double backslash.
@@ -4264,7 +4257,6 @@ var tracking = function tracking(path) {
 		}
 	}, 200);
 };
-exports.tracking = tracking;
 
 /**
  * Tabbed content for Ajax Load More instance.
@@ -4273,8 +4265,7 @@ exports.tracking = tracking;
  * @param {*} data
  * @param {*} url
  */
-
-var tab = function tab() {
+var tab = exports.tab = function tab() {
 	var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 	var url = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
@@ -4288,7 +4279,6 @@ var tab = function tab() {
 	alm_is_filtering = true;
 	(0, _filtering2.default)(transition, speed, data, 'tab');
 };
-exports.tab = tab;
 
 /**
  * Trigger Ajax Load More from other events.
@@ -4296,14 +4286,12 @@ exports.tab = tab;
  * @since 5.0
  * @param {Element} el
  */
-
-var start = function start(el) {
+var start = exports.start = function start(el) {
 	if (!el) {
 		return false;
 	}
 	window.almInit(el);
 };
-exports.start = start;
 
 /**
  *  Scroll window to position (global function).
@@ -4311,8 +4299,7 @@ exports.start = start;
  *  @since 5.0
  *  @param {string} position The position of the scrollto.
  */
-
-var almScroll = function almScroll(position) {
+var almScroll = exports.almScroll = function almScroll(position) {
 	if (!position) {
 		return false;
 	}
@@ -4321,7 +4308,6 @@ var almScroll = function almScroll(position) {
 		behavior: 'smooth'
 	});
 };
-exports.almScroll = almScroll;
 
 /**
  *  Get the current top/left coordinates of an element relative to the document.
@@ -4329,8 +4315,7 @@ exports.almScroll = almScroll;
  *  @since 5.0
  *  @param {*} el
  */
-
-var getOffset = function getOffset() {
+var getOffset = exports.getOffset = function getOffset() {
 	var el = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
 	if (!el) {
@@ -4341,15 +4326,13 @@ var getOffset = function getOffset() {
 	    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 	return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
 };
-exports.getOffset = getOffset;
 
 /**
  *  ALM Render (in progress)
  *
  *  @since 5.0
  */
-
-var render = function render(el) {
+var render = exports.render = function render(el) {
 	var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 	if (!el) {
@@ -4357,15 +4340,13 @@ var render = function render(el) {
 	}
 	// console.log(el, options);
 };
-exports.render = render;
 
 /**
  * Trigger a click event to load Ajax Load More content.
  *
  * @param {string} id The Ajax Load More ID.
  */
-
-var click = function click() {
+var click = exports.click = function click() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
 	var alm = document.querySelector('.ajax-load-more-wrap');
@@ -4383,7 +4364,6 @@ var click = function click() {
 		}
 	}
 };
-exports.click = click;
 
 /***/ }),
 
