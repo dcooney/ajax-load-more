@@ -263,6 +263,14 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 5.6.0.3 - February 22, 2023 =
+* NEW: Add new `getTotalRemaining` public JS function that returns the total number of posts remaining to be loaded  by ALM instance ID. [See Docs](https://connekthq.com/plugins/ajax-load-more/docs/public-functions/#getTotalRemaining)
+* Update: Added support for disabling Images Loaded functionality in WooCommerce add-on.
+* Update: Cleaned up localized post count variables to make it easier to access across the plugin.
+* UPDATE: Various code cleanup and refactoring.
+* FIX: Added further security fixes to shortcode attribute rendering and escaping params.
+
+
 = 5.6.0.2 - February 17, 2023 =
 * HOTFIX: Fixed error with compiled Ajax Load More JS causing issues with addons.
 * FIX: Adding fix for new ALM JavaScript Object not rendering when using default ID.

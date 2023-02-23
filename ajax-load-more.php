@@ -14,6 +14,11 @@
  * @package AjaxLoadMore
  */
 
+/*
+- Test totals with Preloaded and SEO
+- Add initial localized vars to ALM during server side render.
+*/
+
 define( 'ALM_VERSION', '5.6.0.2' );
 define( 'ALM_RELEASE', 'February 17, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -365,6 +370,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				[
+					'version'         => ALM_VERSION,
 					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),

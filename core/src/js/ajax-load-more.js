@@ -32,6 +32,7 @@ import almAppendChildren from './helpers/almAppendChildren';
 import almDomParser from './helpers/almDomParser';
 import getCacheUrl from './helpers/getCacheUrl';
 import getParameterByName from './helpers/getParameterByName';
+import getScrollPercentage from './helpers/getScrollPercentage';
 import * as queryParams from './helpers/queryParams';
 import srcsetPolyfill from './helpers/srcsetPolyfill';
 import stripEmptyNodes from './helpers/stripEmptyNodes';
@@ -40,8 +41,7 @@ import almDebug from './modules/almDebug';
 import almFadeIn from './modules/fadeIn';
 import almFadeOut from './modules/fadeOut';
 import almFilter from './modules/filtering';
-import { getButtonURL } from './modules/getButtonURL';
-import getScrollPercentage from './modules/getScrollPercentage';
+import { getButtonURL } from './helpers/getButtonURL';
 import insertScript from './modules/insertScript';
 import { lazyImages } from './modules/lazyImages';
 import { almMasonry, almMasonryConfig } from './modules/masonry';
@@ -51,6 +51,7 @@ import * as resultsText from './modules/resultsText';
 import setFocus from './modules/setFocus';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
+import getTotals from './helpers/getTotals';
 
 // Global filtering state.
 let alm_is_filtering = false;
@@ -339,7 +340,7 @@ let alm_is_filtering = false;
 			// Display warning when `filters_target` parameter is missing.
 			if (!alm.addons.filters_target) {
 				console.warn(
-					'Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More - e.g. [ajax_load_more filters="true" target="filters"]'
+					'Ajax Load More: Unable to locate a target for Filters. Make sure you set a target parameter in the core Ajax Load More shortcode - e.g. [ajax_load_more filters="true" target="filters"]'
 				);
 			}
 
@@ -390,8 +391,8 @@ let alm_is_filtering = false;
 		if (alm.addons.preloaded === 'true') {
 			// Preloaded Amount
 			alm.addons.preloaded_amount = alm.addons.preloaded_amount === undefined ? alm.posts_per_page : alm.addons.preloaded_amount;
-			// Disable ALM if total_posts is less than or equal to preloaded_amount
-			if (alm.localize && alm.localize.total_posts) {
+			if (alm.localize && alm.localize.total_posts !== null) {
+				// Disable ALM if total_posts is equal to or less than preloaded_amount.
 				if (parseInt(alm.localize.total_posts) <= parseInt(alm.addons.preloaded_amount)) {
 					alm.addons.preloaded_total_posts = alm.localize.total_posts;
 					alm.disable_ajax = true;
@@ -560,12 +561,12 @@ let alm_is_filtering = false;
 		if (alm.addons.paging) {
 			alm.main.classList.add('loading'); // add loading class to main container
 		} else {
-			let almChildren = el.childNodes; // Get child nodes of instance [nodeList]
+			const almChildren = el.childNodes; // Get child nodes of instance [nodeList]
 			if (almChildren) {
-				let almChildArray = Array.prototype.slice.call(almChildren); // Convert nodeList to array
+				const almChildArray = Array.prototype.slice.call(almChildren); // Convert nodeList to array
 
 				// Filter array to find the `.alm-btn-wrap` div
-				let btnWrap = almChildArray.filter(function (element) {
+				const btnWrap = almChildArray.filter(function (element) {
 					if (!element.classList) {
 						// If not element (#text node)
 						return false;
@@ -1788,19 +1789,15 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
 			if (typeof almSetNextPage === 'function' && alm.addons.nextpage) {
-				// Next Page
 				window.almSetNextPage(alm);
 			}
 			if (typeof almSEO === 'function' && alm.addons.seo) {
-				// SEO
 				window.almSEO(alm, false);
 			}
 			if (typeof almWooCommerce === 'function' && alm.addons.woocommerce) {
-				// WooCommerce
 				window.almWooCommerce(alm);
 			}
 			if (typeof almElementor === 'function' && alm.addons.elementor) {
-				// Elementor
 				window.almElementor(alm);
 			}
 		};
@@ -1847,19 +1844,12 @@ let alm_is_filtering = false;
 			hidePlaceholder(alm);
 
 			if (!alm.addons.paging) {
-				// Update button text
-				// if (alm.button_done_label !== false) {
-				// 	setTimeout(function () {
-				// 		alm.button.innerHTML = alm.button_done_label;
-				// 	}, 75);
-				// }
-
 				alm.buttonPrev.classList.add('done');
 				alm.buttonPrev.removeAttribute('rel');
 				alm.buttonPrev.disabled = true;
 			}
 
-			// almDonePrev
+			// almDonePrev Callback.
 			if (typeof almDonePrev === 'function') {
 				// Delay done until animations complete
 				setTimeout(function () {
@@ -1876,45 +1866,6 @@ let alm_is_filtering = false;
 		alm.AjaxLoadMore.resetBtnText = function () {
 			if (alm.button_loading_label !== false && !alm.addons.paging) {
 				alm.button.innerHTML = alm.button_label;
-			}
-		};
-
-		/**
-		 * Error function after failed data attempt.
-		 *
-		 * @since 2.6.0
-		 */
-		alm.AjaxLoadMore.error = function (error, location = null) {
-			alm.loading = false;
-			if (!alm.addons.paging) {
-				alm.button.classList.remove('loading');
-				alm.AjaxLoadMore.resetBtnText();
-			}
-
-			console.log('Error: ', error);
-			if (error.response) {
-				// The request was made and the server responded with a status code
-				// that falls out of the range of 2xx
-				//console.log(error.response.data);
-				//console.log(error.response.status);
-				//console.log(error.response.headers);
-				console.log('Error Msg: ', error.message);
-			} else if (error.request) {
-				// The request was made but no response was received
-				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-				// http.ClientRequest in node.js
-				console.log(error.request);
-			} else {
-				// Something happened in setting up the request that triggered an Error
-				console.log('Error Msg: ', error.message);
-			}
-
-			if (location) {
-				console.log('ALM Error started in ' + location);
-			}
-
-			if (error.config) {
-				console.log('ALM Error Debug: ', error.config);
 			}
 		};
 
@@ -2195,8 +2146,8 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.setLocalizedVar = function (name = '', value = '') {
 			if (alm.localize && name !== '' && value !== '') {
-				alm.localize[name] = value.toString(); // Set ALM localize var
-				window[alm.master_id + '_vars'][name] = value.toString(); // Update global window obj vars
+				alm.localize[name] = value; // Set ALM localize var.
+				window[alm.master_id + '_vars'][name] = value; // Update vars.
 			}
 		};
 
@@ -2206,7 +2157,7 @@ let alm_is_filtering = false;
 		 * @since 2.0
 		 */
 		alm.AjaxLoadMore.init = function () {
-			// Preloaded and destroy_after is 1
+			// Preloaded and destroy_after is 1.
 			if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
 				alm.AjaxLoadMore.destroyed();
 			}
@@ -2218,6 +2169,7 @@ let alm_is_filtering = false;
 				} else {
 					// Set button label.
 					alm.button.innerHTML = alm.button_label;
+
 					// If Pause.
 					if (alm.pause === 'true') {
 						alm.loading = false;
@@ -2253,14 +2205,13 @@ let alm_is_filtering = false;
 
 			// Preloaded && !Paging
 			if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
-				// Delay for scripts to load
+				// Delay for scripts to load.
 				setTimeout(function () {
-					// triggerDone
 					if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
 						alm.AjaxLoadMore.triggerDone();
 					}
-					// almEmpty
-					if (alm.addons.preloaded_total_posts == 0) {
+					// almEmpty callback.
+					if (alm.addons.preloaded_total_posts === 0) {
 						if (typeof almEmpty === 'function') {
 							window.almEmpty(alm);
 						}
@@ -2356,9 +2307,44 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * Update Current Page.
-		 * Callback function triggered from paging add-on.
+		 * Handle error messages.
 		 *
+		 * @since 2.6.0
+		 */
+		alm.AjaxLoadMore.error = function (error, location = null) {
+			alm.loading = false;
+
+			if (!alm.addons.paging) {
+				alm.button.classList.remove('loading');
+				alm.AjaxLoadMore.resetBtnText();
+			}
+			console.log('Error: ', error);
+
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				console.log('Error Msg: ', error.message);
+			} else if (error.request) {
+				// The request was made but no response was received
+				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of ClientRequest in node.js
+				console.log(error.request);
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.log('Error Msg: ', error.message);
+			}
+
+			if (location) {
+				console.log('ALM Error started in ' + location);
+			}
+			if (error.config) {
+				console.log('ALM Error Debug: ', error.config);
+			}
+		};
+
+		/**
+		 * Update Current Page.
+		 *
+		 * Note: Callback function triggered from Paging add-on.
 		 * @since 2.7.0
 		 */
 		window.almUpdateCurrentPage = function (current, obj, alm) {
@@ -2514,41 +2500,40 @@ export const reset = function (props = {}) {
 };
 
 /**
- * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
+ * Get the total post count in the current query by ALM instance ID.
  *
+ * Note: Uses localized ALM variables.
  * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
  *
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 export const getPostCount = function (id = '') {
-	// Get the ALM localized variable name.
-	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
-
-	// Get the value from the window object.
-	const localized = window[localize_var];
-	if (!localized && !localized.post_count) {
-		return null;
-	}
-	return parseInt(localized.post_count);
+	return getTotals('post_count', id);
 };
 
 /**
- * Get the total number of posts by ALM instance ID from the ALM Localized variables.
+ * Get the total number of posts by ALM instance ID.
  *
+ * Note: Uses localized ALM variables.
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 export const getTotalPosts = function (id = '') {
-	// Get the ALM localized variable name.
-	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
+	return getTotals('total_posts', id);
+};
 
-	// Get the value from the window object.
-	const localized = window[localize_var];
-	if (!localized && !localized.total_posts) {
-		return null;
-	}
-	return parseInt(localized.total_posts);
+/**
+ * Get the total posts remaining in the current query by ALM instance ID.
+ *
+ * Note: Uses localized ALM variables.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ *
+ * @param  {string} id An optional Ajax Load More ID.
+ * @return {Number}    The total remaining posts.
+ */
+export const getTotalRemaining = function (id = '') {
+	return getTotals('remaining', id);
 };
 
 /**

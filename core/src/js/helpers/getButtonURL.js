@@ -5,7 +5,7 @@
  * @param {string} rel The type of load more, `next` or `previous`.
  * @since 5.4.0
  */
-export const getButtonURL = (alm, rel = 'next') => {
+export function getButtonURL(alm, rel = 'next') {
 	if (!alm || !alm.trigger) {
 		return false;
 	}
@@ -16,7 +16,7 @@ export const getButtonURL = (alm, rel = 'next') => {
 
 	const url = button ? button.dataset.url : '';
 	return url ? url : '';
-};
+}
 
 /**
  * Set button dataset attributes.
@@ -25,7 +25,7 @@ export const getButtonURL = (alm, rel = 'next') => {
  * @param {number} page The current page number.
  * @param {string} url The URL for updating.
  */
-export const setButtonAtts = (button, page, url) => {
+export function setButtonAtts(button, page, url) {
 	if (!button) {
 		return;
 	}
@@ -36,4 +36,4 @@ export const setButtonAtts = (button, page, url) => {
 
 	button.dataset.page = page; // Set Page.
 	button.dataset.url = url ? url : ''; // Set URL.
-};
+}

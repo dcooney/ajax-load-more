@@ -2,11 +2,10 @@
  * Get the scroll distance in pixels from a percentage.
  *
  * @param {object} alm The Ajax Load More object.
- * @return {number} The new distance.
+ * @return {number}    The new distance.
  * @since 5.2
  */
-
-const getScrollPercentage = (alm) => {
+export default function getScrollPercentage(alm) {
 	if (!alm) {
 		return false;
 	}
@@ -18,5 +17,4 @@ const getScrollPercentage = (alm) => {
 	const newdistance = is_negative ? `-${height}` : height; // Set the distance
 
 	return parseInt(newdistance);
-};
-export default getScrollPercentage;
+}

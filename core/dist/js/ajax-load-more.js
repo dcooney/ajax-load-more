@@ -188,7 +188,7 @@ exports.elementorLoaded = elementorLoaded;
 exports.elementorGetContent = elementorGetContent;
 exports.elementorCreateParams = elementorCreateParams;
 
-var _getButtonURL = __webpack_require__(/*! ../modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
+var _getButtonURL = __webpack_require__(/*! ../helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
 
 var _lazyImages = __webpack_require__(/*! ../modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
 
@@ -585,7 +585,7 @@ function elementorGetWidgetType(target) {
  *
  * @param  {HTMLElement} element   The target element
  * @param  {string}      classname The classname.
- * @return {HTMLElement | string}      
+ * @return {HTMLElement | string}
  */
 function elementorGetNextPage(element, classname) {
 	var pagination = element.querySelector(classname);
@@ -596,7 +596,7 @@ function elementorGetNextPage(element, classname) {
  * Get the URL of the next page to load from the a.next href
  *
  * @param {HTMLElement} element The target element
- * @return {HTMLElement | string} 
+ * @return {HTMLElement | string}
  */
 function elementorGetNextUrl(element) {
 	if (!element) {
@@ -1093,7 +1093,7 @@ var _dispatchScrollEvent = __webpack_require__(/*! ../helpers/dispatchScrollEven
 
 var _dispatchScrollEvent2 = _interopRequireDefault(_dispatchScrollEvent);
 
-var _getButtonURL = __webpack_require__(/*! ../modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
+var _getButtonURL = __webpack_require__(/*! ../helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
 
 var _lazyImages = __webpack_require__(/*! ../modules/lazyImages */ "./core/src/js/modules/lazyImages.js");
 
@@ -1130,9 +1130,9 @@ function _asyncToGenerator(fn) {
 }
 
 /**
- * Set up the instance of ALM WooCommerce
+ * Set up instance of ALM WooCommerce
  *
- * @param {object} alm
+ * @param {object} alm ALM object.
  * @since 5.3.0
  */
 function wooInit(alm) {
@@ -1142,7 +1142,7 @@ function wooInit(alm) {
 
 	alm.button.dataset.page = alm.addons.woocommerce_settings.paged + 1; // Page
 
-	// URL
+	// Get upcoming URL.
 	var nextPage = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged];
 	if (nextPage) {
 		alm.button.dataset.url = nextPage;
@@ -1179,8 +1179,6 @@ function wooInit(alm) {
 
 		// Paged URL: Create previous button.
 		if (currentPage > 1) {
-			// almWooCommerceResultsTextInit(alm);
-
 			if (alm.addons.woocommerce_settings.settings.previous_products) {
 				var prevURL = alm.addons.woocommerce_settings.paged_urls[currentPage - 2];
 				var label = alm.addons.woocommerce_settings.settings.previous_products;
@@ -1195,9 +1193,9 @@ function wooInit(alm) {
 /**
  * Core ALM WooCommerce product loader
  *
- * @param {HTMLElement} content
- * @param {object} alm
- * @param {String} pageTitle
+ * @param {Element} content  WooCommerce content container.
+ * @param {object} alm       ALM object.
+ * @param {string} pageTitle Page title.
  * @since 5.3.0
  */
 function woocommerce(content, alm) {
@@ -1212,15 +1210,13 @@ function woocommerce(content, alm) {
 		var products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
 		var page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
 		var url = alm.addons.woocommerce_settings.paged_urls[page];
+		var _alm$addons$woocommer = alm.addons.woocommerce_settings.settings,
+		    settings = _alm$addons$woocommer === undefined ? {} : _alm$addons$woocommer;
+
+		var waitForImages = settings && settings.images_loaded === 'true' ? true : false;
 
 		if (container && products && url) {
-			// Convert NodeList to Array.
-			products = Array.prototype.slice.call(products);
-
-			// Trigger almWooCommerceLoaded callback.
-			if (typeof almWooCommerceLoaded === 'function') {
-				window.almWooCommerceLoaded(products);
-			}
+			var wooProducts = Array.prototype.slice.call(products); // Convert NodeList to Array.
 
 			// Load the Products
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -1229,7 +1225,7 @@ function woocommerce(content, alm) {
 						switch (_context.prev = _context.next) {
 							case 0:
 								_context.next = 2;
-								return (0, _loadItems2.default)(container, products, alm, pageTitle, url, 'alm-woocommerce');
+								return (0, _loadItems2.default)(container, wooProducts, alm, pageTitle, url, 'alm-woocommerce', waitForImages);
 
 							case 2:
 								resolve(true);
@@ -1243,6 +1239,11 @@ function woocommerce(content, alm) {
 			}))().catch(function (e) {
 				console.log(e, 'There was an error with WooCommerce');
 			});
+
+			// Trigger almWooCommerceLoaded callback.
+			if (typeof almWooCommerceLoaded === 'function') {
+				window.almWooCommerceLoaded(products);
+			}
 		}
 	});
 }
@@ -1250,7 +1251,7 @@ function woocommerce(content, alm) {
 /**
  * Handle WooCommerce loaded functionality and dispatch actions.
  *
- * @param {object} alm
+ * @param {object} alm ALM object.
  * @since 5.5.0
  */
 function woocommerceLoaded(alm) {
@@ -1315,7 +1316,7 @@ function wooReset() {
 /**
  * Get the content, title and results text from the Ajax response
  *
- * @param {object} alm The Ajax Load More object.
+ * @param {object} alm ALM object.
  * @since 5.3.0
  */
 function wooGetContent(response, alm) {
@@ -1349,8 +1350,8 @@ function wooGetContent(response, alm) {
 /**
  *  Set results text for WooCommerce Add-on.
  *
- *  @param {HTMLElement} target
- *  @param {Object} alm The Ajax Load More object.
+ *  @param {Element} target The target HTML element.
+ *  @param {Object}  alm    ALM object.
  *  @since 5.3
  */
 function almWooCommerceResultsText() {
@@ -1379,7 +1380,7 @@ function almWooCommerceResultsText() {
 /**
  * Initiate Results text.
  *
- * @param {Object} alm The Ajax Load More object.
+ * @param {Object} alm ALM object.
  * @since 5.3
  * @deprecated 5.5
  */
@@ -1404,10 +1405,10 @@ function almWooCommerceResultsTextInit(alm) {
 /**
  * Create button text for returning to the first page
  *
- * @param {*} text
- * @param {*} link
- * @param {*} label
- * @param {*} seperator
+ * @param {Element} text      The button text.
+ * @param {string}  link      Link URL.
+ * @param {string}  label     Button label.
+ * @param {string}  seperator HTML separator.
  */
 function returnButton(text, link, label, seperator) {
 	var button = ' ' + seperator + ' <a href="' + link + '">' + label + '</a>';
@@ -1418,7 +1419,7 @@ function returnButton(text, link, label, seperator) {
  * Get total count of WooCommerce containers.
  *
  * @param {string} container The container class.
- * @return {Number} The total umber of containers.
+ * @return {Number}          The total umber of containers.
  */
 function getContainerCount(container) {
 	if (!container) {
@@ -1447,7 +1448,7 @@ function getContainerCount(container) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.click = exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
+exports.click = exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalRemaining = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -1487,6 +1488,10 @@ var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName *
 
 var _getParameterByName2 = _interopRequireDefault(_getParameterByName);
 
+var _getScrollPercentage = __webpack_require__(/*! ./helpers/getScrollPercentage */ "./core/src/js/helpers/getScrollPercentage.js");
+
+var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
+
 var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
 
 var queryParams = _interopRequireWildcard(_queryParams);
@@ -1519,11 +1524,7 @@ var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/m
 
 var _filtering2 = _interopRequireDefault(_filtering);
 
-var _getButtonURL = __webpack_require__(/*! ./modules/getButtonURL */ "./core/src/js/modules/getButtonURL.js");
-
-var _getScrollPercentage = __webpack_require__(/*! ./modules/getScrollPercentage */ "./core/src/js/modules/getScrollPercentage.js");
-
-var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
+var _getButtonURL = __webpack_require__(/*! ./helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
 
 var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
 
@@ -1552,6 +1553,10 @@ var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ ".
 var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
 
 var _tableofcontents = __webpack_require__(/*! ./modules/tableofcontents */ "./core/src/js/modules/tableofcontents.js");
+
+var _getTotals = __webpack_require__(/*! ./helpers/getTotals */ "./core/src/js/helpers/getTotals.js");
+
+var _getTotals2 = _interopRequireDefault(_getTotals);
 
 function _interopRequireWildcard(obj) {
 	if (obj && obj.__esModule) {
@@ -1913,7 +1918,7 @@ var alm_is_filtering = false;
 
 			// Display warning when `filters_target` parameter is missing.
 			if (!alm.addons.filters_target) {
-				console.warn('Ajax Load More: Unable to locate target for Filters. Make sure you set a filters_target in core Ajax Load More - e.g. [ajax_load_more filters="true" target="filters"]');
+				console.warn('Ajax Load More: Unable to locate a target for Filters. Make sure you set a target parameter in the core Ajax Load More shortcode - e.g. [ajax_load_more filters="true" target="filters"]');
 			}
 
 			// Get Paged Querystring Val
@@ -1963,8 +1968,8 @@ var alm_is_filtering = false;
 		if (alm.addons.preloaded === 'true') {
 			// Preloaded Amount
 			alm.addons.preloaded_amount = alm.addons.preloaded_amount === undefined ? alm.posts_per_page : alm.addons.preloaded_amount;
-			// Disable ALM if total_posts is less than or equal to preloaded_amount
-			if (alm.localize && alm.localize.total_posts) {
+			if (alm.localize && alm.localize.total_posts !== null) {
+				// Disable ALM if total_posts is equal to or less than preloaded_amount.
 				if (parseInt(alm.localize.total_posts) <= parseInt(alm.addons.preloaded_amount)) {
 					alm.addons.preloaded_total_posts = alm.localize.total_posts;
 					alm.disable_ajax = true;
@@ -3404,19 +3409,15 @@ var alm_is_filtering = false;
    */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
 			if (typeof almSetNextPage === 'function' && alm.addons.nextpage) {
-				// Next Page
 				window.almSetNextPage(alm);
 			}
 			if (typeof almSEO === 'function' && alm.addons.seo) {
-				// SEO
 				window.almSEO(alm, false);
 			}
 			if (typeof almWooCommerce === 'function' && alm.addons.woocommerce) {
-				// WooCommerce
 				window.almWooCommerce(alm);
 			}
 			if (typeof almElementor === 'function' && alm.addons.elementor) {
-				// Elementor
 				window.almElementor(alm);
 			}
 		};
@@ -3463,19 +3464,12 @@ var alm_is_filtering = false;
 			(0, _placeholder.hidePlaceholder)(alm);
 
 			if (!alm.addons.paging) {
-				// Update button text
-				// if (alm.button_done_label !== false) {
-				// 	setTimeout(function () {
-				// 		alm.button.innerHTML = alm.button_done_label;
-				// 	}, 75);
-				// }
-
 				alm.buttonPrev.classList.add('done');
 				alm.buttonPrev.removeAttribute('rel');
 				alm.buttonPrev.disabled = true;
 			}
 
-			// almDonePrev
+			// almDonePrev Callback.
 			if (typeof almDonePrev === 'function') {
 				// Delay done until animations complete
 				setTimeout(function () {
@@ -3492,47 +3486,6 @@ var alm_is_filtering = false;
 		alm.AjaxLoadMore.resetBtnText = function () {
 			if (alm.button_loading_label !== false && !alm.addons.paging) {
 				alm.button.innerHTML = alm.button_label;
-			}
-		};
-
-		/**
-   * Error function after failed data attempt.
-   *
-   * @since 2.6.0
-   */
-		alm.AjaxLoadMore.error = function (error) {
-			var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-			alm.loading = false;
-			if (!alm.addons.paging) {
-				alm.button.classList.remove('loading');
-				alm.AjaxLoadMore.resetBtnText();
-			}
-
-			console.log('Error: ', error);
-			if (error.response) {
-				// The request was made and the server responded with a status code
-				// that falls out of the range of 2xx
-				//console.log(error.response.data);
-				//console.log(error.response.status);
-				//console.log(error.response.headers);
-				console.log('Error Msg: ', error.message);
-			} else if (error.request) {
-				// The request was made but no response was received
-				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-				// http.ClientRequest in node.js
-				console.log(error.request);
-			} else {
-				// Something happened in setting up the request that triggered an Error
-				console.log('Error Msg: ', error.message);
-			}
-
-			if (location) {
-				console.log('ALM Error started in ' + location);
-			}
-
-			if (error.config) {
-				console.log('ALM Error Debug: ', error.config);
 			}
 		};
 
@@ -3808,8 +3761,8 @@ var alm_is_filtering = false;
 			var value = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
 			if (alm.localize && name !== '' && value !== '') {
-				alm.localize[name] = value.toString(); // Set ALM localize var
-				window[alm.master_id + '_vars'][name] = value.toString(); // Update global window obj vars
+				alm.localize[name] = value; // Set ALM localize var.
+				window[alm.master_id + '_vars'][name] = value; // Update vars.
 			}
 		};
 
@@ -3819,7 +3772,7 @@ var alm_is_filtering = false;
    * @since 2.0
    */
 		alm.AjaxLoadMore.init = function () {
-			// Preloaded and destroy_after is 1
+			// Preloaded and destroy_after is 1.
 			if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
 				alm.AjaxLoadMore.destroyed();
 			}
@@ -3831,6 +3784,7 @@ var alm_is_filtering = false;
 				} else {
 					// Set button label.
 					alm.button.innerHTML = alm.button_label;
+
 					// If Pause.
 					if (alm.pause === 'true') {
 						alm.loading = false;
@@ -3866,14 +3820,13 @@ var alm_is_filtering = false;
 
 			// Preloaded && !Paging
 			if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
-				// Delay for scripts to load
+				// Delay for scripts to load.
 				setTimeout(function () {
-					// triggerDone
 					if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
 						alm.AjaxLoadMore.triggerDone();
 					}
-					// almEmpty
-					if (alm.addons.preloaded_total_posts == 0) {
+					// almEmpty callback.
+					if (alm.addons.preloaded_total_posts === 0) {
 						if (typeof almEmpty === 'function') {
 							window.almEmpty(alm);
 						}
@@ -3983,9 +3936,46 @@ var alm_is_filtering = false;
 		};
 
 		/**
-   * Update Current Page.
-   * Callback function triggered from paging add-on.
+   * Handle error messages.
    *
+   * @since 2.6.0
+   */
+		alm.AjaxLoadMore.error = function (error) {
+			var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+
+			alm.loading = false;
+
+			if (!alm.addons.paging) {
+				alm.button.classList.remove('loading');
+				alm.AjaxLoadMore.resetBtnText();
+			}
+			console.log('Error: ', error);
+
+			if (error.response) {
+				// The request was made and the server responded with a status code
+				// that falls out of the range of 2xx
+				console.log('Error Msg: ', error.message);
+			} else if (error.request) {
+				// The request was made but no response was received
+				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of ClientRequest in node.js
+				console.log(error.request);
+			} else {
+				// Something happened in setting up the request that triggered an Error
+				console.log('Error Msg: ', error.message);
+			}
+
+			if (location) {
+				console.log('ALM Error started in ' + location);
+			}
+			if (error.config) {
+				console.log('ALM Error Debug: ', error.config);
+			}
+		};
+
+		/**
+   * Update Current Page.
+   *
+   * Note: Callback function triggered from Paging add-on.
    * @since 2.7.0
    */
 		window.almUpdateCurrentPage = function (current, obj, alm) {
@@ -4169,8 +4159,9 @@ var reset = exports.reset = function reset() {
 };
 
 /**
- * Get the total post count in the current query by ALM instance ID from the ALM Localized variables.
+ * Get the total post count in the current query by ALM instance ID.
  *
+ * Note: Uses localized ALM variables.
  * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
  *
  * @param  {string} id An optional Ajax Load More ID.
@@ -4179,35 +4170,35 @@ var reset = exports.reset = function reset() {
 var getPostCount = exports.getPostCount = function getPostCount() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	// Get the ALM localized variable name.
-	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
-
-	// Get the value from the window object.
-	var localized = window[localize_var];
-	if (!localized && !localized.post_count) {
-		return null;
-	}
-	return parseInt(localized.post_count);
+	return (0, _getTotals2.default)('post_count', id);
 };
 
 /**
- * Get the total number of posts by ALM instance ID from the ALM Localized variables.
+ * Get the total number of posts by ALM instance ID.
  *
+ * Note: Uses localized ALM variables.
  * @param  {string} id An optional Ajax Load More ID.
  * @return {Number}    The results from the localized variable.
  */
 var getTotalPosts = exports.getTotalPosts = function getTotalPosts() {
 	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
 
-	// Get the ALM localized variable name.
-	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+	return (0, _getTotals2.default)('total_posts', id);
+};
 
-	// Get the value from the window object.
-	var localized = window[localize_var];
-	if (!localized && !localized.total_posts) {
-		return null;
-	}
-	return parseInt(localized.total_posts);
+/**
+ * Get the total posts remaining in the current query by ALM instance ID.
+ *
+ * Note: Uses localized ALM variables.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ *
+ * @param  {string} id An optional Ajax Load More ID.
+ * @return {Number}    The total remaining posts.
+ */
+var getTotalRemaining = exports.getTotalRemaining = function getTotalRemaining() {
+	var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+
+	return (0, _getTotals2.default)('remaining', id);
 };
 
 /**
@@ -4530,6 +4521,65 @@ exports.default = dispatchScrollEvent;
 
 /***/ }),
 
+/***/ "./core/src/js/helpers/getButtonURL.js":
+/*!*********************************************!*\
+  !*** ./core/src/js/helpers/getButtonURL.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.getButtonURL = getButtonURL;
+exports.setButtonAtts = setButtonAtts;
+/**
+ * Get the URL for Load More button.
+ *
+ * @param {object} alm The Ajax Load More object.
+ * @param {string} rel The type of load more, `next` or `previous`.
+ * @since 5.4.0
+ */
+function getButtonURL(alm) {
+	var rel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'next';
+
+	if (!alm || !alm.trigger) {
+		return false;
+	}
+	var button = alm.trigger.querySelector('.alm-load-more-btn');
+	if (rel === 'prev') {
+		button = document.querySelector('.alm-load-more-btn--prev');
+	}
+
+	var url = button ? button.dataset.url : '';
+	return url ? url : '';
+}
+
+/**
+ * Set button dataset attributes.
+ *
+ * @param {Element} button The HTML element.
+ * @param {number} page The current page number.
+ * @param {string} url The URL for updating.
+ */
+function setButtonAtts(button, page, url) {
+	if (!button) {
+		return;
+	}
+
+	if (button.rel && button.rel === 'prev') {
+		button.href = url;
+	}
+
+	button.dataset.page = page; // Set Page.
+	button.dataset.url = url ? url : ''; // Set URL.
+}
+
+/***/ }),
+
 /***/ "./core/src/js/helpers/getCacheUrl.js":
 /*!********************************************!*\
   !*** ./core/src/js/helpers/getCacheUrl.js ***!
@@ -4684,6 +4734,107 @@ var getQueryVariable = function getQueryVariable(variable) {
 };
 
 exports.default = getQueryVariable;
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/getScrollPercentage.js":
+/*!****************************************************!*\
+  !*** ./core/src/js/helpers/getScrollPercentage.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = getScrollPercentage;
+/**
+ * Get the scroll distance in pixels from a percentage.
+ *
+ * @param {object} alm The Ajax Load More object.
+ * @return {number}    The new distance.
+ * @since 5.2
+ */
+function getScrollPercentage(alm) {
+	if (!alm) {
+		return false;
+	}
+
+	var is_negative = alm.scroll_distance_orig.toString().indexOf('-') === -1 ? false : true; // Is this a negative number
+	var raw_distance = alm.scroll_distance_orig.toString().replace('-', '').replace('%', ''); // Remove - and perc
+	var wh = alm.window.innerHeight; // window height
+	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
+	var newdistance = is_negative ? '-' + height : height; // Set the distance
+
+	return parseInt(newdistance);
+}
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/getTotals.js":
+/*!******************************************!*\
+  !*** ./core/src/js/helpers/getTotals.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.default = getTotals;
+/**
+ * Get the total posts remaining in the current query by ALM instance ID.
+ *
+ * Note: Uses localized ALM variables.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ *
+ * @param  {string} type The type of total to retrieve.
+ * @param  {string} id   An optional Ajax Load More ID.
+ * @return {Number}      A total post count.
+ */
+function getTotals(type) {
+	var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
+
+	// Get the ALM localized variable name.
+	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+
+	// Get the localized value from the window object.
+	var localized = window[localize_var];
+	var total_posts = localized.total_posts;
+	var post_count = localized.post_count;
+	var page = localized.page;
+	var pages = localized.pages;
+
+	if (!localized) {
+		return null;
+	}
+
+	switch (type) {
+		case 'total_posts':
+			return total_posts ? parseInt(total_posts) : '';
+
+		case 'post_count':
+			return post_count ? parseInt(post_count) : '';
+
+		case 'page':
+			return page ? parseInt(page) : '';
+
+		case 'pages':
+			return pages ? parseInt(pages) : '';
+
+		case 'remaining':
+			if (!total_posts || !post_count) {
+				return '';
+			}
+			return parseInt(total_posts) - parseInt(post_count);
+	}
+}
 
 /***/ }),
 
@@ -5335,15 +5486,15 @@ function almGetRestParams(alm) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = srcsetPolyfill;
 /**
- * srcsetPolyfill
- * A Safari srcset polyfill to get Masonry and ImagesLoaded working
+ * A srcset polyfill to get Masonry and ImagesLoaded working with Safari and Firefox.
  *
- * @param {*} container Element
- * @param {*} ua String
+ * @param {Element} container Contaienr HTML element.
+ * @param {string} ua The user-agent string.
  * @since 5.0.2
  */
-var srcsetPolyfill = function srcsetPolyfill() {
+function srcsetPolyfill() {
 	var container = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 	var ua = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
@@ -5366,8 +5517,7 @@ var srcsetPolyfill = function srcsetPolyfill() {
 		img.classList.add('alm-loaded');
 		img.outerHTML = img.outerHTML;
 	}
-};
-exports.default = srcsetPolyfill;
+}
 
 /***/ }),
 
@@ -5462,14 +5612,15 @@ exports.default = tableWrap;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = almDebug;
 /**
  * Display Ajax Load More debug results.
  *
  * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
- * @param {object} alm     Global alm object
+ * @param {object} alm ALM object.
  * @since 5.1.6
  */
-var almDebug = function almDebug(alm) {
+function almDebug(alm) {
 	if (alm && alm.debug) {
 		var obj = {
 			query: alm.debug,
@@ -5477,9 +5628,7 @@ var almDebug = function almDebug(alm) {
 		};
 		console.log('ALM Debug:', obj);
 	}
-};
-
-exports.default = almDebug;
+}
 
 /***/ }),
 
@@ -5840,101 +5989,6 @@ var almSetFilters = function almSetFilters() {
 
 /***/ }),
 
-/***/ "./core/src/js/modules/getButtonURL.js":
-/*!*********************************************!*\
-  !*** ./core/src/js/modules/getButtonURL.js ***!
-  \*********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * Get the URL for Load More button.
- *
- * @param {object} alm The Ajax Load More object.
- * @param {string} rel The type of load more, `next` or `previous`.
- * @since 5.4.0
- */
-var getButtonURL = exports.getButtonURL = function getButtonURL(alm) {
-	var rel = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'next';
-
-	if (!alm || !alm.trigger) {
-		return false;
-	}
-	var button = alm.trigger.querySelector('.alm-load-more-btn');
-	if (rel === 'prev') {
-		button = document.querySelector('.alm-load-more-btn--prev');
-	}
-
-	var url = button ? button.dataset.url : '';
-	return url ? url : '';
-};
-
-/**
- * Set button dataset attributes.
- *
- * @param {Element} button The HTML element.
- * @param {number} page The current page number.
- * @param {string} url The URL for updating.
- */
-var setButtonAtts = exports.setButtonAtts = function setButtonAtts(button, page, url) {
-	if (!button) {
-		return;
-	}
-
-	if (button.rel && button.rel === 'prev') {
-		button.href = url;
-	}
-
-	button.dataset.page = page; // Set Page.
-	button.dataset.url = url ? url : ''; // Set URL.
-};
-
-/***/ }),
-
-/***/ "./core/src/js/modules/getScrollPercentage.js":
-/*!****************************************************!*\
-  !*** ./core/src/js/modules/getScrollPercentage.js ***!
-  \****************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-/**
- * Get the scroll distance in pixels from a percentage.
- *
- * @param {object} alm The Ajax Load More object.
- * @return {number} The new distance.
- * @since 5.2
- */
-
-var getScrollPercentage = function getScrollPercentage(alm) {
-	if (!alm) {
-		return false;
-	}
-
-	var is_negative = alm.scroll_distance_orig.toString().indexOf('-') === -1 ? false : true; // Is this a negative number
-	var raw_distance = alm.scroll_distance_orig.toString().replace('-', '').replace('%', ''); // Remove - and perc
-	var wh = alm.window.innerHeight; // window height
-	var height = Math.floor(wh / 100 * parseInt(raw_distance)); // Do math to get distance
-	var newdistance = is_negative ? '-' + height : height; // Set the distance
-
-	return parseInt(newdistance);
-};
-exports.default = getScrollPercentage;
-
-/***/ }),
-
 /***/ "./core/src/js/modules/insertScript.js":
 /*!*********************************************!*\
   !*** ./core/src/js/modules/insertScript.js ***!
@@ -6101,6 +6155,7 @@ function replaceSrc(img) {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = loadImage;
 
 var _srcsetPolyfill = __webpack_require__(/*! ../helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
@@ -6117,37 +6172,44 @@ var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/image
 /**
  * Load the image with imagesLoaded
  *
- * @param {HTMLElement} container The HTML container.
- * @param {HTMLElement} item      The element to load.
- * @param {string}      ua        Browser user-agent.
- * @param {string}      rel       The loading direction, next or prev.
+ * @param {Element} container     The HTML container.
+ * @param {Element} item          The element to load.
+ * @param {string}  ua            Browser user-agent.
+ * @param {string}  rel           The loading direction, next or prev.
+ * @param {boolean} waitForImages Wait for images to load before loading next item.
  */
-var loadImage = function loadImage(container, item, ua) {
+function loadImage(container, item, ua) {
 	var rel = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'next';
+	var waitForImages = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+
+	/**
+  * Append item to container.
+  */
+	function appendImage() {
+		if (rel === 'prev') {
+			container.insertBefore(item, container.childNodes[0]);
+		} else {
+			container.appendChild(item);
+		}
+
+		(0, _lazyImages.lazyImagesReplace)(item); // Lazy load image fix.
+		(0, _srcsetPolyfill2.default)(item, ua); // Safari/Firefox polyfills.
+	}
 
 	return new Promise(function (resolve) {
-		imagesLoaded(item, function () {
-			// Add CSS transition
-			item.style.transition = 'all 0.4s ease';
-			// Append to container
-			if (rel === 'prev') {
-				container.insertBefore(item, container.childNodes[0]);
-			} else {
-				container.appendChild(item);
-			}
+		item.style.transition = 'all 0.25s ease'; // Add CSS transition to each item.
 
-			// Lazy Load images
-			(0, _lazyImages.lazyImagesReplace)(item);
-
-			// Run srcset fix
-			(0, _srcsetPolyfill2.default)(item, ua);
-
-			// Send Promise callback
-			resolve(true);
-		});
+		if (waitForImages) {
+			imagesLoaded(item, function () {
+				appendImage();
+				resolve(true); // Send Promise callback
+			});
+		} else {
+			appendImage();
+			resolve(true); // Send Promise callback
+		}
 	});
-};
-exports.default = loadImage;
+}
 
 /***/ }),
 
@@ -6164,6 +6226,7 @@ exports.default = loadImage;
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = loadItems;
 
 var _loadImage = __webpack_require__(/*! ./loadImage */ "./core/src/js/modules/loadImage.js");
 
@@ -6200,18 +6263,22 @@ function _asyncToGenerator(fn) {
 }
 
 /**
- * Load all items.
+ * Load all items after Ajax request.
  *
- * @param {HTMLElement} container
- * @param {HTMLElement} items
- * @param {Object} alm
- * @param {string} pageTitle
- * @param {string} url
- * @param {string} className
+ * Note: The function is used with WooCommerce and Elementor add-ons.
+ *
+ * @param {Element} container     The HTML container
+ * @param {array}   items         Array of items.
+ * @param {Object}  alm	          The ALM object.
+ * @param {string}  pageTitle     Current page title.
+ * @param {string}  url           Current URL.
+ * @param {string}  className     Optional classnames.
+ * @param {boolean} waitForImages Wait for images to load before loading next item.
  */
-var loadItems = function loadItems(container, items, alm, pageTitle) {
+function loadItems(container, items, alm, pageTitle) {
 	var url = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : window.location;
 	var className = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
+	var waitForImages = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : true;
 
 	return new Promise(function (resolve) {
 		var total = items.length;
@@ -6252,7 +6319,7 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 									}
 
 									_context.next = 4;
-									return (0, _loadImage2.default)(container, items[index], alm.ua, rel);
+									return (0, _loadImage2.default)(container, items[index], alm.ua, rel, waitForImages);
 
 								case 4:
 
@@ -6267,7 +6334,7 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 							}
 						}
 					}, _callee, this);
-				}))().catch(function (e) {
+				}))().catch(function () {
 					console.log('There was an error loading the items');
 				});
 			} else {
@@ -6291,9 +6358,7 @@ var loadItems = function loadItems(container, items, alm, pageTitle) {
 
 		loadItem();
 	});
-};
-
-exports.default = loadItems;
+}
 
 /***/ }),
 
@@ -6712,26 +6777,36 @@ Object.defineProperty(exports, "__esModule", {
 exports.almResultsText = almResultsText;
 exports.almGetResultsText = almGetResultsText;
 exports.almInitResultsText = almInitResultsText;
+
+var _getTotals = __webpack_require__(/*! ../helpers/getTotals */ "./core/src/js/helpers/getTotals.js");
+
+var _getTotals2 = _interopRequireDefault(_getTotals);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
 /**
  * Set the results text if required.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 5.1
  */
 function almResultsText(alm) {
 	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-	if (!alm.resultsText || alm.nested === 'true') return false;
+	if (!alm.resultsText || alm.nested === 'true') {
+		return false;
+	}
 	var resultsType = type === 'nextpage' || type === 'woocommerce' ? type : 'standard';
-
 	almGetResultsText(alm, resultsType);
 }
 
 /**
  * Get values for showing results text.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */
@@ -6746,8 +6821,6 @@ function almGetResultsText(alm) {
 	var pages = 0;
 	var post_count = 0;
 	var total_posts = 0;
-	var preloaded = alm.addons.preloaded === 'true' ? true : false;
-	var paging = alm.addons.paging ? true : false;
 	var posts_per_page = alm.orginal_posts_per_page;
 
 	switch (type) {
@@ -6767,15 +6840,10 @@ function almGetResultsText(alm) {
 			break;
 
 		default:
-			page = parseInt(alm.page) + 1;
-			pages = Math.ceil(alm.localize.total_posts / posts_per_page);
-			post_count = parseInt(alm.localize.post_count);
-			total_posts = parseInt(alm.localize.total_posts);
-
-			// Add 1 page if Preloaded
-			if (preloaded) {
-				page = paging ? alm.page + 1 : page + 1;
-			}
+			page = (0, _getTotals2.default)('page', alm.id);
+			pages = (0, _getTotals2.default)('pages', alm.id);
+			post_count = (0, _getTotals2.default)('post_count', alm.id);
+			total_posts = (0, _getTotals2.default)('total_posts', alm.id);
 
 			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, posts_per_page);
 	}
@@ -6784,14 +6852,16 @@ function almGetResultsText(alm) {
 /**
  * Display `Showing {x} of {y} pages` text.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */
 function almInitResultsText(alm) {
 	var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'standard';
 
-	if (!alm.resultsText || !alm.localize || alm.nested === 'true') return false;
+	if (!alm.resultsText || !alm.localize || alm.nested === 'true') {
+		return false;
+	}
 
 	var page = 0;
 	var pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
@@ -6799,22 +6869,22 @@ function almInitResultsText(alm) {
 	var total_posts = parseInt(alm.localize.total_posts);
 
 	switch (type) {
-		// Nextpage
 		case 'nextpage':
+			// Nextpage
 			page = alm.addons.nextpage_startpage;
 			post_count = page;
 			pages = total_posts;
 			almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts, alm.posts_per_page);
 			break;
 
-		// Preloaded
 		case 'preloaded':
+			// Preloaded
 			page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
 			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, alm.posts_per_page);
 			break;
 
-		// WooCommerce
 		case 'woocommerce':
+			// WooCommerce
 			// Don't do anything
 			break;
 
@@ -6879,10 +6949,10 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * Set user focus to improve accessibility after load events.
  *
- * @param {Object} alm
- * @param {HTMLElement} preloaded
- * @param {Number} total
- * @param {Boolean} is_filtering
+ * @param {object} alm ALM object
+ * @param {Element} element The element to focus on.
+ * @param {Number} total The total number of posts returned.
+ * @param {Boolean} is_filtering Is this a filtering event?
  * @since 5.1
  */
 var setFocus = function setFocus(alm) {
@@ -7011,6 +7081,7 @@ var moveFocus = function moveFocus() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = setLocalizedVars;
 
 var _resultsText = __webpack_require__(/*! ./resultsText */ "./core/src/js/modules/resultsText.js");
 
@@ -7031,32 +7102,34 @@ function _interopRequireWildcard(obj) {
 /**
  * Set localized variables
  *
- * @param {object} alm     Global alm object
+ * @param {object} alm ALM object
  * @since 4.1
  */
-
-var setLocalizedVars = function setLocalizedVars(alm) {
+function setLocalizedVars(alm) {
 	return new Promise(function (resolve) {
 		var type = 'standard';
 
-		// Current Page `page`
-
-		// nextpage
 		if (alm.addons.nextpage) {
+			// Nextpage
 			type = 'nextpage';
 			if (alm.addons.paging) {
 				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 			} else {
 				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
 			}
+		} else if (alm.addons.woocommerce) {
+			// WooCommerce
+			type = 'woocommerce';
+			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+		} else {
+			// Standard ALM.
+			var page = alm.addons.preloaded === 'true' ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
+			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(page));
+
+			var pages = Math.ceil(alm.totalposts / alm.orginal_posts_per_page);
+			pages = alm.addons.preloaded === 'true' ? pages + 1 : pages;
+			alm.AjaxLoadMore.setLocalizedVar('pages', parseInt(pages));
 		}
-		// woocommerce
-		else if (alm.addons.woocommerce) {
-				type = 'woocommerce';
-				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
-			} else {
-				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
-			}
 
 		// Total Posts `total_posts`.
 		// Only update if !preloaded && !nextpage && !woocommerce
@@ -7064,23 +7137,19 @@ var setLocalizedVars = function setLocalizedVars(alm) {
 			alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
 		}
 
-		// Viewing
+		// Viewing count.
 		alm.AjaxLoadMore.setLocalizedVar('post_count', almSetPostCount(alm));
 
-		// Set Results Text (if required)
+		// Set Results Text (if required).
 		resultsText.almResultsText(alm, type);
 
 		resolve(true);
 	});
-};
-
-exports.default = setLocalizedVars;
+}
 
 /**
- * almSetViewing
- * Get total post_count
+ * Get total post_count.
  */
-
 function almSetPostCount(alm) {
 	var pc = parseInt(alm.posts);
 	var pa = parseInt(alm.addons.preloaded_amount);

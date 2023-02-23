@@ -3,31 +3,33 @@ import * as resultsText from './resultsText';
 /**
  * Set localized variables
  *
- * @param {object} alm     Global alm object
+ * @param {object} alm ALM object
  * @since 4.1
  */
-
-const setLocalizedVars = function (alm) {
+export default function setLocalizedVars(alm) {
 	return new Promise((resolve) => {
 		let type = 'standard';
 
-		// Current Page `page`
-
-		// nextpage
 		if (alm.addons.nextpage) {
+			// Nextpage
 			type = 'nextpage';
 			if (alm.addons.paging) {
 				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 			} else {
 				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
 			}
-		}
-		// woocommerce
-		else if (alm.addons.woocommerce) {
+		} else if (alm.addons.woocommerce) {
+			// WooCommerce
 			type = 'woocommerce';
 			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 		} else {
-			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
+			// Standard ALM.
+			const page = alm.addons.preloaded === 'true' ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
+			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(page));
+
+			let pages = Math.ceil(alm.totalposts / alm.orginal_posts_per_page);
+			pages = alm.addons.preloaded === 'true' ? pages + 1 : pages;
+			alm.AjaxLoadMore.setLocalizedVar('pages', parseInt(pages));
 		}
 
 		// Total Posts `total_posts`.
@@ -36,21 +38,18 @@ const setLocalizedVars = function (alm) {
 			alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
 		}
 
-		// Viewing
+		// Viewing count.
 		alm.AjaxLoadMore.setLocalizedVar('post_count', almSetPostCount(alm));
 
-		// Set Results Text (if required)
+		// Set Results Text (if required).
 		resultsText.almResultsText(alm, type);
 
 		resolve(true);
 	});
-};
-
-export default setLocalizedVars;
+}
 
 /**
- * almSetViewing
- * Get total post_count
+ * Get total post_count.
  */
 function almSetPostCount(alm) {
 	let pc = parseInt(alm.posts);

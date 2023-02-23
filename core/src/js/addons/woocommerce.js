@@ -1,14 +1,14 @@
 import axios from 'axios';
 import dispatchScrollEvent from '../helpers/dispatchScrollEvent';
-import { setButtonAtts } from '../modules/getButtonURL';
+import { setButtonAtts } from '../helpers/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 import { createLoadPreviousButton } from '../modules/loadPrevious';
 
 /**
- * Set up the instance of ALM WooCommerce
+ * Set up instance of ALM WooCommerce
  *
- * @param {object} alm
+ * @param {object} alm ALM object.
  * @since 5.3.0
  */
 export function wooInit(alm) {
@@ -18,8 +18,8 @@ export function wooInit(alm) {
 
 	alm.button.dataset.page = alm.addons.woocommerce_settings.paged + 1; // Page
 
-	// URL
-	let nextPage = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged];
+	// Get upcoming URL.
+	const nextPage = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged];
 	if (nextPage) {
 		alm.button.dataset.url = nextPage;
 	} else {
@@ -27,7 +27,7 @@ export function wooInit(alm) {
 	}
 
 	// Set up URL and class parameters on first item in product listing
-	let container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
+	const container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
 	if (container) {
 		const count = getContainerCount(alm.addons.woocommerce_settings.container);
 		const currentPage = alm.addons.woocommerce_settings.paged;
@@ -45,7 +45,7 @@ export function wooInit(alm) {
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
-		let products = container.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
+		const products = container.querySelector(alm.addons.woocommerce_settings.products); // Get first `.product` item
 		if (products) {
 			products.classList.add('alm-woocommerce');
 			products.dataset.url = alm.addons.woocommerce_settings.paged_urls[alm.addons.woocommerce_settings.paged - 1];
@@ -59,8 +59,6 @@ export function wooInit(alm) {
 
 		// Paged URL: Create previous button.
 		if (currentPage > 1) {
-			// almWooCommerceResultsTextInit(alm);
-
 			if (alm.addons.woocommerce_settings.settings.previous_products) {
 				const prevURL = alm.addons.woocommerce_settings.paged_urls[currentPage - 2];
 				const label = alm.addons.woocommerce_settings.settings.previous_products;
@@ -77,9 +75,9 @@ export function wooInit(alm) {
 /**
  * Core ALM WooCommerce product loader
  *
- * @param {HTMLElement} content
- * @param {object} alm
- * @param {String} pageTitle
+ * @param {Element} content  WooCommerce content container.
+ * @param {object} alm       ALM object.
+ * @param {string} pageTitle Page title.
  * @since 5.3.0
  */
 export function woocommerce(content, alm, pageTitle = document.title) {
@@ -89,26 +87,27 @@ export function woocommerce(content, alm, pageTitle = document.title) {
 
 	return new Promise((resolve) => {
 		const container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
-		let products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
+		const products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
 		const page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
 		const url = alm.addons.woocommerce_settings.paged_urls[page];
+		const { settings = {} } = alm.addons.woocommerce_settings;
+		const waitForImages = settings && settings.images_loaded === 'true' ? true : false;
 
 		if (container && products && url) {
-			// Convert NodeList to Array.
-			products = Array.prototype.slice.call(products);
+			const wooProducts = Array.prototype.slice.call(products); // Convert NodeList to Array.
+
+			// Load the Products
+			(async function () {
+				await loadItems(container, wooProducts, alm, pageTitle, url, 'alm-woocommerce', waitForImages);
+				resolve(true);
+			})().catch((e) => {
+				console.log(e, 'There was an error with WooCommerce');
+			});
 
 			// Trigger almWooCommerceLoaded callback.
 			if (typeof almWooCommerceLoaded === 'function') {
 				window.almWooCommerceLoaded(products);
 			}
-
-			// Load the Products
-			(async function () {
-				await loadItems(container, products, alm, pageTitle, url, 'alm-woocommerce');
-				resolve(true);
-			})().catch((e) => {
-				console.log(e, 'There was an error with WooCommerce');
-			});
 		}
 	});
 }
@@ -116,7 +115,7 @@ export function woocommerce(content, alm, pageTitle = document.title) {
 /**
  * Handle WooCommerce loaded functionality and dispatch actions.
  *
- * @param {object} alm
+ * @param {object} alm ALM object.
  * @since 5.5.0
  */
 export function woocommerceLoaded(alm) {
@@ -184,7 +183,7 @@ export function wooReset() {
 /**
  * Get the content, title and results text from the Ajax response
  *
- * @param {object} alm The Ajax Load More object.
+ * @param {object} alm ALM object.
  * @since 5.3.0
  */
 export function wooGetContent(response, alm) {
@@ -218,13 +217,13 @@ export function wooGetContent(response, alm) {
 /**
  *  Set results text for WooCommerce Add-on.
  *
- *  @param {HTMLElement} target
- *  @param {Object} alm The Ajax Load More object.
+ *  @param {Element} target The target HTML element.
+ *  @param {Object}  alm    ALM object.
  *  @since 5.3
  */
 function almWooCommerceResultsText(target = '', alm) {
 	if (target && alm && alm.addons.woocommerce_settings.results_text) {
-		let currentResults = target.querySelector(alm.addons.woocommerce_settings.results);
+		const currentResults = target.querySelector(alm.addons.woocommerce_settings.results);
 
 		if (alm.addons.woocommerce_settings.results_text) {
 			//let link = alm.addons.woocommerce_settings.settings.previous_page_link;
@@ -245,7 +244,7 @@ function almWooCommerceResultsText(target = '', alm) {
 /**
  * Initiate Results text.
  *
- * @param {Object} alm The Ajax Load More object.
+ * @param {Object} alm ALM object.
  * @since 5.3
  * @deprecated 5.5
  */
@@ -270,13 +269,13 @@ function almWooCommerceResultsTextInit(alm) {
 /**
  * Create button text for returning to the first page
  *
- * @param {*} text
- * @param {*} link
- * @param {*} label
- * @param {*} seperator
+ * @param {Element} text      The button text.
+ * @param {string}  link      Link URL.
+ * @param {string}  label     Button label.
+ * @param {string}  seperator HTML separator.
  */
 function returnButton(text, link, label, seperator) {
-	let button = ` ${seperator} <a href="${link}">${label}</a>`;
+	const button = ` ${seperator} <a href="${link}">${label}</a>`;
 	return text.innerHTML + button;
 }
 
@@ -284,7 +283,7 @@ function returnButton(text, link, label, seperator) {
  * Get total count of WooCommerce containers.
  *
  * @param {string} container The container class.
- * @return {Number} The total umber of containers.
+ * @return {Number}          The total umber of containers.
  */
 function getContainerCount(container) {
 	if (!container) {

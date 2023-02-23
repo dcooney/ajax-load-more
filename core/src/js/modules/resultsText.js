@@ -1,21 +1,24 @@
+import getTotals from '../helpers/getTotals';
+
 /**
  * Set the results text if required.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 5.1
  */
 export function almResultsText(alm, type = 'standard') {
-	if (!alm.resultsText || alm.nested === 'true') return false;
-	let resultsType = type === 'nextpage' || type === 'woocommerce' ? type : 'standard';
-
+	if (!alm.resultsText || alm.nested === 'true') {
+		return false;
+	}
+	const resultsType = type === 'nextpage' || type === 'woocommerce' ? type : 'standard';
 	almGetResultsText(alm, resultsType);
 }
 
 /**
  * Get values for showing results text.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */
@@ -28,8 +31,6 @@ export function almGetResultsText(alm, type = 'standard') {
 	let pages = 0;
 	let post_count = 0;
 	let total_posts = 0;
-	let preloaded = alm.addons.preloaded === 'true' ? true : false;
-	let paging = alm.addons.paging ? true : false;
 	let posts_per_page = alm.orginal_posts_per_page;
 
 	switch (type) {
@@ -49,15 +50,10 @@ export function almGetResultsText(alm, type = 'standard') {
 			break;
 
 		default:
-			page = parseInt(alm.page) + 1;
-			pages = Math.ceil(alm.localize.total_posts / posts_per_page);
-			post_count = parseInt(alm.localize.post_count);
-			total_posts = parseInt(alm.localize.total_posts);
-
-			// Add 1 page if Preloaded
-			if (preloaded) {
-				page = paging ? alm.page + 1 : page + 1;
-			}
+			page = getTotals('page', alm.id);
+			pages = getTotals('pages', alm.id);
+			post_count = getTotals('post_count', alm.id);
+			total_posts = getTotals('total_posts', alm.id);
 
 			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, posts_per_page);
 	}
@@ -66,12 +62,14 @@ export function almGetResultsText(alm, type = 'standard') {
 /**
  * Display `Showing {x} of {y} pages` text.
  *
- * @param {object} alm  Global alm object.
+ * @param {object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */
 export function almInitResultsText(alm, type = 'standard') {
-	if (!alm.resultsText || !alm.localize || alm.nested === 'true') return false;
+	if (!alm.resultsText || !alm.localize || alm.nested === 'true') {
+		return false;
+	}
 
 	let page = 0;
 	let pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
@@ -79,22 +77,19 @@ export function almInitResultsText(alm, type = 'standard') {
 	let total_posts = parseInt(alm.localize.total_posts);
 
 	switch (type) {
-		// Nextpage
-		case 'nextpage':
+		case 'nextpage': // Nextpage
 			page = alm.addons.nextpage_startpage;
 			post_count = page;
 			pages = total_posts;
 			almRenderResultsText(alm.resultsText, page, total_posts, post_count, total_posts, alm.posts_per_page);
 			break;
 
-		// Preloaded
-		case 'preloaded':
+		case 'preloaded': // Preloaded
 			page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
 			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, alm.posts_per_page);
 			break;
 
-		// WooCommerce
-		case 'woocommerce':
+		case 'woocommerce': // WooCommerce
 			// Don't do anything
 			break;
 

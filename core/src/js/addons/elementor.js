@@ -1,4 +1,4 @@
-import { setButtonAtts } from '../modules/getButtonURL';
+import { setButtonAtts } from '../helpers/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 
@@ -355,7 +355,7 @@ function elementorGetWidgetType(target) {
  *
  * @param  {HTMLElement} element   The target element
  * @param  {string}      classname The classname.
- * @return {HTMLElement | string}      
+ * @return {HTMLElement | string}
  */
 function elementorGetNextPage(element, classname) {
 	const pagination = element.querySelector(classname);
@@ -366,7 +366,7 @@ function elementorGetNextPage(element, classname) {
  * Get the URL of the next page to load from the a.next href
  *
  * @param {HTMLElement} element The target element
- * @return {HTMLElement | string} 
+ * @return {HTMLElement | string}
  */
 function elementorGetNextUrl(element) {
 	if (!element) {

@@ -2,16 +2,19 @@ import loadImage from './loadImage';
 import setFocus from './setFocus';
 
 /**
- * Load all items.
+ * Load all items after Ajax request.
  *
- * @param {HTMLElement} container
- * @param {HTMLElement} items
- * @param {Object} alm
- * @param {string} pageTitle
- * @param {string} url
- * @param {string} className
+ * Note: The function is used with WooCommerce and Elementor add-ons.
+ *
+ * @param {Element} container     The HTML container
+ * @param {array}   items         Array of items.
+ * @param {Object}  alm	          The ALM object.
+ * @param {string}  pageTitle     Current page title.
+ * @param {string}  url           Current URL.
+ * @param {string}  className     Optional classnames.
+ * @param {boolean} waitForImages Wait for images to load before loading next item.
  */
-const loadItems = (container, items, alm, pageTitle, url = window.location, className = '') => {
+export default function loadItems(container, items, alm, pageTitle, url = window.location, className = '', waitForImages = true) {
 	return new Promise((resolve) => {
 		const total = items.length;
 		let index = 0;
@@ -46,13 +49,13 @@ const loadItems = (container, items, alm, pageTitle, url = window.location, clas
 						items[index].dataset.pageTitle = pageTitle;
 					}
 
-					await loadImage(container, items[index], alm.ua, rel);
+					await loadImage(container, items[index], alm.ua, rel, waitForImages);
 
 					count++;
 					index++;
 
 					loadItem();
-				})().catch((e) => {
+				})().catch(() => {
 					console.log('There was an error loading the items');
 				});
 			} else {
@@ -76,6 +79,4 @@ const loadItems = (container, items, alm, pageTitle, url = window.location, clas
 
 		loadItem();
 	});
-};
-
-export default loadItems;
+}

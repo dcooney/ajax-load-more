@@ -1,10 +1,10 @@
 /**
  * Set user focus to improve accessibility after load events.
  *
- * @param {Object} alm
- * @param {HTMLElement} preloaded
- * @param {Number} total
- * @param {Boolean} is_filtering
+ * @param {object} alm ALM object
+ * @param {Element} element The element to focus on.
+ * @param {Number} total The total number of posts returned.
+ * @param {Boolean} is_filtering Is this a filtering event?
  * @since 5.1
  */
 const setFocus = (alm, element = null, total = 0, is_filtering = false) => {

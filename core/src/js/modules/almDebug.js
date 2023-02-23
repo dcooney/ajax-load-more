@@ -2,10 +2,10 @@
  * Display Ajax Load More debug results.
  *
  * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
- * @param {object} alm     Global alm object
+ * @param {object} alm ALM object.
  * @since 5.1.6
  */
-const almDebug = function (alm) {
+export default function almDebug(alm) {
 	if (alm && alm.debug) {
 		let obj = {
 			query: alm.debug,
@@ -13,6 +13,4 @@ const almDebug = function (alm) {
 		};
 		console.log('ALM Debug:', obj);
 	}
-};
-
-export default almDebug;
+}
