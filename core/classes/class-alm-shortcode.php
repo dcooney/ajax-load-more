@@ -239,6 +239,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			);
 			// phpcs:enable
 
+			$id = sanitize_key( $id );
+
 			// Elementor.
 			$elementor = $elementor === 'true' ? 'single' : $elementor;
 			if ( 'single' === $elementor ) { // Single Template.

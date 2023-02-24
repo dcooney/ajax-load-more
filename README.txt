@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 5.6.0.2
+Stable tag: 5.6.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,7 +263,7 @@ How to install Ajax Load More.
 
 == Changelog ==
 
-= 5.6.0.3 - February 22, 2023 =
+= 5.6.0.3 - February 24, 2023 =
 * NEW: Add new `getTotalRemaining` public JS function that returns the total number of posts remaining to be loaded  by ALM instance ID. [See Docs](https://connekthq.com/plugins/ajax-load-more/docs/public-functions/#getTotalRemaining)
 * Update: Added support for disabling Images Loaded functionality in WooCommerce add-on.
 * Update: Cleaned up localized post count variables to make it easier to access across the plugin.

@@ -7,20 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.6.0.2
+ * Version: 5.6.0.3
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-- Test totals with Preloaded and SEO
-- Add initial localized vars to ALM during server side render.
-*/
-
-define( 'ALM_VERSION', '5.6.0.2' );
-define( 'ALM_RELEASE', 'February 17, 2023' );
+define( 'ALM_VERSION', '5.6.0.3' );
+define( 'ALM_RELEASE', 'February 24, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
