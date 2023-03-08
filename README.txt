@@ -264,7 +264,7 @@ How to install Ajax Load More.
 == Changelog ==
 
 = 5.6.0.4 - March 8, 2023 =
-* UPDATE: Resticting ALM ID to contain alphanumeric characters, dashes and underscores only.
+* UPDATE: Restricting ALM ID to contain alphanumeric characters, dashes and underscores only.
 * FIX: Fixed issue with Filters target parameter and the security updates in ALM 5.6.0.3
 * FIX: Fix for `total_posts` value in new `getTotals()` method.
 
