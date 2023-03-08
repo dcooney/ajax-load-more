@@ -7,15 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.6.0.3
+ * Version: 5.6.0.4
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '5.6.0.3' );
-define( 'ALM_RELEASE', 'February 24, 2023' );
+define( 'ALM_VERSION', '5.6.0.4' );
+define( 'ALM_RELEASE', 'March 8, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -409,7 +409,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 * @since 2.0.0
 		 */
 		public function alm_query_posts() {
-			$params = filter_input_array( INPUT_GET, FILTER_SANITIZE_STRING );
+			$params = filter_input_array( INPUT_GET );
 
 			// WPML fix for category/tag/taxonomy archives.
 			if ( ( isset( $params['category'] ) && $params['category'] ) || ( isset( $params['taxonomy'] ) && $params['taxonomy'] ) || ( isset( $params['tag'] ) && $params['tag'] ) ) {

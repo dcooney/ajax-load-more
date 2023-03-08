@@ -4802,7 +4802,7 @@ function getTotals(type) {
 	var id = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
 	// Get the ALM localized variable name.
-	var localize_var = id ? 'ajax_load_more_' + id + '_vars' : 'ajax_load_more_vars';
+	var localize_var = id ? 'ajax_load_more_' + id.replace(/-/g, '_') + '_vars' : 'ajax_load_more_vars';
 
 	// Get the localized value from the window object.
 	var localized = window[localize_var];
@@ -5745,6 +5745,8 @@ var _slicedToArray = function () {
 	};
 }();
 
+exports.default = almFilter;
+
 var _fadeIn = __webpack_require__(/*! ./fadeIn */ "./core/src/js/modules/fadeIn.js");
 
 var _fadeIn2 = _interopRequireDefault(_fadeIn);
@@ -5770,98 +5772,100 @@ function _toConsumableArray(arr) {
 }
 
 /**
- * Filter Ajax Load More
+ * Filter an Ajax Load More instance.
  *
- * @param {*} transition string;
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} type string;
+ * @param {string} transition Transition type.
+ * @param {Number} speed      Transition speed.
+ * @param {Object} data       Data object.
+ * @param {string} type       Type of filter.
  * @since 2.6.1
  */
-
-var almFilter = function almFilter(transition, speed, data) {
+function almFilter(transition) {
+	var speed = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 150;
+	var data = arguments[2];
 	var type = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'filter';
 
 	if (data.target) {
-		// if a target has been specified
-		var target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
-		target.forEach(function (element) {
-			almFilterTransition(transition, speed, data, element, type);
-		});
+		// Target has been specified.
+		var alm = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target.toLowerCase() + '"]');
+		if (alm) {
+			alm.forEach(function (element) {
+				almFilterTransition(transition, speed, data, type, element);
+			});
+		}
 	} else {
-		// Target not specified
-		var alm = document.querySelectorAll('.ajax-load-more-wrap');
-		alm.forEach(function (element) {
-			almFilterTransition(transition, speed, data, element, type);
-		});
+		// Target not specified.
+		var _alm = document.querySelectorAll('.ajax-load-more-wrap');
+		if (_alm) {
+			_alm.forEach(function (element) {
+				almFilterTransition(transition, speed, data, type, element);
+			});
+		}
 	}
 
-	// Clear table of contents if required
-	(0, _tableofcontents.clearTOC)();
-};
-exports.default = almFilter;
+	(0, _tableofcontents.clearTOC)(); // Clear table of contents if required
+}
 
 /**
  * Transition Ajax Load More
  *
- * @param {*} transition string;
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} el element;
- * @param {*} type string;
+ * @param {string}  transition Transition type.
+ * @param {Number}  speed      Transition speed.
+ * @param {Object}  data       Data object.
+ * @param {string}  type       Type of filter.
+ * @param {Element} element    Target element.
  * @since 2.13.1
  */
-
-var almFilterTransition = function almFilterTransition(transition, speed, data, el, type) {
+function almFilterTransition(transition, speed, data, type, element) {
 	if (transition === 'fade' || transition === 'masonry') {
 		// Fade, Masonry transition
 
 		switch (type) {
 			case 'filter':
-				el.classList.add('alm-is-filtering');
-				(0, _fadeOut2.default)(el, speed);
-
+				element.classList.add('alm-is-filtering');
+				(0, _fadeOut2.default)(element, speed);
 				break;
 
 			case 'tab':
-				el.classList.add('alm-loading');
-				var new_el = el.querySelector('.alm-listing');
-				el.style.height = new_el.offsetHeight + 'px';
-				(0, _fadeOut2.default)(new_el, speed);
-
+				element.classList.add('alm-loading');
+				var new_element = element.querySelector('.alm-listing');
+				element.style.height = new_element.offsetHeight + 'px';
+				(0, _fadeOut2.default)(new_element, speed);
 				break;
 		}
 
 		// Move to next function
 		setTimeout(function () {
-			almCompleteFilterTransition(speed, data, el, type);
+			almCompleteFilterTransition(speed, data, type, element);
 		}, speed);
 	} else {
 		// No transition
-		el.classList.add('alm-is-filtering');
-		almCompleteFilterTransition(speed, data, el, type);
+		element.classList.add('alm-is-filtering');
+		almCompleteFilterTransition(speed, data, type, element);
 	}
-};
+}
 
 /**
  * Complete the filter transition
  *
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} el element;
- * @param {*} type string;
+ * @param {number}  speed    Transition speed.
+ * @param {object}  data     Data object.
+ * @param {string}  type     Type of filter.
+ * @param {Element} element  Target element.
  * @since 3.3
  */
-var almCompleteFilterTransition = function almCompleteFilterTransition(speed, data, el, type) {
-	// Get `.alm-btn-wrap` element
-	var btnWrap = el.querySelector('.alm-btn-wrap');
+function almCompleteFilterTransition(speed, data, type, element) {
+	var btnWrap = element.querySelector('.alm-btn-wrap'); // Get `.alm-btn-wrap` element
+	var listing = element.querySelectorAll('.alm-listing'); // Get `.alm-listing` element
 
-	// Get `.alm-listing` element
-	var listing = el.querySelectorAll('.alm-listing');
+	if (!listing || !btnWrap) {
+		// Bail early if elements doesn't exist.
+		return false;
+	}
 
-	// Loop over all .alm-listing divs
+	// Loop over all .alm-listing divs and clear HTML.
 	[].concat(_toConsumableArray(listing)).forEach(function (e) {
-		e.innerHTML = ''; // Clear listings
+		e.innerHTML = '';
 	});
 
 	// Get Load More button
@@ -5878,28 +5882,24 @@ var almCompleteFilterTransition = function almCompleteFilterTransition(speed, da
 
 	// Reset Preloaded Amount
 	data.preloadedAmount = 0;
+
 	// Dispatch Filters
-	almSetFilters(speed, data, el, type);
-};
+	almSetFilters(speed, data, type, element);
+}
 
 /**
  * Set filter parameters on .alm-listing element.
  *
- * @param {*} speed number;
- * @param {*} el element;
- * @param {*} data string;
- * @param {*} type string;
+ * @param {number}  speed   Transition speed.
+ * @param {object}  data    Data object.
+ * @param {string}  type    Type of filter.
+ * @param {Element} element Target element.
  * @updated 3.3
  * @since 2.6.1
  */
-var almSetFilters = function almSetFilters() {
-	var speed = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 150;
-	var data = arguments[1];
-	var el = arguments[2];
-	var type = arguments[3];
-
-	// Get `alm-listing` container
-	var listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+function almSetFilters(speed, data, type, element) {
+	// Get `alm-listing` container.
+	var listing = element.querySelector('.alm-listing') || element.querySelector('.alm-comments');
 	if (!listing) {
 		return false;
 	}
@@ -5940,7 +5940,7 @@ var almSetFilters = function almSetFilters() {
 				}
 			}
 
-			(0, _fadeIn2.default)(el, speed);
+			(0, _fadeIn2.default)(element, speed);
 			break;
 
 		case 'tab':
@@ -5952,7 +5952,7 @@ var almSetFilters = function almSetFilters() {
 			break;
 	}
 
-	// Re-initiate Ajax Load More
+	// Re-initiate Ajax Load More.
 	var target = '';
 	if (data.target) {
 		// Target has been specified
@@ -5985,7 +5985,7 @@ var almSetFilters = function almSetFilters() {
 			}
 			break;
 	}
-};
+}
 
 /***/ }),
 

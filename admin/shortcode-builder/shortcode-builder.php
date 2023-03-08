@@ -103,14 +103,17 @@
 						<section class="first">
 							<div class="shortcode-builder--label">
 								<h4><?php _e('ID', 'ajax-load-more'); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('Adding a unique ID will allow you target this specific Ajax Load More instance with the alm_query_args_id() filter','ajax-load-more'); ?>."></a></h4>
-								<p><?php _e('Set a unique ID for this Ajax Load More instance.', 'ajax-load-more'); ?></p>
+								<p>
+									<?php _e('Set a unique ID for this Ajax Load More instance.', 'ajax-load-more'); ?>
+									<small>e.g. my_alm_list etc...</small>
+								</p>
 								<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_query_args" target="_blank"><?php _e('Learn More', 'ajax-load-more'); ?></a></p>
 							</div>
 							<div class="shortcode-builder--fields">
 								<div class="inner">
-									<input type="text" class="alm_element" name="unique-id" id="unique-id">
+									<input type="text" class="alm_element id-only" name="unique-id" id="unique-id" style="text-transform: lowercase;" autocomplete="off">
 									<div class="clear"></div>
-									<p class="generate-id"><a href="javascript:void(0);" data-id="unique-id"><i class="fa fa-random"></i> <?php _e('Generate Unique ID', 'ajax-load-more'); ?></a></p>
+									<p class="generate-id"><a href="javascript:void(0);" data-id="unique-id"><i class="fa fa-random"></i> <?php _e('Generate ID', 'ajax-load-more'); ?></a></p>
 								</div>
 							</div>
 						</section>

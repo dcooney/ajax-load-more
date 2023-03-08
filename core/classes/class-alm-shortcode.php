@@ -1371,7 +1371,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * Custom JavaScript.
 			 * ALM core setting parameter.
 			 */
-			$ajaxloadmore .= isset( $options['_alm_custom_js'] ) && ! empty( $options['_alm_custom_js'] ) ? '<script>' . esc_html( $options['_alm_custom_js'] ) . '</script>' : '';
+			$ajaxloadmore .= isset( $options['_alm_custom_js'] ) && ! empty( $options['_alm_custom_js'] ) ? '<script>' . $options['_alm_custom_js'] . '</script>' : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 			/**
 			 * REST API Add-on

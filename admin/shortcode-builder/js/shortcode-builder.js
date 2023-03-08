@@ -1413,6 +1413,34 @@ jQuery(document).ready(function ($) {
 		_alm.buildShortcode();
 	});
 
+	// Allow only alphanumeric and underscores only.
+	$('input.id-only').keydown(function (e) {
+		var keyCode = e.keyCode || e.which;
+		var shiftKey = e.shiftKey;
+		var keyCode = e.keyCode;
+
+		if (shiftKey && keyCode !== 189) {
+			// Bail if not shiftkey and underscore.
+			return false;
+		}
+
+		if (
+			keyCode === 8 ||
+			keyCode === 9 ||
+			keyCode === 46 ||
+			keyCode === 95 ||
+			keyCode === 189 ||
+			(keyCode > 47 && keyCode < 58) ||
+			(keyCode > 64 && keyCode < 91) ||
+			(keyCode > 96 && keyCode < 123)
+		) {
+			return true;
+		} else {
+			return false;
+		}
+	});
+
+	// Allow numbers only.
 	$('input.numbers-only').keydown(function (e) {
 		if (
 			$.inArray(e.keyCode, [188, 46, 8, 9, 27, 13, 110, 190]) !== -1 ||

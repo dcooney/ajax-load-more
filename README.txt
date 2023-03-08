@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 5.6.0.3
+Stable tag: 5.6.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,12 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.6.0.4 - March 8, 2023 =
+* UPDATE: Resticting ALM ID to contain alphanumeric characters, dashes and underscores only.
+* FIX: Fixed issue with Filters target parameter and the security updates in ALM 5.6.0.3
+* FIX: Fix for `total_posts` value in new `getTotals()` method.
+
 
 = 5.6.0.3 - February 24, 2023 =
 * NEW: Add new `getTotalRemaining` public JS function that returns the total number of posts remaining to be loaded  by ALM instance ID. [See Docs](https://connekthq.com/plugins/ajax-load-more/docs/public-functions/#getTotalRemaining)

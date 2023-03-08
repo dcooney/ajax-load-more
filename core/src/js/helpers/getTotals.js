@@ -10,7 +10,7 @@
  */
 export default function getTotals(type, id = '') {
 	// Get the ALM localized variable name.
-	const localize_var = id ? `ajax_load_more_${id}_vars` : 'ajax_load_more_vars';
+	const localize_var = id ? `ajax_load_more_${id.replace(/-/g, '_')}_vars` : 'ajax_load_more_vars';
 
 	// Get the localized value from the window object.
 	const localized = window[localize_var];

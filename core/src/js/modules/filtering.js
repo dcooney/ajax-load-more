@@ -3,128 +3,130 @@ import almFadeOut from './fadeOut';
 import { clearTOC } from './tableofcontents';
 
 /**
- * Filter Ajax Load More
+ * Filter an Ajax Load More instance.
  *
- * @param {*} transition string;
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} type string;
+ * @param {string} transition Transition type.
+ * @param {Number} speed      Transition speed.
+ * @param {Object} data       Data object.
+ * @param {string} type       Type of filter.
  * @since 2.6.1
  */
-
-const almFilter = function (transition, speed, data, type = 'filter') {
+export default function almFilter(transition, speed = 150, data, type = 'filter') {
 	if (data.target) {
-		// if a target has been specified
-		let target = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target + '"]');
-		target.forEach(function (element) {
-			almFilterTransition(transition, speed, data, element, type);
-		});
+		// Target has been specified.
+		const alm = document.querySelectorAll('.ajax-load-more-wrap[data-id="' + data.target.toLowerCase() + '"]');
+		if (alm) {
+			alm.forEach(function (element) {
+				almFilterTransition(transition, speed, data, type, element);
+			});
+		}
 	} else {
-		// Target not specified
-		let alm = document.querySelectorAll('.ajax-load-more-wrap');
-		alm.forEach(function (element) {
-			almFilterTransition(transition, speed, data, element, type);
-		});
+		// Target not specified.
+		const alm = document.querySelectorAll('.ajax-load-more-wrap');
+		if (alm) {
+			alm.forEach(function (element) {
+				almFilterTransition(transition, speed, data, type, element);
+			});
+		}
 	}
 
-	// Clear table of contents if required
-	clearTOC();
-};
-export default almFilter;
+	clearTOC(); // Clear table of contents if required
+}
 
 /**
  * Transition Ajax Load More
  *
- * @param {*} transition string;
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} el element;
- * @param {*} type string;
+ * @param {string}  transition Transition type.
+ * @param {Number}  speed      Transition speed.
+ * @param {Object}  data       Data object.
+ * @param {string}  type       Type of filter.
+ * @param {Element} element    Target element.
  * @since 2.13.1
  */
-const almFilterTransition = function (transition, speed, data, el, type) {
+function almFilterTransition(transition, speed, data, type, element) {
 	if (transition === 'fade' || transition === 'masonry') {
 		// Fade, Masonry transition
 
 		switch (type) {
 			case 'filter':
-				el.classList.add('alm-is-filtering');
-				almFadeOut(el, speed);
-
+				element.classList.add('alm-is-filtering');
+				almFadeOut(element, speed);
 				break;
 
 			case 'tab':
-				el.classList.add('alm-loading');
-				let new_el = el.querySelector('.alm-listing');
-				el.style.height = new_el.offsetHeight + 'px';
-				almFadeOut(new_el, speed);
-
+				element.classList.add('alm-loading');
+				const new_element = element.querySelector('.alm-listing');
+				element.style.height = new_element.offsetHeight + 'px';
+				almFadeOut(new_element, speed);
 				break;
 		}
 
 		// Move to next function
 		setTimeout(function () {
-			almCompleteFilterTransition(speed, data, el, type);
+			almCompleteFilterTransition(speed, data, type, element);
 		}, speed);
 	} else {
 		// No transition
-		el.classList.add('alm-is-filtering');
-		almCompleteFilterTransition(speed, data, el, type);
+		element.classList.add('alm-is-filtering');
+		almCompleteFilterTransition(speed, data, type, element);
 	}
-};
+}
 
 /**
  * Complete the filter transition
  *
- * @param {*} speed number;
- * @param {*} data obj;
- * @param {*} el element;
- * @param {*} type string;
+ * @param {number}  speed    Transition speed.
+ * @param {object}  data     Data object.
+ * @param {string}  type     Type of filter.
+ * @param {Element} element  Target element.
  * @since 3.3
  */
-const almCompleteFilterTransition = (speed, data, el, type) => {
-	// Get `.alm-btn-wrap` element
-	let btnWrap = el.querySelector('.alm-btn-wrap');
+function almCompleteFilterTransition(speed, data, type, element) {
+	const btnWrap = element.querySelector('.alm-btn-wrap'); // Get `.alm-btn-wrap` element
+	const listing = element.querySelectorAll('.alm-listing'); // Get `.alm-listing` element
 
-	// Get `.alm-listing` element
-	let listing = el.querySelectorAll('.alm-listing');
+	if (!listing || !btnWrap) {
+		// Bail early if elements doesn't exist.
+		return false;
+	}
 
-	// Loop over all .alm-listing divs
+	// Loop over all .alm-listing divs and clear HTML.
 	[...listing].forEach(function (e) {
-		e.innerHTML = ''; // Clear listings
+		e.innerHTML = '';
 	});
 
 	// Get Load More button
-	let button = btnWrap.querySelector('.alm-load-more-btn');
+	const button = btnWrap.querySelector('.alm-load-more-btn');
 	if (button) {
 		button.classList.remove('done'); // Reset Button
 	}
 
 	// Clear paging navigation
-	let paging = btnWrap.querySelector('.alm-paging');
+	const paging = btnWrap.querySelector('.alm-paging');
 	if (paging) {
 		paging.style.opacity = 0;
 	}
 
 	// Reset Preloaded Amount
 	data.preloadedAmount = 0;
+
 	// Dispatch Filters
-	almSetFilters(speed, data, el, type);
-};
+	almSetFilters(speed, data, type, element);
+}
 
 /**
  * Set filter parameters on .alm-listing element.
  *
- * @param {*} speed number;
- * @param {*} el element;
- * @param {*} data string;
- * @param {*} type string;
+ * @param {number}  speed   Transition speed.
+ * @param {object}  data    Data object.
+ * @param {string}  type    Type of filter.
+ * @param {Element} element Target element.
  * @updated 3.3
  * @since 2.6.1
  */
-const almSetFilters = function (speed = 150, data, el, type) {
-	// Get `alm-listing` container
-	let listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
+function almSetFilters(speed, data, type, element) {
+	// Get `alm-listing` container.
+	const listing = element.querySelector('.alm-listing') || element.querySelector('.alm-comments');
 	if (!listing) {
 		return false;
 	}
@@ -141,7 +143,7 @@ const almSetFilters = function (speed = 150, data, el, type) {
 				listing.setAttribute('data-' + key, value);
 			}
 			// Fade ALM back (Filters only)
-			almFadeIn(el, speed);
+			almFadeIn(element, speed);
 			break;
 
 		case 'tab':
@@ -153,7 +155,7 @@ const almSetFilters = function (speed = 150, data, el, type) {
 			break;
 	}
 
-	// Re-initiate Ajax Load More
+	// Re-initiate Ajax Load More.
 	let target = '';
 	if (data.target) {
 		// Target has been specified
@@ -186,4 +188,4 @@ const almSetFilters = function (speed = 150, data, el, type) {
 			}
 			break;
 	}
-};
+}
