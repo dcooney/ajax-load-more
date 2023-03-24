@@ -188,7 +188,7 @@ export function elementorCreateParams(alm) {
 	// Parse Container Settings
 	alm.addons.elementor_target = alm.addons.elementor_settings.target;
 	alm.addons.elementor_element = alm.addons.elementor_settings.target
-		? document.querySelector(`.elementor-widget-wrap ${alm.addons.elementor_settings.target}`)
+		? document.querySelector(`.elementor-element ${alm.addons.elementor_settings.target}`)
 		: '';
 	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
 

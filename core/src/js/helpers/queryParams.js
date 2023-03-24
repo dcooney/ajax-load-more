@@ -42,6 +42,7 @@ export function almGetAjaxParams(alm, action, queryType) {
 		data.preloaded_amount = alm.addons.preloaded_amount;
 	}
 	if (alm.addons.cache === 'true') {
+		data.cache = 'true';
 		data.cache_id = alm.addons.cache_id;
 		data.cache_logged_in = alm.addons.cache_logged_in;
 	}

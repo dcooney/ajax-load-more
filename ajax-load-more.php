@@ -431,9 +431,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$filters_startpage = isset( $params['filters_startpage'] ) && $is_filters ? $params['filters_startpage'] : 0;
 
 			// Cache.
+			$cache           = isset( $params['cache'] ) && $params['cache'] === 'true' ? true : false;
 			$cache_id        = isset( $params['cache_id'] ) ? $params['cache_id'] : '';
 			$cache_logged_in = isset( $params['cache_logged_in'] ) ? $params['cache_logged_in'] : false;
-			$do_create_cache = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
+			$use_cache       = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
 
 			// Offset.
 			$offset = isset( $params['offset'] ) ? $params['offset'] : 0;
@@ -511,7 +512,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$alm_page_count = $page === 0 ? 1 : $page + 1;
 
 			/**
-			 * Single Post Add-on hook
+			 * Single Post Add-on hook.
 			 * Hijack $args and and return single post only $args
 			 *
 			 * @return array
@@ -519,17 +520,17 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$args = $single_post && has_action( 'alm_single_post_installed' ) ? apply_filters( 'alm_single_post_args', $single_post_id, $post_type ) : $args;
 
 			/**
-			 * ALM Core Query Filter Hook
+			 * ALM Core Query Filter Hook.
 			 *
-			 * @return array
 			 * @deprecated 2.10
+			 * @return array
 			 */
 			$args = apply_filters( 'alm_modify_query_args', $args, $slug );
 
 			/**
 			 * ALM Core Query Filter Hook
 			 *
-			 * @return array;
+			 * @return array
 			 */
 			$args = apply_filters( 'alm_query_args_' . $id, $args, $post_id );
 
@@ -538,6 +539,31 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 * Value is accessed elsewhere for filters & hooks etc.
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
+
+			/**
+			 * Cache Add-on.
+			 * Check if cache is enabled and if so, check for cached data before running WP_Query.
+			 */
+			if ( $cache && $cache_id && class_exists( 'ALMCache' ) && $query_type !== 'totalposts' ) {
+				$cache_value = ALMCache::alm_cache_get(
+					[
+						'name'     => md5( wp_json_encode( $args ) ),
+						'cache_id' => $cache_id,
+					]
+				);
+				if ( $cache_value !== null ) {
+					$return = [
+						'html' => $cache_value,
+						'meta' => [
+							'postcount'  => 5,
+							'totalposts' => 10,
+							'debug'      => false,
+						],
+					];
+
+					wp_send_json( $return );
+				}
+			}
 
 			/**
 			 * Custom WP_Query.
@@ -566,19 +592,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				$alm_loop_count  = 0;
 			}
 
-			/**
-			 * Cache Add-on hook - Create cache directory + info .txt file.
-			 */
-			if ( ! empty( $cache_id ) && has_action( 'alm_cache_create_dir' ) && $do_create_cache ) {
-				apply_filters( 'alm_cache_create_dir', $cache_id, $canonical_url );
-
-				// Filters || WooCommerce Cache Support.
-				if ( $is_filters && has_filter( 'alm_cache_create_nested_id' ) ) {
-					$cache_id = apply_filters( 'alm_cache_create_nested_id', $cache_id );
-					apply_filters( 'alm_cache_create_dir', $cache_id, $_SERVER['HTTP_REFERER'] );
-				}
-			}
-
 			if ( $query_type === 'totalposts' ) {
 				// Paging add-on.
 				wp_send_json(
@@ -597,7 +610,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				$debug = apply_filters( 'alm_debug', false ) ? $args : false;
 
 				// Run the loop.
-
 				if ( $alm_query->have_posts() ) {
 
 					$alm_found_posts = $alm_total_posts;
@@ -642,14 +654,25 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 					$data = ob_get_clean();
 
+					if ( $cache && $cache_id && class_exists( 'ALMCache' ) ) {
+						$cache_data = [
+							'name'     => md5( wp_json_encode( $args ) ),
+							'cache_id' => $cache_id,
+							'value'    => $data,
+							'uri'      => $canonical_url,
+							'page'     => $alm_page_count,
+						];
+						ALMCache::alm_cache_create( $cache_data );
+					}
+
 					/**
 					 * Cache Add-on hook - If Cache is enabled, check the cache file
 					 *
 					 * @param string $cache_id ID of the ALM cache
-					 * @param boolean $do_create_cache Should cache be created for this user
+					 * @param boolean $use_cache Should cache be created for this user
 					 * @since 3.2.1
 					 */
-					if ( ! empty( $cache_id ) && has_action( 'alm_cache_installed' ) && $do_create_cache ) {
+					if ( class_exists( 'ALMCache' ) && ! empty( $cache_id ) && $use_cache ) {
 						if ( $single_post ) {
 							// Single Post Cache.
 							apply_filters( 'alm_previous_post_cache_file', $cache_id, $single_post_id, $data );

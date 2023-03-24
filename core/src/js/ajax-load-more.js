@@ -623,9 +623,8 @@ let alm_is_filtering = false;
 				window.almOnChange(alm);
 			}
 
-			// Check for ajax blocker.
 			if (alm.disable_ajax) {
-				return;
+				return; // Bail early if perfoming Ajax action.
 			}
 
 			alm.loading = true;
@@ -646,29 +645,7 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Cache
-			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				const cache_page = getCacheUrl(alm);
-				if (cache_page) {
-					axios
-						.get(cache_page)
-						.then((response) => {
-							// Exists
-							alm.AjaxLoadMore.success(response.data, true);
-						})
-						.catch(function (error) {
-							// Error || Page does not yet exist
-							// console.log(error);
-							alm.AjaxLoadMore.ajax();
-						});
-				} else {
-					// Standard ALM query
-					alm.AjaxLoadMore.ajax();
-				}
-			} else {
-				// Standard ALM query
-				alm.AjaxLoadMore.ajax();
-			}
+			alm.AjaxLoadMore.ajax();
 		};
 
 		/**
@@ -678,8 +655,7 @@ let alm_is_filtering = false;
 		 * @since 2.6.0
 		 */
 		alm.AjaxLoadMore.ajax = function (queryType = 'standard') {
-			// Default ALM action
-			let action = 'alm_get_posts';
+			let action = 'alm_get_posts'; // Default action.
 
 			// ACF Params
 			alm.acf_array = '';

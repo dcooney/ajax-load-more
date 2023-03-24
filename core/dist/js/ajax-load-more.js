@@ -423,7 +423,7 @@ function elementorCreateParams(alm) {
 
 	// Parse Container Settings
 	alm.addons.elementor_target = alm.addons.elementor_settings.target;
-	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-widget-wrap ' + alm.addons.elementor_settings.target) : '';
+	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-element ' + alm.addons.elementor_settings.target) : '';
 	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
 
 	// Masonry
@@ -2200,9 +2200,8 @@ var alm_is_filtering = false;
 				window.almOnChange(alm);
 			}
 
-			// Check for ajax blocker.
 			if (alm.disable_ajax) {
-				return;
+				return; // Bail early if perfoming Ajax action.
 			}
 
 			alm.loading = true;
@@ -2223,26 +2222,7 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Cache
-			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				var cache_page = (0, _getCacheUrl2.default)(alm);
-				if (cache_page) {
-					_axios2.default.get(cache_page).then(function (response) {
-						// Exists
-						alm.AjaxLoadMore.success(response.data, true);
-					}).catch(function (error) {
-						// Error || Page does not yet exist
-						// console.log(error);
-						alm.AjaxLoadMore.ajax();
-					});
-				} else {
-					// Standard ALM query
-					alm.AjaxLoadMore.ajax();
-				}
-			} else {
-				// Standard ALM query
-				alm.AjaxLoadMore.ajax();
-			}
+			alm.AjaxLoadMore.ajax();
 		};
 
 		/**
@@ -2254,8 +2234,7 @@ var alm_is_filtering = false;
 		alm.AjaxLoadMore.ajax = function () {
 			var queryType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'standard';
 
-			// Default ALM action
-			var action = 'alm_get_posts';
+			var action = 'alm_get_posts'; // Default action.
 
 			// ACF Params
 			alm.acf_array = '';
@@ -5286,6 +5265,7 @@ function almGetAjaxParams(alm, action, queryType) {
 		data.preloaded_amount = alm.addons.preloaded_amount;
 	}
 	if (alm.addons.cache === 'true') {
+		data.cache = 'true';
 		data.cache_id = alm.addons.cache_id;
 		data.cache_logged_in = alm.addons.cache_logged_in;
 	}
