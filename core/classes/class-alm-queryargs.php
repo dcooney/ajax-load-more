@@ -31,7 +31,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$post_id = isset( $a['post_id'] ) ? $a['post_id'] : '';
 
 			// Filters.
-			$facets = isset( $a['facets'] ) && $a['facets'] ? true : false;
+			$facets = isset( $a['facets'] ) && $a['facets'] === 'true' ? true : false;
 
 			// Posts Per Page.
 			$posts_per_page = isset( $a['posts_per_page'] ) ? $a['posts_per_page'] : 5;
