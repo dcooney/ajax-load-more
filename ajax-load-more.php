@@ -14,6 +14,15 @@
  * @package AjaxLoadMore
  */
 
+/*
+STARTED:
+- Cache rebuild.
+- Parsing returned data into array and appending. Line 1265 of JS.
+
+
+
+*/
+
 define( 'ALM_VERSION', '5.6.0.4' );
 define( 'ALM_RELEASE', 'March 8, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

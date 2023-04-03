@@ -2733,8 +2733,7 @@ var alm_is_filtering = false;
 
 							// Init, SEO and Filter Paged
 							if (alm.init && (alm.start_page > 1 || alm.addons.filters_startpage > 0)) {
-								// loop through items and break into separate .alm-reveal divs for paging
-
+								// loop through items and break into separate .alm-reveal divs for paging.
 								var _data = [];
 								var container_array = [];
 								var posts_per_page = parseInt(alm.posts_per_page);
@@ -2845,7 +2844,11 @@ var alm_is_filtering = false;
 										}
 									}
 
-									reveal.innerHTML = alm.html;
+									var items = (0, _stripEmptyNodes2.default)((0, _almDomParser2.default)(alm.html));
+									alm.latest = items ? items : [];
+									items && [].concat(_toConsumableArray(items)).forEach(function (item) {
+										reveal.appendChild(item);
+									});
 								}
 						}
 					}

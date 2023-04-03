@@ -1145,8 +1145,7 @@ let alm_is_filtering = false;
 
 							// Init, SEO and Filter Paged
 							if (alm.init && (alm.start_page > 1 || alm.addons.filters_startpage > 0)) {
-								// loop through items and break into separate .alm-reveal divs for paging
-
+								// loop through items and break into separate .alm-reveal divs for paging.
 								const data = [];
 								const container_array = [];
 								let posts_per_page = parseInt(alm.posts_per_page);
@@ -1263,7 +1262,12 @@ let alm_is_filtering = false;
 									}
 								}
 
-								reveal.innerHTML = alm.html;
+								const items = stripEmptyNodes(almDomParser(alm.html));
+								alm.latest = items ? items : [];
+								items &&
+									[...items].forEach((item) => {
+										reveal.appendChild(item);
+									});
 							}
 						}
 					}
