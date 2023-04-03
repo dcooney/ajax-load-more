@@ -4,8 +4,8 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 4.4
 Requires PHP: 5.6
-Tested up to: 6.1
-Stable tag: 5.6.0.4
+Tested up to: 6.2
+Stable tag: 5.6.0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,10 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 5.6.0.5 - April 3, 2023 =
+* HOTFIX: Fixed issue with `taxonomy_relation` parameter resolving to `AND`.
+
 
 = 5.6.0.4 - March 8, 2023 =
 * UPDATE: Restricting ALM ID to contain alphanumeric characters, dashes and underscores only.
