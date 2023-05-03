@@ -423,7 +423,7 @@ function elementorCreateParams(alm) {
 
 	// Parse Container Settings
 	alm.addons.elementor_target = alm.addons.elementor_settings.target;
-	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-widget-wrap ' + alm.addons.elementor_settings.target) : '';
+	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-element ' + alm.addons.elementor_settings.target) : '';
 	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
 
 	// Masonry
@@ -2223,26 +2223,8 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Cache
-			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				var cache_page = (0, _getCacheUrl2.default)(alm);
-				if (cache_page) {
-					_axios2.default.get(cache_page).then(function (response) {
-						// Exists
-						alm.AjaxLoadMore.success(response.data, true);
-					}).catch(function (error) {
-						// Error || Page does not yet exist
-						// console.log(error);
-						alm.AjaxLoadMore.ajax();
-					});
-				} else {
-					// Standard ALM query
-					alm.AjaxLoadMore.ajax();
-				}
-			} else {
-				// Standard ALM query
-				alm.AjaxLoadMore.ajax();
-			}
+			// Standard ALM query
+			alm.AjaxLoadMore.ajax();
 		};
 
 		/**
@@ -2352,18 +2334,17 @@ var alm_is_filtering = false;
 				};
 			}
 
-			// REST API
+			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
+				// REST API
 				alm.AjaxLoadMore.restapi(alm, action, queryType);
-			}
-			// Tabs
-			else if (alm.addons.tabs) {
-					alm.AjaxLoadMore.tabs(alm);
-				}
+			} else if (alm.addons.tabs) {
+				// Tabs
+				alm.AjaxLoadMore.tabs(alm);
+			} else {
 				// Standard ALM
-				else {
-						alm.AjaxLoadMore.adminajax(alm, action, queryType);
-					}
+				alm.AjaxLoadMore.adminajax(alm, action, queryType);
+			}
 		};
 
 		/**
@@ -5268,7 +5249,6 @@ function almGetAjaxParams(alm, action, queryType) {
 	};
 
 	// Addons & Extensions
-
 	if (alm.theme_repeater) {
 		data.theme_repeater = alm.theme_repeater;
 	}

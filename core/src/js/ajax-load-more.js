@@ -646,29 +646,8 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Cache
-			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				const cache_page = getCacheUrl(alm);
-				if (cache_page) {
-					axios
-						.get(cache_page)
-						.then((response) => {
-							// Exists
-							alm.AjaxLoadMore.success(response.data, true);
-						})
-						.catch(function (error) {
-							// Error || Page does not yet exist
-							// console.log(error);
-							alm.AjaxLoadMore.ajax();
-						});
-				} else {
-					// Standard ALM query
-					alm.AjaxLoadMore.ajax();
-				}
-			} else {
-				// Standard ALM query
-				alm.AjaxLoadMore.ajax();
-			}
+			// Standard ALM query
+			alm.AjaxLoadMore.ajax();
 		};
 
 		/**
@@ -776,16 +755,15 @@ let alm_is_filtering = false;
 				};
 			}
 
-			// REST API
+			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
+				// REST API
 				alm.AjaxLoadMore.restapi(alm, action, queryType);
-			}
-			// Tabs
-			else if (alm.addons.tabs) {
+			} else if (alm.addons.tabs) {
+				// Tabs
 				alm.AjaxLoadMore.tabs(alm);
-			}
-			// Standard ALM
-			else {
+			} else {
+				// Standard ALM
 				alm.AjaxLoadMore.adminajax(alm, action, queryType);
 			}
 		};

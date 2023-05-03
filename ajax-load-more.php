@@ -14,6 +14,15 @@
  * @package AjaxLoadMore
  */
 
+/*
+
+STARTED:
+- Cache update.
+
+TODO:
+
+*/
+
 define( 'ALM_VERSION', '5.6.0.5' );
 define( 'ALM_RELEASE', 'April 3, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -431,7 +440,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$filters_startpage = isset( $params['filters_startpage'] ) && $is_filters ? $params['filters_startpage'] : 0;
 
 			// Cache.
-			$cache_id        = isset( $params['cache_id'] ) ? $params['cache_id'] : '';
+			$cache_id        = isset( $params['cache_id'] ) && ! empty( $params['cache_id'] ) ? $params['cache_id'] : false;
 			$cache_logged_in = isset( $params['cache_logged_in'] ) ? $params['cache_logged_in'] : false;
 			$do_create_cache = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
 
@@ -539,6 +548,30 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
+			// MD5 hash of $args.
+			$md5_hash = md5( wp_json_encode( $args ) );
+
+			/**
+			 * Cache Add-on.
+			 * Check for cached data before running WP_Query.
+			 */
+			if ( $cache_id && has_filter( 'alm_cache_get_cache_file' ) && $query_type !== 'totalposts' ) {
+				$cache_data = apply_filters( 'alm_cache_get_cache_file', $cache_id, $md5_hash );
+
+				if ( $cache_data ) {
+					wp_send_json(
+						[
+							'html' => $cache_data,
+							'meta' => [
+								'postcount'  => 5,
+								'totalposts' => 10,
+								'debug'      => false,
+							],
+						]
+					);
+				}
+			}
+
 			/**
 			 * Custom WP_Query.
 			 *
@@ -564,19 +597,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			} else {
 				$alm_total_posts = $alm_query->found_posts - $offset;
 				$alm_loop_count  = 0;
-			}
-
-			/**
-			 * Cache Add-on hook - Create cache directory + info .txt file.
-			 */
-			if ( ! empty( $cache_id ) && has_action( 'alm_cache_create_dir' ) && $do_create_cache ) {
-				apply_filters( 'alm_cache_create_dir', $cache_id, $canonical_url );
-
-				// Filters || WooCommerce Cache Support.
-				if ( $is_filters && has_filter( 'alm_cache_create_nested_id' ) ) {
-					$cache_id = apply_filters( 'alm_cache_create_nested_id', $cache_id );
-					apply_filters( 'alm_cache_create_dir', $cache_id, $_SERVER['HTTP_REFERER'] );
-				}
 			}
 
 			if ( $query_type === 'totalposts' ) {
@@ -643,32 +663,14 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$data = ob_get_clean();
 
 					/**
-					 * Cache Add-on hook - If Cache is enabled, check the cache file
+					 * Cache Add-on.
+					 * Create the cache file.
 					 *
-					 * @param string $cache_id ID of the ALM cache
-					 * @param boolean $do_create_cache Should cache be created for this user
 					 * @since 3.2.1
 					 */
-					if ( ! empty( $cache_id ) && has_action( 'alm_cache_installed' ) && $do_create_cache ) {
-						if ( $single_post ) {
-							// Single Post Cache.
-							apply_filters( 'alm_previous_post_cache_file', $cache_id, $single_post_id, $data );
-
-						} else {
-							// Standard Cache.
-
-							// Filters.
-							$startpage = $is_filters ? $filters_startpage : $seo_start_page;
-
-							// Filters and Preloaded.
-							// - add 2 pages to maintain paging compatibility when returning to the same listing via filter.
-							// - set $page to $startpage.
-							if ( $is_filters && $preloaded === 'true' ) {
-								$startpage = $startpage + 1; // phpcs:ignore
-								$page      = $page + 1; // phpcs:ignore
-							}
-							apply_filters( 'alm_cache_file', $cache_id, $page, $startpage, $data, $preloaded );
-						}
+					if ( $cache_id && has_action( 'alm_cache_create_file' ) && $do_create_cache ) {
+						$cache_name = $single_post ? $single_post_id : $md5_hash;
+						apply_filters( 'alm_cache_create_file', $cache_id, $cache_name, $canonical_url, $data );
 					}
 
 					$return = [

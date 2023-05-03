@@ -24,7 +24,6 @@ export function almGetAjaxParams(alm, action, queryType) {
 	};
 
 	// Addons & Extensions
-
 	if (alm.theme_repeater) {
 		data.theme_repeater = alm.theme_repeater;
 	}
