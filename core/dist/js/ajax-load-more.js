@@ -2417,7 +2417,7 @@ var alm_is_filtering = false;
 
 				// Standard Query
 				if (queryType === 'standard') {
-					alm.AjaxLoadMore.success(data, false);
+					alm.AjaxLoadMore.success(data);
 				} else if (queryType === 'totalpages' && alm.addons.paging && alm.addons.nextpage) {
 					// Next Page and Paging
 					if (typeof almBuildPagination === 'function') {
@@ -2476,7 +2476,7 @@ var alm_is_filtering = false;
 						totalposts: 1
 					}
 				};
-				alm.AjaxLoadMore.success(obj, false); // Send data
+				alm.AjaxLoadMore.success(obj); // Send data
 
 				// Callback to Tabs add-on
 				if (typeof almTabLoaded === 'function') {
@@ -2544,7 +2544,7 @@ var alm_is_filtering = false;
 						totalposts: totalposts
 					}
 				};
-				alm.AjaxLoadMore.success(obj, false); // Send data
+				alm.AjaxLoadMore.success(obj); // Send data
 			}).catch(function (error) {
 				// Error
 				alm.AjaxLoadMore.error(error, 'restapi');
@@ -2563,16 +2563,14 @@ var alm_is_filtering = false;
 		/**
    * Success function after loading data.
    *
-   * @param {object}  data     The results of the Ajax request.
-   * @param {boolean} is_cache Are results of the Ajax request coming from cache?
+   * @param {object} data The results of the Ajax request.
    * @since 2.6.0
    */
-		alm.AjaxLoadMore.success = function (data, is_cache) {
+		alm.AjaxLoadMore.success = function (data) {
 			var _this = this;
 
 			if (alm.addons.single_post) {
-				// Get previous page data
-				alm.AjaxLoadMore.getSinglePost();
+				alm.AjaxLoadMore.getSinglePost(); // Get previous post data
 			}
 
 			var isPaged = false;
@@ -2588,34 +2586,28 @@ var alm_is_filtering = false;
 			var pagingContent = alm.listing.querySelector('.alm-paging-content');
 
 			var html = void 0,
-			    meta = void 0,
 			    total = void 0;
 
-			if (is_cache) {
-				// If Cache, do not look for json data as we won't be querying the DB.
-				html = data;
-			} else {
-				// Standard ALM query results
-				html = data.html;
-				meta = data.meta;
-				total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
+			html = data.html;
+			var meta = data.meta;
 
-				var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
-				alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
-				alm.posts = alm.addons.paging ? total : alm.posts + total;
-				alm.debug = meta.debug ? meta.debug : '';
+			total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 
-				if (!meta) {
-					// Display warning if `meta` is missing.
-					console.warn('Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.');
-				}
+			var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
+			alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
+			alm.posts = alm.addons.paging ? total : alm.posts + total;
+			alm.debug = meta.debug ? meta.debug : '';
+
+			if (!meta) {
+				// Display warning if `meta` is missing.
+				console.warn('Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.');
 			}
 
 			// Set alm.html as plain text return
 			alm.html = html;
 
 			// If cache, get the length of the html object
-			total = is_cache ? (0, _almDomParser2.default)(html).length : total;
+			// total = is_cache ? almDomParser(html).length : total;
 
 			// First Run Only
 			if (alm.init) {
@@ -3076,6 +3068,7 @@ var alm_is_filtering = false;
 							window.almFiltersAddonComplete(el);
 						}
 					}
+
 					alm_is_filtering = false;
 
 					// Tabs Complete
@@ -3088,23 +3081,8 @@ var alm_is_filtering = false;
 					}
 
 					// ALM Done
-					if (!alm.addons.cache) {
-						// Not Cache & Single Post
-						if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-							alm.AjaxLoadMore.triggerDone();
-						}
-					} else {
-						// Cache
-						if (alm.addons.nextpage && alm.localize) {
-							// Nextpage
-							if (parseInt(alm.localize.page) === parseInt(alm.localize.total_posts)) {
-								alm.AjaxLoadMore.triggerDone();
-							}
-						} else {
-							if (total < parseInt(alm.posts_per_page)) {
-								alm.AjaxLoadMore.triggerDone();
-							}
-						}
+					if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
+						alm.AjaxLoadMore.triggerDone();
 					}
 					// End ALM Done
 				});

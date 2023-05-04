@@ -15,11 +15,30 @@
  */
 
 /*
-
+CACHE UPDATES:
 STARTED:
 - Cache update.
 
 TODO:
+- Filters [DONE]
+- Paging [DONE]
+- SEO [DONE]
+- Nextpage
+- Comments
+- ACF
+- Terms
+- Single Posts
+
+- Update cache admin screen. Expand/Collapse files.
+- Ensure backward compatibility.
+
+
+
+CHANGES
+* NOTICE: Ajax Load More 6.0 is a major update and includes a number of breaking changes. Please review the documentation before updating.
+* NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on.
+
+* UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for cache URLs.
 
 */
 
@@ -557,14 +576,14 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			if ( $cache_id && has_filter( 'alm_cache_get_cache_file' ) && $query_type !== 'totalposts' ) {
 				$cache_data = apply_filters( 'alm_cache_get_cache_file', $cache_id, $md5_hash );
-
-				if ( $cache_data ) {
+				if ( $cache_data && $cache_data['html'] ) {
 					wp_send_json(
 						[
-							'html' => $cache_data,
+							'html' => $cache_data['html'],
 							'meta' => [
-								'postcount'  => 5,
-								'totalposts' => 10,
+								'postcount'  => $cache_data['count'],
+								'totalposts' => $cache_data['total'],
+								'type'       => 'cache',
 								'debug'      => false,
 							],
 						]
@@ -670,7 +689,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					 */
 					if ( $cache_id && has_action( 'alm_cache_create_file' ) && $do_create_cache ) {
 						$cache_name = $single_post ? $single_post_id : $md5_hash;
-						apply_filters( 'alm_cache_create_file', $cache_id, $cache_name, $canonical_url, $data );
+						apply_filters( 'alm_cache_create_file', $cache_id, $cache_name, $canonical_url, $data, $alm_current, $alm_found_posts );
 					}
 
 					$return = [
@@ -678,6 +697,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						'meta' => [
 							'postcount'  => $alm_post_count,
 							'totalposts' => $alm_found_posts,
+							'type'       => 'standard',
 							'debug'      => $debug,
 						],
 					];
@@ -695,6 +715,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						'meta' => [
 							'postcount'  => 0,
 							'totalposts' => 0,
+							'type'       => 'standard',
 							'debug'      => $debug,
 						],
 					];

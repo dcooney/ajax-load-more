@@ -851,17 +851,18 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Cache Add-on.
 			$alm_auto_cache = isset( $_GET['alm_auto_cache'] ) ? true : false;
 			if ( has_action( 'alm_cache_installed' ) && $cache === 'true' ) {
-				$cache_return = apply_filters(
-					'alm_cache_shortcode',
-					$cache,
-					$cache_id,
-					$options
-				);
-				if ( $alm_auto_cache ) {
-					// Disable paging if auto generate cache active.
-					$paging = false;
+				// Confirm cache version is 1.0.0 or greater.
+				$cache_version_check = defined( 'ALM_CACHE_VERSION' ) && version_compare( ALM_CACHE_VERSION, '2.0.0', '>=' );
+				if ( $cache_version_check ) {
+					$cache_return  = apply_filters(
+						'alm_cache_shortcode',
+						$cache,
+						$cache_id,
+						$options
+					);
+					$paging        = $alm_auto_cache ? false : $paging;    // Disable paging if auto generate cache active.
+					$ajaxloadmore .= wp_kses_post( $cache_return );
 				}
-				$ajaxloadmore .= wp_kses_post( $cache_return );
 			}
 
 			// CTA Add-on.
