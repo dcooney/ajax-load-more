@@ -80,7 +80,7 @@ let alm_is_filtering = false;
 		alm.integration = {};
 		alm.window = window;
 		alm.page = 0;
-		alm.posts = 0;
+		alm.postcount = 0;
 		alm.totalposts = 0;
 		alm.proceed = false;
 		alm.disable_ajax = false;
@@ -210,7 +210,7 @@ let alm_is_filtering = false;
 			alm.addons.nextpage_scroll = alm.listing.dataset.nextpageScroll;
 			alm.addons.nextpage_pageviews = alm.listing.dataset.nextpagePageviews;
 			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
-			alm.addons.nextpage_startpage = alm.listing.dataset.nextpageStartpage;
+			alm.addons.nextpage_startpage = parseInt(alm.listing.dataset.nextpageStartpage);
 			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
 		}
 
@@ -1009,17 +1009,14 @@ let alm_is_filtering = false;
 			// Paging container
 			let pagingContent = alm.listing.querySelector('.alm-paging-content');
 
-			let html, total;
-
-			html = data.html;
+			let html = data.html;
+			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 			const meta = data.meta;
 
-			total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
-
-			let totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
+			// Get current post counts.
+			const totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
 			alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
-			alm.posts = alm.addons.paging ? total : alm.posts + total;
-			alm.debug = meta.debug ? meta.debug : '';
+			alm.postcount = alm.addons.paging ? total : alm.postcount + total;
 
 			if (!meta) {
 				// Display warning if `meta` is missing.
@@ -1457,11 +1454,21 @@ let alm_is_filtering = false;
 						}
 					}
 
-					// ALM Done
-					if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-						alm.AjaxLoadMore.triggerDone();
+					/**
+					 * ALM Done.
+					 */
+					if (!alm.addons.single_post) {
+						if (alm.addons.nextpage) {
+							// Nextpage.
+							if (alm.postcount + alm.addons.nextpage_startpage >= alm.totalposts) {
+								alm.AjaxLoadMore.triggerDone();
+							}
+						} else {
+							if (alm.postcount >= alm.totalposts) {
+								alm.AjaxLoadMore.triggerDone();
+							}
+						}
 					}
-					// End ALM Done
 				});
 				// End ALM Loaded
 

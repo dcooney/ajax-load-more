@@ -15,28 +15,39 @@
  */
 
 /*
-CACHE UPDATES:
+ADD-ON Updates:
+- FILTERS:
+	- Fix issue with decimal values in range slider.
+- Next Page
+- Cache
+- Comments
+
+Extension Updates
+- Terms
+- ACF
+
 STARTED:
 - Cache update.
 
-TODO:
+CACHE TODO:
 - Filters [DONE]
 - Paging [DONE]
 - SEO [DONE]
-- Nextpage
-- Comments
-- ACF
-- Terms
+- Nextpage [DONE]
+- Terms [DONE]
+- ACF [DONE]
+- Comments [DONE]
 - Single Posts
+- Users [DONE]
 
 - Update cache admin screen. Expand/Collapse files.
 - Ensure backward compatibility.
 
 
 
-CHANGES
+Plugin CHANGES
 * NOTICE: Ajax Load More 6.0 is a major update and includes a number of breaking changes. Please review the documentation before updating.
-* NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on.
+* NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on to use Cache functionality.
 
 * UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for cache URLs.
 
@@ -567,27 +578,17 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
-			// MD5 hash of $args.
-			$md5_hash = md5( wp_json_encode( $args ) );
+			// MD5 hash of query $args.
+			$md5_hash = $cache_id ? md5( wp_json_encode( $args ) ) : '';
 
 			/**
 			 * Cache Add-on.
 			 * Check for cached data before running WP_Query.
 			 */
-			if ( $cache_id && has_filter( 'alm_cache_get_cache_file' ) && $query_type !== 'totalposts' ) {
-				$cache_data = apply_filters( 'alm_cache_get_cache_file', $cache_id, $md5_hash );
-				if ( $cache_data && $cache_data['html'] ) {
-					wp_send_json(
-						[
-							'html' => $cache_data['html'],
-							'meta' => [
-								'postcount'  => $cache_data['count'],
-								'totalposts' => $cache_data['total'],
-								'type'       => 'cache',
-								'debug'      => false,
-							],
-						]
-					);
+			if ( $cache_id && method_exists( 'ALMCache', 'get_cache_file' ) && $query_type !== 'totalposts' ) {
+				$cache_data = ALMCache::get_cache_file( $cache_id, $md5_hash );
+				if ( $cache_data ) {
+					wp_send_json( $cache_data );
 				}
 			}
 
@@ -684,12 +685,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					/**
 					 * Cache Add-on.
 					 * Create the cache file.
-					 *
-					 * @since 3.2.1
 					 */
-					if ( $cache_id && has_action( 'alm_cache_create_file' ) && $do_create_cache ) {
+					if ( $cache_id && method_exists( 'ALMCache', 'create_cache_file' ) && $do_create_cache ) {
 						$cache_name = $single_post ? $single_post_id : $md5_hash;
-						apply_filters( 'alm_cache_create_file', $cache_id, $cache_name, $canonical_url, $data, $alm_current, $alm_found_posts );
+						ALMCache::create_cache_file( $cache_id, $cache_name, $canonical_url, $data, $alm_current, $alm_found_posts );
 					}
 
 					$return = [
