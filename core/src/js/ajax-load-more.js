@@ -1,24 +1,3 @@
-/**
- * Ajax Load More
- * https://connekthq.com/plugins/ajax-load-more/
- * Author: Darren Cooney
- * Twitter: @KaptonKaos, @ajaxloadmore, @connekthq
- * Copyright Connekt Media - https://connekthq.com
- */
-
-// Polyfills
-require('@babel/polyfill/noConflict');
-require('focus-options-polyfill');
-require('./helpers/polyfills.js');
-
-// External Modules
-let qs = require('qs');
-let imagesLoaded = require('imagesloaded');
-import axios from 'axios';
-import smoothscroll from 'smoothscroll-polyfill'; // Smooth scrolling polyfill
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-smoothscroll.polyfill();
-
 // ALM Modules
 import './helpers/helpers';
 //import commentReplyFix from './helpers/commentReplyFix';
@@ -30,7 +9,6 @@ import { singlePostHTML } from './addons/singleposts';
 import { woocommerce, woocommerceLoaded, wooGetContent, wooInit, wooReset } from './addons/woocommerce';
 import almAppendChildren from './helpers/almAppendChildren';
 import almDomParser from './helpers/almDomParser';
-import getCacheUrl from './helpers/getCacheUrl';
 import getParameterByName from './helpers/getParameterByName';
 import getScrollPercentage from './helpers/getScrollPercentage';
 import * as queryParams from './helpers/queryParams';
@@ -52,6 +30,17 @@ import setFocus from './modules/setFocus';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
 import getTotals from './helpers/getTotals';
+import axios from 'axios';
+
+// External Modules
+let qs = require('qs');
+let imagesLoaded = require('imagesloaded');
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// Polyfills
+require('@babel/polyfill/noConflict');
+require('focus-options-polyfill');
+require('./helpers/polyfills.js');
 
 // Global filtering state.
 let alm_is_filtering = false;
@@ -191,8 +180,7 @@ let alm_is_filtering = false;
 		if (alm.addons.cache === 'true') {
 			alm.addons.cache_id = alm.listing.dataset.cacheId;
 			alm.addons.cache_path = alm.listing.dataset.cachePath;
-			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn;
-			alm.addons.cache_logged_in = alm.addons.cache_logged_in === undefined ? false : alm.addons.cache_logged_in;
+			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn ? alm.listing.dataset.cacheLoggedIn : false;
 		}
 
 		// CTA add-on
@@ -619,13 +607,12 @@ let alm_is_filtering = false;
 		 * @since 2.0.0
 		 */
 		alm.AjaxLoadMore.loadPosts = function () {
-			if (typeof almOnChange === 'function') {
-				window.almOnChange(alm);
-			}
-
-			// Check for ajax blocker.
 			if (alm.disable_ajax) {
 				return;
+			}
+
+			if (typeof almOnChange === 'function') {
+				window.almOnChange(alm);
 			}
 
 			alm.loading = true;
@@ -758,7 +745,7 @@ let alm_is_filtering = false;
 			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
 				// REST API
-				alm.AjaxLoadMore.restapi(alm, action, queryType);
+				alm.AjaxLoadMore.restapi(alm);
 			} else if (alm.addons.tabs) {
 				// Tabs
 				alm.AjaxLoadMore.tabs(alm);
@@ -789,11 +776,11 @@ let alm_is_filtering = false;
 				return config;
 			});
 
-			// Get Ajax URL
+			// Get Ajax URL.
 			let ajaxURL = alm_localize.ajaxurl;
 
-			// Get data params
-			let params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
+			// Get query params.
+			let params = queryParams.getAjaxParams(alm, action, queryType);
 
 			// Single Posts Add-on
 			// If has `single_post_target`, adjust the Ajax URL to the post URL.
@@ -923,10 +910,10 @@ let alm_is_filtering = false;
 		 * @param {string} queryType The type of Ajax request (standard/totalposts).
 		 * @since 5.0.0
 		 */
-		alm.AjaxLoadMore.restapi = function (alm, action, queryType) {
+		alm.AjaxLoadMore.restapi = function (alm) {
 			let alm_rest_template = wp.template(alm.extensions.restapi_template_id);
 			let alm_rest_url = `${alm.extensions.restapi_base_url}/${alm.extensions.restapi_namespace}/${alm.extensions.restapi_endpoint}`;
-			let params = queryParams.almGetRestParams(alm); // [./helpers/queryParams.js]
+			let params = queryParams.getRestAPIParams(alm); // [./helpers/queryParams.js]
 
 			// Axios Interceptor for nested data objects
 			axios.interceptors.request.use((config) => {

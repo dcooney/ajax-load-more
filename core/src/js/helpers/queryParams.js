@@ -1,23 +1,26 @@
+import { getCacheSlug } from '../addons/cache';
+
 /**
- * almGetAjaxParams
- * Build the data object to send with the Ajax request
+ * Build the data object to send with the Ajax request.
  *
- * @param alm            object
- * @param action         string
- * @param queryType      string
+ * @param {object} alm       The ALM object.
+ * @param {string} action    The HTTP action.
+ * @param {string} queryType The query type.
+ * @return {object}          The data object.
  * @since 3.6
  */
-
-export function almGetAjaxParams(alm, action, queryType) {
+export function getAjaxParams(alm, action, queryType) {
 	// Defaults
-	let data = {
+	const data = {
+		action: action,
+		query_type: queryType,
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		slug: alm.slug,
 		canonical_url: encodeURIComponent(alm.canonical_url),
-		posts_per_page: alm.posts_per_page,
-		page: alm.page,
-		offset: alm.offset,
+		posts_per_page: parseInt(alm.posts_per_page),
+		page: parseInt(alm.page),
+		offset: parseInt(alm.offset),
 		post_type: alm.post_type,
 		repeater: alm.repeater,
 		seo_start_page: alm.start_page,
@@ -36,13 +39,9 @@ export function almGetAjaxParams(alm, action, queryType) {
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;
 	}
-	if (alm.addons.preloaded) {
+	if (alm.addons.preloaded === 'true') {
 		data.preloaded = alm.addons.preloaded;
-		data.preloaded_amount = alm.addons.preloaded_amount;
-	}
-	if (alm.addons.cache === 'true') {
-		data.cache_id = alm.addons.cache_id;
-		data.cache_logged_in = alm.addons.cache_logged_in;
+		data.preloaded_amount = parseInt(alm.addons.preloaded_amount);
 	}
 	if (alm.acf_array) {
 		data.acf = alm.acf_array;
@@ -167,23 +166,27 @@ export function almGetAjaxParams(alm, action, queryType) {
 		data.vars = escape(alm.listing.dataset.vars);
 	}
 
-	data.action = action;
-	data.query_type = queryType;
+	// Set Cache params.
+	if (alm.addons.cache === 'true') {
+		data.cache_id = alm.addons.cache_id;
+		data.cache_logged_in = alm.addons.cache_logged_in;
+		data.cache_slug = getCacheSlug(alm, data);
+	}
 
 	return data;
 }
 
 /**
- * almGetRestParams
- * Build the REST API data object to send with REST API request
+ * Build the REST API data object to send with REST API request.
  *
- * @param alm            object
+ * @param {object} alm The ALM object.
+ * @return {object}    The data object.
  * @since 3.6
  */
-export function almGetRestParams(alm) {
-	let data = {
+export function getRestAPIParams(alm) {
+	const data = {
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		posts_per_page: alm.posts_per_page,
 		page: alm.page,
 		offset: alm.offset,
@@ -222,6 +225,5 @@ export function almGetRestParams(alm) {
 		preloaded_amount: alm.addons.preloaded_amount,
 		seo_start_page: alm.start_page,
 	};
-
 	return data;
 }

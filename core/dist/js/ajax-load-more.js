@@ -100,15 +100,38 @@ var ajaxloadmore =
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.getCacheSlug = getCacheSlug;
 exports.createCacheFile = createCacheFile;
 exports.wooCache = wooCache;
+exports.getCacheUrl = getCacheUrl;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _filters = __webpack_require__(/*! ../addons/filters */ "./core/src/js/addons/filters.js");
+
+var _md = __webpack_require__(/*! crypto-js/md5 */ "./node_modules/crypto-js/md5.js");
+
+var _md2 = _interopRequireDefault(_md);
+
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+/**
+ * Create unique cache slug from query params.
+ *
+ * @param {object} alm  The ALM object.
+ * @param {object} data The data object.
+ * @return {object}     Modified data object.
+ */
+function getCacheSlug(alm, data) {
+	if (alm.addons.nextpage) {
+		return 'page-' + (alm.page + alm.addons.nextpage_startpage);
+	} else {
+		return (0, _md2.default)(JSON.stringify(data)).toString();
+	}
 }
 
 /**
@@ -136,7 +159,7 @@ function createCacheFile(alm, content) {
 	formData.append('name', name);
 	formData.append('html', content.trim());
 
-	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
+	_axios2.default.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for: ' + alm.canonical_url);
 	});
 }
@@ -144,8 +167,8 @@ function createCacheFile(alm, content) {
 /**
  * Create a WooCommerce cache file.
  *
- * @param {Object} alm
- * @param {String} content
+ * @param {object} alm     The ALM object.
+ * @param {string} content The content to cache.
  * @since 5.3.1
  */
 function wooCache(alm, content) {
@@ -165,6 +188,82 @@ function wooCache(alm, content) {
 	_axios2.default.post(alm_localize.ajaxurl, formData).then(function () {
 		console.log('Cache created for post: ' + alm.canonical_url);
 	});
+}
+
+/**
+ * Generate the cache page URL for GET request
+ *
+ * @param {object} alm The ALM object.
+ * @since 5.0
+ * @supports Standard, SEO, Filters, Nextpage, Single Posts
+ */
+function getCacheUrl(alm) {
+	if (!alm) {
+		return false;
+	}
+
+	var firstpage = '1';
+	var cache_url = '';
+	var ext = '.html';
+	var path = alm.addons.cache_path + alm.addons.cache_id;
+
+	// SEO Add-on
+	if (alm.init && alm.addons.seo && alm.isPaged) {
+		// If request is a paged URL (e.g. /page/3/)
+		cache_url = path + '/page-' + firstpage + '-' + alm.start_page + ext;
+	}
+
+	// Filters
+	else if (alm.addons.filters) {
+			var filtersPath = (0, _filters.parseQuerystring)(path);
+
+			if (alm.init && alm.isPaged) {
+				// First run & Paged
+				cache_url = filtersPath + '/page-' + firstpage + '-' + alm.addons.filters_startpage + ext;
+			} else {
+				var page = alm.page + 1;
+
+				if (alm.addons.preloaded === 'true') {
+					// Preloaded + Filters
+					page = alm.page + 2;
+				}
+				cache_url = filtersPath + '/page-' + page + ext;
+			}
+		}
+
+		// Nextpage
+		else if (alm.addons.nextpage) {
+				var nextpage_cache_url = void 0;
+				if (alm.addons.paging) {
+					nextpage_cache_url = parseInt(alm.page) + 1;
+				} else {
+					nextpage_cache_url = parseInt(alm.page) + 2;
+					if (alm.isPaged) {
+						// If the request a paged URL (/page/3/)
+						nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
+					}
+				}
+
+				cache_url = path + '/page-' + nextpage_cache_url + ext;
+			}
+
+			// Single Post
+			else if (alm.addons.single_post) {
+					cache_url = path + '/' + alm.addons.single_post_id + ext;
+				}
+
+				// Comments & Preloaded
+				else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
+						// When using comments we need to increase the current page by 2
+						cache_url = path + '/page-' + (alm.page + 2) + ext;
+					}
+
+					// Standard URL request
+					else {
+							cache_url = path + '/page-' + (alm.page + 1) + ext;
+						}
+
+	return cache_url;
 }
 
 /***/ }),
@@ -1450,14 +1549,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.click = exports.render = exports.getOffset = exports.almScroll = exports.start = exports.tab = exports.tracking = exports.getTotalRemaining = exports.getTotalPosts = exports.getPostCount = exports.reset = exports.filter = undefined;
 
-var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-
-var _axios2 = _interopRequireDefault(_axios);
-
-var _smoothscrollPolyfill = __webpack_require__(/*! smoothscroll-polyfill */ "./node_modules/smoothscroll-polyfill/dist/smoothscroll.js");
-
-var _smoothscrollPolyfill2 = _interopRequireDefault(_smoothscrollPolyfill);
-
 __webpack_require__(/*! ./helpers/helpers */ "./core/src/js/helpers/helpers.js");
 
 var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
@@ -1479,10 +1570,6 @@ var _almAppendChildren2 = _interopRequireDefault(_almAppendChildren);
 var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/src/js/helpers/almDomParser.js");
 
 var _almDomParser2 = _interopRequireDefault(_almDomParser);
-
-var _getCacheUrl = __webpack_require__(/*! ./helpers/getCacheUrl */ "./core/src/js/helpers/getCacheUrl.js");
-
-var _getCacheUrl2 = _interopRequireDefault(_getCacheUrl);
 
 var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName */ "./core/src/js/helpers/getParameterByName.js");
 
@@ -1558,6 +1645,10 @@ var _getTotals = __webpack_require__(/*! ./helpers/getTotals */ "./core/src/js/h
 
 var _getTotals2 = _interopRequireDefault(_getTotals);
 
+var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+var _axios2 = _interopRequireDefault(_axios);
+
 function _interopRequireWildcard(obj) {
 	if (obj && obj.__esModule) {
 		return obj;
@@ -1604,32 +1695,20 @@ function _asyncToGenerator(fn) {
 			}return step("next");
 		});
 	};
-}
+} // ALM Modules
 
-/**
- * Ajax Load More
- * https://connekthq.com/plugins/ajax-load-more/
- * Author: Darren Cooney
- * Twitter: @KaptonKaos, @ajaxloadmore, @connekthq
- * Copyright Connekt Media - https://connekthq.com
- */
+//import commentReplyFix from './helpers/commentReplyFix';
+
+
+// External Modules
+var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
+var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 // Polyfills
 __webpack_require__(/*! @babel/polyfill/noConflict */ "./node_modules/@babel/polyfill/noConflict.js");
 __webpack_require__(/*! focus-options-polyfill */ "./node_modules/focus-options-polyfill/index.js");
 __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfills.js");
-
-// External Modules
-var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
-var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-// Smooth scrolling polyfill
-_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-_smoothscrollPolyfill2.default.polyfill();
-
-// ALM Modules
-
-//import commentReplyFix from './helpers/commentReplyFix';
-
 
 // Global filtering state.
 var alm_is_filtering = false;
@@ -1770,8 +1849,7 @@ var alm_is_filtering = false;
 		if (alm.addons.cache === 'true') {
 			alm.addons.cache_id = alm.listing.dataset.cacheId;
 			alm.addons.cache_path = alm.listing.dataset.cachePath;
-			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn;
-			alm.addons.cache_logged_in = alm.addons.cache_logged_in === undefined ? false : alm.addons.cache_logged_in;
+			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn ? alm.listing.dataset.cacheLoggedIn : false;
 		}
 
 		// CTA add-on
@@ -2196,13 +2274,12 @@ var alm_is_filtering = false;
    * @since 2.0.0
    */
 		alm.AjaxLoadMore.loadPosts = function () {
-			if (typeof almOnChange === 'function') {
-				window.almOnChange(alm);
-			}
-
-			// Check for ajax blocker.
 			if (alm.disable_ajax) {
 				return;
+			}
+
+			if (typeof almOnChange === 'function') {
+				window.almOnChange(alm);
 			}
 
 			alm.loading = true;
@@ -2337,7 +2414,7 @@ var alm_is_filtering = false;
 			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
 				// REST API
-				alm.AjaxLoadMore.restapi(alm, action, queryType);
+				alm.AjaxLoadMore.restapi(alm);
 			} else if (alm.addons.tabs) {
 				// Tabs
 				alm.AjaxLoadMore.tabs(alm);
@@ -2368,11 +2445,11 @@ var alm_is_filtering = false;
 				return config;
 			});
 
-			// Get Ajax URL
+			// Get Ajax URL.
 			var ajaxURL = alm_localize.ajaxurl;
 
-			// Get data params
-			var params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
+			// Get query params.
+			var params = queryParams.getAjaxParams(alm, action, queryType);
 
 			// Single Posts Add-on
 			// If has `single_post_target`, adjust the Ajax URL to the post URL.
@@ -2496,10 +2573,10 @@ var alm_is_filtering = false;
    * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
-		alm.AjaxLoadMore.restapi = function (alm, action, queryType) {
+		alm.AjaxLoadMore.restapi = function (alm) {
 			var alm_rest_template = wp.template(alm.extensions.restapi_template_id);
 			var alm_rest_url = alm.extensions.restapi_base_url + '/' + alm.extensions.restapi_namespace + '/' + alm.extensions.restapi_endpoint;
-			var params = queryParams.almGetRestParams(alm); // [./helpers/queryParams.js]
+			var params = queryParams.getRestAPIParams(alm); // [./helpers/queryParams.js]
 
 			// Axios Interceptor for nested data objects
 			_axios2.default.interceptors.request.use(function (config) {
@@ -4545,102 +4622,6 @@ function setButtonAtts(button, page, url) {
 
 /***/ }),
 
-/***/ "./core/src/js/helpers/getCacheUrl.js":
-/*!********************************************!*\
-  !*** ./core/src/js/helpers/getCacheUrl.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _filters = __webpack_require__(/*! ../addons/filters */ "./core/src/js/addons/filters.js");
-
-/**
- * Generate the cache page URL for GET request
- *
- * @param {*} alm
- * @since 5.0
- * @supports Standard, SEO, Filters, Nextpage, Single Posts
- */
-var getCacheUrl = function getCacheUrl(alm) {
-	if (!alm) {
-		return false;
-	}
-
-	var firstpage = '1';
-	var cache_url = '';
-	var ext = '.html';
-	var path = alm.addons.cache_path + alm.addons.cache_id;
-
-	// SEO Add-on
-	if (alm.init && alm.addons.seo && alm.isPaged) {
-		// If request is a paged URL (e.g. /page/3/)
-		cache_url = path + '/page-' + firstpage + '-' + alm.start_page + ext;
-	}
-
-	// Filters
-	else if (alm.addons.filters) {
-			var filtersPath = (0, _filters.parseQuerystring)(path);
-
-			if (alm.init && alm.isPaged) {
-				// First run & Paged
-				cache_url = filtersPath + '/page-' + firstpage + '-' + alm.addons.filters_startpage + ext;
-			} else {
-				var page = alm.page + 1;
-
-				if (alm.addons.preloaded === 'true') {
-					// Preloaded + Filters
-					page = alm.page + 2;
-				}
-				cache_url = filtersPath + '/page-' + page + ext;
-			}
-		}
-
-		// Nextpage
-		else if (alm.addons.nextpage) {
-				var nextpage_cache_url = void 0;
-				if (alm.addons.paging) {
-					nextpage_cache_url = parseInt(alm.page) + 1;
-				} else {
-					nextpage_cache_url = parseInt(alm.page) + 2;
-					if (alm.isPaged) {
-						// If the request a paged URL (/page/3/)
-						nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
-					}
-				}
-
-				cache_url = path + '/page-' + nextpage_cache_url + ext;
-			}
-
-			// Single Post
-			else if (alm.addons.single_post) {
-					cache_url = path + '/' + alm.addons.single_post_id + ext;
-				}
-
-				// Comments & Preloaded
-				else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
-						// When using comments we need to increase the current page by 2
-						cache_url = path + '/page-' + (alm.page + 2) + ext;
-					}
-
-					// Standard URL request
-					else {
-							cache_url = path + '/page-' + (alm.page + 1) + ext;
-						}
-
-	return cache_url;
-};
-
-exports.default = getCacheUrl;
-
-/***/ }),
-
 /***/ "./core/src/js/helpers/getParameterByName.js":
 /*!***************************************************!*\
   !*** ./core/src/js/helpers/getParameterByName.js ***!
@@ -5205,28 +5186,32 @@ if (!document.documentElement.dataset && (
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.almGetAjaxParams = almGetAjaxParams;
-exports.almGetRestParams = almGetRestParams;
+exports.getAjaxParams = getAjaxParams;
+exports.getRestAPIParams = getRestAPIParams;
+
+var _cache = __webpack_require__(/*! ../addons/cache */ "./core/src/js/addons/cache.js");
+
 /**
- * almGetAjaxParams
- * Build the data object to send with the Ajax request
+ * Build the data object to send with the Ajax request.
  *
- * @param alm            object
- * @param action         string
- * @param queryType      string
+ * @param {object} alm       The ALM object.
+ * @param {string} action    The HTTP action.
+ * @param {string} queryType The query type.
+ * @return {object}          The data object.
  * @since 3.6
  */
-
-function almGetAjaxParams(alm, action, queryType) {
+function getAjaxParams(alm, action, queryType) {
 	// Defaults
 	var data = {
+		action: action,
+		query_type: queryType,
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		slug: alm.slug,
 		canonical_url: encodeURIComponent(alm.canonical_url),
-		posts_per_page: alm.posts_per_page,
-		page: alm.page,
-		offset: alm.offset,
+		posts_per_page: parseInt(alm.posts_per_page),
+		page: parseInt(alm.page),
+		offset: parseInt(alm.offset),
 		post_type: alm.post_type,
 		repeater: alm.repeater,
 		seo_start_page: alm.start_page
@@ -5245,13 +5230,9 @@ function almGetAjaxParams(alm, action, queryType) {
 	if (alm.addons.paging) {
 		data.paging = alm.addons.paging;
 	}
-	if (alm.addons.preloaded) {
+	if (alm.addons.preloaded === 'true') {
 		data.preloaded = alm.addons.preloaded;
-		data.preloaded_amount = alm.addons.preloaded_amount;
-	}
-	if (alm.addons.cache === 'true') {
-		data.cache_id = alm.addons.cache_id;
-		data.cache_logged_in = alm.addons.cache_logged_in;
+		data.preloaded_amount = parseInt(alm.addons.preloaded_amount);
 	}
 	if (alm.acf_array) {
 		data.acf = alm.acf_array;
@@ -5376,23 +5357,27 @@ function almGetAjaxParams(alm, action, queryType) {
 		data.vars = escape(alm.listing.dataset.vars);
 	}
 
-	data.action = action;
-	data.query_type = queryType;
+	// Set Cache params.
+	if (alm.addons.cache === 'true') {
+		data.cache_id = alm.addons.cache_id;
+		data.cache_logged_in = alm.addons.cache_logged_in;
+		data.cache_slug = (0, _cache.getCacheSlug)(alm, data);
+	}
 
 	return data;
 }
 
 /**
- * almGetRestParams
- * Build the REST API data object to send with REST API request
+ * Build the REST API data object to send with REST API request.
  *
- * @param alm            object
+ * @param {object} alm The ALM object.
+ * @return {object}    The data object.
  * @since 3.6
  */
-function almGetRestParams(alm) {
+function getRestAPIParams(alm) {
 	var data = {
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		posts_per_page: alm.posts_per_page,
 		page: alm.page,
 		offset: alm.offset,
@@ -5431,7 +5416,6 @@ function almGetRestParams(alm) {
 		preloaded_amount: alm.addons.preloaded_amount,
 		seo_start_page: alm.start_page
 	};
-
 	return data;
 }
 
@@ -18524,6 +18508,1088 @@ module.exports = __webpack_require__(/*! ../modules/_core */ "./node_modules/cor
 
 /***/ }),
 
+/***/ "./node_modules/crypto-js/core.js":
+/*!****************************************!*\
+  !*** ./node_modules/crypto-js/core.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {;(function (root, factory) {
+	if (true) {
+		// CommonJS
+		module.exports = exports = factory();
+	}
+	else {}
+}(this, function () {
+
+	/*globals window, global, require*/
+
+	/**
+	 * CryptoJS core components.
+	 */
+	var CryptoJS = CryptoJS || (function (Math, undefined) {
+
+	    var crypto;
+
+	    // Native crypto from window (Browser)
+	    if (typeof window !== 'undefined' && window.crypto) {
+	        crypto = window.crypto;
+	    }
+
+	    // Native crypto in web worker (Browser)
+	    if (typeof self !== 'undefined' && self.crypto) {
+	        crypto = self.crypto;
+	    }
+
+	    // Native crypto from worker
+	    if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+	        crypto = globalThis.crypto;
+	    }
+
+	    // Native (experimental IE 11) crypto from window (Browser)
+	    if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
+	        crypto = window.msCrypto;
+	    }
+
+	    // Native crypto from global (NodeJS)
+	    if (!crypto && typeof global !== 'undefined' && global.crypto) {
+	        crypto = global.crypto;
+	    }
+
+	    // Native crypto import via require (NodeJS)
+	    if (!crypto && "function" === 'function') {
+	        try {
+	            crypto = __webpack_require__(/*! crypto */ 0);
+	        } catch (err) {}
+	    }
+
+	    /*
+	     * Cryptographically secure pseudorandom number generator
+	     *
+	     * As Math.random() is cryptographically not safe to use
+	     */
+	    var cryptoSecureRandomInt = function () {
+	        if (crypto) {
+	            // Use getRandomValues method (Browser)
+	            if (typeof crypto.getRandomValues === 'function') {
+	                try {
+	                    return crypto.getRandomValues(new Uint32Array(1))[0];
+	                } catch (err) {}
+	            }
+
+	            // Use randomBytes method (NodeJS)
+	            if (typeof crypto.randomBytes === 'function') {
+	                try {
+	                    return crypto.randomBytes(4).readInt32LE();
+	                } catch (err) {}
+	            }
+	        }
+
+	        throw new Error('Native crypto module could not be used to get secure random number.');
+	    };
+
+	    /*
+	     * Local polyfill of Object.create
+
+	     */
+	    var create = Object.create || (function () {
+	        function F() {}
+
+	        return function (obj) {
+	            var subtype;
+
+	            F.prototype = obj;
+
+	            subtype = new F();
+
+	            F.prototype = null;
+
+	            return subtype;
+	        };
+	    }());
+
+	    /**
+	     * CryptoJS namespace.
+	     */
+	    var C = {};
+
+	    /**
+	     * Library namespace.
+	     */
+	    var C_lib = C.lib = {};
+
+	    /**
+	     * Base object for prototypal inheritance.
+	     */
+	    var Base = C_lib.Base = (function () {
+
+
+	        return {
+	            /**
+	             * Creates a new object that inherits from this object.
+	             *
+	             * @param {Object} overrides Properties to copy into the new object.
+	             *
+	             * @return {Object} The new object.
+	             *
+	             * @static
+	             *
+	             * @example
+	             *
+	             *     var MyType = CryptoJS.lib.Base.extend({
+	             *         field: 'value',
+	             *
+	             *         method: function () {
+	             *         }
+	             *     });
+	             */
+	            extend: function (overrides) {
+	                // Spawn
+	                var subtype = create(this);
+
+	                // Augment
+	                if (overrides) {
+	                    subtype.mixIn(overrides);
+	                }
+
+	                // Create default initializer
+	                if (!subtype.hasOwnProperty('init') || this.init === subtype.init) {
+	                    subtype.init = function () {
+	                        subtype.$super.init.apply(this, arguments);
+	                    };
+	                }
+
+	                // Initializer's prototype is the subtype object
+	                subtype.init.prototype = subtype;
+
+	                // Reference supertype
+	                subtype.$super = this;
+
+	                return subtype;
+	            },
+
+	            /**
+	             * Extends this object and runs the init method.
+	             * Arguments to create() will be passed to init().
+	             *
+	             * @return {Object} The new object.
+	             *
+	             * @static
+	             *
+	             * @example
+	             *
+	             *     var instance = MyType.create();
+	             */
+	            create: function () {
+	                var instance = this.extend();
+	                instance.init.apply(instance, arguments);
+
+	                return instance;
+	            },
+
+	            /**
+	             * Initializes a newly created object.
+	             * Override this method to add some logic when your objects are created.
+	             *
+	             * @example
+	             *
+	             *     var MyType = CryptoJS.lib.Base.extend({
+	             *         init: function () {
+	             *             // ...
+	             *         }
+	             *     });
+	             */
+	            init: function () {
+	            },
+
+	            /**
+	             * Copies properties into this object.
+	             *
+	             * @param {Object} properties The properties to mix in.
+	             *
+	             * @example
+	             *
+	             *     MyType.mixIn({
+	             *         field: 'value'
+	             *     });
+	             */
+	            mixIn: function (properties) {
+	                for (var propertyName in properties) {
+	                    if (properties.hasOwnProperty(propertyName)) {
+	                        this[propertyName] = properties[propertyName];
+	                    }
+	                }
+
+	                // IE won't copy toString using the loop above
+	                if (properties.hasOwnProperty('toString')) {
+	                    this.toString = properties.toString;
+	                }
+	            },
+
+	            /**
+	             * Creates a copy of this object.
+	             *
+	             * @return {Object} The clone.
+	             *
+	             * @example
+	             *
+	             *     var clone = instance.clone();
+	             */
+	            clone: function () {
+	                return this.init.prototype.extend(this);
+	            }
+	        };
+	    }());
+
+	    /**
+	     * An array of 32-bit words.
+	     *
+	     * @property {Array} words The array of 32-bit words.
+	     * @property {number} sigBytes The number of significant bytes in this word array.
+	     */
+	    var WordArray = C_lib.WordArray = Base.extend({
+	        /**
+	         * Initializes a newly created word array.
+	         *
+	         * @param {Array} words (Optional) An array of 32-bit words.
+	         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.lib.WordArray.create();
+	         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607]);
+	         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607], 6);
+	         */
+	        init: function (words, sigBytes) {
+	            words = this.words = words || [];
+
+	            if (sigBytes != undefined) {
+	                this.sigBytes = sigBytes;
+	            } else {
+	                this.sigBytes = words.length * 4;
+	            }
+	        },
+
+	        /**
+	         * Converts this word array to a string.
+	         *
+	         * @param {Encoder} encoder (Optional) The encoding strategy to use. Default: CryptoJS.enc.Hex
+	         *
+	         * @return {string} The stringified word array.
+	         *
+	         * @example
+	         *
+	         *     var string = wordArray + '';
+	         *     var string = wordArray.toString();
+	         *     var string = wordArray.toString(CryptoJS.enc.Utf8);
+	         */
+	        toString: function (encoder) {
+	            return (encoder || Hex).stringify(this);
+	        },
+
+	        /**
+	         * Concatenates a word array to this word array.
+	         *
+	         * @param {WordArray} wordArray The word array to append.
+	         *
+	         * @return {WordArray} This word array.
+	         *
+	         * @example
+	         *
+	         *     wordArray1.concat(wordArray2);
+	         */
+	        concat: function (wordArray) {
+	            // Shortcuts
+	            var thisWords = this.words;
+	            var thatWords = wordArray.words;
+	            var thisSigBytes = this.sigBytes;
+	            var thatSigBytes = wordArray.sigBytes;
+
+	            // Clamp excess bits
+	            this.clamp();
+
+	            // Concat
+	            if (thisSigBytes % 4) {
+	                // Copy one byte at a time
+	                for (var i = 0; i < thatSigBytes; i++) {
+	                    var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                    thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
+	                }
+	            } else {
+	                // Copy one word at a time
+	                for (var j = 0; j < thatSigBytes; j += 4) {
+	                    thisWords[(thisSigBytes + j) >>> 2] = thatWords[j >>> 2];
+	                }
+	            }
+	            this.sigBytes += thatSigBytes;
+
+	            // Chainable
+	            return this;
+	        },
+
+	        /**
+	         * Removes insignificant bits.
+	         *
+	         * @example
+	         *
+	         *     wordArray.clamp();
+	         */
+	        clamp: function () {
+	            // Shortcuts
+	            var words = this.words;
+	            var sigBytes = this.sigBytes;
+
+	            // Clamp
+	            words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
+	            words.length = Math.ceil(sigBytes / 4);
+	        },
+
+	        /**
+	         * Creates a copy of this word array.
+	         *
+	         * @return {WordArray} The clone.
+	         *
+	         * @example
+	         *
+	         *     var clone = wordArray.clone();
+	         */
+	        clone: function () {
+	            var clone = Base.clone.call(this);
+	            clone.words = this.words.slice(0);
+
+	            return clone;
+	        },
+
+	        /**
+	         * Creates a word array filled with random bytes.
+	         *
+	         * @param {number} nBytes The number of random bytes to generate.
+	         *
+	         * @return {WordArray} The random word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.lib.WordArray.random(16);
+	         */
+	        random: function (nBytes) {
+	            var words = [];
+
+	            for (var i = 0; i < nBytes; i += 4) {
+	                words.push(cryptoSecureRandomInt());
+	            }
+
+	            return new WordArray.init(words, nBytes);
+	        }
+	    });
+
+	    /**
+	     * Encoder namespace.
+	     */
+	    var C_enc = C.enc = {};
+
+	    /**
+	     * Hex encoding strategy.
+	     */
+	    var Hex = C_enc.Hex = {
+	        /**
+	         * Converts a word array to a hex string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The hex string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var hexString = CryptoJS.enc.Hex.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            // Shortcuts
+	            var words = wordArray.words;
+	            var sigBytes = wordArray.sigBytes;
+
+	            // Convert
+	            var hexChars = [];
+	            for (var i = 0; i < sigBytes; i++) {
+	                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                hexChars.push((bite >>> 4).toString(16));
+	                hexChars.push((bite & 0x0f).toString(16));
+	            }
+
+	            return hexChars.join('');
+	        },
+
+	        /**
+	         * Converts a hex string to a word array.
+	         *
+	         * @param {string} hexStr The hex string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Hex.parse(hexString);
+	         */
+	        parse: function (hexStr) {
+	            // Shortcut
+	            var hexStrLength = hexStr.length;
+
+	            // Convert
+	            var words = [];
+	            for (var i = 0; i < hexStrLength; i += 2) {
+	                words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
+	            }
+
+	            return new WordArray.init(words, hexStrLength / 2);
+	        }
+	    };
+
+	    /**
+	     * Latin1 encoding strategy.
+	     */
+	    var Latin1 = C_enc.Latin1 = {
+	        /**
+	         * Converts a word array to a Latin1 string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The Latin1 string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var latin1String = CryptoJS.enc.Latin1.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            // Shortcuts
+	            var words = wordArray.words;
+	            var sigBytes = wordArray.sigBytes;
+
+	            // Convert
+	            var latin1Chars = [];
+	            for (var i = 0; i < sigBytes; i++) {
+	                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                latin1Chars.push(String.fromCharCode(bite));
+	            }
+
+	            return latin1Chars.join('');
+	        },
+
+	        /**
+	         * Converts a Latin1 string to a word array.
+	         *
+	         * @param {string} latin1Str The Latin1 string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Latin1.parse(latin1String);
+	         */
+	        parse: function (latin1Str) {
+	            // Shortcut
+	            var latin1StrLength = latin1Str.length;
+
+	            // Convert
+	            var words = [];
+	            for (var i = 0; i < latin1StrLength; i++) {
+	                words[i >>> 2] |= (latin1Str.charCodeAt(i) & 0xff) << (24 - (i % 4) * 8);
+	            }
+
+	            return new WordArray.init(words, latin1StrLength);
+	        }
+	    };
+
+	    /**
+	     * UTF-8 encoding strategy.
+	     */
+	    var Utf8 = C_enc.Utf8 = {
+	        /**
+	         * Converts a word array to a UTF-8 string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The UTF-8 string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var utf8String = CryptoJS.enc.Utf8.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            try {
+	                return decodeURIComponent(escape(Latin1.stringify(wordArray)));
+	            } catch (e) {
+	                throw new Error('Malformed UTF-8 data');
+	            }
+	        },
+
+	        /**
+	         * Converts a UTF-8 string to a word array.
+	         *
+	         * @param {string} utf8Str The UTF-8 string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
+	         */
+	        parse: function (utf8Str) {
+	            return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
+	        }
+	    };
+
+	    /**
+	     * Abstract buffered block algorithm template.
+	     *
+	     * The property blockSize must be implemented in a concrete subtype.
+	     *
+	     * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
+	     */
+	    var BufferedBlockAlgorithm = C_lib.BufferedBlockAlgorithm = Base.extend({
+	        /**
+	         * Resets this block algorithm's data buffer to its initial state.
+	         *
+	         * @example
+	         *
+	         *     bufferedBlockAlgorithm.reset();
+	         */
+	        reset: function () {
+	            // Initial values
+	            this._data = new WordArray.init();
+	            this._nDataBytes = 0;
+	        },
+
+	        /**
+	         * Adds new data to this block algorithm's buffer.
+	         *
+	         * @param {WordArray|string} data The data to append. Strings are converted to a WordArray using UTF-8.
+	         *
+	         * @example
+	         *
+	         *     bufferedBlockAlgorithm._append('data');
+	         *     bufferedBlockAlgorithm._append(wordArray);
+	         */
+	        _append: function (data) {
+	            // Convert string to WordArray, else assume WordArray already
+	            if (typeof data == 'string') {
+	                data = Utf8.parse(data);
+	            }
+
+	            // Append
+	            this._data.concat(data);
+	            this._nDataBytes += data.sigBytes;
+	        },
+
+	        /**
+	         * Processes available data blocks.
+	         *
+	         * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
+	         *
+	         * @param {boolean} doFlush Whether all blocks and partial blocks should be processed.
+	         *
+	         * @return {WordArray} The processed data.
+	         *
+	         * @example
+	         *
+	         *     var processedData = bufferedBlockAlgorithm._process();
+	         *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
+	         */
+	        _process: function (doFlush) {
+	            var processedWords;
+
+	            // Shortcuts
+	            var data = this._data;
+	            var dataWords = data.words;
+	            var dataSigBytes = data.sigBytes;
+	            var blockSize = this.blockSize;
+	            var blockSizeBytes = blockSize * 4;
+
+	            // Count blocks ready
+	            var nBlocksReady = dataSigBytes / blockSizeBytes;
+	            if (doFlush) {
+	                // Round up to include partial blocks
+	                nBlocksReady = Math.ceil(nBlocksReady);
+	            } else {
+	                // Round down to include only full blocks,
+	                // less the number of blocks that must remain in the buffer
+	                nBlocksReady = Math.max((nBlocksReady | 0) - this._minBufferSize, 0);
+	            }
+
+	            // Count words ready
+	            var nWordsReady = nBlocksReady * blockSize;
+
+	            // Count bytes ready
+	            var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+
+	            // Process blocks
+	            if (nWordsReady) {
+	                for (var offset = 0; offset < nWordsReady; offset += blockSize) {
+	                    // Perform concrete-algorithm logic
+	                    this._doProcessBlock(dataWords, offset);
+	                }
+
+	                // Remove processed words
+	                processedWords = dataWords.splice(0, nWordsReady);
+	                data.sigBytes -= nBytesReady;
+	            }
+
+	            // Return processed words
+	            return new WordArray.init(processedWords, nBytesReady);
+	        },
+
+	        /**
+	         * Creates a copy of this object.
+	         *
+	         * @return {Object} The clone.
+	         *
+	         * @example
+	         *
+	         *     var clone = bufferedBlockAlgorithm.clone();
+	         */
+	        clone: function () {
+	            var clone = Base.clone.call(this);
+	            clone._data = this._data.clone();
+
+	            return clone;
+	        },
+
+	        _minBufferSize: 0
+	    });
+
+	    /**
+	     * Abstract hasher template.
+	     *
+	     * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
+	     */
+	    var Hasher = C_lib.Hasher = BufferedBlockAlgorithm.extend({
+	        /**
+	         * Configuration options.
+	         */
+	        cfg: Base.extend(),
+
+	        /**
+	         * Initializes a newly created hasher.
+	         *
+	         * @param {Object} cfg (Optional) The configuration options to use for this hash computation.
+	         *
+	         * @example
+	         *
+	         *     var hasher = CryptoJS.algo.SHA256.create();
+	         */
+	        init: function (cfg) {
+	            // Apply config defaults
+	            this.cfg = this.cfg.extend(cfg);
+
+	            // Set initial values
+	            this.reset();
+	        },
+
+	        /**
+	         * Resets this hasher to its initial state.
+	         *
+	         * @example
+	         *
+	         *     hasher.reset();
+	         */
+	        reset: function () {
+	            // Reset data buffer
+	            BufferedBlockAlgorithm.reset.call(this);
+
+	            // Perform concrete-hasher logic
+	            this._doReset();
+	        },
+
+	        /**
+	         * Updates this hasher with a message.
+	         *
+	         * @param {WordArray|string} messageUpdate The message to append.
+	         *
+	         * @return {Hasher} This hasher.
+	         *
+	         * @example
+	         *
+	         *     hasher.update('message');
+	         *     hasher.update(wordArray);
+	         */
+	        update: function (messageUpdate) {
+	            // Append
+	            this._append(messageUpdate);
+
+	            // Update the hash
+	            this._process();
+
+	            // Chainable
+	            return this;
+	        },
+
+	        /**
+	         * Finalizes the hash computation.
+	         * Note that the finalize operation is effectively a destructive, read-once operation.
+	         *
+	         * @param {WordArray|string} messageUpdate (Optional) A final message update.
+	         *
+	         * @return {WordArray} The hash.
+	         *
+	         * @example
+	         *
+	         *     var hash = hasher.finalize();
+	         *     var hash = hasher.finalize('message');
+	         *     var hash = hasher.finalize(wordArray);
+	         */
+	        finalize: function (messageUpdate) {
+	            // Final message update
+	            if (messageUpdate) {
+	                this._append(messageUpdate);
+	            }
+
+	            // Perform concrete-hasher logic
+	            var hash = this._doFinalize();
+
+	            return hash;
+	        },
+
+	        blockSize: 512/32,
+
+	        /**
+	         * Creates a shortcut function to a hasher's object interface.
+	         *
+	         * @param {Hasher} hasher The hasher to create a helper for.
+	         *
+	         * @return {Function} The shortcut function.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var SHA256 = CryptoJS.lib.Hasher._createHelper(CryptoJS.algo.SHA256);
+	         */
+	        _createHelper: function (hasher) {
+	            return function (message, cfg) {
+	                return new hasher.init(cfg).finalize(message);
+	            };
+	        },
+
+	        /**
+	         * Creates a shortcut function to the HMAC's object interface.
+	         *
+	         * @param {Hasher} hasher The hasher to use in this HMAC helper.
+	         *
+	         * @return {Function} The shortcut function.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var HmacSHA256 = CryptoJS.lib.Hasher._createHmacHelper(CryptoJS.algo.SHA256);
+	         */
+	        _createHmacHelper: function (hasher) {
+	            return function (message, key) {
+	                return new C_algo.HMAC.init(hasher, key).finalize(message);
+	            };
+	        }
+	    });
+
+	    /**
+	     * Algorithm namespace.
+	     */
+	    var C_algo = C.algo = {};
+
+	    return C;
+	}(Math));
+
+
+	return CryptoJS;
+
+}));
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/crypto-js/md5.js":
+/*!***************************************!*\
+  !*** ./node_modules/crypto-js/md5.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+;(function (root, factory) {
+	if (true) {
+		// CommonJS
+		module.exports = exports = factory(__webpack_require__(/*! ./core */ "./node_modules/crypto-js/core.js"));
+	}
+	else {}
+}(this, function (CryptoJS) {
+
+	(function (Math) {
+	    // Shortcuts
+	    var C = CryptoJS;
+	    var C_lib = C.lib;
+	    var WordArray = C_lib.WordArray;
+	    var Hasher = C_lib.Hasher;
+	    var C_algo = C.algo;
+
+	    // Constants table
+	    var T = [];
+
+	    // Compute constants
+	    (function () {
+	        for (var i = 0; i < 64; i++) {
+	            T[i] = (Math.abs(Math.sin(i + 1)) * 0x100000000) | 0;
+	        }
+	    }());
+
+	    /**
+	     * MD5 hash algorithm.
+	     */
+	    var MD5 = C_algo.MD5 = Hasher.extend({
+	        _doReset: function () {
+	            this._hash = new WordArray.init([
+	                0x67452301, 0xefcdab89,
+	                0x98badcfe, 0x10325476
+	            ]);
+	        },
+
+	        _doProcessBlock: function (M, offset) {
+	            // Swap endian
+	            for (var i = 0; i < 16; i++) {
+	                // Shortcuts
+	                var offset_i = offset + i;
+	                var M_offset_i = M[offset_i];
+
+	                M[offset_i] = (
+	                    (((M_offset_i << 8)  | (M_offset_i >>> 24)) & 0x00ff00ff) |
+	                    (((M_offset_i << 24) | (M_offset_i >>> 8))  & 0xff00ff00)
+	                );
+	            }
+
+	            // Shortcuts
+	            var H = this._hash.words;
+
+	            var M_offset_0  = M[offset + 0];
+	            var M_offset_1  = M[offset + 1];
+	            var M_offset_2  = M[offset + 2];
+	            var M_offset_3  = M[offset + 3];
+	            var M_offset_4  = M[offset + 4];
+	            var M_offset_5  = M[offset + 5];
+	            var M_offset_6  = M[offset + 6];
+	            var M_offset_7  = M[offset + 7];
+	            var M_offset_8  = M[offset + 8];
+	            var M_offset_9  = M[offset + 9];
+	            var M_offset_10 = M[offset + 10];
+	            var M_offset_11 = M[offset + 11];
+	            var M_offset_12 = M[offset + 12];
+	            var M_offset_13 = M[offset + 13];
+	            var M_offset_14 = M[offset + 14];
+	            var M_offset_15 = M[offset + 15];
+
+	            // Working varialbes
+	            var a = H[0];
+	            var b = H[1];
+	            var c = H[2];
+	            var d = H[3];
+
+	            // Computation
+	            a = FF(a, b, c, d, M_offset_0,  7,  T[0]);
+	            d = FF(d, a, b, c, M_offset_1,  12, T[1]);
+	            c = FF(c, d, a, b, M_offset_2,  17, T[2]);
+	            b = FF(b, c, d, a, M_offset_3,  22, T[3]);
+	            a = FF(a, b, c, d, M_offset_4,  7,  T[4]);
+	            d = FF(d, a, b, c, M_offset_5,  12, T[5]);
+	            c = FF(c, d, a, b, M_offset_6,  17, T[6]);
+	            b = FF(b, c, d, a, M_offset_7,  22, T[7]);
+	            a = FF(a, b, c, d, M_offset_8,  7,  T[8]);
+	            d = FF(d, a, b, c, M_offset_9,  12, T[9]);
+	            c = FF(c, d, a, b, M_offset_10, 17, T[10]);
+	            b = FF(b, c, d, a, M_offset_11, 22, T[11]);
+	            a = FF(a, b, c, d, M_offset_12, 7,  T[12]);
+	            d = FF(d, a, b, c, M_offset_13, 12, T[13]);
+	            c = FF(c, d, a, b, M_offset_14, 17, T[14]);
+	            b = FF(b, c, d, a, M_offset_15, 22, T[15]);
+
+	            a = GG(a, b, c, d, M_offset_1,  5,  T[16]);
+	            d = GG(d, a, b, c, M_offset_6,  9,  T[17]);
+	            c = GG(c, d, a, b, M_offset_11, 14, T[18]);
+	            b = GG(b, c, d, a, M_offset_0,  20, T[19]);
+	            a = GG(a, b, c, d, M_offset_5,  5,  T[20]);
+	            d = GG(d, a, b, c, M_offset_10, 9,  T[21]);
+	            c = GG(c, d, a, b, M_offset_15, 14, T[22]);
+	            b = GG(b, c, d, a, M_offset_4,  20, T[23]);
+	            a = GG(a, b, c, d, M_offset_9,  5,  T[24]);
+	            d = GG(d, a, b, c, M_offset_14, 9,  T[25]);
+	            c = GG(c, d, a, b, M_offset_3,  14, T[26]);
+	            b = GG(b, c, d, a, M_offset_8,  20, T[27]);
+	            a = GG(a, b, c, d, M_offset_13, 5,  T[28]);
+	            d = GG(d, a, b, c, M_offset_2,  9,  T[29]);
+	            c = GG(c, d, a, b, M_offset_7,  14, T[30]);
+	            b = GG(b, c, d, a, M_offset_12, 20, T[31]);
+
+	            a = HH(a, b, c, d, M_offset_5,  4,  T[32]);
+	            d = HH(d, a, b, c, M_offset_8,  11, T[33]);
+	            c = HH(c, d, a, b, M_offset_11, 16, T[34]);
+	            b = HH(b, c, d, a, M_offset_14, 23, T[35]);
+	            a = HH(a, b, c, d, M_offset_1,  4,  T[36]);
+	            d = HH(d, a, b, c, M_offset_4,  11, T[37]);
+	            c = HH(c, d, a, b, M_offset_7,  16, T[38]);
+	            b = HH(b, c, d, a, M_offset_10, 23, T[39]);
+	            a = HH(a, b, c, d, M_offset_13, 4,  T[40]);
+	            d = HH(d, a, b, c, M_offset_0,  11, T[41]);
+	            c = HH(c, d, a, b, M_offset_3,  16, T[42]);
+	            b = HH(b, c, d, a, M_offset_6,  23, T[43]);
+	            a = HH(a, b, c, d, M_offset_9,  4,  T[44]);
+	            d = HH(d, a, b, c, M_offset_12, 11, T[45]);
+	            c = HH(c, d, a, b, M_offset_15, 16, T[46]);
+	            b = HH(b, c, d, a, M_offset_2,  23, T[47]);
+
+	            a = II(a, b, c, d, M_offset_0,  6,  T[48]);
+	            d = II(d, a, b, c, M_offset_7,  10, T[49]);
+	            c = II(c, d, a, b, M_offset_14, 15, T[50]);
+	            b = II(b, c, d, a, M_offset_5,  21, T[51]);
+	            a = II(a, b, c, d, M_offset_12, 6,  T[52]);
+	            d = II(d, a, b, c, M_offset_3,  10, T[53]);
+	            c = II(c, d, a, b, M_offset_10, 15, T[54]);
+	            b = II(b, c, d, a, M_offset_1,  21, T[55]);
+	            a = II(a, b, c, d, M_offset_8,  6,  T[56]);
+	            d = II(d, a, b, c, M_offset_15, 10, T[57]);
+	            c = II(c, d, a, b, M_offset_6,  15, T[58]);
+	            b = II(b, c, d, a, M_offset_13, 21, T[59]);
+	            a = II(a, b, c, d, M_offset_4,  6,  T[60]);
+	            d = II(d, a, b, c, M_offset_11, 10, T[61]);
+	            c = II(c, d, a, b, M_offset_2,  15, T[62]);
+	            b = II(b, c, d, a, M_offset_9,  21, T[63]);
+
+	            // Intermediate hash value
+	            H[0] = (H[0] + a) | 0;
+	            H[1] = (H[1] + b) | 0;
+	            H[2] = (H[2] + c) | 0;
+	            H[3] = (H[3] + d) | 0;
+	        },
+
+	        _doFinalize: function () {
+	            // Shortcuts
+	            var data = this._data;
+	            var dataWords = data.words;
+
+	            var nBitsTotal = this._nDataBytes * 8;
+	            var nBitsLeft = data.sigBytes * 8;
+
+	            // Add padding
+	            dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+
+	            var nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
+	            var nBitsTotalL = nBitsTotal;
+	            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = (
+	                (((nBitsTotalH << 8)  | (nBitsTotalH >>> 24)) & 0x00ff00ff) |
+	                (((nBitsTotalH << 24) | (nBitsTotalH >>> 8))  & 0xff00ff00)
+	            );
+	            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+	                (((nBitsTotalL << 8)  | (nBitsTotalL >>> 24)) & 0x00ff00ff) |
+	                (((nBitsTotalL << 24) | (nBitsTotalL >>> 8))  & 0xff00ff00)
+	            );
+
+	            data.sigBytes = (dataWords.length + 1) * 4;
+
+	            // Hash final blocks
+	            this._process();
+
+	            // Shortcuts
+	            var hash = this._hash;
+	            var H = hash.words;
+
+	            // Swap endian
+	            for (var i = 0; i < 4; i++) {
+	                // Shortcut
+	                var H_i = H[i];
+
+	                H[i] = (((H_i << 8)  | (H_i >>> 24)) & 0x00ff00ff) |
+	                       (((H_i << 24) | (H_i >>> 8))  & 0xff00ff00);
+	            }
+
+	            // Return final computed hash
+	            return hash;
+	        },
+
+	        clone: function () {
+	            var clone = Hasher.clone.call(this);
+	            clone._hash = this._hash.clone();
+
+	            return clone;
+	        }
+	    });
+
+	    function FF(a, b, c, d, x, s, t) {
+	        var n = a + ((b & c) | (~b & d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function GG(a, b, c, d, x, s, t) {
+	        var n = a + ((b & d) | (c & ~d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function HH(a, b, c, d, x, s, t) {
+	        var n = a + (b ^ c ^ d) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function II(a, b, c, d, x, s, t) {
+	        var n = a + (c ^ (b | ~d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    /**
+	     * Shortcut function to the hasher's object interface.
+	     *
+	     * @param {WordArray|string} message The message to hash.
+	     *
+	     * @return {WordArray} The hash.
+	     *
+	     * @static
+	     *
+	     * @example
+	     *
+	     *     var hash = CryptoJS.MD5('message');
+	     *     var hash = CryptoJS.MD5(wordArray);
+	     */
+	    C.MD5 = Hasher._createHelper(MD5);
+
+	    /**
+	     * Shortcut function to the HMAC's object interface.
+	     *
+	     * @param {WordArray|string} message The message to hash.
+	     * @param {WordArray|string} key The secret key.
+	     *
+	     * @return {WordArray} The HMAC.
+	     *
+	     * @static
+	     *
+	     * @example
+	     *
+	     *     var hmac = CryptoJS.HmacMD5(message, key);
+	     */
+	    C.HmacMD5 = Hasher._createHmacHelper(MD5);
+	}(Math));
+
+
+	return CryptoJS.MD5;
+
+}));
+
+/***/ }),
+
 /***/ "./node_modules/ev-emitter/ev-emitter.js":
 /*!***********************************************!*\
   !*** ./node_modules/ev-emitter/ev-emitter.js ***!
@@ -20967,444 +22033,45 @@ try {
 
 /***/ }),
 
-/***/ "./node_modules/smoothscroll-polyfill/dist/smoothscroll.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/smoothscroll-polyfill/dist/smoothscroll.js ***!
-  \*****************************************************************/
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-/* smoothscroll v0.4.4 - 2019 - Dustan Kasten, Jeremias Menichelli - MIT License */
-(function () {
-  'use strict';
+var g;
 
-  // polyfill
-  function polyfill() {
-    // aliases
-    var w = window;
-    var d = document;
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
 
-    // return if scroll behavior is supported and polyfill is not forced
-    if (
-      'scrollBehavior' in d.documentElement.style &&
-      w.__forceSmoothScrollPolyfill__ !== true
-    ) {
-      return;
-    }
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
 
-    // globals
-    var Element = w.HTMLElement || w.Element;
-    var SCROLL_TIME = 468;
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
 
-    // object gathering original scroll methods
-    var original = {
-      scroll: w.scroll || w.scrollTo,
-      scrollBy: w.scrollBy,
-      elementScroll: Element.prototype.scroll || scrollElement,
-      scrollIntoView: Element.prototype.scrollIntoView
-    };
+module.exports = g;
 
-    // define timing method
-    var now =
-      w.performance && w.performance.now
-        ? w.performance.now.bind(w.performance)
-        : Date.now;
 
-    /**
-     * indicates if a the current browser is made by Microsoft
-     * @method isMicrosoftBrowser
-     * @param {String} userAgent
-     * @returns {Boolean}
-     */
-    function isMicrosoftBrowser(userAgent) {
-      var userAgentPatterns = ['MSIE ', 'Trident/', 'Edge/'];
+/***/ }),
 
-      return new RegExp(userAgentPatterns.join('|')).test(userAgent);
-    }
+/***/ 0:
+/*!************************!*\
+  !*** crypto (ignored) ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-    /*
-     * IE has rounding bug rounding down clientHeight and clientWidth and
-     * rounding up scrollHeight and scrollWidth causing false positives
-     * on hasScrollableSpace
-     */
-    var ROUNDING_TOLERANCE = isMicrosoftBrowser(w.navigator.userAgent) ? 1 : 0;
-
-    /**
-     * changes scroll position inside an element
-     * @method scrollElement
-     * @param {Number} x
-     * @param {Number} y
-     * @returns {undefined}
-     */
-    function scrollElement(x, y) {
-      this.scrollLeft = x;
-      this.scrollTop = y;
-    }
-
-    /**
-     * returns result of applying ease math function to a number
-     * @method ease
-     * @param {Number} k
-     * @returns {Number}
-     */
-    function ease(k) {
-      return 0.5 * (1 - Math.cos(Math.PI * k));
-    }
-
-    /**
-     * indicates if a smooth behavior should be applied
-     * @method shouldBailOut
-     * @param {Number|Object} firstArg
-     * @returns {Boolean}
-     */
-    function shouldBailOut(firstArg) {
-      if (
-        firstArg === null ||
-        typeof firstArg !== 'object' ||
-        firstArg.behavior === undefined ||
-        firstArg.behavior === 'auto' ||
-        firstArg.behavior === 'instant'
-      ) {
-        // first argument is not an object/null
-        // or behavior is auto, instant or undefined
-        return true;
-      }
-
-      if (typeof firstArg === 'object' && firstArg.behavior === 'smooth') {
-        // first argument is an object and behavior is smooth
-        return false;
-      }
-
-      // throw error when behavior is not supported
-      throw new TypeError(
-        'behavior member of ScrollOptions ' +
-          firstArg.behavior +
-          ' is not a valid value for enumeration ScrollBehavior.'
-      );
-    }
-
-    /**
-     * indicates if an element has scrollable space in the provided axis
-     * @method hasScrollableSpace
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function hasScrollableSpace(el, axis) {
-      if (axis === 'Y') {
-        return el.clientHeight + ROUNDING_TOLERANCE < el.scrollHeight;
-      }
-
-      if (axis === 'X') {
-        return el.clientWidth + ROUNDING_TOLERANCE < el.scrollWidth;
-      }
-    }
-
-    /**
-     * indicates if an element has a scrollable overflow property in the axis
-     * @method canOverflow
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function canOverflow(el, axis) {
-      var overflowValue = w.getComputedStyle(el, null)['overflow' + axis];
-
-      return overflowValue === 'auto' || overflowValue === 'scroll';
-    }
-
-    /**
-     * indicates if an element can be scrolled in either axis
-     * @method isScrollable
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function isScrollable(el) {
-      var isScrollableY = hasScrollableSpace(el, 'Y') && canOverflow(el, 'Y');
-      var isScrollableX = hasScrollableSpace(el, 'X') && canOverflow(el, 'X');
-
-      return isScrollableY || isScrollableX;
-    }
-
-    /**
-     * finds scrollable parent of an element
-     * @method findScrollableParent
-     * @param {Node} el
-     * @returns {Node} el
-     */
-    function findScrollableParent(el) {
-      while (el !== d.body && isScrollable(el) === false) {
-        el = el.parentNode || el.host;
-      }
-
-      return el;
-    }
-
-    /**
-     * self invoked function that, given a context, steps through scrolling
-     * @method step
-     * @param {Object} context
-     * @returns {undefined}
-     */
-    function step(context) {
-      var time = now();
-      var value;
-      var currentX;
-      var currentY;
-      var elapsed = (time - context.startTime) / SCROLL_TIME;
-
-      // avoid elapsed times higher than one
-      elapsed = elapsed > 1 ? 1 : elapsed;
-
-      // apply easing to elapsed time
-      value = ease(elapsed);
-
-      currentX = context.startX + (context.x - context.startX) * value;
-      currentY = context.startY + (context.y - context.startY) * value;
-
-      context.method.call(context.scrollable, currentX, currentY);
-
-      // scroll more if we have not reached our destination
-      if (currentX !== context.x || currentY !== context.y) {
-        w.requestAnimationFrame(step.bind(w, context));
-      }
-    }
-
-    /**
-     * scrolls window or element with a smooth behavior
-     * @method smoothScroll
-     * @param {Object|Node} el
-     * @param {Number} x
-     * @param {Number} y
-     * @returns {undefined}
-     */
-    function smoothScroll(el, x, y) {
-      var scrollable;
-      var startX;
-      var startY;
-      var method;
-      var startTime = now();
-
-      // define scroll context
-      if (el === d.body) {
-        scrollable = w;
-        startX = w.scrollX || w.pageXOffset;
-        startY = w.scrollY || w.pageYOffset;
-        method = original.scroll;
-      } else {
-        scrollable = el;
-        startX = el.scrollLeft;
-        startY = el.scrollTop;
-        method = scrollElement;
-      }
-
-      // scroll looping over a frame
-      step({
-        scrollable: scrollable,
-        method: method,
-        startTime: startTime,
-        startX: startX,
-        startY: startY,
-        x: x,
-        y: y
-      });
-    }
-
-    // ORIGINAL METHODS OVERRIDES
-    // w.scroll and w.scrollTo
-    w.scroll = w.scrollTo = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.scroll.call(
-          w,
-          arguments[0].left !== undefined
-            ? arguments[0].left
-            : typeof arguments[0] !== 'object'
-              ? arguments[0]
-              : w.scrollX || w.pageXOffset,
-          // use top prop, second argument if present or fallback to scrollY
-          arguments[0].top !== undefined
-            ? arguments[0].top
-            : arguments[1] !== undefined
-              ? arguments[1]
-              : w.scrollY || w.pageYOffset
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        arguments[0].left !== undefined
-          ? ~~arguments[0].left
-          : w.scrollX || w.pageXOffset,
-        arguments[0].top !== undefined
-          ? ~~arguments[0].top
-          : w.scrollY || w.pageYOffset
-      );
-    };
-
-    // w.scrollBy
-    w.scrollBy = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.scrollBy.call(
-          w,
-          arguments[0].left !== undefined
-            ? arguments[0].left
-            : typeof arguments[0] !== 'object' ? arguments[0] : 0,
-          arguments[0].top !== undefined
-            ? arguments[0].top
-            : arguments[1] !== undefined ? arguments[1] : 0
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        ~~arguments[0].left + (w.scrollX || w.pageXOffset),
-        ~~arguments[0].top + (w.scrollY || w.pageYOffset)
-      );
-    };
-
-    // Element.prototype.scroll and Element.prototype.scrollTo
-    Element.prototype.scroll = Element.prototype.scrollTo = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        // if one number is passed, throw error to match Firefox implementation
-        if (typeof arguments[0] === 'number' && arguments[1] === undefined) {
-          throw new SyntaxError('Value could not be converted');
-        }
-
-        original.elementScroll.call(
-          this,
-          // use left prop, first number argument or fallback to scrollLeft
-          arguments[0].left !== undefined
-            ? ~~arguments[0].left
-            : typeof arguments[0] !== 'object' ? ~~arguments[0] : this.scrollLeft,
-          // use top prop, second argument or fallback to scrollTop
-          arguments[0].top !== undefined
-            ? ~~arguments[0].top
-            : arguments[1] !== undefined ? ~~arguments[1] : this.scrollTop
-        );
-
-        return;
-      }
-
-      var left = arguments[0].left;
-      var top = arguments[0].top;
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        this,
-        this,
-        typeof left === 'undefined' ? this.scrollLeft : ~~left,
-        typeof top === 'undefined' ? this.scrollTop : ~~top
-      );
-    };
-
-    // Element.prototype.scrollBy
-    Element.prototype.scrollBy = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.elementScroll.call(
-          this,
-          arguments[0].left !== undefined
-            ? ~~arguments[0].left + this.scrollLeft
-            : ~~arguments[0] + this.scrollLeft,
-          arguments[0].top !== undefined
-            ? ~~arguments[0].top + this.scrollTop
-            : ~~arguments[1] + this.scrollTop
-        );
-
-        return;
-      }
-
-      this.scroll({
-        left: ~~arguments[0].left + this.scrollLeft,
-        top: ~~arguments[0].top + this.scrollTop,
-        behavior: arguments[0].behavior
-      });
-    };
-
-    // Element.prototype.scrollIntoView
-    Element.prototype.scrollIntoView = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.scrollIntoView.call(
-          this,
-          arguments[0] === undefined ? true : arguments[0]
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      var scrollableParent = findScrollableParent(this);
-      var parentRects = scrollableParent.getBoundingClientRect();
-      var clientRects = this.getBoundingClientRect();
-
-      if (scrollableParent !== d.body) {
-        // reveal element inside parent
-        smoothScroll.call(
-          this,
-          scrollableParent,
-          scrollableParent.scrollLeft + clientRects.left - parentRects.left,
-          scrollableParent.scrollTop + clientRects.top - parentRects.top
-        );
-
-        // reveal parent in viewport unless is fixed
-        if (w.getComputedStyle(scrollableParent).position !== 'fixed') {
-          w.scrollBy({
-            left: parentRects.left,
-            top: parentRects.top,
-            behavior: 'smooth'
-          });
-        }
-      } else {
-        // reveal element in viewport
-        w.scrollBy({
-          left: clientRects.left,
-          top: clientRects.top,
-          behavior: 'smooth'
-        });
-      }
-    };
-  }
-
-  if (true) {
-    // commonjs
-    module.exports = { polyfill: polyfill };
-  } else {}
-
-}());
-
+/* (ignored) */
 
 /***/ })
 

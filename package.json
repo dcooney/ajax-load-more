@@ -24,10 +24,10 @@
 	],
 	"dependencies": {
 		"@babel/polyfill": "^7.10.1",
+		"crypto-js": "^4.1.1",
 		"es6-promise": "^4.1.1",
 		"focus-options-polyfill": "^1.4.0",
-		"lodash": "^4.17.15",
-		"smoothscroll-polyfill": "^0.4.3"
+		"lodash": "^4.17.15"
 	},
 	"devDependencies": {
 		"autoprefixer": "^7.1.4",

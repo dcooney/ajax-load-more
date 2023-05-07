@@ -15,6 +15,10 @@
  */
 
 /*
+IN Progress:
+- Started creating the cache slug in the JavaScript and passing it to the PHP using CryptoJS.
+
+
 ADD-ON Updates:
 - FILTERS:
 	- Fix issue with decimal values in range slider.
@@ -25,6 +29,7 @@ ADD-ON Updates:
 Extension Updates
 - Terms
 - ACF
+- USERS
 
 STARTED:
 - Cache update.
@@ -38,11 +43,15 @@ CACHE TODO:
 - ACF [DONE]
 - Comments [DONE]
 - Single Posts
+  - Soltion for target loading cache. Working with Repeater Template.
 - Users [DONE]
 
 - Update cache admin screen. Expand/Collapse files.
 - Ensure backward compatibility.
 
+
+Issues:
+- ACF not working with Paging - https://wpdev.local/acf-repeater-field/
 
 
 Plugin CHANGES
@@ -470,7 +479,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$filters_startpage = isset( $params['filters_startpage'] ) && $is_filters ? $params['filters_startpage'] : 0;
 
 			// Cache.
-			$cache_id        = isset( $params['cache_id'] ) && ! empty( $params['cache_id'] ) ? $params['cache_id'] : false;
+			$cache_id        = isset( $params['cache_id'] ) && $params['cache_id'] ? $params['cache_id'] : false;
+			$cache_slug      = isset( $params['cache_slug'] ) && $params['cache_slug'] ? $params['cache_slug'] : '';
 			$cache_logged_in = isset( $params['cache_logged_in'] ) ? $params['cache_logged_in'] : false;
 			$do_create_cache = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
 
@@ -578,15 +588,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
-			// MD5 hash of query $args.
-			$md5_hash = $cache_id ? md5( wp_json_encode( $args ) ) : '';
-
 			/**
 			 * Cache Add-on.
 			 * Check for cached data before running WP_Query.
 			 */
 			if ( $cache_id && method_exists( 'ALMCache', 'get_cache_file' ) && $query_type !== 'totalposts' ) {
-				$cache_data = ALMCache::get_cache_file( $cache_id, $md5_hash );
+				$cache_data = ALMCache::get_cache_file( $cache_id, $cache_slug );
 				if ( $cache_data ) {
 					wp_send_json( $cache_data );
 				}
@@ -687,8 +694,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					 * Create the cache file.
 					 */
 					if ( $cache_id && method_exists( 'ALMCache', 'create_cache_file' ) && $do_create_cache ) {
-						$cache_name = $single_post ? $single_post_id : $md5_hash;
-						ALMCache::create_cache_file( $cache_id, $cache_name, $canonical_url, $data, $alm_current, $alm_found_posts );
+						ALMCache::create_cache_file( $cache_id, $cache_slug, $canonical_url, $data, $alm_current, $alm_found_posts );
 					}
 
 					$return = [
