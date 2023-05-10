@@ -1,148 +1,92 @@
-import axios from 'axios';
-import { parseQuerystring } from '../addons/filters';
 import MD5 from 'crypto-js/md5';
+import { api } from '../helpers/api';
 
 /**
  * Create unique cache slug from query params.
  *
  * @param {object} alm  The ALM object.
  * @param {object} data The data object.
- * @return {object}     Modified data object.
+ * @return {string}     The cache file slug.
  */
 export function getCacheSlug(alm, data) {
-	if (alm.addons.nextpage) {
-		return `page-${alm.page + alm.addons.nextpage_startpage}`;
+	const { addons, pagePrev, page, rel = 'next' } = alm;
+	if (addons.nextpage) {
+		// Nextpage.
+		return `page-${page + addons.nextpage_startpage}`;
+	} else if (addons.single_post) {
+		// Single Post.
+		return addons.single_post_id;
+	} else if (addons.woocommerce || addons.elementor) {
+		// WooCommerce || Elementor.
+		return rel === 'prev' ? `page-${pagePrev}` : `page-${page + 1}`;
 	} else {
+		// Standard.
 		return MD5(JSON.stringify(data)).toString();
 	}
 }
 
 /**
- * Create a single post cache file.
+ * Create a cache file.
  *
- * @param {object} alm     The ALM object.
- * @param {string} content The content to cache.
- * @param {string} type    The type of cache to create.
+ * @param {object} alm  The ALM object.
+ * @param {string} data Content to cache.
+ * @param {string} name The cache slug
  * @since 5.3.1
  */
-export function createCacheFile(alm, content, type = 'standard') {
-	if (alm.addons.cache !== 'true' || !content || content === '') {
-		return false;
+export async function createCache(alm, data, name) {
+	const { html = '', meta = {} } = data;
+
+	if (!html || !alm.addons.cache) {
+		return;
 	}
-	const name = type === 'single' ? alm.addons.single_post_id : `page-${alm.page + 1}`;
 
-	const formData = new FormData();
-	formData.append('action', 'alm_cache_from_html');
-	formData.append('security', alm_localize.alm_nonce);
-	formData.append('cache_id', alm.addons.cache_id);
-	formData.append('cache_logged_in', alm.addons.cache_logged_in);
-	formData.append('canonical_url', alm.canonical_url);
-	formData.append('name', name);
-	formData.append('html', content.trim());
+	const params = {
+		cache_id: alm.addons.cache_id,
+		cache_logged_in: alm.addons.cache_logged_in,
+		canonical_url: alm.canonical_url,
+		name: name,
+		html: html.trim(),
+		postcount: meta.postcount,
+		totalposts: meta.totalposts,
+	};
 
-	axios.post(alm_localize.ajaxurl, formData).then(function () {
-		console.log('Cache created for: ' + alm.canonical_url);
-	});
+	// Create the cache file via REST API.
+	const res = await api.post('ajax-load-more/cache/create', params);
+	if (res.status === 200 && res.data && res.data.success) {
+		console.log(res.data.msg);
+	}
 }
 
 /**
- * Create a WooCommerce cache file.
+ * Get cache data file.
  *
- * @param {object} alm     The ALM object.
- * @param {string} content The content to cache.
- * @since 5.3.1
+ * @param {object} alm       The ALM object.
+ * @param {object} params    Query params.
+ * @return {Promise\boolean} Cache data or false.
  */
-export function wooCache(alm, content) {
-	if (alm.addons.cache !== 'true' || !content || content === '') {
+export async function getCache(alm, params) {
+	if (!alm.addons.cache || (alm.addons.cache && alm.addons.cache_logged_in)) {
+		// Exit if not cache or cache is enabled but user is logged in with the setting checked.
 		return false;
 	}
 
-	let formData = new FormData();
-	formData.append('action', 'alm_cache_from_html');
-	formData.append('security', alm_localize.alm_nonce);
-	formData.append('cache_id', alm.addons.cache_id);
-	formData.append('cache_logged_in', alm.addons.cache_logged_in);
-	formData.append('canonical_url', alm.canonical_url);
-	formData.append('name', `page-${alm.page}`);
-	formData.append('html', content.trim());
+	const restParams = {
+		id: alm.addons.cache_id,
+		name: params.cache_slug,
+	};
 
-	axios.post(alm_localize.ajaxurl, formData).then(function () {
-		console.log('Cache created for post: ' + alm.canonical_url);
-	});
-}
-
-/**
- * Generate the cache page URL for GET request
- *
- * @param {object} alm The ALM object.
- * @since 5.0
- * @supports Standard, SEO, Filters, Nextpage, Single Posts
- */
-export function getCacheUrl(alm) {
-	if (!alm) {
+	const res = await api.get('ajax-load-more/cache/get', { params: restParams });
+	if (res.status === 200 && res.data) {
+		return res.data;
+	} else {
 		return false;
 	}
 
-	let firstpage = '1';
-	let cache_url = '';
-	let ext = '.html';
-	let path = alm.addons.cache_path + alm.addons.cache_id;
-
-	// SEO Add-on
-	if (alm.init && alm.addons.seo && alm.isPaged) {
-		// If request is a paged URL (e.g. /page/3/)
-		cache_url = path + '/page-' + firstpage + '-' + alm.start_page + ext;
-	}
-
-	// Filters
-	else if (alm.addons.filters) {
-		let filtersPath = parseQuerystring(path);
-
-		if (alm.init && alm.isPaged) {
-			// First run & Paged
-			cache_url = filtersPath + '/page-' + firstpage + '-' + alm.addons.filters_startpage + ext;
-		} else {
-			let page = alm.page + 1;
-
-			if (alm.addons.preloaded === 'true') {
-				// Preloaded + Filters
-				page = alm.page + 2;
-			}
-			cache_url = filtersPath + '/page-' + page + ext;
-		}
-	}
-
-	// Nextpage
-	else if (alm.addons.nextpage) {
-		let nextpage_cache_url;
-		if (alm.addons.paging) {
-			nextpage_cache_url = parseInt(alm.page) + 1;
-		} else {
-			nextpage_cache_url = parseInt(alm.page) + 2;
-			if (alm.isPaged) {
-				// If the request a paged URL (/page/3/)
-				nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
-			}
-		}
-
-		cache_url = path + '/page-' + nextpage_cache_url + ext;
-	}
-
-	// Single Post
-	else if (alm.addons.single_post) {
-		cache_url = path + '/' + alm.addons.single_post_id + ext;
-	}
-
-	// Comments & Preloaded
-	else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
-		// When using comments we need to increase the current page by 2
-		cache_url = path + '/page-' + (alm.page + 2) + ext;
-	}
-
-	// Standard URL request
-	else {
-		cache_url = path + '/page-' + (alm.page + 1) + ext;
-	}
-
-	return cache_url;
+	// const cached_url = getCacheURL(alm, params);
+	// const data = await fetch(cached_url);
+	// try {
+	// 	return await data.json();
+	// } catch (error) {
+	// 	return false; // No cache file found.
+	// }
 }

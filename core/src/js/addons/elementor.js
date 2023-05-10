@@ -1,6 +1,7 @@
 import { setButtonAtts } from '../helpers/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
+import { createCache } from './cache';
 
 /**
  * Set up the instance on Elementor
@@ -8,7 +9,6 @@ import loadItems from '../modules/loadItems';
  * @param {object} alm
  * @since 5.3.0
  */
-
 export function elementorInit(alm) {
 	if (!alm.addons.elementor || !alm.addons.elementor_type || !alm.addons.elementor_type === 'posts') {
 		return false;
@@ -20,28 +20,22 @@ export function elementorInit(alm) {
 		alm.button.dataset.page = alm.addons.elementor_paged;
 
 		// Set button URL
-		let nextPage = alm.addons.elementor_next_page_url;
+		const nextPage = alm.addons.elementor_next_page;
 		alm.button.dataset.url = nextPage ? nextPage : '';
 
 		// Set a11y attributes
 		target.setAttribute('aria-live', 'polite');
 		target.setAttribute('aria-atomic', 'true');
-
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
 		// Set data atts on 1st grid item
-		let item = target.querySelector(`.${alm.addons.elementor_item_class}`); // Get first `.product` item
+		const item = target.querySelector(`.${alm.addons.elementor_item_class}`); // Get first `.product` item
 		if (item) {
 			item.classList.add('alm-elementor');
 			item.dataset.url = window.location;
 			item.dataset.page = alm.addons.elementor_paged;
 			item.dataset.pageTitle = document.title;
-		}
-
-		if (alm.addons.elementor_paged > 1) {
-			// maybe soon
-			//almElementorResultsTextInit(alm);
 		}
 
 		// Masonry Window Resize. Delay for masonry to be added via Elementor.
@@ -60,38 +54,100 @@ export function elementorInit(alm) {
 }
 
 /**
+ * Get the content, title and results text from the Ajax response.
+ *
+ * @param {object} alm        The alm object.
+ * @param {string} url 	      The request URL.
+ * @param {object} response   Query response.
+ * @param {string} cache_slug The cache slug.
+ * @return {object}           Results data.
+ * @since 5.4.0
+ */
+export function elementorGetContent(alm, url, response, cache_slug) {
+	// Default data object.
+	const data = {
+		html: '',
+		meta: {
+			postcount: 0,
+			totalposts: 0,
+		},
+	};
+
+	// Successful response.
+	if (response.status === 200 && response.data) {
+		const { addons } = alm;
+
+		// Create temp div to hold response data.
+		const div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		const title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get Elementor Items container.
+		const container = div.querySelector(`${addons.elementor_target} .${addons.elementor_container_class}`);
+		if (!container) {
+			console.warn(`Ajax Load More Elementor: Unable to find Elementor container element.`);
+			return data;
+		}
+
+		// Get the first item and append data attributes.
+		const item = container ? container.querySelector(`.${addons.elementor_item_class}`) : null;
+		if (item) {
+			item.classList.add('alm-elementor');
+			item.dataset.url = url;
+			item.dataset.page = addons.elementor_paged;
+			item.dataset.pageTitle = title;
+		}
+
+		// Count the number of returned items.
+		const items = container.querySelectorAll(`.${addons.elementor_item_class}`);
+		if (items) {
+			// Set the html to the elementor container data.
+			data.html = container ? container.innerHTML : '';
+			data.meta.postcount = items.length;
+			data.meta.totalposts = items.length;
+
+			// Create cache file.
+			createCache(alm, data, cache_slug);
+		}
+	}
+	return data;
+}
+
+/**
  * Core ALM Elementor loader.
  *
- * @param {HTMLElement} content
- * @param {object} alm
- * @param {string} pageTitle
+ * @param {HTMLElement} content The HTML data.
+ * @param {object}      alm     The alm object.
  * @since 5.3.0
  */
-export function elementor(content, alm, pageTitle = document.title) {
+export function elementor(content, alm) {
 	if (!content || !alm) {
+		alm.AjaxLoadMore.triggerDone();
 		return false;
 	}
 
 	return new Promise((resolve) => {
-		let container = alm.addons.elementor_element.querySelector(`.${alm.addons.elementor_container_class}`); // Get post container
-		let items = content.querySelectorAll(`.${alm.addons.elementor_item_class}`); // Get all items in container
-		let url = alm.addons.elementor_current_url; // Current Page URL
+		const { addons } = alm;
+		const container = alm.addons.elementor_element.querySelector(`.${addons.elementor_container_class}`); // Get post container
+		const items = content.querySelectorAll(`.${addons.elementor_item_class}`); // Get all items in container
 
-		if (container && items && url) {
-			// Convert NodeList to Array
-			items = Array.prototype.slice.call(items);
+		if (container && items) {
+			const ElementorItems = Array.prototype.slice.call(items); // Convert NodeList to Array
 
 			// Trigger almElementorLoaded callback.
 			if (typeof almElementorLoaded === 'function') {
-				window.almElementorLoaded(items);
+				window.almElementorLoaded(ElementorItems);
 			}
 
-			// Load the items
 			(async function () {
-				await loadItems(container, items, alm, pageTitle, url, 'alm-elementor');
-				if (alm.addons.elementor_masonry) {
+				// Load the items.
+				await loadItems(container, ElementorItems, alm);
+				if (addons.elementor_masonry) {
 					setTimeout(function () {
-						positionMasonryItems(alm, `.${alm.addons.elementor_container_class}`, `.${alm.addons.elementor_item_class}`);
+						positionMasonryItems(alm, `.${addons.elementor_container_class}`, `.${addons.elementor_item_class}`);
 					}, 125);
 				}
 
@@ -106,17 +162,24 @@ export function elementor(content, alm, pageTitle = document.title) {
 }
 
 /**
- * Handle Elementor loaded functionality and dispatch actions.
+ * Elementor loaded and dispatch actions.
  *
- * @param {object} alm
+ * @param {object} alm The alm object.
  * @since 5.5.0
  */
 export function elementorLoaded(alm) {
-	let nextPageNum = alm.page + 1;
-	let nextPage = alm.addons.elementor_next_page_url; // Get URL.
+	const { trailing_slash, is_front_page } = alm_localize;
+	const { page, button, canonical_url, AjaxLoadMore, addons } = alm;
+	const nextPage = page + 1;
+
+	const sep = is_front_page === 'true' ? 'page/' : trailing_slash === 'true' ? '' : '/';
+	const slash = trailing_slash === 'true' ? '/' : '';
+	const url = `${canonical_url + sep}${nextPage + 1}${slash}`;
+
+	const max_pages = addons.elementor_max_pages;
 
 	// Set button data attributes.
-	setButtonAtts(alm.button, nextPageNum, nextPage);
+	setButtonAtts(button, nextPage, url);
 
 	// Lazy load images if necessary.
 	lazyImages(alm);
@@ -127,55 +190,16 @@ export function elementorLoaded(alm) {
 	}
 
 	// End transitions.
-	alm.AjaxLoadMore.transitionEnd();
+	AjaxLoadMore.transitionEnd();
 
-	// ALM Done
-	if (!nextPage) {
-		alm.AjaxLoadMore.triggerDone();
+	// ALM Done.
+	if (nextPage >= max_pages) {
+		AjaxLoadMore.triggerDone();
 	}
 }
 
 /**
- * Get the content, title and results text from the Ajax response.
- *
- * @param {*} response
- * @param {object} alm
- * @since 5.4.0
- */
-export function elementorGetContent(response, alm) {
-	let data = {
-		html: '',
-		meta: {
-			postcount: 1,
-			totalposts: alm.localize.total_posts,
-			debug: false,
-		},
-	};
-	if (response.status === 200 && response.data) {
-		let div = document.createElement('div');
-		div.innerHTML = response.data;
-
-		// Get Page Title
-		let title = div.querySelector('title').innerHTML;
-		data.pageTitle = title;
-
-		// Get Elementor Items HTML
-		let items = div.querySelector(`${alm.addons.elementor_target} .${alm.addons.elementor_container_class}`);
-		data.html = items ? items.innerHTML : '';
-
-		// Set Page URL Params
-		alm.addons.elementor_current_url = alm.addons.elementor_next_page_url; // Set current to previous page URL
-		alm.addons.elementor_next_page_url = elementorGetNextPage(div, alm.addons.elementor_pagination_class);
-
-		// Results Text
-		//almElementorResultsText(div, alm);
-	}
-
-	return data;
-}
-
-/**
- * Create Elementor Params for ALM.
+ * Create Elementor params for ALM.
  *
  * @param  {object} alm The alm object.
  * @return {object}     The modified object.
@@ -205,9 +229,13 @@ export function elementorCreateParams(alm) {
 	alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
 	alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
 
-	// Set Page & URL params
-	alm.addons.elementor_current_url = window.location.href;
-	alm.addons.elementor_next_page_url = elementorGetNextUrl(alm.addons.elementor_pagination);
+	// Get next page URL.
+	alm.addons.elementor_next_page = elementorGetNextUrl(alm.addons.elementor_pagination);
+
+	// Get the max pages.
+	alm.addons.elementor_max_pages = alm.addons.elementor_element.querySelector('.e-load-more-anchor');
+	alm.addons.elementor_max_pages = alm.addons.elementor_max_pages ? parseInt(alm.addons.elementor_max_pages.dataset.maxPage) : 999;
+
 	alm.addons.elementor_paged = alm.addons.elementor_settings.paged ? parseInt(alm.addons.elementor_settings.paged) : 1;
 	alm.page = parseInt(alm.page) + alm.addons.elementor_paged;
 

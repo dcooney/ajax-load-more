@@ -167,7 +167,7 @@ export function getAjaxParams(alm, action, queryType) {
 	}
 
 	// Set Cache params.
-	if (alm.addons.cache === 'true') {
+	if (alm.addons.cache) {
 		data.cache_id = alm.addons.cache_id;
 		data.cache_logged_in = alm.addons.cache_logged_in;
 		data.cache_slug = getCacheSlug(alm, data);

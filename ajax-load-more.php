@@ -17,14 +17,21 @@
 /*
 IN Progress:
 - Started creating the cache slug in the JavaScript and passing it to the PHP using CryptoJS.
+-
 
+TODO:
+- Remove the create fetching in all addons/extensions.
+- Remove all functions and helpers for ALMCache::get_cache_file()
 
 ADD-ON Updates:
 - FILTERS:
 	- Fix issue with decimal values in range slider.
-- Next Page
-- Cache
-- Comments
+- Next Page [1.6.4]
+- Cache [2.0]
+- Comments [1.2.1]
+- Single Posts [1.5.5]
+- Elementor [1.1.4]
+
 
 Extension Updates
 - Terms
@@ -57,8 +64,11 @@ Issues:
 Plugin CHANGES
 * NOTICE: Ajax Load More 6.0 is a major update and includes a number of breaking changes. Please review the documentation before updating.
 * NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on to use Cache functionality.
+* UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
 
-* UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for cache URLs.
+* UPDATE: Code refactoring, cleanup and overall improvements across the Ajax Load More.
+* FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
+* FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
 
 */
 
@@ -408,6 +418,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, $file );
 			}
 
+			// Determine if there is a trailing slash in the permalink structure.
+			$permalink_structure = get_option( 'permalink_structure' );
+			$trailing_slash      = substr( $permalink_structure, -1 ) === '/' ? 'true' : 'false';
+
 			// Localized JS variables.
 			wp_localize_script(
 				'ajax-load-more',
@@ -418,6 +432,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
+					'trailing_slash'  => $trailing_slash,
+					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
 					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),
 					'ga_debug'        => apply_filters( 'alm_ga_debug', 'false' ),
@@ -589,17 +605,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
 			/**
-			 * Cache Add-on.
-			 * Check for cached data before running WP_Query.
-			 */
-			if ( $cache_id && method_exists( 'ALMCache', 'get_cache_file' ) && $query_type !== 'totalposts' ) {
-				$cache_data = ALMCache::get_cache_file( $cache_id, $cache_slug );
-				if ( $cache_data ) {
-					wp_send_json( $cache_data );
-				}
-			}
-
-			/**
 			 * Custom WP_Query.
 			 *
 			 * @return $alm_query;
@@ -702,7 +707,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						'meta' => [
 							'postcount'  => $alm_post_count,
 							'totalposts' => $alm_found_posts,
-							'type'       => 'standard',
 							'debug'      => $debug,
 						],
 					];
@@ -720,7 +724,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						'meta' => [
 							'postcount'  => 0,
 							'totalposts' => 0,
-							'type'       => 'standard',
 							'debug'      => $debug,
 						],
 					];
