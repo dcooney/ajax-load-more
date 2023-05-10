@@ -66,6 +66,8 @@ Plugin CHANGES
 * NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on to use Cache functionality.
 * UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
 
+* UPDATE: Core ALM JavaScript refactoring to stremline content loading using async/await and promises.
+* UPDATE: Updated WooCommerce and Elementor add-on functionality to load content in a normalized manner.
 * UPDATE: Code refactoring, cleanup and overall improvements across the Ajax Load More.
 * FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
 * FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
