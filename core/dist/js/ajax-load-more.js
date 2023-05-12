@@ -1967,8 +1967,8 @@ var alm_is_filtering = false;
 		}
 
 		// CTA add-on
-		alm.addons.cta = alm.listing.dataset.cta ? alm.listing.dataset.cta : false;
-		if (alm.addons.cta === 'true') {
+		alm.addons.cta = alm.listing.dataset.cta && alm.listing.dataset.cta === 'true' ? true : false;
+		if (alm.addons.cta) {
 			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
 			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
 			alm.addons.cta_theme_repeater = alm.listing.dataset.ctaThemeRepeater;
@@ -2402,128 +2402,28 @@ var alm_is_filtering = false;
    */
 		alm.AjaxLoadMore.ajax = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 			var queryType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'standard';
-			var action, params, cache;
+			var params, cache;
 			return regeneratorRuntime.wrap(function _callee$(_context) {
 				while (1) {
 					switch (_context.prev = _context.next) {
 						case 0:
-							action = 'alm_get_posts'; // Default action
-
-							// ACF Params
-
-							alm.acf_array = '';
-							if (alm.extensions.acf) {
-								// Custom query for the Repeater / Gallery / Flexible Content field types
-								if (alm.extensions.acf_field_type !== 'relationship') {
-									action = 'alm_acf';
-								}
-								alm.acf_array = {
-									acf: 'true',
-									post_id: alm.extensions.acf_post_id,
-									field_type: alm.extensions.acf_field_type,
-									field_name: alm.extensions.acf_field_name,
-									parent_field_name: alm.extensions.acf_parent_field_name
-								};
-							}
-
-							// Term Query Params
-							alm.term_query_array = '';
-							if (alm.extensions.term_query) {
-								action = 'alm_get_terms';
-								alm.term_query_array = {
-									term_query: 'true',
-									taxonomy: alm.extensions.term_query_taxonomy,
-									hide_empty: alm.extensions.term_query_hide_empty,
-									number: alm.extensions.term_query_number
-								};
-							}
-
-							// Nextpage Params
-							alm.nextpage_array = '';
-							if (alm.addons.nextpage) {
-								action = 'alm_nextpage';
-								alm.nextpage_array = {
-									nextpage: 'true',
-									urls: alm.addons.nextpage_urls,
-									scroll: alm.addons.nextpage_scroll,
-									pageviews: alm.addons.nextpage_pageviews,
-									post_id: alm.addons.nextpage_post_id,
-									startpage: alm.addons.nextpage_startpage,
-									nested: alm.nested
-								};
-							}
-
-							// Previous Post Params
-							alm.single_post_array = '';
-							if (alm.addons.single_post) {
-								alm.single_post_array = {
-									single_post: 'true',
-									id: alm.addons.single_post_id,
-									slug: alm.addons.single_post_slug
-								};
-							}
-
-							// Comment Params
-							alm.comments_array = '';
-							if (alm.addons.comments === 'true') {
-								action = 'alm_comments';
-								alm.posts_per_page = alm.addons.comments_per_page;
-								alm.comments_array = {
-									comments: 'true',
-									post_id: alm.addons.comments_post_id,
-									per_page: alm.addons.comments_per_page,
-									type: alm.addons.comments_type,
-									style: alm.addons.comments_style,
-									template: alm.addons.comments_template,
-									callback: alm.addons.comments_callback
-								};
-							}
-
-							// Users Params
-							alm.users_array = '';
-							if (alm.addons.users) {
-								action = 'alm_users';
-								alm.users_array = {
-									users: 'true',
-									role: alm.listing.dataset.usersRole,
-									include: alm.listing.dataset.usersInclude,
-									exclude: alm.listing.dataset.usersExclude,
-									per_page: alm.posts_per_page,
-									order: alm.listing.dataset.usersOrder,
-									orderby: alm.listing.dataset.usersOrderby
-								};
-							}
-
-							// CTA Params
-							alm.cta_array = '';
-							if (alm.addons.cta === 'true') {
-								alm.cta_array = {
-									cta: 'true',
-									cta_position: alm.addons.cta_position,
-									cta_repeater: alm.addons.cta_repeater,
-									cta_theme_repeater: alm.addons.cta_theme_repeater
-								};
-							}
-
-							// Dispatch Ajax request.
-
 							if (!alm.extensions.restapi) {
-								_context.next = 19;
+								_context.next = 4;
 								break;
 							}
 
 							// Rest API.
 							alm.AjaxLoadMore.restapi(alm);
-							_context.next = 24;
+							_context.next = 9;
 							break;
 
-						case 19:
+						case 4:
 							// Standard ALM.
-							params = (0, _queryParams.getAjaxParams)(alm, action, queryType);
-							_context.next = 22;
+							params = (0, _queryParams.getAjaxParams)(alm, queryType);
+							_context.next = 7;
 							return (0, _cache.getCache)(alm, Object.assign({}, params));
 
-						case 22:
+						case 7:
 							cache = _context.sent;
 
 							if (cache) {
@@ -2532,7 +2432,7 @@ var alm_is_filtering = false;
 								alm.AjaxLoadMore.adminajax(params, queryType);
 							}
 
-						case 24:
+						case 9:
 						case 'end':
 							return _context.stop();
 					}
@@ -2637,8 +2537,6 @@ var alm_is_filtering = false;
    * Send request to the WP REST API
    *
    * @param {object} alm The Ajax Load More object.
-   * @param {string} action The Ajax action.
-   * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
 		alm.AjaxLoadMore.restapi = function (alm) {
@@ -2861,7 +2759,7 @@ var alm_is_filtering = false;
 								isPaged = true;
 
 								// Call to Actions
-								if (alm.addons.cta === 'true') {
+								if (alm.addons.cta) {
 									posts_per_page = posts_per_page + 1; // Add 1 to posts_per_page for CTAs
 									pages = Math.ceil(total / posts_per_page); // Update pages let with new posts_per_page
 									total = pages + total; // Get new total w/ CTAs added
@@ -4416,10 +4314,10 @@ var click = exports.click = function click() {
 
 /***/ }),
 
-/***/ "./core/src/js/helpers/almAppendChild.js":
-/*!***********************************************!*\
-  !*** ./core/src/js/helpers/almAppendChild.js ***!
-  \***********************************************/
+/***/ "./core/src/js/helpers/almAppendChildren.js":
+/*!**************************************************!*\
+  !*** ./core/src/js/helpers/almAppendChildren.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4429,7 +4327,31 @@ var click = exports.click = function click() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = almAppendChildren;
+exports.almAppendChild = almAppendChild;
 var nodeNameArray = ['#text', '#comment'];
+
+/**
+ * Loop array of elements and append to target
+ *
+ * @param {Element} target | Target element to append items
+ * @param {Element} array | An array of elements
+ * @param {string} transition | The transiton
+ * @since 5.0
+ */
+function almAppendChildren() {
+	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var array = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
+
+	if (!target || !array) {
+		return false;
+	}
+	for (var i = 0; i < array.length; i++) {
+		var element = array[i];
+		almAppendChild(target, element, transition);
+	}
+}
 
 /**
  * Append a child element to a container
@@ -4439,7 +4361,7 @@ var nodeNameArray = ['#text', '#comment'];
  * @param {string} transition | The transiton
  * @since 5.0
  */
-var almAppendChild = function almAppendChild() {
+function almAppendChild() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 	var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
@@ -4457,56 +4379,7 @@ var almAppendChild = function almAppendChild() {
 		}
 		target.appendChild(element);
 	}
-};
-exports.default = almAppendChild;
-
-/***/ }),
-
-/***/ "./core/src/js/helpers/almAppendChildren.js":
-/*!**************************************************!*\
-  !*** ./core/src/js/helpers/almAppendChildren.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _almAppendChild = __webpack_require__(/*! ./almAppendChild */ "./core/src/js/helpers/almAppendChild.js");
-
-var _almAppendChild2 = _interopRequireDefault(_almAppendChild);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
 }
-
-/**
- * Loop array of elements and append to target
- *
- * @param {Element} target | Target element to append items
- * @param {Element} array | An array of elements
- * @param {string} transition | The transiton
- * @since 5.0
- */
-
-var almAppendChildren = function almAppendChildren() {
-  var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var array = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
-
-  if (!target || !array) {
-    return false;
-  }
-  for (var i = 0; i < array.length; i++) {
-    var element = array[i];
-    (0, _almAppendChild2.default)(target, element, transition);
-  }
-};
-exports.default = almAppendChildren;
 
 /***/ }),
 
@@ -5245,6 +5118,7 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.getAjaxParams = getAjaxParams;
+exports.getTypeParams = getTypeParams;
 exports.getRestAPIParams = getRestAPIParams;
 
 var _cache = __webpack_require__(/*! ../addons/cache */ "./core/src/js/addons/cache.js");
@@ -5253,15 +5127,18 @@ var _cache = __webpack_require__(/*! ../addons/cache */ "./core/src/js/addons/ca
  * Build the data object to send with the Ajax request.
  *
  * @param {object} alm       The ALM object.
- * @param {string} action    The HTTP action.
  * @param {string} queryType The query type.
  * @return {object}          The data object.
  * @since 3.6
  */
-function getAjaxParams(alm, action, queryType) {
+function getAjaxParams(alm, queryType) {
+	var addons = alm.addons,
+	    extensions = alm.extensions;
+
 	// Defaults
+
 	var data = {
-		action: action,
+		action: 'alm_get_posts',
 		query_type: queryType,
 		id: alm.id,
 		post_id: parseInt(alm.post_id),
@@ -5276,45 +5153,55 @@ function getAjaxParams(alm, action, queryType) {
 	};
 
 	// Addons & Extensions
+
+	if (extensions.acf) {
+		data.acf = getTypeParams(alm, 'acf');
+		if (extensions.acf_field_type !== 'relationship') {
+			data.action = 'alm_acf';
+		}
+	}
+	if (addons.comments === 'true') {
+		data.comments = getTypeParams(alm, 'comments');
+		data.posts_per_page = addons.comments_per_page;
+		data.action = 'alm_comments';
+	}
+	if (addons.cta) {
+		data.cta = getTypeParams(alm, 'cta');
+	}
+	if (addons.filters) {
+		data.filters = addons.filters;
+		data.filters_startpage = addons.filters_startpage;
+		data.filters_target = addons.filters_target;
+		data.facets = alm.facets;
+	}
+	if (addons.nextpage) {
+		data.nextpage = getTypeParams(alm, 'nextpage');
+		data.action = 'alm_nextpage';
+	}
+	if (addons.paging) {
+		data.paging = addons.paging;
+	}
+	if (addons.preloaded === 'true') {
+		data.preloaded = addons.preloaded;
+		data.preloaded_amount = parseInt(addons.preloaded_amount);
+	}
+	if (addons.single_post) {
+		data.single_post = getTypeParams(alm, 'single_post');
+	}
+	if (extensions.term_query) {
+		data.term_query = getTypeParams(alm, 'term_query');
+		data.action = 'alm_get_terms';
+	}
 	if (alm.theme_repeater) {
 		data.theme_repeater = alm.theme_repeater;
 	}
-	if (alm.addons.filters) {
-		data.filters = alm.addons.filters;
-		data.filters_startpage = alm.addons.filters_startpage;
-		data.filters_target = alm.addons.filters_target;
-		data.facets = alm.facets;
-	}
-	if (alm.addons.paging) {
-		data.paging = alm.addons.paging;
-	}
-	if (alm.addons.preloaded === 'true') {
-		data.preloaded = alm.addons.preloaded;
-		data.preloaded_amount = parseInt(alm.addons.preloaded_amount);
-	}
-	if (alm.acf_array) {
-		data.acf = alm.acf_array;
-	}
-	if (alm.term_query_array) {
-		data.term_query = alm.term_query_array;
-	}
-	if (alm.cta_array) {
-		data.cta = alm.cta_array;
-	}
-	if (alm.comments_array) {
-		data.comments = alm.comments_array;
-	}
-	if (alm.nextpage_array) {
-		data.nextpage = alm.nextpage_array;
-	}
-	if (alm.single_post_array) {
-		data.single_post = alm.single_post_array;
-	}
-	if (alm.users_array) {
-		data.users = alm.users_array;
+	if (alm.addons.users) {
+		data.users = getTypeParams(alm, 'users');
+		data.action = 'alm_users';
 	}
 
-	// Query data
+	// Query Data Params
+
 	if (alm.listing.dataset.lang) {
 		data.lang = alm.listing.dataset.lang;
 	}
@@ -5415,14 +5302,94 @@ function getAjaxParams(alm, action, queryType) {
 		data.vars = escape(alm.listing.dataset.vars);
 	}
 
-	// Set Cache params.
-	if (alm.addons.cache) {
-		data.cache_id = alm.addons.cache_id;
-		data.cache_logged_in = alm.addons.cache_logged_in;
+	// Cache Params
+
+	if (addons.cache) {
+		data.cache_id = addons.cache_id;
+		data.cache_logged_in = addons.cache_logged_in;
 		data.cache_slug = (0, _cache.getCacheSlug)(alm, data);
 	}
 
 	return data;
+}
+
+/**
+ * Build the query params for content types.
+ *
+ * @param {object} alm  The ALM object.
+ * @param {string} type The query type.
+ * @return {object}     The query params.
+ */
+function getTypeParams(alm, type) {
+	var addons = alm.addons,
+	    extensions = alm.extensions;
+
+	switch (type) {
+		case 'acf':
+			return {
+				acf: 'true',
+				post_id: extensions.acf_post_id,
+				field_type: extensions.acf_field_type,
+				field_name: extensions.acf_field_name,
+				parent_field_name: extensions.acf_parent_field_name
+			};
+
+		case 'comments':
+			return {
+				comments: 'true',
+				post_id: addons.comments_post_id,
+				per_page: addons.comments_per_page,
+				type: addons.comments_type,
+				style: addons.comments_style,
+				template: addons.comments_template,
+				callback: addons.comments_callback
+			};
+
+		case 'cta':
+			return {
+				cta: 'true',
+				cta_position: addons.cta_position,
+				cta_repeater: addons.cta_repeater,
+				cta_theme_repeater: addons.cta_theme_repeater
+			};
+
+		case 'nextpage':
+			return {
+				nextpage: 'true',
+				urls: addons.nextpage_urls,
+				scroll: addons.nextpage_scroll,
+				pageviews: addons.nextpage_pageviews,
+				post_id: addons.nextpage_post_id,
+				startpage: addons.nextpage_startpage,
+				nested: alm.nested
+			};
+
+		case 'single_posts':
+			return {
+				single_post: 'true',
+				id: addons.single_post_id,
+				slug: addons.single_post_slug
+			};
+
+		case 'term_query':
+			return {
+				term_query: 'true',
+				taxonomy: extensions.term_query_taxonomy,
+				hide_empty: extensions.term_query_hide_empty,
+				number: extensions.term_query_number
+			};
+
+		case 'users':
+			return {
+				users: 'true',
+				role: alm.listing.dataset.usersRole,
+				include: alm.listing.dataset.usersInclude,
+				exclude: alm.listing.dataset.usersExclude,
+				per_page: alm.posts_per_page,
+				order: alm.listing.dataset.usersOrder,
+				orderby: alm.listing.dataset.usersOrderby
+			};
+	}
 }
 
 /**

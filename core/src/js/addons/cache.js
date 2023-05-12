@@ -66,7 +66,7 @@ export async function createCache(alm, data, name) {
  */
 export async function getCache(alm, params) {
 	if (!alm.addons.cache || (alm.addons.cache && alm.addons.cache_logged_in)) {
-		// Exit if not cache or cache is enabled but user is logged in with the setting checked.
+		// Exit if not cache or cache is enabled but user is logged in with the no-cache setting checked.
 		return false;
 	}
 

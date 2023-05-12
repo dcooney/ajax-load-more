@@ -196,8 +196,8 @@ let alm_is_filtering = false;
 		}
 
 		// CTA add-on
-		alm.addons.cta = alm.listing.dataset.cta ? alm.listing.dataset.cta : false;
-		if (alm.addons.cta === 'true') {
+		alm.addons.cta = alm.listing.dataset.cta && alm.listing.dataset.cta === 'true' ? true : false;
+		if (alm.addons.cta) {
 			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
 			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
 			alm.addons.cta_theme_repeater = alm.listing.dataset.ctaThemeRepeater;
@@ -632,110 +632,13 @@ let alm_is_filtering = false;
 		 * @since 2.6.0
 		 */
 		alm.AjaxLoadMore.ajax = async function (queryType = 'standard') {
-			let action = 'alm_get_posts'; // Default action
-
-			// ACF Params
-			alm.acf_array = '';
-			if (alm.extensions.acf) {
-				// Custom query for the Repeater / Gallery / Flexible Content field types
-				if (alm.extensions.acf_field_type !== 'relationship') {
-					action = 'alm_acf';
-				}
-				alm.acf_array = {
-					acf: 'true',
-					post_id: alm.extensions.acf_post_id,
-					field_type: alm.extensions.acf_field_type,
-					field_name: alm.extensions.acf_field_name,
-					parent_field_name: alm.extensions.acf_parent_field_name,
-				};
-			}
-
-			// Term Query Params
-			alm.term_query_array = '';
-			if (alm.extensions.term_query) {
-				action = 'alm_get_terms';
-				alm.term_query_array = {
-					term_query: 'true',
-					taxonomy: alm.extensions.term_query_taxonomy,
-					hide_empty: alm.extensions.term_query_hide_empty,
-					number: alm.extensions.term_query_number,
-				};
-			}
-
-			// Nextpage Params
-			alm.nextpage_array = '';
-			if (alm.addons.nextpage) {
-				action = 'alm_nextpage';
-				alm.nextpage_array = {
-					nextpage: 'true',
-					urls: alm.addons.nextpage_urls,
-					scroll: alm.addons.nextpage_scroll,
-					pageviews: alm.addons.nextpage_pageviews,
-					post_id: alm.addons.nextpage_post_id,
-					startpage: alm.addons.nextpage_startpage,
-					nested: alm.nested,
-				};
-			}
-
-			// Previous Post Params
-			alm.single_post_array = '';
-			if (alm.addons.single_post) {
-				alm.single_post_array = {
-					single_post: 'true',
-					id: alm.addons.single_post_id,
-					slug: alm.addons.single_post_slug,
-				};
-			}
-
-			// Comment Params
-			alm.comments_array = '';
-			if (alm.addons.comments === 'true') {
-				action = 'alm_comments';
-				alm.posts_per_page = alm.addons.comments_per_page;
-				alm.comments_array = {
-					comments: 'true',
-					post_id: alm.addons.comments_post_id,
-					per_page: alm.addons.comments_per_page,
-					type: alm.addons.comments_type,
-					style: alm.addons.comments_style,
-					template: alm.addons.comments_template,
-					callback: alm.addons.comments_callback,
-				};
-			}
-
-			// Users Params
-			alm.users_array = '';
-			if (alm.addons.users) {
-				action = 'alm_users';
-				alm.users_array = {
-					users: 'true',
-					role: alm.listing.dataset.usersRole,
-					include: alm.listing.dataset.usersInclude,
-					exclude: alm.listing.dataset.usersExclude,
-					per_page: alm.posts_per_page,
-					order: alm.listing.dataset.usersOrder,
-					orderby: alm.listing.dataset.usersOrderby,
-				};
-			}
-
-			// CTA Params
-			alm.cta_array = '';
-			if (alm.addons.cta === 'true') {
-				alm.cta_array = {
-					cta: 'true',
-					cta_position: alm.addons.cta_position,
-					cta_repeater: alm.addons.cta_repeater,
-					cta_theme_repeater: alm.addons.cta_theme_repeater,
-				};
-			}
-
 			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
 				// Rest API.
 				alm.AjaxLoadMore.restapi(alm);
 			} else {
 				// Standard ALM.
-				const params = getAjaxParams(alm, action, queryType);
+				const params = getAjaxParams(alm, queryType);
 				const cache = await getCache(alm, Object.assign({}, params));
 				if (cache) {
 					alm.AjaxLoadMore.success(cache);
@@ -819,8 +722,6 @@ let alm_is_filtering = false;
 		 * Send request to the WP REST API
 		 *
 		 * @param {object} alm The Ajax Load More object.
-		 * @param {string} action The Ajax action.
-		 * @param {string} queryType The type of Ajax request (standard/totalposts).
 		 * @since 5.0.0
 		 */
 		alm.AjaxLoadMore.restapi = function (alm) {
@@ -1030,7 +931,7 @@ let alm_is_filtering = false;
 								isPaged = true;
 
 								// Call to Actions
-								if (alm.addons.cta === 'true') {
+								if (alm.addons.cta) {
 									posts_per_page = posts_per_page + 1; // Add 1 to posts_per_page for CTAs
 									pages = Math.ceil(total / posts_per_page); // Update pages let with new posts_per_page
 									total = pages + total; // Get new total w/ CTAs added

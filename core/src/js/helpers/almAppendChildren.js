@@ -1,4 +1,4 @@
-import almAppendChild from './almAppendChild';
+const nodeNameArray = ['#text', '#comment'];
 
 /**
  * Loop array of elements and append to target
@@ -8,8 +8,7 @@ import almAppendChild from './almAppendChild';
  * @param {string} transition | The transiton
  * @since 5.0
  */
-
-const almAppendChildren = function (target = null, array = null, transition = 'fade') {
+export default function almAppendChildren(target = null, array = null, transition = 'fade') {
 	if (!target || !array) {
 		return false;
 	}
@@ -17,5 +16,28 @@ const almAppendChildren = function (target = null, array = null, transition = 'f
 		let element = array[i];
 		almAppendChild(target, element, transition);
 	}
-};
-export default almAppendChildren;
+}
+
+/**
+ * Append a child element to a container
+ *
+ * @param {Element} target | Target element to append items
+ * @param {Element} element | The element to append
+ * @param {string} transition | The transiton
+ * @since 5.0
+ */
+export function almAppendChild(target = null, element = null, transition = 'fade') {
+	if (!target || !element) {
+		return false;
+	}
+
+	// Do not append elements that are not actual element nodes (i.e. #text node)
+	// Add item if not in exclude array
+	if (nodeNameArray.indexOf(element.nodeName.toLowerCase()) === -1) {
+		if (transition === 'masonry') {
+			// If Masonry, opacity = zero
+			element.style.opacity = 0;
+		}
+		target.appendChild(element);
+	}
+}

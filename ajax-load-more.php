@@ -20,8 +20,10 @@ IN Progress:
 -
 
 TODO:
-- Remove the create fetching in all addons/extensions.
-- Remove all functions and helpers for ALMCache::get_cache_file()
+- Remove the create fetching in all addons/extensions. [DONE]
+- Remove all functions and helpers for ALMCache::get_cache_file() [DONE]
+- Fix FILTER_SANITIZE_STRING deprecation notices in PHP 8.1. Possibly use @FILTER_SANITIZE_STRING to silence errors.
+
 
 ADD-ON Updates:
 - FILTERS:
@@ -31,6 +33,7 @@ ADD-ON Updates:
 - Comments [1.2.1]
 - Single Posts [1.5.5]
 - Elementor [1.1.4]
+- WooCommerce [1.2.2]
 
 
 Extension Updates
@@ -52,9 +55,6 @@ CACHE TODO:
 - Single Posts
   - Soltion for target loading cache. Working with Repeater Template.
 - Users [DONE]
-
-- Update cache admin screen. Expand/Collapse files.
-- Ensure backward compatibility.
 
 
 Issues:
@@ -539,13 +539,14 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			// CTA Add-on.
 			$cta      = false;
 			$cta_data = isset( $params['cta'] ) ? $params['cta'] : false;
+
 			if ( $cta_data ) {
 				$cta                = true;
 				$cta_position       = isset( $cta_data['cta_position'] ) ? $cta_data['cta_position'] : 'before:1';
 				$cta_position_array = explode( ':', $cta_position );
 				$cta_pos            = (string) $cta_position_array[0];
-				$cta_val            = (string) $cta_position_array[1];
 				$cta_pos            = $cta_pos !== 'after' ? 'before' : $cta_pos;
+				$cta_val            = (string) $cta_position_array[1];
 				$cta_repeater       = isset( $cta_data['cta_repeater'] ) ? $cta_data['cta_repeater'] : 'null';
 				$cta_theme_repeater = isset( $cta_data['cta_theme_repeater'] ) ? sanitize_file_name( $cta_data['cta_theme_repeater'] ) : 'null';
 			}
@@ -659,11 +660,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$alm_current     = 0;
 					$alm_has_cta     = false;
 
-					$cta_array = [];
-					if ( $cta && has_action( 'alm_cta_pos_array' ) ) {
-						// Build CTA Position Array.
-						$cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging );
-					}
+					// Build CTA Position Array.
+					$cta_array = $cta && has_action( 'alm_cta_pos_array' ) ? $cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging ) : [];
 
 					ob_start();
 
@@ -676,7 +674,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						$alm_item = ( $alm_page_count * $posts_per_page ) - $posts_per_page + $alm_loop_count;
 
 						// Call to Action [Before].
-						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( (string) $alm_current, $cta_array, true ) ) {
+						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
 							$alm_has_cta = true;
 						}
@@ -685,7 +683,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						alm_loop( $repeater, $type, $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, $args, false );
 
 						// Call to Action [After].
-						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' && in_array( (string) $alm_current, $cta_array, true ) ) {
+						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
 							$alm_has_cta = true;
 						}
