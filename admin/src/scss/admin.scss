@@ -2493,28 +2493,32 @@ span.cnkt-button.installed i,
 		display: flex;
 		width: 100%;
 		flex-wrap: wrap;
-	}
-	ul li {
-		margin: 0;
-		padding: 10px 5px 5px 40px;
-		display: block;
-		overflow: hidden;
-		width: 50%;
-		background: transparent url('../../img/directory-list.gif') no-repeat left 46%;
-		&.full {
-			width: 100%;
+		li {
+			margin: 0;
+			padding: 10px 5px 5px 55px;
+			background: transparent url('../../img/directory-list.gif') no-repeat left 46%;
+			position: relative;
 			display: block;
-		}
-		&:last-child,
-		&:nth-last-child(2) {
-			background-image: url('../../img/directory-list-btm.gif');
-		}
-		a {
-			text-decoration: none;
-		}
-		i {
-			color: $grey_text;
-			padding: 0 5px 0 0;
+			width: 50%;
+			&.full {
+				width: 100%;
+			}
+			&:last-child,
+			&:nth-last-child(2) {
+				background-image: url('../../img/directory-list-btm.gif');
+			}
+			a {
+				text-decoration: none;
+				display: block;
+				word-break: break-all;
+			}
+			i {
+				width: 15px;
+				color: $grey_text;
+				position: absolute;
+				left: 36px;
+				top: 13px;
+			}
 		}
 	}
 	p.theme-title {

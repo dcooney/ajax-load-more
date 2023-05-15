@@ -4725,25 +4725,29 @@ span.cnkt-button.installed i,
 }
 .alm-dir-listing ul li {
   margin: 0;
-  padding: 10px 5px 5px 40px;
-  display: block;
-  overflow: hidden;
-  width: 50%;
+  padding: 10px 5px 5px 55px;
   background: transparent url("../../img/directory-list.gif") no-repeat left 46%;
+  position: relative;
+  display: block;
+  width: 50%;
 }
 .alm-dir-listing ul li.full {
   width: 100%;
-  display: block;
 }
 .alm-dir-listing ul li:last-child, .alm-dir-listing ul li:nth-last-child(2) {
   background-image: url("../../img/directory-list-btm.gif");
 }
 .alm-dir-listing ul li a {
   text-decoration: none;
+  display: block;
+  word-break: break-all;
 }
 .alm-dir-listing ul li i {
+  width: 15px;
   color: #999;
-  padding: 0 5px 0 0;
+  position: absolute;
+  left: 36px;
+  top: 13px;
 }
 .alm-dir-listing p.theme-title {
   font-weight: 600;

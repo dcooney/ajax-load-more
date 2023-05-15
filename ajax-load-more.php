@@ -52,8 +52,7 @@ CACHE TODO:
 - Terms [DONE]
 - ACF [DONE]
 - Comments [DONE]
-- Single Posts
-  - Soltion for target loading cache. Working with Repeater Template.
+- Single Posts [DONE]
 - Users [DONE]
 
 
