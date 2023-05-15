@@ -2390,8 +2390,7 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Dispatch Ajax query.
-			alm.AjaxLoadMore.ajax();
+			alm.AjaxLoadMore.ajax(); // Dispatch http request.
 		};
 
 		/**
@@ -2427,7 +2426,7 @@ var alm_is_filtering = false;
 							cache = _context.sent;
 
 							if (cache) {
-								alm.AjaxLoadMore.success(cache);
+								alm.AjaxLoadMore.render(cache);
 							} else {
 								alm.AjaxLoadMore.adminajax(params, queryType);
 							}
@@ -2455,12 +2454,9 @@ var alm_is_filtering = false;
 					while (1) {
 						switch (_context2.prev = _context2.next) {
 							case 0:
-								// Get Ajax URL.
-								_alm_localize = alm_localize, ajaxurl = _alm_localize.ajaxurl;
+								_alm_localize = alm_localize, ajaxurl = _alm_localize.ajaxurl; // Get Ajax URL
 
-								// Deconstruct query params.
-
-								_params = params, _params$cache_slug = _params.cache_slug, cache_slug = _params$cache_slug === undefined ? '' : _params$cache_slug;
+								_params = params, _params$cache_slug = _params.cache_slug, cache_slug = _params$cache_slug === undefined ? '' : _params$cache_slug; // Deconstruct query params.
 
 								/**
          * Single Posts.
@@ -2506,7 +2502,7 @@ var alm_is_filtering = false;
 								break;
 
 							case 10:
-								alm.AjaxLoadMore.success(data);
+								alm.AjaxLoadMore.render(data);
 								return _context2.abrupt('break', 14);
 
 							case 12:
@@ -2566,7 +2562,7 @@ var alm_is_filtering = false;
 					data += alm_rest_template(result);
 				}
 
-				// Create object to pass to success()
+				// Create results object.
 				var obj = {
 					html: data,
 					meta: {
@@ -2574,7 +2570,7 @@ var alm_is_filtering = false;
 						totalposts: totalposts
 					}
 				};
-				alm.AjaxLoadMore.success(obj); // Send data
+				alm.AjaxLoadMore.render(obj);
 			}).catch(function (error) {
 				// Error
 				alm.AjaxLoadMore.error(error, 'restapi');
@@ -2591,12 +2587,12 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   * Success function after loading data.
+   * Display/render results function.
    *
    * @param {object} data The results of the Ajax request.
    * @since 2.6.0
    */
-		alm.AjaxLoadMore.success = function (data) {
+		alm.AjaxLoadMore.render = function (data) {
 			var _this = this;
 
 			if (alm.addons.single_post) {

@@ -621,8 +621,7 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Dispatch Ajax query.
-			alm.AjaxLoadMore.ajax();
+			alm.AjaxLoadMore.ajax(); // Dispatch http request.
 		};
 
 		/**
@@ -641,7 +640,7 @@ let alm_is_filtering = false;
 				const params = getAjaxParams(alm, queryType);
 				const cache = await getCache(alm, Object.assign({}, params));
 				if (cache) {
-					alm.AjaxLoadMore.success(cache);
+					alm.AjaxLoadMore.render(cache);
 				} else {
 					alm.AjaxLoadMore.adminajax(params, queryType);
 				}
@@ -656,11 +655,8 @@ let alm_is_filtering = false;
 		 * @since 5.0.0
 		 */
 		alm.AjaxLoadMore.adminajax = async function (params, queryType) {
-			// Get Ajax URL.
-			let { ajaxurl } = alm_localize;
-
-			// Deconstruct query params.
-			const { cache_slug = '' } = params;
+			let { ajaxurl } = alm_localize; // Get Ajax URL
+			const { cache_slug = '' } = params; // Deconstruct query params.
 
 			/**
 			 * Single Posts.
@@ -702,7 +698,7 @@ let alm_is_filtering = false;
 
 			switch (queryType) {
 				case 'standard':
-					alm.AjaxLoadMore.success(data);
+					alm.AjaxLoadMore.render(data);
 					break;
 
 				case 'totalposts':
@@ -749,7 +745,7 @@ let alm_is_filtering = false;
 						data += alm_rest_template(result);
 					}
 
-					// Create object to pass to success()
+					// Create results object.
 					const obj = {
 						html: data,
 						meta: {
@@ -757,7 +753,7 @@ let alm_is_filtering = false;
 							totalposts: totalposts,
 						},
 					};
-					alm.AjaxLoadMore.success(obj); // Send data
+					alm.AjaxLoadMore.render(obj);
 				})
 				.catch(function (error) {
 					// Error
@@ -775,12 +771,12 @@ let alm_is_filtering = false;
 		}
 
 		/**
-		 * Success function after loading data.
+		 * Display/render results function.
 		 *
 		 * @param {object} data The results of the Ajax request.
 		 * @since 2.6.0
 		 */
-		alm.AjaxLoadMore.success = function (data) {
+		alm.AjaxLoadMore.render = function (data) {
 			if (alm.addons.single_post) {
 				alm.AjaxLoadMore.getSinglePost(); // Get single post data for next post.
 			}
