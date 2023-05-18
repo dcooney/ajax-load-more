@@ -81,12 +81,4 @@ export async function getCache(alm, params) {
 	} else {
 		return false;
 	}
-
-	// const cached_url = getCacheURL(alm, params);
-	// const data = await fetch(cached_url);
-	// try {
-	// 	return await data.json();
-	// } catch (error) {
-	// 	return false; // No cache file found.
-	// }
 }

@@ -24,6 +24,7 @@ TODO:
 - Remove all functions and helpers for ALMCache::get_cache_file() [DONE]
 - Fix FILTER_SANITIZE_STRING deprecation notices in PHP 8.1. Possibly use @FILTER_SANITIZE_STRING to silence errors.
 
+- FIlters -  Add console warning missing alm id/target attribute.
 
 ADD-ON Updates:
 - FILTERS:

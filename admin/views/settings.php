@@ -35,7 +35,7 @@
 						<ul>
 							<?php
 							foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
-								echo '<li><button type="button">';
+								echo '<li><button type="button" data-id="'. str_replace( 'alm_', '', $section['id'] ) .'">';
 								if ( $section['title'] ) {
 									if ( $section['id'] === 'alm_general_settings' || $section['id'] === 'alm_admin_settings' ) {
 										echo '<i class="fa fa-cog"></i>' . $section['title'];
@@ -65,7 +65,7 @@
 								// Loop each section.
 								foreach ( (array) $wp_settings_sections[ $page ] as $section ) {
 
-									echo '<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">';
+									echo '<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="' . str_replace( 'alm_', '', $section['id'] ) . '">';
 
 									if ( $section['title'] ) {
 											echo "<h2>{$section['title']}</h2>\n";
