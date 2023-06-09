@@ -100,7 +100,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'acf_field_type'               => 'repeater',
 						'acf_field_name'               => '',
 						'acf_parent_field_name'        => '',
-						'acf_row_index'                => '',
+						'acf_row_index'                => 0,
 						'restapi'                      => false,
 						'restapi_base'                 => '/wp-json',
 						'restapi_namespace'            => 'ajaxloadmore',
