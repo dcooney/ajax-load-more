@@ -100,6 +100,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'acf_field_type'               => 'repeater',
 						'acf_field_name'               => '',
 						'acf_parent_field_name'        => '',
+						'acf_row_index'                => '',
 						'restapi'                      => false,
 						'restapi_base'                 => '/wp-json',
 						'restapi_namespace'            => 'ajaxloadmore',
@@ -763,6 +764,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				'acf_field_type'            => $acf_field_type,
 				'acf_field_name'            => $acf_field_name,
 				'acf_parent_field_name'     => $acf_parent_field_name,
+				'acf_row_index'             => $acf_row_index,
 				'term_query'                => [
 					'taxonomy'   => $term_query_taxonomy,
 					'hide_empty' => $term_query_hide_empty,
@@ -847,7 +849,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$acf_field_name,
 					$acf_post_id,
 					$post_id,
-					$acf_parent_field_name
+					$acf_parent_field_name,
+					$acf_row_index
 				);
 				$ajaxloadmore .= wp_kses_post( $acf_return );
 			}

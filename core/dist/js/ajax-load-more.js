@@ -2056,6 +2056,7 @@ var alm_is_filtering = false;
 			alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 			alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 			alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
+			alm.extensions.acf_row_index = alm.listing.dataset.acfRowIndex;
 			alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
 			// if field type, name or post ID is empty.
 			if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
@@ -5327,7 +5328,8 @@ function getTypeParams(alm, type) {
 				post_id: extensions.acf_post_id,
 				field_type: extensions.acf_field_type,
 				field_name: extensions.acf_field_name,
-				parent_field_name: extensions.acf_parent_field_name
+				parent_field_name: extensions.acf_parent_field_name,
+				row_index: extensions.acf_row_index
 			};
 
 		case 'comments':

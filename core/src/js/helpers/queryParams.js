@@ -205,6 +205,7 @@ export function getTypeParams(alm, type) {
 				field_type: extensions.acf_field_type,
 				field_name: extensions.acf_field_name,
 				parent_field_name: extensions.acf_parent_field_name,
+				row_index: extensions.acf_row_index,
 			};
 
 		case 'comments':
