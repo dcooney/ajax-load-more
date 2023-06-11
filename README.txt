@@ -271,6 +271,7 @@ How to install Ajax Load More.
 * UPDATE: Core ALM JavaScript refactoring to stremline content loading using async/await and promises.
 * UPDATE: Updated WooCommerce and Elementor add-on functionality to load content in a normalized manner.
 * UPDATE: Code refactoring, cleanup and overall improvements across the Ajax Load More.
+* UPDATE: Added support for ACF extension and row index.
 * FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
 * FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
 * FIX: Fixed issue with ACF extension and Paging add-on not getting correct amount of posts loaded.
