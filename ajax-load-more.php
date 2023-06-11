@@ -16,11 +16,11 @@
 
 /*
 ADD-ON Updates:
-- ✔ FILTERS:
+- ✔ FILTERS [2.0.2.2]
 - ✔ Next Page [1.6.4]
-- Cache [2.0]
+- ✔ Cache [2.0]
 - ✔ Comments [1.2.1]
-- Single Posts [1.5.5]
+- ✔ Single Posts [1.5.5]
 - ✔ Elementor [1.1.4]
 - ✔ WooCommerce [1.2.2]
 
@@ -29,17 +29,6 @@ Extension Updates
 - ✔ Terms
 - ✔ ACF
 - ✔ USERS
-
-CACHE TODO:
-- Filters [DONE]
-- Paging [DONE]
-- SEO [DONE]
-- Nextpage [DONE]
-- Terms [DONE]
-- ACF [DONE]
-- Comments [DONE]
-- Single Posts [DONE]
-- Users [DONE]
 
 
 Plugin CHANGES
