@@ -7,7 +7,7 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.6.0.5
+ * Version: 6.0.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
@@ -15,35 +15,20 @@
  */
 
 /*
-IN Progress:
-- Started creating the cache slug in the JavaScript and passing it to the PHP using CryptoJS.
--
-
-TODO:
-- Remove the create fetching in all addons/extensions. [DONE]
-- Remove all functions and helpers for ALMCache::get_cache_file() [DONE]
-- Fix FILTER_SANITIZE_STRING deprecation notices in PHP 8.1. Possibly use @FILTER_SANITIZE_STRING to silence errors.
-
-- FIlters -  Add console warning missing alm id/target attribute.
-
 ADD-ON Updates:
-- FILTERS:
-	- Fix issue with decimal values in range slider.
-- Next Page [1.6.4]
+- ✔ FILTERS:
+- ✔ Next Page [1.6.4]
 - Cache [2.0]
-- Comments [1.2.1]
+- ✔ Comments [1.2.1]
 - Single Posts [1.5.5]
-- Elementor [1.1.4]
-- WooCommerce [1.2.2]
+- ✔ Elementor [1.1.4]
+- ✔ WooCommerce [1.2.2]
 
 
 Extension Updates
-- Terms
-- ACF
-- USERS
-
-STARTED:
-- Cache update.
+- ✔ Terms
+- ✔ ACF
+- ✔ USERS
 
 CACHE TODO:
 - Filters [DONE]
@@ -57,25 +42,21 @@ CACHE TODO:
 - Users [DONE]
 
 
-Issues:
-- ACF not working with Paging - https://wpdev.local/acf-repeater-field/
-
-
 Plugin CHANGES
-* NOTICE: Ajax Load More 6.0 is a major update and includes a number of breaking changes. Please review the documentation before updating.
-* NOTICE: Cache add-on < 2.0 is no longer supported. Please update to the latest version of the Cache add-on to use Cache functionality.
-* UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
+* NOTICE: Ajax Load More 6.0 is a major update and includes a breaking changes with regards to the Cache add-on. Please review the information below before updating.
+* NOTICE: Cache add-on < 2.0 is no longer supported by Ajax Load More. Please update to the latest version of the Cache add-on to use Cache functionality.
 
+* UPDATE: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
 * UPDATE: Core ALM JavaScript refactoring to stremline content loading using async/await and promises.
 * UPDATE: Updated WooCommerce and Elementor add-on functionality to load content in a normalized manner.
 * UPDATE: Code refactoring, cleanup and overall improvements across the Ajax Load More.
 * FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
 * FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
-
+* FIX: Fixed issue with ACF extension and Paging add-on not getting correct amount of posts loaded.
 */
 
-define( 'ALM_VERSION', '5.6.0.5' );
-define( 'ALM_RELEASE', 'April 3, 2023' );
+define( 'ALM_VERSION', '6.0.0' );
+define( 'ALM_RELEASE', 'June 11, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

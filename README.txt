@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.2
-Stable tag: 5.6.0.5
+Stable tag: 6.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,6 +263,19 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 6.0.0 - June 11, 2023 =
+* NOTICE: Ajax Load More 6.0 is a major update and includes a breaking changes with regards to the Cache add-on. Please review the information below before updating.
+* NOTICE: Cache add-on < 2.0 is no longer supported by Ajax Load More. Please update to the latest version of the add-on to continue using the Cache functionality.
+
+* NEW: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
+* UPDATE: Core ALM JavaScript refactoring to stremline content loading using async/await and promises.
+* UPDATE: Updated WooCommerce and Elementor add-on functionality to load content in a normalized manner.
+* UPDATE: Code refactoring, cleanup and overall improvements across the Ajax Load More.
+* FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
+* FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
+* FIX: Fixed issue with ACF extension and Paging add-on not getting correct amount of posts loaded.
+*/
+
 = 5.6.0.5 - April 3, 2023 =
 * HOTFIX: Fixed issue with `taxonomy_relation` parameter resolving to `AND`.
 
@@ -505,4 +518,5 @@ What's New in 5.1.0
 
 == Upgrade Notice ==
 
--  None
+= 6.0 =
+Version 6.0+ of Ajax Load More includes breaking changes with the Cache-addon version 1.x. Please upgrade the add-on to 2.0 or greater if you wish to continue using the Cache add-on.
