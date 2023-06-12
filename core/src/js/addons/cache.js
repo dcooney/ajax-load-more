@@ -1,6 +1,5 @@
 import MD5 from 'crypto-js/md5';
 import { api } from '../helpers/api';
-import 'babel-polyfill';
 
 /**
  * Create unique cache slug from query params.
