@@ -1336,9 +1336,11 @@ jQuery(document).ready(function ($) {
   * @since 5.4
   */
 	var ACTIVE_TAB_CLASS = 'active';
-	function openTabbedItem(button, index, almTabbedWrapper) {
-		// Get Currently Active Button.
-		var activeBtn = document.querySelector('.alm-tabbed-wrapper--nav button.active');
+	function openTabbedItem(button, almTabbedWrapper) {
+		var activeBtn = document.querySelector('.alm-tabbed-wrapper--nav button.active'); // Get Currently Active Button.
+		var id = button.dataset.id;
+
+		// Remove currently active button.
 		if (activeBtn) {
 			activeBtn.classList.remove(ACTIVE_TAB_CLASS);
 		}
@@ -1349,19 +1351,16 @@ jQuery(document).ready(function ($) {
 		// Activate Current Section
 		if (almTabbedWrapper) {
 			var currentActive = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section.' + ACTIVE_TAB_CLASS);
-			var sections = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--section');
-			if (currentActive && sections) {
+			var section = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section#' + id);
+			if (currentActive && section) {
 				currentActive.classList.remove(ACTIVE_TAB_CLASS);
-				if (sections[index]) {
-					sections[index].classList.add(ACTIVE_TAB_CLASS);
-					sections[index].focus({ preventScroll: true });
-					$('html, body').animate({
-						scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45
-					}, 350, function () {
-						var section = parseInt(index) + 1;
-						window.location.hash = 'alm-section-' + section;
-					});
-				}
+				section.classList.add(ACTIVE_TAB_CLASS);
+				section.focus({ preventScroll: true });
+				$('html, body').animate({
+					scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45
+				}, 400, function () {
+					history.replaceState({}, '', '#' + id);
+				});
 			}
 		}
 	}
@@ -1376,27 +1375,21 @@ jQuery(document).ready(function ($) {
 		if (tabbedNav) {
 			tabbedNav.forEach(function (item, index) {
 				item.addEventListener('click', function () {
-					openTabbedItem(this, index, almTabbedWrapper);
+					openTabbedItem(this, almTabbedWrapper);
 				});
 			});
 		}
 
-		// Open hash
+		// Open section from hash.
 		var hash = window.location.hash;
-		if (hash && hash.indexOf('alm-section') !== -1) {
+		if (hash) {
 			hash = hash.replace('#', '');
-			var openSection = hash.replace('alm-section-', '');
-			openSection = parseInt(openSection) - 1;
-			// Get button from nodelist.
-			var nodeItem = tabbedNav.item(openSection);
-			if (nodeItem) {
-				// trigger a click.
-				nodeItem.click();
+			var targetBtn = document.querySelector('.alm-tabbed-wrapper--nav button[data-id="' + hash + '"]');
+			if (targetBtn) {
+				targetBtn.click();
 			}
 		} else {
-			if (tabbedNav) {
-				tabbedNav[0].classList.add(ACTIVE_TAB_CLASS);
-			}
+			document.querySelector('.alm-tabbed-wrapper--nav button').classList.add(ACTIVE_TAB_CLASS);
 		}
 	}
 

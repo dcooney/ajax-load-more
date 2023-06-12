@@ -1,23 +1,27 @@
+import { getCacheSlug } from '../addons/cache';
+
 /**
- * almGetAjaxParams
- * Build the data object to send with the Ajax request
+ * Build the data object to send with the Ajax request.
  *
- * @param alm            object
- * @param action         string
- * @param queryType      string
+ * @param {object} alm       The ALM object.
+ * @param {string} queryType The query type.
+ * @return {object}          The data object.
  * @since 3.6
  */
+export function getAjaxParams(alm, queryType) {
+	const { addons, extensions } = alm;
 
-export function almGetAjaxParams(alm, action, queryType) {
 	// Defaults
-	let data = {
+	const data = {
+		action: 'alm_get_posts',
+		query_type: queryType,
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		slug: alm.slug,
 		canonical_url: encodeURIComponent(alm.canonical_url),
-		posts_per_page: alm.posts_per_page,
-		page: alm.page,
-		offset: alm.offset,
+		posts_per_page: parseInt(alm.posts_per_page),
+		page: parseInt(alm.page),
+		offset: parseInt(alm.offset),
 		post_type: alm.post_type,
 		repeater: alm.repeater,
 		seo_start_page: alm.start_page,
@@ -25,49 +29,54 @@ export function almGetAjaxParams(alm, action, queryType) {
 
 	// Addons & Extensions
 
+	if (extensions.acf) {
+		data.acf = getTypeParams(alm, 'acf');
+		if (extensions.acf_field_type !== 'relationship') {
+			data.action = 'alm_acf';
+		}
+	}
+	if (addons.comments === 'true') {
+		data.comments = getTypeParams(alm, 'comments');
+		data.posts_per_page = addons.comments_per_page;
+		data.action = 'alm_comments';
+	}
+	if (addons.cta) {
+		data.cta = getTypeParams(alm, 'cta');
+	}
+	if (addons.filters) {
+		data.filters = addons.filters;
+		data.filters_startpage = addons.filters_startpage;
+		data.filters_target = addons.filters_target;
+		data.facets = alm.facets;
+	}
+	if (addons.nextpage) {
+		data.nextpage = getTypeParams(alm, 'nextpage');
+		data.action = 'alm_nextpage';
+	}
+	if (addons.paging) {
+		data.paging = addons.paging;
+	}
+	if (addons.preloaded === 'true') {
+		data.preloaded = addons.preloaded;
+		data.preloaded_amount = parseInt(addons.preloaded_amount);
+	}
+	if (addons.single_post) {
+		data.single_post = getTypeParams(alm, 'single_post');
+	}
+	if (extensions.term_query) {
+		data.term_query = getTypeParams(alm, 'term_query');
+		data.action = 'alm_get_terms';
+	}
 	if (alm.theme_repeater) {
 		data.theme_repeater = alm.theme_repeater;
 	}
-	if (alm.addons.filters) {
-		data.filters = alm.addons.filters;
-		data.filters_startpage = alm.addons.filters_startpage;
-		data.filters_target = alm.addons.filters_target;
-		data.facets = alm.facets;
-	}
-	if (alm.addons.paging) {
-		data.paging = alm.addons.paging;
-	}
-	if (alm.addons.preloaded) {
-		data.preloaded = alm.addons.preloaded;
-		data.preloaded_amount = alm.addons.preloaded_amount;
-	}
-	if (alm.addons.cache === 'true') {
-		data.cache_id = alm.addons.cache_id;
-		data.cache_logged_in = alm.addons.cache_logged_in;
-	}
-	if (alm.acf_array) {
-		data.acf = alm.acf_array;
-	}
-	if (alm.term_query_array) {
-		data.term_query = alm.term_query_array;
-	}
-	if (alm.cta_array) {
-		data.cta = alm.cta_array;
-	}
-	if (alm.comments_array) {
-		data.comments = alm.comments_array;
-	}
-	if (alm.nextpage_array) {
-		data.nextpage = alm.nextpage_array;
-	}
-	if (alm.single_post_array) {
-		data.single_post = alm.single_post_array;
-	}
-	if (alm.users_array) {
-		data.users = alm.users_array;
+	if (alm.addons.users) {
+		data.users = getTypeParams(alm, 'users');
+		data.action = 'alm_users';
 	}
 
-	// Query data
+	// Query Data Params
+
 	if (alm.listing.dataset.lang) {
 		data.lang = alm.listing.dataset.lang;
 	}
@@ -168,23 +177,106 @@ export function almGetAjaxParams(alm, action, queryType) {
 		data.vars = escape(alm.listing.dataset.vars);
 	}
 
-	data.action = action;
-	data.query_type = queryType;
+	// Cache Params
+
+	if (addons.cache) {
+		data.cache_id = addons.cache_id;
+		data.cache_logged_in = addons.cache_logged_in;
+		data.cache_slug = getCacheSlug(alm, data);
+	}
 
 	return data;
 }
 
 /**
- * almGetRestParams
- * Build the REST API data object to send with REST API request
+ * Build the query params for content types.
  *
- * @param alm            object
+ * @param {object} alm  The ALM object.
+ * @param {string} type The query type.
+ * @return {object}     The query params.
+ */
+export function getTypeParams(alm, type) {
+	const { addons, extensions } = alm;
+	switch (type) {
+		case 'acf':
+			return {
+				acf: 'true',
+				post_id: extensions.acf_post_id,
+				field_type: extensions.acf_field_type,
+				field_name: extensions.acf_field_name,
+				parent_field_name: extensions.acf_parent_field_name,
+				row_index: extensions.acf_row_index,
+			};
+
+		case 'comments':
+			return {
+				comments: 'true',
+				post_id: addons.comments_post_id,
+				per_page: addons.comments_per_page,
+				type: addons.comments_type,
+				style: addons.comments_style,
+				template: addons.comments_template,
+				callback: addons.comments_callback,
+			};
+
+		case 'cta':
+			return {
+				cta: 'true',
+				cta_position: addons.cta_position,
+				cta_repeater: addons.cta_repeater,
+				cta_theme_repeater: addons.cta_theme_repeater,
+			};
+
+		case 'nextpage':
+			return {
+				nextpage: 'true',
+				urls: addons.nextpage_urls,
+				scroll: addons.nextpage_scroll,
+				pageviews: addons.nextpage_pageviews,
+				post_id: addons.nextpage_post_id,
+				startpage: addons.nextpage_startpage,
+				nested: alm.nested,
+			};
+
+		case 'single_posts':
+			return {
+				single_post: 'true',
+				id: addons.single_post_id,
+				slug: addons.single_post_slug,
+			};
+
+		case 'term_query':
+			return {
+				term_query: 'true',
+				taxonomy: extensions.term_query_taxonomy,
+				hide_empty: extensions.term_query_hide_empty,
+				number: extensions.term_query_number,
+			};
+
+		case 'users':
+			return {
+				users: 'true',
+				role: alm.listing.dataset.usersRole,
+				include: alm.listing.dataset.usersInclude,
+				exclude: alm.listing.dataset.usersExclude,
+				per_page: alm.posts_per_page,
+				order: alm.listing.dataset.usersOrder,
+				orderby: alm.listing.dataset.usersOrderby,
+			};
+	}
+}
+
+/**
+ * Build the REST API data object to send with REST API request.
+ *
+ * @param {object} alm The ALM object.
+ * @return {object}    The data object.
  * @since 3.6
  */
-export function almGetRestParams(alm) {
-	let data = {
+export function getRestAPIParams(alm) {
+	const data = {
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		posts_per_page: alm.posts_per_page,
 		page: alm.page,
 		offset: alm.offset,
@@ -223,6 +315,5 @@ export function almGetRestParams(alm) {
 		preloaded_amount: alm.addons.preloaded_amount,
 		seo_start_page: alm.start_page,
 	};
-
 	return data;
 }

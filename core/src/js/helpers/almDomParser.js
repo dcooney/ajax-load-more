@@ -1,17 +1,17 @@
 /**
  * Convert a plain text string into an array of HTML nodes
  *
- * @param {*} html | The HTML string
- * @param {*} type
+ * @param {string} html The HTML string
+ * @param {string} type The type.
  * @return array
  * @since 5.0
  */
 const almDomParser = function (html = '', type = 'text/html') {
 	if (!html) {
-		return false;
+		return;
 	}
-	let parser = new DOMParser();
-	let data = parser.parseFromString(html, type);
+	const parser = new DOMParser();
+	const data = parser.parseFromString(html, type);
 	return data ? Array.prototype.slice.call(data.body.childNodes) : data;
 };
 export default almDomParser;

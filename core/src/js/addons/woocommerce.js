@@ -4,6 +4,7 @@ import { setButtonAtts } from '../helpers/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 import { createLoadPreviousButton } from '../modules/loadPrevious';
+import { createCache } from './cache';
 
 /**
  * Set up instance of ALM WooCommerce
@@ -77,28 +78,27 @@ export function wooInit(alm) {
  *
  * @param {Element} content  WooCommerce content container.
  * @param {object} alm       ALM object.
- * @param {string} pageTitle Page title.
  * @since 5.3.0
  */
-export function woocommerce(content, alm, pageTitle = document.title) {
+export function woocommerce(content, alm) {
 	if (!content || !alm) {
 		return false;
 	}
 
 	return new Promise((resolve) => {
-		const container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
-		const products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
-		const page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
-		const url = alm.addons.woocommerce_settings.paged_urls[page];
-		const { settings = {} } = alm.addons.woocommerce_settings;
+		const { woocommerce_settings = {} } = alm.addons;
+		const { settings = {} } = woocommerce_settings;
+
+		const container = document.querySelector(woocommerce_settings.container); // Get `ul.products`
+		const products = content.querySelectorAll(woocommerce_settings.products); // Get all `.products`
 		const waitForImages = settings && settings.images_loaded === 'true' ? true : false;
 
-		if (container && products && url) {
+		if (container && products) {
 			const wooProducts = Array.prototype.slice.call(products); // Convert NodeList to Array.
 
-			// Load the Products
 			(async function () {
-				await loadItems(container, wooProducts, alm, pageTitle, url, 'alm-woocommerce', waitForImages);
+				// Load the Products.
+				await loadItems(container, wooProducts, alm, waitForImages);
 				resolve(true);
 			})().catch((e) => {
 				console.log(e, 'There was an error with WooCommerce');
@@ -110,6 +110,76 @@ export function woocommerce(content, alm, pageTitle = document.title) {
 			}
 		}
 	});
+}
+
+/**
+ * Get the content, title and results from the Ajax request.
+ *
+ * @param {object} alm        The alm object.
+ * @param {string} url 	      The request URL.
+ * @param {object} response   Query response.
+ * @param {string} cache_slug The cache slug.
+ * @return {object}           Results data.
+ * @since 5.3.0
+ */
+export function wooGetContent(alm, url, response, cache_slug) {
+	// Default data object.
+	const data = {
+		html: '',
+		meta: {
+			postcount: 0,
+			totalposts: 0,
+		},
+	};
+
+	// Successful response.
+	if (response.status === 200 && response.data) {
+		const { addons, pagePrev, rel = 'next', page, localize } = alm;
+		const { total_posts } = localize;
+		const { woocommerce_settings = {} } = addons;
+		const currentPage = rel === 'prev' ? pagePrev : page + 1; // Get the page number.
+
+		// Create temp div to hold response data.
+		const div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		const title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get WooCommerce products container.
+		const container = div.querySelector(woocommerce_settings.container);
+		if (!container) {
+			console.warn(`Ajax Load More WooCommerce: Unable to find WooCommerce ${woocommerce_settings.container} element.`);
+			return data;
+		}
+
+		// Get the first item and append data attributes.
+		const item = container ? container.querySelector(woocommerce_settings.products) : null;
+		if (item) {
+			item.classList.add('alm-woocommerce');
+			item.dataset.url = url;
+			item.dataset.page = currentPage;
+			item.dataset.pageTitle = title;
+		}
+
+		// Count the number of returned items.
+		const items = container.querySelectorAll(woocommerce_settings.products);
+		if (items) {
+			// Set the html to the elementor container data.
+			data.html = container ? container.innerHTML : '';
+			data.meta.postcount = items.length;
+			data.meta.totalposts = total_posts;
+
+			// Create cache file.
+			createCache(alm, data, cache_slug);
+		}
+
+		// Results Text
+		almWooCommerceResultsText(div, alm);
+	}
+
+	return data;
 }
 
 /**
@@ -159,7 +229,7 @@ export function woocommerceLoaded(alm) {
  */
 export function wooReset() {
 	return new Promise((resolve) => {
-		let url = window.location;
+		const url = window.location;
 		axios
 			.get(url)
 			.then((response) => {
@@ -174,44 +244,10 @@ export function wooReset() {
 					resolve(false);
 				}
 			})
-			.catch(function (error) {
+			.catch(function () {
 				resolve(false);
 			});
 	});
-}
-
-/**
- * Get the content, title and results text from the Ajax response
- *
- * @param {object} alm ALM object.
- * @since 5.3.0
- */
-export function wooGetContent(response, alm) {
-	let data = {
-		html: '',
-		meta: {
-			postcount: 1,
-			totalposts: alm.localize.total_posts,
-			debug: false,
-		},
-	};
-	if (response.status === 200 && response.data) {
-		let div = document.createElement('div');
-		div.innerHTML = response.data;
-
-		// Get Page Title
-		let title = div.querySelector('title').innerHTML;
-		data.pageTitle = title;
-
-		// Get Products HTML
-		let products = div.querySelector(alm.addons.woocommerce_settings.container);
-		data.html = products ? products.innerHTML : '';
-
-		// Results Text
-		almWooCommerceResultsText(div, alm);
-	}
-
-	return data;
 }
 
 /**

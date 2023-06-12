@@ -82,7 +82,7 @@ var ajaxloadmore =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./core/src/js/ajax-load-more.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -100,71 +100,188 @@ var ajaxloadmore =
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.createCacheFile = createCacheFile;
-exports.wooCache = wooCache;
+exports.getCache = exports.createCache = undefined;
 
-var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/**
+ * Create a cache file.
+ *
+ * @param {object} alm  The ALM object.
+ * @param {string} data Content to cache.
+ * @param {string} name The cache slug
+ * @since 5.3.1
+ */
+var createCache = exports.createCache = function () {
+	var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(alm, data, name) {
+		var _data$html, html, _data$meta, meta, params, res;
 
-var _axios2 = _interopRequireDefault(_axios);
+		return regeneratorRuntime.wrap(function _callee$(_context) {
+			while (1) {
+				switch (_context.prev = _context.next) {
+					case 0:
+						_data$html = data.html, html = _data$html === undefined ? '' : _data$html, _data$meta = data.meta, meta = _data$meta === undefined ? {} : _data$meta;
+
+						if (!(!html || !alm.addons.cache)) {
+							_context.next = 3;
+							break;
+						}
+
+						return _context.abrupt('return');
+
+					case 3:
+						params = {
+							cache_id: alm.addons.cache_id,
+							cache_logged_in: alm.addons.cache_logged_in,
+							canonical_url: alm.canonical_url,
+							name: name,
+							html: html.trim(),
+							postcount: meta.postcount,
+							totalposts: meta.totalposts
+						};
+
+						// Create the cache file via REST API.
+
+						_context.next = 6;
+						return _api.api.post('ajax-load-more/cache/create', params);
+
+					case 6:
+						res = _context.sent;
+
+						if (res.status === 200 && res.data && res.data.success) {
+							console.log(res.data.msg);
+						}
+
+					case 8:
+					case 'end':
+						return _context.stop();
+				}
+			}
+		}, _callee, this);
+	}));
+
+	return function createCache(_x, _x2, _x3) {
+		return _ref.apply(this, arguments);
+	};
+}();
+
+/**
+ * Get cache data file.
+ *
+ * @param {object} alm       The ALM object.
+ * @param {object} params    Query params.
+ * @return {Promise\boolean} Cache data or false.
+ */
+
+var getCache = exports.getCache = function () {
+	var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(alm, params) {
+		var restParams, res;
+		return regeneratorRuntime.wrap(function _callee2$(_context2) {
+			while (1) {
+				switch (_context2.prev = _context2.next) {
+					case 0:
+						if (!(!alm.addons.cache || alm.addons.cache && alm.addons.cache_logged_in)) {
+							_context2.next = 2;
+							break;
+						}
+
+						return _context2.abrupt('return', false);
+
+					case 2:
+						restParams = {
+							id: alm.addons.cache_id,
+							name: params.cache_slug
+						};
+						_context2.next = 5;
+						return _api.api.get('ajax-load-more/cache/get', { params: restParams });
+
+					case 5:
+						res = _context2.sent;
+
+						if (!(res.status === 200 && res.data)) {
+							_context2.next = 10;
+							break;
+						}
+
+						return _context2.abrupt('return', res.data);
+
+					case 10:
+						return _context2.abrupt('return', false);
+
+					case 11:
+					case 'end':
+						return _context2.stop();
+				}
+			}
+		}, _callee2, this);
+	}));
+
+	return function getCache(_x4, _x5) {
+		return _ref2.apply(this, arguments);
+	};
+}();
+
+exports.getCacheSlug = getCacheSlug;
+
+var _md = __webpack_require__(/*! crypto-js/md5 */ "./node_modules/crypto-js/md5.js");
+
+var _md2 = _interopRequireDefault(_md);
+
+var _api = __webpack_require__(/*! ../helpers/api */ "./core/src/js/helpers/api.js");
+
+__webpack_require__(/*! babel-polyfill */ "./node_modules/babel-polyfill/lib/index.js");
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
 }
 
-/**
- * Create a single post cache file.
- *
- * @param {object} alm     The ALM object.
- * @param {string} content The content to cache.
- * @param {string} type    The type of cache to create.
- * @since 5.3.1
- */
-function createCacheFile(alm, content) {
-	var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'standard';
-
-	if (alm.addons.cache !== 'true' || !content || content === '') {
-		return false;
-	}
-	var name = type === 'single' ? alm.addons.single_post_id : 'page-' + (alm.page + 1);
-
-	var formData = new FormData();
-	formData.append('action', 'alm_cache_from_html');
-	formData.append('security', alm_localize.alm_nonce);
-	formData.append('cache_id', alm.addons.cache_id);
-	formData.append('cache_logged_in', alm.addons.cache_logged_in);
-	formData.append('canonical_url', alm.canonical_url);
-	formData.append('name', name);
-	formData.append('html', content.trim());
-
-	_axios2.default.post(alm_localize.ajaxurl, formData).then(function (response) {
-		console.log('Cache created for: ' + alm.canonical_url);
-	});
+function _asyncToGenerator(fn) {
+	return function () {
+		var gen = fn.apply(this, arguments);return new Promise(function (resolve, reject) {
+			function step(key, arg) {
+				try {
+					var info = gen[key](arg);var value = info.value;
+				} catch (error) {
+					reject(error);return;
+				}if (info.done) {
+					resolve(value);
+				} else {
+					return Promise.resolve(value).then(function (value) {
+						step("next", value);
+					}, function (err) {
+						step("throw", err);
+					});
+				}
+			}return step("next");
+		});
+	};
 }
 
 /**
- * Create a WooCommerce cache file.
+ * Create unique cache slug from query params.
  *
- * @param {Object} alm
- * @param {String} content
- * @since 5.3.1
+ * @param {object} alm  The ALM object.
+ * @param {object} data The data object.
+ * @return {string}     The cache file slug.
  */
-function wooCache(alm, content) {
-	if (alm.addons.cache !== 'true' || !content || content === '') {
-		return false;
+function getCacheSlug(alm, data) {
+	var addons = alm.addons,
+	    pagePrev = alm.pagePrev,
+	    page = alm.page,
+	    _alm$rel = alm.rel,
+	    rel = _alm$rel === undefined ? 'next' : _alm$rel;
+
+	if (addons.nextpage) {
+		// Nextpage.
+		return 'page-' + (page + addons.nextpage_startpage);
+	} else if (addons.single_post) {
+		// Single Post.
+		return addons.single_post_id;
+	} else if (addons.woocommerce || addons.elementor) {
+		// WooCommerce || Elementor.
+		return rel === 'prev' ? 'page-' + pagePrev : 'page-' + (page + 1);
+	} else {
+		// Standard.
+		return (0, _md2.default)(JSON.stringify(data)).toString();
 	}
-
-	var formData = new FormData();
-	formData.append('action', 'alm_cache_from_html');
-	formData.append('security', alm_localize.alm_nonce);
-	formData.append('cache_id', alm.addons.cache_id);
-	formData.append('cache_logged_in', alm.addons.cache_logged_in);
-	formData.append('canonical_url', alm.canonical_url);
-	formData.append('name', 'page-' + alm.page);
-	formData.append('html', content.trim());
-
-	_axios2.default.post(alm_localize.ajaxurl, formData).then(function () {
-		console.log('Cache created for post: ' + alm.canonical_url);
-	});
 }
 
 /***/ }),
@@ -183,9 +300,9 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.elementorInit = elementorInit;
+exports.elementorGetContent = elementorGetContent;
 exports.elementor = elementor;
 exports.elementorLoaded = elementorLoaded;
-exports.elementorGetContent = elementorGetContent;
 exports.elementorCreateParams = elementorCreateParams;
 
 var _getButtonURL = __webpack_require__(/*! ../helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
@@ -195,6 +312,8 @@ var _lazyImages = __webpack_require__(/*! ../modules/lazyImages */ "./core/src/j
 var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/modules/loadItems.js");
 
 var _loadItems2 = _interopRequireDefault(_loadItems);
+
+var _cache = __webpack_require__(/*! ./cache */ "./core/src/js/addons/cache.js");
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
@@ -228,7 +347,6 @@ function _asyncToGenerator(fn) {
  * @param {object} alm
  * @since 5.3.0
  */
-
 function elementorInit(alm) {
 	if (!alm.addons.elementor || !alm.addons.elementor_type || !alm.addons.elementor_type === 'posts') {
 		return false;
@@ -240,13 +358,12 @@ function elementorInit(alm) {
 		alm.button.dataset.page = alm.addons.elementor_paged;
 
 		// Set button URL
-		var nextPage = alm.addons.elementor_next_page_url;
+		var nextPage = alm.addons.elementor_next_page;
 		alm.button.dataset.url = nextPage ? nextPage : '';
 
 		// Set a11y attributes
 		target.setAttribute('aria-live', 'polite');
 		target.setAttribute('aria-atomic', 'true');
-
 		alm.listing.removeAttribute('aria-live');
 		alm.listing.removeAttribute('aria-atomic');
 
@@ -258,11 +375,6 @@ function elementorInit(alm) {
 			item.dataset.page = alm.addons.elementor_paged;
 			item.dataset.pageTitle = document.title;
 		}
-
-		if (alm.addons.elementor_paged > 1) {}
-		// maybe soon
-		//almElementorResultsTextInit(alm);
-
 
 		// Masonry Window Resize. Delay for masonry to be added via Elementor.
 		if (alm.addons.elementor_masonry) {
@@ -280,47 +392,108 @@ function elementorInit(alm) {
 }
 
 /**
+ * Get the content, title and results text from the Ajax response.
+ *
+ * @param {object} alm        The alm object.
+ * @param {string} url 	      The request URL.
+ * @param {object} response   Query response.
+ * @param {string} cache_slug The cache slug.
+ * @return {object}           Results data.
+ * @since 5.4.0
+ */
+function elementorGetContent(alm, url, response, cache_slug) {
+	// Default data object.
+	var data = {
+		html: '',
+		meta: {
+			postcount: 0,
+			totalposts: 0
+		}
+	};
+
+	// Successful response.
+	if (response.status === 200 && response.data) {
+		var addons = alm.addons;
+
+		// Create temp div to hold response data.
+
+		var div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		var title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get Elementor Items container.
+		var container = div.querySelector(addons.elementor_target + ' .' + addons.elementor_container_class);
+		if (!container) {
+			console.warn('Ajax Load More Elementor: Unable to find Elementor container element.');
+			return data;
+		}
+
+		// Get the first item and append data attributes.
+		var item = container ? container.querySelector('.' + addons.elementor_item_class) : null;
+		if (item) {
+			item.classList.add('alm-elementor');
+			item.dataset.url = url;
+			item.dataset.page = addons.elementor_paged;
+			item.dataset.pageTitle = title;
+		}
+
+		// Count the number of returned items.
+		var items = container.querySelectorAll('.' + addons.elementor_item_class);
+		if (items) {
+			// Set the html to the elementor container data.
+			data.html = container ? container.innerHTML : '';
+			data.meta.postcount = items.length;
+			data.meta.totalposts = items.length;
+
+			// Create cache file.
+			(0, _cache.createCache)(alm, data, cache_slug);
+		}
+	}
+	return data;
+}
+
+/**
  * Core ALM Elementor loader.
  *
- * @param {HTMLElement} content
- * @param {object} alm
- * @param {string} pageTitle
+ * @param {HTMLElement} content The HTML data.
+ * @param {object}      alm     The alm object.
  * @since 5.3.0
  */
 function elementor(content, alm) {
-	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
-
 	if (!content || !alm) {
+		alm.AjaxLoadMore.triggerDone();
 		return false;
 	}
 
 	return new Promise(function (resolve) {
-		var container = alm.addons.elementor_element.querySelector('.' + alm.addons.elementor_container_class); // Get post container
-		var items = content.querySelectorAll('.' + alm.addons.elementor_item_class); // Get all items in container
-		var url = alm.addons.elementor_current_url; // Current Page URL
+		var addons = alm.addons;
 
-		if (container && items && url) {
-			// Convert NodeList to Array
-			items = Array.prototype.slice.call(items);
+		var container = alm.addons.elementor_element.querySelector('.' + addons.elementor_container_class); // Get post container
+		var items = content.querySelectorAll('.' + addons.elementor_item_class); // Get all items in container
+
+		if (container && items) {
+			var ElementorItems = Array.prototype.slice.call(items); // Convert NodeList to Array
 
 			// Trigger almElementorLoaded callback.
 			if (typeof almElementorLoaded === 'function') {
-				window.almElementorLoaded(items);
+				window.almElementorLoaded(ElementorItems);
 			}
 
-			// Load the items
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 				return regeneratorRuntime.wrap(function _callee$(_context) {
 					while (1) {
 						switch (_context.prev = _context.next) {
 							case 0:
 								_context.next = 2;
-								return (0, _loadItems2.default)(container, items, alm, pageTitle, url, 'alm-elementor');
+								return (0, _loadItems2.default)(container, ElementorItems, alm);
 
 							case 2:
-								if (alm.addons.elementor_masonry) {
+								if (addons.elementor_masonry) {
 									setTimeout(function () {
-										positionMasonryItems(alm, '.' + alm.addons.elementor_container_class, '.' + alm.addons.elementor_item_class);
+										positionMasonryItems(alm, '.' + addons.elementor_container_class, '.' + addons.elementor_item_class);
 									}, 125);
 								}
 
@@ -342,17 +515,31 @@ function elementor(content, alm) {
 }
 
 /**
- * Handle Elementor loaded functionality and dispatch actions.
+ * Elementor loaded and dispatch actions.
  *
- * @param {object} alm
+ * @param {object} alm The alm object.
  * @since 5.5.0
  */
 function elementorLoaded(alm) {
-	var nextPageNum = alm.page + 1;
-	var nextPage = alm.addons.elementor_next_page_url; // Get URL.
+	var _alm_localize = alm_localize,
+	    trailing_slash = _alm_localize.trailing_slash,
+	    is_front_page = _alm_localize.is_front_page;
+	var page = alm.page,
+	    button = alm.button,
+	    canonical_url = alm.canonical_url,
+	    AjaxLoadMore = alm.AjaxLoadMore,
+	    addons = alm.addons;
+
+	var nextPage = page + 1;
+
+	var sep = is_front_page === 'true' ? 'page/' : trailing_slash === 'true' ? '' : '/';
+	var slash = trailing_slash === 'true' ? '/' : '';
+	var url = '' + (canonical_url + sep) + (nextPage + 1) + slash;
+
+	var max_pages = addons.elementor_max_pages;
 
 	// Set button data attributes.
-	(0, _getButtonURL.setButtonAtts)(alm.button, nextPageNum, nextPage);
+	(0, _getButtonURL.setButtonAtts)(button, nextPage, url);
 
 	// Lazy load images if necessary.
 	(0, _lazyImages.lazyImages)(alm);
@@ -363,55 +550,16 @@ function elementorLoaded(alm) {
 	}
 
 	// End transitions.
-	alm.AjaxLoadMore.transitionEnd();
+	AjaxLoadMore.transitionEnd();
 
-	// ALM Done
-	if (!nextPage) {
-		alm.AjaxLoadMore.triggerDone();
+	// ALM Done.
+	if (nextPage >= max_pages) {
+		AjaxLoadMore.triggerDone();
 	}
 }
 
 /**
- * Get the content, title and results text from the Ajax response.
- *
- * @param {*} response
- * @param {object} alm
- * @since 5.4.0
- */
-function elementorGetContent(response, alm) {
-	var data = {
-		html: '',
-		meta: {
-			postcount: 1,
-			totalposts: alm.localize.total_posts,
-			debug: false
-		}
-	};
-	if (response.status === 200 && response.data) {
-		var div = document.createElement('div');
-		div.innerHTML = response.data;
-
-		// Get Page Title
-		var title = div.querySelector('title').innerHTML;
-		data.pageTitle = title;
-
-		// Get Elementor Items HTML
-		var items = div.querySelector(alm.addons.elementor_target + ' .' + alm.addons.elementor_container_class);
-		data.html = items ? items.innerHTML : '';
-
-		// Set Page URL Params
-		alm.addons.elementor_current_url = alm.addons.elementor_next_page_url; // Set current to previous page URL
-		alm.addons.elementor_next_page_url = elementorGetNextPage(div, alm.addons.elementor_pagination_class);
-
-		// Results Text
-		//almElementorResultsText(div, alm);
-	}
-
-	return data;
-}
-
-/**
- * Create Elementor Params for ALM.
+ * Create Elementor params for ALM.
  *
  * @param  {object} alm The alm object.
  * @return {object}     The modified object.
@@ -423,7 +571,7 @@ function elementorCreateParams(alm) {
 
 	// Parse Container Settings
 	alm.addons.elementor_target = alm.addons.elementor_settings.target;
-	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-widget-wrap ' + alm.addons.elementor_settings.target) : '';
+	alm.addons.elementor_element = alm.addons.elementor_settings.target ? document.querySelector('.elementor-element ' + alm.addons.elementor_settings.target) : '';
 	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
 
 	// Masonry
@@ -437,9 +585,13 @@ function elementorCreateParams(alm) {
 	alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
 	alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
 
-	// Set Page & URL params
-	alm.addons.elementor_current_url = window.location.href;
-	alm.addons.elementor_next_page_url = elementorGetNextUrl(alm.addons.elementor_pagination);
+	// Get next page URL.
+	alm.addons.elementor_next_page = elementorGetNextUrl(alm.addons.elementor_pagination);
+
+	// Get the max pages.
+	alm.addons.elementor_max_pages = alm.addons.elementor_element.querySelector('.e-load-more-anchor');
+	alm.addons.elementor_max_pages = alm.addons.elementor_max_pages ? parseInt(alm.addons.elementor_max_pages.dataset.maxPage) : 999;
+
 	alm.addons.elementor_paged = alm.addons.elementor_settings.paged ? parseInt(alm.addons.elementor_settings.paged) : 1;
 	alm.page = parseInt(alm.page) + alm.addons.elementor_paged;
 
@@ -981,32 +1133,42 @@ Object.defineProperty(exports, "__esModule", {
 	value: true
 });
 exports.singlePostHTML = singlePostHTML;
+
+var _cache = __webpack_require__(/*! ./cache */ "./core/src/js/addons/cache.js");
+
 /**
  * Create the HTML for loading Single Posts.
  *
- * @param {Object} response Query response
- * @param {HTMLElement} target The target div
+ * @param {object} alm        The alm object.
+ * @param {object} response   Query response.
+ * @param {string} cache_slug The cache slug.
+ * @return {object}           Results data.
  * @since 5.1.8.1
  */
-function singlePostHTML(response) {
-	var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
+function singlePostHTML(alm, response, cache_slug) {
 	var data = {
 		html: '',
 		meta: {
-			postcount: 1,
-			totalposts: 1,
-			debug: 'Single Posts Query'
+			postcount: 0,
+			totalposts: 0
 		}
 	};
 
-	if (response.status === 200 && response.data && target) {
-		// Create temp div to hold Ajax response data.
+	// Get target element.
+	var single_post_target = alm.addons.single_post_target;
+
+	if (response.status === 200 && response.data && single_post_target) {
+		// Create temp div to hold response data.
 		var div = document.createElement('div');
 		div.innerHTML = response.data;
 
 		// Get target element.
-		var html = div.querySelector(target);
+		var html = div.querySelector(single_post_target);
+
+		if (!html) {
+			console.warn('Ajax Load More: Unable to find ' + single_post_target + ' element.');
+			return data;
+		}
 
 		// Get any custom target elements.
 		var customElements = window && window.almSinglePostsCustomElements;
@@ -1014,11 +1176,14 @@ function singlePostHTML(response) {
 			html.appendChild(singlePostsGetCustomElements(div, customElements));
 		}
 
-		if (html) {
-			data.html = html.innerHTML;
-		} else {
-			console.warn('Ajax Load More: Unable to find ' + target + ' element.');
-		}
+		data.html = html.innerHTML;
+		data.meta = {
+			postcount: 1,
+			totalposts: 1
+		};
+
+		// Create cache file.
+		(0, _cache.createCache)(alm, data, cache_slug);
 	}
 	return data;
 }
@@ -1032,7 +1197,7 @@ exports.default = singlePostHTML;
  *
  * e.g. window.almSinglePostsCustomElements = ['#woocommerce-inline-inline-css', '#wc-block-style-css'];
  *
- * @param {object} content The HTML element.
+ * @param {object}       content        The HTML element.
  * @param {array|string} customElements The elements to search for in content.
  * @return {object} HTML elements.
  */
@@ -1081,9 +1246,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.wooInit = wooInit;
 exports.woocommerce = woocommerce;
+exports.wooGetContent = wooGetContent;
 exports.woocommerceLoaded = woocommerceLoaded;
 exports.wooReset = wooReset;
-exports.wooGetContent = wooGetContent;
 
 var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
@@ -1102,6 +1267,8 @@ var _loadItems = __webpack_require__(/*! ../modules/loadItems */ "./core/src/js/
 var _loadItems2 = _interopRequireDefault(_loadItems);
 
 var _loadPrevious = __webpack_require__(/*! ../modules/loadPrevious */ "./core/src/js/modules/loadPrevious.js");
+
+var _cache = __webpack_require__(/*! ./cache */ "./core/src/js/addons/cache.js");
 
 function _interopRequireDefault(obj) {
 	return obj && obj.__esModule ? obj : { default: obj };
@@ -1195,37 +1362,33 @@ function wooInit(alm) {
  *
  * @param {Element} content  WooCommerce content container.
  * @param {object} alm       ALM object.
- * @param {string} pageTitle Page title.
  * @since 5.3.0
  */
 function woocommerce(content, alm) {
-	var pageTitle = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.title;
-
 	if (!content || !alm) {
 		return false;
 	}
 
 	return new Promise(function (resolve) {
-		var container = document.querySelector(alm.addons.woocommerce_settings.container); // Get `ul.products`
-		var products = content.querySelectorAll(alm.addons.woocommerce_settings.products); // Get all `.products`
-		var page = alm.rel === 'prev' ? alm.pagePrev - 1 : alm.page;
-		var url = alm.addons.woocommerce_settings.paged_urls[page];
-		var _alm$addons$woocommer = alm.addons.woocommerce_settings.settings,
-		    settings = _alm$addons$woocommer === undefined ? {} : _alm$addons$woocommer;
+		var _alm$addons$woocommer = alm.addons.woocommerce_settings,
+		    woocommerce_settings = _alm$addons$woocommer === undefined ? {} : _alm$addons$woocommer;
+		var _woocommerce_settings = woocommerce_settings.settings,
+		    settings = _woocommerce_settings === undefined ? {} : _woocommerce_settings;
 
+		var container = document.querySelector(woocommerce_settings.container); // Get `ul.products`
+		var products = content.querySelectorAll(woocommerce_settings.products); // Get all `.products`
 		var waitForImages = settings && settings.images_loaded === 'true' ? true : false;
 
-		if (container && products && url) {
+		if (container && products) {
 			var wooProducts = Array.prototype.slice.call(products); // Convert NodeList to Array.
 
-			// Load the Products
 			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 				return regeneratorRuntime.wrap(function _callee$(_context) {
 					while (1) {
 						switch (_context.prev = _context.next) {
 							case 0:
 								_context.next = 2;
-								return (0, _loadItems2.default)(container, wooProducts, alm, pageTitle, url, 'alm-woocommerce', waitForImages);
+								return (0, _loadItems2.default)(container, wooProducts, alm, waitForImages);
 
 							case 2:
 								resolve(true);
@@ -1246,6 +1409,83 @@ function woocommerce(content, alm) {
 			}
 		}
 	});
+}
+
+/**
+ * Get the content, title and results from the Ajax request.
+ *
+ * @param {object} alm        The alm object.
+ * @param {string} url 	      The request URL.
+ * @param {object} response   Query response.
+ * @param {string} cache_slug The cache slug.
+ * @return {object}           Results data.
+ * @since 5.3.0
+ */
+function wooGetContent(alm, url, response, cache_slug) {
+	// Default data object.
+	var data = {
+		html: '',
+		meta: {
+			postcount: 0,
+			totalposts: 0
+		}
+	};
+
+	// Successful response.
+	if (response.status === 200 && response.data) {
+		var addons = alm.addons,
+		    pagePrev = alm.pagePrev,
+		    _alm$rel = alm.rel,
+		    rel = _alm$rel === undefined ? 'next' : _alm$rel,
+		    page = alm.page,
+		    localize = alm.localize;
+		var total_posts = localize.total_posts;
+		var _addons$woocommerce_s = addons.woocommerce_settings,
+		    woocommerce_settings = _addons$woocommerce_s === undefined ? {} : _addons$woocommerce_s;
+
+		var currentPage = rel === 'prev' ? pagePrev : page + 1; // Get the page number.
+
+		// Create temp div to hold response data.
+		var div = document.createElement('div');
+		div.innerHTML = response.data;
+
+		// Get Page Title
+		var title = div.querySelector('title').innerHTML;
+		data.pageTitle = title;
+
+		// Get WooCommerce products container.
+		var container = div.querySelector(woocommerce_settings.container);
+		if (!container) {
+			console.warn('Ajax Load More WooCommerce: Unable to find WooCommerce ' + woocommerce_settings.container + ' element.');
+			return data;
+		}
+
+		// Get the first item and append data attributes.
+		var item = container ? container.querySelector(woocommerce_settings.products) : null;
+		if (item) {
+			item.classList.add('alm-woocommerce');
+			item.dataset.url = url;
+			item.dataset.page = currentPage;
+			item.dataset.pageTitle = title;
+		}
+
+		// Count the number of returned items.
+		var items = container.querySelectorAll(woocommerce_settings.products);
+		if (items) {
+			// Set the html to the elementor container data.
+			data.html = container ? container.innerHTML : '';
+			data.meta.postcount = items.length;
+			data.meta.totalposts = total_posts;
+
+			// Create cache file.
+			(0, _cache.createCache)(alm, data, cache_slug);
+		}
+
+		// Results Text
+		almWooCommerceResultsText(div, alm);
+	}
+
+	return data;
 }
 
 /**
@@ -1307,44 +1547,10 @@ function wooReset() {
 			} else {
 				resolve(false);
 			}
-		}).catch(function (error) {
+		}).catch(function () {
 			resolve(false);
 		});
 	});
-}
-
-/**
- * Get the content, title and results text from the Ajax response
- *
- * @param {object} alm ALM object.
- * @since 5.3.0
- */
-function wooGetContent(response, alm) {
-	var data = {
-		html: '',
-		meta: {
-			postcount: 1,
-			totalposts: alm.localize.total_posts,
-			debug: false
-		}
-	};
-	if (response.status === 200 && response.data) {
-		var div = document.createElement('div');
-		div.innerHTML = response.data;
-
-		// Get Page Title
-		var title = div.querySelector('title').innerHTML;
-		data.pageTitle = title;
-
-		// Get Products HTML
-		var products = div.querySelector(alm.addons.woocommerce_settings.container);
-		data.html = products ? products.innerHTML : '';
-
-		// Results Text
-		almWooCommerceResultsText(div, alm);
-	}
-
-	return data;
 }
 
 /**
@@ -1454,12 +1660,6 @@ var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 
 var _axios2 = _interopRequireDefault(_axios);
 
-var _smoothscrollPolyfill = __webpack_require__(/*! smoothscroll-polyfill */ "./node_modules/smoothscroll-polyfill/dist/smoothscroll.js");
-
-var _smoothscrollPolyfill2 = _interopRequireDefault(_smoothscrollPolyfill);
-
-__webpack_require__(/*! ./helpers/helpers */ "./core/src/js/helpers/helpers.js");
-
 var _cache = __webpack_require__(/*! ./addons/cache */ "./core/src/js/addons/cache.js");
 
 var _elementor = __webpack_require__(/*! ./addons/elementor */ "./core/src/js/addons/elementor.js");
@@ -1480,9 +1680,7 @@ var _almDomParser = __webpack_require__(/*! ./helpers/almDomParser */ "./core/sr
 
 var _almDomParser2 = _interopRequireDefault(_almDomParser);
 
-var _getCacheUrl = __webpack_require__(/*! ./helpers/getCacheUrl */ "./core/src/js/helpers/getCacheUrl.js");
-
-var _getCacheUrl2 = _interopRequireDefault(_getCacheUrl);
+var _getButtonURL = __webpack_require__(/*! ./helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
 
 var _getParameterByName = __webpack_require__(/*! ./helpers/getParameterByName */ "./core/src/js/helpers/getParameterByName.js");
 
@@ -1492,9 +1690,13 @@ var _getScrollPercentage = __webpack_require__(/*! ./helpers/getScrollPercentage
 
 var _getScrollPercentage2 = _interopRequireDefault(_getScrollPercentage);
 
-var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
+var _getTotals = __webpack_require__(/*! ./helpers/getTotals */ "./core/src/js/helpers/getTotals.js");
 
-var queryParams = _interopRequireWildcard(_queryParams);
+var _getTotals2 = _interopRequireDefault(_getTotals);
+
+__webpack_require__(/*! ./helpers/helpers */ "./core/src/js/helpers/helpers.js");
+
+var _queryParams = __webpack_require__(/*! ./helpers/queryParams */ "./core/src/js/helpers/queryParams.js");
 
 var _srcsetPolyfill = __webpack_require__(/*! ./helpers/srcsetPolyfill */ "./core/src/js/helpers/srcsetPolyfill.js");
 
@@ -1524,8 +1726,6 @@ var _filtering = __webpack_require__(/*! ./modules/filtering */ "./core/src/js/m
 
 var _filtering2 = _interopRequireDefault(_filtering);
 
-var _getButtonURL = __webpack_require__(/*! ./helpers/getButtonURL */ "./core/src/js/helpers/getButtonURL.js");
-
 var _insertScript = __webpack_require__(/*! ./modules/insertScript */ "./core/src/js/modules/insertScript.js");
 
 var _insertScript2 = _interopRequireDefault(_insertScript);
@@ -1553,10 +1753,6 @@ var _setLocalizedVars = __webpack_require__(/*! ./modules/setLocalizedVars */ ".
 var _setLocalizedVars2 = _interopRequireDefault(_setLocalizedVars);
 
 var _tableofcontents = __webpack_require__(/*! ./modules/tableofcontents */ "./core/src/js/modules/tableofcontents.js");
-
-var _getTotals = __webpack_require__(/*! ./helpers/getTotals */ "./core/src/js/helpers/getTotals.js");
-
-var _getTotals2 = _interopRequireDefault(_getTotals);
 
 function _interopRequireWildcard(obj) {
 	if (obj && obj.__esModule) {
@@ -1604,32 +1800,32 @@ function _asyncToGenerator(fn) {
 			}return step("next");
 		});
 	};
-}
+} // ALM Modules
 
-/**
- * Ajax Load More
- * https://connekthq.com/plugins/ajax-load-more/
- * Author: Darren Cooney
- * Twitter: @KaptonKaos, @ajaxloadmore, @connekthq
- * Copyright Connekt Media - https://connekthq.com
- */
+
+// External Modules
+var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
+var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
+
+// Axios Config.
+_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+// Axios Interceptor for nested data objects
+_axios2.default.interceptors.request.use(function (config) {
+	config.paramsSerializer = function (params) {
+		// Qs is already included in the Axios package
+		return qs.stringify(params, {
+			arrayFormat: 'brackets',
+			encode: false
+		});
+	};
+	return config;
+});
 
 // Polyfills
 __webpack_require__(/*! @babel/polyfill/noConflict */ "./node_modules/@babel/polyfill/noConflict.js");
 __webpack_require__(/*! focus-options-polyfill */ "./node_modules/focus-options-polyfill/index.js");
 __webpack_require__(/*! ./helpers/polyfills.js */ "./core/src/js/helpers/polyfills.js");
-
-// External Modules
-var qs = __webpack_require__(/*! qs */ "./node_modules/qs/lib/index.js");
-var imagesLoaded = __webpack_require__(/*! imagesloaded */ "./node_modules/imagesloaded/imagesloaded.js");
-// Smooth scrolling polyfill
-_axios2.default.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-_smoothscrollPolyfill2.default.polyfill();
-
-// ALM Modules
-
-//import commentReplyFix from './helpers/commentReplyFix';
-
 
 // Global filtering state.
 var alm_is_filtering = false;
@@ -1659,7 +1855,7 @@ var alm_is_filtering = false;
 		alm.integration = {};
 		alm.window = window;
 		alm.page = 0;
-		alm.posts = 0;
+		alm.postcount = 0;
 		alm.totalposts = 0;
 		alm.proceed = false;
 		alm.disable_ajax = false;
@@ -1765,18 +1961,16 @@ var alm_is_filtering = false;
 		}
 
 		// Cache add-on
-		alm.addons.cache = alm.listing.dataset.cache;
-		alm.addons.cache = alm.addons.cache === undefined ? false : alm.addons.cache;
-		if (alm.addons.cache === 'true') {
+		alm.addons.cache = alm.listing.dataset.cache && alm.listing.dataset.cache === 'true' ? true : false;
+		if (alm.addons.cache) {
 			alm.addons.cache_id = alm.listing.dataset.cacheId;
 			alm.addons.cache_path = alm.listing.dataset.cachePath;
-			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn;
-			alm.addons.cache_logged_in = alm.addons.cache_logged_in === undefined ? false : alm.addons.cache_logged_in;
+			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn ? alm.listing.dataset.cacheLoggedIn : false;
 		}
 
 		// CTA add-on
-		alm.addons.cta = alm.listing.dataset.cta ? alm.listing.dataset.cta : false;
-		if (alm.addons.cta === 'true') {
+		alm.addons.cta = alm.listing.dataset.cta && alm.listing.dataset.cta === 'true' ? true : false;
+		if (alm.addons.cta) {
 			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
 			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
 			alm.addons.cta_theme_repeater = alm.listing.dataset.ctaThemeRepeater;
@@ -1789,7 +1983,7 @@ var alm_is_filtering = false;
 			alm.addons.nextpage_scroll = alm.listing.dataset.nextpageScroll;
 			alm.addons.nextpage_pageviews = alm.listing.dataset.nextpagePageviews;
 			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
-			alm.addons.nextpage_startpage = alm.listing.dataset.nextpageStartpage;
+			alm.addons.nextpage_startpage = parseInt(alm.listing.dataset.nextpageStartpage);
 			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
 		}
 
@@ -1805,6 +1999,7 @@ var alm_is_filtering = false;
 			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar === undefined ? '' : alm.listing.dataset.singlePostProgressBar;
 			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget === undefined ? '' : alm.listing.dataset.singlePostTarget;
 			alm.addons.single_post_preview = alm.listing.dataset.singlePostPreview === undefined ? false : true;
+
 			if (alm.addons.single_post_preview) {
 				var singlePostPreviewData = alm.listing.dataset.singlePostPreview.split(':');
 				alm.addons.single_post_preview_data = {
@@ -1828,7 +2023,6 @@ var alm_is_filtering = false;
 			alm.addons.comments_callback = alm.listing.dataset.comments_callback;
 		}
 
-		alm.addons.tabs = alm.listing.dataset.tabs;
 		alm.addons.filters = alm.listing.dataset.filters;
 		alm.addons.seo = alm.listing.dataset.seo;
 		alm.addons.seo_offset = alm.listing.dataset.seoOffset;
@@ -1864,6 +2058,7 @@ var alm_is_filtering = false;
 			alm.extensions.acf_field_type = alm.listing.dataset.acfFieldType;
 			alm.extensions.acf_field_name = alm.listing.dataset.acfFieldName;
 			alm.extensions.acf_parent_field_name = alm.listing.dataset.acfParentFieldName;
+			alm.extensions.acf_row_index = alm.listing.dataset.acfRowIndex;
 			alm.extensions.acf_post_id = alm.listing.dataset.acfPostId;
 			// if field type, name or post ID is empty.
 			if (alm.extensions.acf_field_type === undefined || alm.extensions.acf_field_name === undefined || alm.extensions.acf_post_id === undefined) {
@@ -1932,30 +2127,6 @@ var alm_is_filtering = false;
 			}
 		} else {
 			alm.addons.filters = false;
-		}
-
-		// Tabs.
-		if (alm.addons.tabs === 'true') {
-			alm.addons.tabs = true;
-			alm.addons.tab_template = alm.listing.dataset.tabTemplate ? alm.listing.dataset.tabTemplate : '';
-			alm.addons.tab_onload = alm.listing.dataset.tabOnload ? alm.listing.dataset.tabOnload : '';
-			alm.addons.tabs_resturl = alm.listing.dataset.tabsRestUrl ? alm.listing.dataset.tabsRestUrl : '';
-
-			// Locate active template (deeplinks)
-			if (alm.addons.tab_onload !== '') {
-				var tabNav = document.querySelector('.alm-tab-nav li [data-tab-url=' + alm.addons.tab_onload + ']');
-				alm.addons.tab_template = tabNav ? tabNav.dataset.tabTemplate : alm.addons.tab_template;
-				alm.listing.dataset.tabOnload = ''; // Clear tabOnload param
-				// Set selected tab
-				if (tabNav) {
-					var activeTab = document.querySelector('.alm-tab-nav li .active');
-					if (activeTab) {
-						activeTab.classList.remove('active');
-					}
-				}
-			}
-		} else {
-			alm.addons.tabs = false;
 		}
 
 		/* REST API */
@@ -2046,6 +2217,7 @@ var alm_is_filtering = false;
 			alm.addons.single_post_permalink = '';
 			alm.addons.single_post_title = '';
 			alm.addons.single_post_slug = '';
+			alm.addons.single_post_cache = false;
 			alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
 			alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
 			alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
@@ -2196,19 +2368,17 @@ var alm_is_filtering = false;
    * @since 2.0.0
    */
 		alm.AjaxLoadMore.loadPosts = function () {
-			if (typeof almOnChange === 'function') {
-				window.almOnChange(alm);
-			}
-
-			// Check for ajax blocker.
 			if (alm.disable_ajax) {
 				return;
 			}
 
+			if (typeof almOnChange === 'function') {
+				window.almOnChange(alm);
+			}
+
+			// Set loading attributes.
 			alm.loading = true;
 			(0, _placeholder.showPlaceholder)(alm);
-
-			// Add `.alm-loading` class to container.
 			alm.main.classList.add('alm-loading');
 
 			// Add loading styles to buttons.
@@ -2223,26 +2393,7 @@ var alm_is_filtering = false;
 				}
 			}
 
-			// Cache
-			if (alm.addons.cache === 'true' && !alm.addons.cache_logged_in) {
-				var cache_page = (0, _getCacheUrl2.default)(alm);
-				if (cache_page) {
-					_axios2.default.get(cache_page).then(function (response) {
-						// Exists
-						alm.AjaxLoadMore.success(response.data, true);
-					}).catch(function (error) {
-						// Error || Page does not yet exist
-						// console.log(error);
-						alm.AjaxLoadMore.ajax();
-					});
-				} else {
-					// Standard ALM query
-					alm.AjaxLoadMore.ajax();
-				}
-			} else {
-				// Standard ALM query
-				alm.AjaxLoadMore.ajax();
-			}
+			alm.AjaxLoadMore.ajax(); // Dispatch http request.
 		};
 
 		/**
@@ -2251,288 +2402,147 @@ var alm_is_filtering = false;
    * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 2.6.0
    */
-		alm.AjaxLoadMore.ajax = function () {
+		alm.AjaxLoadMore.ajax = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
 			var queryType = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'standard';
+			var params, cache;
+			return regeneratorRuntime.wrap(function _callee$(_context) {
+				while (1) {
+					switch (_context.prev = _context.next) {
+						case 0:
+							if (!alm.extensions.restapi) {
+								_context.next = 4;
+								break;
+							}
 
-			// Default ALM action
-			var action = 'alm_get_posts';
+							// Rest API.
+							alm.AjaxLoadMore.restapi(alm);
+							_context.next = 9;
+							break;
 
-			// ACF Params
-			alm.acf_array = '';
-			if (alm.extensions.acf) {
-				// Custom query for the Repeater / Gallery / Flexible Content field types
-				if (alm.extensions.acf_field_type !== 'relationship') {
-					action = 'alm_acf';
-				}
-				alm.acf_array = {
-					acf: 'true',
-					post_id: alm.extensions.acf_post_id,
-					field_type: alm.extensions.acf_field_type,
-					field_name: alm.extensions.acf_field_name,
-					parent_field_name: alm.extensions.acf_parent_field_name
-				};
-			}
+						case 4:
+							// Standard ALM.
+							params = (0, _queryParams.getAjaxParams)(alm, queryType);
+							_context.next = 7;
+							return (0, _cache.getCache)(alm, Object.assign({}, params));
 
-			// Term Query Params
-			alm.term_query_array = '';
-			if (alm.extensions.term_query) {
-				action = 'alm_get_terms';
-				alm.term_query_array = {
-					term_query: 'true',
-					taxonomy: alm.extensions.term_query_taxonomy,
-					hide_empty: alm.extensions.term_query_hide_empty,
-					number: alm.extensions.term_query_number
-				};
-			}
+						case 7:
+							cache = _context.sent;
 
-			// Nextpage Params
-			alm.nextpage_array = '';
-			if (alm.addons.nextpage) {
-				action = 'alm_nextpage';
-				alm.nextpage_array = {
-					nextpage: 'true',
-					urls: alm.addons.nextpage_urls,
-					scroll: alm.addons.nextpage_scroll,
-					pageviews: alm.addons.nextpage_pageviews,
-					post_id: alm.addons.nextpage_post_id,
-					startpage: alm.addons.nextpage_startpage,
-					nested: alm.nested
-				};
-			}
+							if (cache) {
+								alm.AjaxLoadMore.render(cache);
+							} else {
+								alm.AjaxLoadMore.adminajax(params, queryType);
+							}
 
-			// Previous Post Params
-			alm.single_post_array = '';
-			if (alm.addons.single_post) {
-				alm.single_post_array = {
-					single_post: 'true',
-					id: alm.addons.single_post_id,
-					slug: alm.addons.single_post_slug
-				};
-			}
-
-			// Comment Params
-			alm.comments_array = '';
-			if (alm.addons.comments === 'true') {
-				action = 'alm_comments';
-				alm.posts_per_page = alm.addons.comments_per_page;
-				alm.comments_array = {
-					comments: 'true',
-					post_id: alm.addons.comments_post_id,
-					per_page: alm.addons.comments_per_page,
-					type: alm.addons.comments_type,
-					style: alm.addons.comments_style,
-					template: alm.addons.comments_template,
-					callback: alm.addons.comments_callback
-				};
-			}
-
-			// Users Params
-			alm.users_array = '';
-			if (alm.addons.users) {
-				action = 'alm_users';
-				alm.users_array = {
-					users: 'true',
-					role: alm.listing.dataset.usersRole,
-					include: alm.listing.dataset.usersInclude,
-					exclude: alm.listing.dataset.usersExclude,
-					per_page: alm.posts_per_page,
-					order: alm.listing.dataset.usersOrder,
-					orderby: alm.listing.dataset.usersOrderby
-				};
-			}
-
-			// CTA Params
-			alm.cta_array = '';
-			if (alm.addons.cta === 'true') {
-				alm.cta_array = {
-					cta: 'true',
-					cta_position: alm.addons.cta_position,
-					cta_repeater: alm.addons.cta_repeater,
-					cta_theme_repeater: alm.addons.cta_theme_repeater
-				};
-			}
-
-			// REST API
-			if (alm.extensions.restapi) {
-				alm.AjaxLoadMore.restapi(alm, action, queryType);
-			}
-			// Tabs
-			else if (alm.addons.tabs) {
-					alm.AjaxLoadMore.tabs(alm);
-				}
-				// Standard ALM
-				else {
-						alm.AjaxLoadMore.adminajax(alm, action, queryType);
+						case 9:
+						case 'end':
+							return _context.stop();
 					}
-		};
+				}
+			}, _callee, this);
+		}));
 
 		/**
    * Send request to the admin-ajax.php
    *
-   * @param {object} alm The Ajax Load More object.
-   * @param {string} action The Ajax action.
+   * @param {object} params    Query params.
    * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
-		alm.AjaxLoadMore.adminajax = function (alm, action, queryType) {
-			// Axios Interceptor for nested data objects
-			_axios2.default.interceptors.request.use(function (config) {
-				config.paramsSerializer = function (params) {
-					// Qs is already included in the Axios package
-					return qs.stringify(params, {
-						arrayFormat: 'brackets',
-						encode: false
-					});
-				};
-				return config;
-			});
+		alm.AjaxLoadMore.adminajax = function () {
+			var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(params, queryType) {
+				var _alm_localize, ajaxurl, _params, _params$cache_slug, cache_slug, data;
 
-			// Get Ajax URL
-			var ajaxURL = alm_localize.ajaxurl;
+				return regeneratorRuntime.wrap(function _callee2$(_context2) {
+					while (1) {
+						switch (_context2.prev = _context2.next) {
+							case 0:
+								_alm_localize = alm_localize, ajaxurl = _alm_localize.ajaxurl; // Get Ajax URL
 
-			// Get data params
-			var params = queryParams.almGetAjaxParams(alm, action, queryType); // [./helpers/queryParams.js
+								_params = params, _params$cache_slug = _params.cache_slug, cache_slug = _params$cache_slug === undefined ? '' : _params$cache_slug; // Deconstruct query params.
 
-			// Single Posts Add-on
-			// If has `single_post_target`, adjust the Ajax URL to the post URL.
-			if (alm.addons.single_post && alm.addons.single_post_target) {
-				ajaxURL = alm.addons.single_post_permalink + '?id=' + alm.addons.single_post_id + '&alm_page=' + (parseInt(alm.page) + 1);
-				params = '';
-			}
+								/**
+         * Single Posts.
+         * If `single_post_target`, adjust the Ajax URL to the post URL.
+         */
 
-			// WooCommerce Add-on
-			if (alm.addons.woocommerce) {
-				ajaxURL = (0, _getButtonURL.getButtonURL)(alm, alm.rel);
-				params = '';
-			}
+								if (alm.addons.single_post && alm.addons.single_post_target) {
+									ajaxurl = alm.addons.single_post_permalink + '?id=' + alm.addons.single_post_id + '&alm_page=' + (parseInt(alm.page) + 1);
+									params = '';
+								}
 
-			// Elementor Add-on
-			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
-				ajaxURL = (0, _getButtonURL.getButtonURL)(alm, alm.rel);
-				params = '';
-			}
+								// WooCommerce || Elementor.
+								if (alm.addons.woocommerce || alm.addons.elementor && alm.addons.elementor_type === 'posts') {
+									ajaxurl = (0, _getButtonURL.getButtonURL)(alm, alm.rel);
+									params = '';
+								}
 
-			// Send HTTP request via axios
-			_axios2.default.get(ajaxURL, { params: params }).then(function (response) {
-				// Success
-				var data = '';
+								// Send HTTP request via axios.
+								_context2.next = 6;
+								return _axios2.default.get(ajaxurl, { params: params }).then(function (response) {
+									if (alm.addons.single_post && alm.addons.single_post_target) {
+										// Single Posts
+										return (0, _singleposts.singlePostHTML)(alm, response, cache_slug);
+									} else if (alm.addons.woocommerce) {
+										// WooCommerce.
+										return (0, _woocommerce.wooGetContent)(alm, ajaxurl, response, cache_slug);
+									} else if (alm.addons.elementor) {
+										// Elementor
+										return (0, _elementor.elementorGetContent)(alm, ajaxurl, response, cache_slug);
+									} else {
+										// Get data from response
+										return response.data;
+									}
+								}).catch(function (error) {
+									// Error
+									alm.AjaxLoadMore.error(error, 'adminajax');
+								});
 
-				if (alm.addons.single_post && alm.addons.single_post_target) {
-					// Single Posts
-					data = (0, _singleposts.singlePostHTML)(response, alm.addons.single_post_target);
-					(0, _cache.createCacheFile)(alm, data.html, 'single');
-				} else if (alm.addons.woocommerce) {
-					// WooCommerce
-					data = (0, _woocommerce.wooGetContent)(response, alm);
-					(0, _cache.createCacheFile)(alm, data.html, 'woocommerce');
-				} else if (alm.addons.elementor) {
-					// Elementor
-					data = (0, _elementor.elementorGetContent)(response, alm);
-					(0, _cache.createCacheFile)(alm, data.html, 'elementor');
-				} else {
-					// Get data from response
-					data = response.data;
-				}
+							case 6:
+								data = _context2.sent;
+								_context2.t0 = queryType;
+								_context2.next = _context2.t0 === 'standard' ? 10 : _context2.t0 === 'totalposts' ? 12 : 14;
+								break;
 
-				// Standard Query
-				if (queryType === 'standard') {
-					alm.AjaxLoadMore.success(data, false);
-				} else if (queryType === 'totalpages' && alm.addons.paging && alm.addons.nextpage) {
-					// Next Page and Paging
-					if (typeof almBuildPagination === 'function') {
-						window.almBuildPagination(data.totalpages, alm);
-						alm.totalpages = data.totalpages;
+							case 10:
+								alm.AjaxLoadMore.render(data);
+								return _context2.abrupt('break', 14);
+
+							case 12:
+								if (alm.addons.paging && alm.addons.nextpage && typeof almBuildPagination === 'function') {
+									window.almBuildPagination(data.totalpages, alm);
+									alm.totalpages = data.totalpages;
+								} else {
+									if (alm.addons.paging && typeof almBuildPagination === 'function') {
+										window.almBuildPagination(data.totalposts, alm);
+									}
+								}
+								return _context2.abrupt('break', 14);
+
+							case 14:
+							case 'end':
+								return _context2.stop();
+						}
 					}
-				} else if (queryType === 'totalposts' && alm.addons.paging) {
-					// Paging
-					if (typeof almBuildPagination === 'function') {
-						window.almBuildPagination(data.totalposts, alm);
-					}
-				}
-			}).catch(function (error) {
-				// Error
-				alm.AjaxLoadMore.error(error, 'adminajax');
-			});
-		};
+				}, _callee2, this);
+			}));
 
-		/**
-   * Ajax Load More Tab functionality.
-   *
-   * @param {object} alm The Ajax Load More object.
-   * @since 5.2.0
-   */
-		alm.AjaxLoadMore.tabs = function (alm) {
-			var alm_rest_url = alm.addons.tabs_resturl + 'ajaxloadmore/tab';
-
-			var params = {
-				post_id: alm.post_id,
-				template: alm.addons.tab_template
+			return function (_x2, _x3) {
+				return _ref2.apply(this, arguments);
 			};
-
-			// Axios Interceptor for nested data objects
-			_axios2.default.interceptors.request.use(function (config) {
-				config.paramsSerializer = function (params) {
-					// Qs is already included in the Axios package
-					return qs.stringify(params, {
-						arrayFormat: 'brackets',
-						encode: false
-					});
-				};
-				return config;
-			});
-
-			// Send Ajax request
-			_axios2.default.get(alm_rest_url, { params: params }).then(function (response) {
-				// Success
-				var results = response.data; // Get data from response
-				var html = results.html;
-
-				// Create object to pass to success()
-				var obj = {
-					html: html,
-					meta: {
-						postcount: 1,
-						totalposts: 1
-					}
-				};
-				alm.AjaxLoadMore.success(obj, false); // Send data
-
-				// Callback to Tabs add-on
-				if (typeof almTabLoaded === 'function') {
-					window.almTabLoaded(alm);
-				}
-			}).catch(function (error) {
-				// Error
-				alm.AjaxLoadMore.error(error, 'restapi');
-			});
-		};
+		}();
 
 		/**
    * Send request to the WP REST API
    *
    * @param {object} alm The Ajax Load More object.
-   * @param {string} action The Ajax action.
-   * @param {string} queryType The type of Ajax request (standard/totalposts).
    * @since 5.0.0
    */
-		alm.AjaxLoadMore.restapi = function (alm, action, queryType) {
+		alm.AjaxLoadMore.restapi = function (alm) {
 			var alm_rest_template = wp.template(alm.extensions.restapi_template_id);
 			var alm_rest_url = alm.extensions.restapi_base_url + '/' + alm.extensions.restapi_namespace + '/' + alm.extensions.restapi_endpoint;
-			var params = queryParams.almGetRestParams(alm); // [./helpers/queryParams.js]
+			var params = (0, _queryParams.getRestAPIParams)(alm); // [./helpers/queryParams.js]
 
-			// Axios Interceptor for nested data objects
-			_axios2.default.interceptors.request.use(function (config) {
-				config.paramsSerializer = function (params) {
-					// Qs is already included in the Axios package
-					return qs.stringify(params, {
-						arrayFormat: 'brackets',
-						encode: false
-					});
-				};
-				return config;
-			});
-
-			// Send Ajax request
 			_axios2.default.get(alm_rest_url, { params: params }).then(function (response) {
 				// Success
 				var results = response.data; // Get data from response
@@ -2555,7 +2565,7 @@ var alm_is_filtering = false;
 					data += alm_rest_template(result);
 				}
 
-				// Create object to pass to success()
+				// Create results object.
 				var obj = {
 					html: data,
 					meta: {
@@ -2563,7 +2573,7 @@ var alm_is_filtering = false;
 						totalposts: totalposts
 					}
 				};
-				alm.AjaxLoadMore.success(obj, false); // Send data
+				alm.AjaxLoadMore.render(obj);
 			}).catch(function (error) {
 				// Error
 				alm.AjaxLoadMore.error(error, 'restapi');
@@ -2580,18 +2590,16 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   * Success function after loading data.
+   * Display/render results function.
    *
-   * @param {object}  data     The results of the Ajax request.
-   * @param {boolean} is_cache Are results of the Ajax request coming from cache?
+   * @param {object} data The results of the Ajax request.
    * @since 2.6.0
    */
-		alm.AjaxLoadMore.success = function (data, is_cache) {
+		alm.AjaxLoadMore.render = function (data) {
 			var _this = this;
 
 			if (alm.addons.single_post) {
-				// Get previous page data
-				alm.AjaxLoadMore.getSinglePost();
+				alm.AjaxLoadMore.getSinglePost(); // Get single post data for next post.
 			}
 
 			var isPaged = false;
@@ -2606,35 +2614,22 @@ var alm_is_filtering = false;
 			// Paging container
 			var pagingContent = alm.listing.querySelector('.alm-paging-content');
 
-			var html = void 0,
-			    meta = void 0,
-			    total = void 0;
+			var html = data.html;
+			var total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
+			var meta = data.meta;
 
-			if (is_cache) {
-				// If Cache, do not look for json data as we won't be querying the DB.
-				html = data;
-			} else {
-				// Standard ALM query results
-				html = data.html;
-				meta = data.meta;
-				total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
+			// Get current post counts.
+			var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
+			alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
+			alm.postcount = alm.addons.paging ? total : alm.postcount + total;
 
-				var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
-				alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
-				alm.posts = alm.addons.paging ? total : alm.posts + total;
-				alm.debug = meta.debug ? meta.debug : '';
-
-				if (!meta) {
-					// Display warning if `meta` is missing.
-					console.warn('Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.');
-				}
+			if (!meta) {
+				// Display warning if `meta` is missing.
+				console.warn('Ajax Load More: Unable to access `meta` object in Ajax response. There may be an issue in your Repeater Template or another hook causing interference.');
 			}
 
 			// Set alm.html as plain text return
 			alm.html = html;
-
-			// If cache, get the length of the html object
-			total = is_cache ? (0, _almDomParser2.default)(html).length : total;
 
 			// First Run Only
 			if (alm.init) {
@@ -2698,20 +2693,20 @@ var alm_is_filtering = false;
 			/**
     * Set localized variables and Results Text.
     */
-			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
-				return regeneratorRuntime.wrap(function _callee$(_context) {
+			_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
+				return regeneratorRuntime.wrap(function _callee3$(_context3) {
 					while (1) {
-						switch (_context.prev = _context.next) {
+						switch (_context3.prev = _context3.next) {
 							case 0:
-								_context.next = 2;
+								_context3.next = 2;
 								return (0, _setLocalizedVars2.default)(alm);
 
 							case 2:
 							case 'end':
-								return _context.stop();
+								return _context3.stop();
 						}
 					}
-				}, _callee, _this);
+				}, _callee3, _this);
 			}))();
 
 			/**
@@ -2763,7 +2758,7 @@ var alm_is_filtering = false;
 								isPaged = true;
 
 								// Call to Actions
-								if (alm.addons.cta === 'true') {
+								if (alm.addons.cta) {
 									posts_per_page = posts_per_page + 1; // Add 1 to posts_per_page for CTAs
 									pages = Math.ceil(total / posts_per_page); // Update pages let with new posts_per_page
 									total = pages + total; // Get new total w/ CTAs added
@@ -2873,56 +2868,56 @@ var alm_is_filtering = false;
 
 					// WooCommerce Add-on
 					if (alm.addons.woocommerce) {
-						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-							return regeneratorRuntime.wrap(function _callee2$(_context2) {
+						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+							return regeneratorRuntime.wrap(function _callee4$(_context4) {
 								while (1) {
-									switch (_context2.prev = _context2.next) {
+									switch (_context4.prev = _context4.next) {
 										case 0:
-											_context2.next = 2;
-											return (0, _woocommerce.woocommerce)(reveal, alm, data.pageTitle);
+											_context4.next = 2;
+											return (0, _woocommerce.woocommerce)(reveal, alm);
 
 										case 2:
 											(0, _woocommerce.woocommerceLoaded)(alm);
 
 										case 3:
 										case 'end':
-											return _context2.stop();
+											return _context4.stop();
 									}
 								}
-							}, _callee2, this);
+							}, _callee4, this);
 						}))().catch(function (e) {
-							console.log('Ajax Load More: There was an error loading woocommerce products.', e);
+							console.warn('Ajax Load More: There was an error loading woocommerce products.', e);
 						});
 
 						alm.init = false;
-						return; // Exit
+						return;
 					}
 
 					// Elementor Add-on
 					if (alm.addons.elementor) {
-						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-							return regeneratorRuntime.wrap(function _callee3$(_context3) {
+						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+							return regeneratorRuntime.wrap(function _callee5$(_context5) {
 								while (1) {
-									switch (_context3.prev = _context3.next) {
+									switch (_context5.prev = _context5.next) {
 										case 0:
-											_context3.next = 2;
-											return (0, _elementor.elementor)(reveal, alm, data.pageTitle);
+											_context5.next = 2;
+											return (0, _elementor.elementor)(reveal, alm);
 
 										case 2:
 											(0, _elementor.elementorLoaded)(alm);
 
 										case 3:
 										case 'end':
-											return _context3.stop();
+											return _context5.stop();
 									}
 								}
-							}, _callee3, this);
+							}, _callee5, this);
 						}))().catch(function (e) {
-							console.log('Ajax Load More: There was an error loading Elementor items.', e);
+							console.warn('Ajax Load More: There was an error loading Elementor items.', e);
 						});
 
 						alm.init = false;
-						return; // Exit
+						return;
 					}
 
 					// Append `reveal` div to ALM Listing container
@@ -2960,12 +2955,12 @@ var alm_is_filtering = false;
 						alm.el = alm.listing;
 
 						// Wrap almMasonry in anonymous async/await function
-						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-							return regeneratorRuntime.wrap(function _callee4$(_context4) {
+						_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+							return regeneratorRuntime.wrap(function _callee6$(_context6) {
 								while (1) {
-									switch (_context4.prev = _context4.next) {
+									switch (_context6.prev = _context6.next) {
 										case 0:
-											_context4.next = 2;
+											_context6.next = 2;
 											return (0, _masonry.almMasonry)(alm, alm.init, alm_is_filtering);
 
 										case 2:
@@ -2983,10 +2978,10 @@ var alm_is_filtering = false;
 
 										case 7:
 										case 'end':
-											return _context4.stop();
+											return _context6.stop();
 									}
 								}
-							}, _callee4, this);
+							}, _callee6, this);
 						}))().catch(function () {
 							console.log('There was an error with ALM Masonry');
 						});
@@ -3021,16 +3016,6 @@ var alm_is_filtering = false;
 									alm.AjaxLoadMore.transitionEnd();
 								}
 							}
-
-					// TABS - Trigger almTabsSetHeight callback in Tabs add-on
-					if (alm.addons.tabs && typeof almTabsSetHeight === 'function') {
-						imagesLoaded(reveal, function () {
-							(0, _fadeIn2.default)(alm.listing, alm.speed);
-							setTimeout(function () {
-								window.almTabsSetHeight(alm);
-							}, alm.speed);
-						});
-					}
 				} else {
 					// Paging
 					if (!alm.init) {
@@ -3095,37 +3080,24 @@ var alm_is_filtering = false;
 							window.almFiltersAddonComplete(el);
 						}
 					}
+
 					alm_is_filtering = false;
 
-					// Tabs Complete
-					if (alm.addons.tabs) {
-						// Tabs Complete
-						if (typeof almTabsComplete === 'function') {
-							// Standard Filtering
-							window.almTabsComplete();
-						}
-					}
-
-					// ALM Done
-					if (!alm.addons.cache) {
-						// Not Cache & Single Post
-						if (alm.posts >= alm.totalposts && !alm.addons.single_post) {
-							alm.AjaxLoadMore.triggerDone();
-						}
-					} else {
-						// Cache
-						if (alm.addons.nextpage && alm.localize) {
-							// Nextpage
-							if (parseInt(alm.localize.page) === parseInt(alm.localize.total_posts)) {
+					/**
+      * ALM Done.
+      */
+					if (!alm.addons.single_post) {
+						if (alm.addons.nextpage) {
+							// Nextpage.
+							if (alm.postcount + alm.addons.nextpage_startpage >= alm.totalposts) {
 								alm.AjaxLoadMore.triggerDone();
 							}
 						} else {
-							if (total < parseInt(alm.posts_per_page)) {
+							if (alm.postcount >= alm.totalposts) {
 								alm.AjaxLoadMore.triggerDone();
 							}
 						}
 					}
-					// End ALM Done
 				});
 				// End ALM Loaded
 
@@ -3201,15 +3173,6 @@ var alm_is_filtering = false;
 					almFiltersAddonComplete(el);
 				}
 				alm_is_filtering = false;
-			}
-
-			// Tabs Complete
-			if (alm.addons.tabs) {
-				// Tabs Complete
-				if (typeof almTabsComplete === 'function') {
-					// Standard Filtering
-					almTabsComplete();
-				}
 			}
 
 			// Masonry, clear `alm-listing` height
@@ -3346,38 +3309,29 @@ var alm_is_filtering = false;
    *
    *  @since 2.7.4
    */
-		if (alm.addons.single_post_id) {
-			alm.fetchingPreviousPost = false;
-			alm.addons.single_post_init = true;
-		}
-
 		alm.AjaxLoadMore.getSinglePost = function () {
-			var action = 'alm_get_single';
-
 			if (alm.fetchingPreviousPost) {
-				return false;
+				return;
 			}
-			alm.fetchingPreviousPost = true;
 
-			// Get Ajax URL.
-			var ajaxURL = alm_localize.ajaxurl;
+			alm.fetchingPreviousPost = true;
 
 			// Get data params
 			var params = {
+				action: 'alm_get_single',
 				id: alm.addons.single_post_id,
 				initial_id: alm.addons.single_post_init_id,
 				order: alm.addons.single_post_order,
 				taxonomy: alm.addons.single_post_taxonomy,
 				excluded_terms: alm.addons.single_post_excluded_terms,
 				post_type: alm.post_type,
-				init: alm.addons.single_post_init,
-				action: action
+				init: alm.addons.single_post_init
 			};
 
 			// Send HTTP request via Axios
-			_axios2.default.get(ajaxURL, { params: params }).then(function (response) {
-				// Success
-				var data = response.data; // Get data from response
+			_axios2.default.get(alm_localize.ajaxurl, { params: params }).then(function (response) {
+				// Get data from response.
+				var data = response.data;
 
 				if (data.has_previous_post) {
 					alm.listing.dataset.singlePostId = data.prev_id; // Update single-post-id on instance
@@ -3385,7 +3339,9 @@ var alm_is_filtering = false;
 					alm.addons.single_post_permalink = data.prev_permalink;
 					alm.addons.single_post_title = data.prev_title;
 					alm.addons.single_post_slug = data.prev_slug;
+					alm.addons.single_post_cache = data.cache;
 				} else {
+					alm.addons.single_post_cache = false;
 					if (!data.has_previous_post) {
 						alm.AjaxLoadMore.triggerDone();
 					}
@@ -3401,6 +3357,11 @@ var alm_is_filtering = false;
 				alm.fetchingPreviousPost = false;
 			});
 		};
+
+		if (alm.addons.single_post_id) {
+			alm.fetchingPreviousPost = false;
+			alm.addons.single_post_init = true;
+		}
 
 		/**
    * Triggers various add-on functions (if available) after load complete.
@@ -3550,22 +3511,16 @@ var alm_is_filtering = false;
 		}
 
 		/**
-   * Window resize functions for Paging, Scroll Distance Percentage, Tabs etc.
+   * Window resize functions for Paging, Scroll Distance Percentage etc.
    *
    * @since 2.1.2
    * @updated 5.2
    */
-		if (alm.addons.paging || alm.addons.tabs || alm.scroll_distance_perc || alm.scroll_direction === 'horizontal') {
+		if (alm.addons.paging || alm.scroll_distance_perc || alm.scroll_direction === 'horizontal') {
 			var resize = void 0;
 			alm.window.onresize = function () {
 				clearTimeout(resize);
-				resize = setTimeout(function (e) {
-					if (alm.addons.tabs) {
-						// Tabs
-						if (typeof almOnTabsWindowResize === 'function') {
-							window.almOnTabsWindowResize(alm);
-						}
-					}
+				resize = setTimeout(function () {
 					if (alm.addons.paging) {
 						// Paging
 						if (typeof almOnWindowResize === 'function') {
@@ -3887,8 +3842,8 @@ var alm_is_filtering = false;
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
 				(0, _elementor.elementorInit)(alm);
 
-				// Trigger `Done` if `elementor_next_page_url` is empty
-				if (alm.addons.elementor_next_page_url === '') {
+				// Trigger `Done` if `elementor_next_page` is empty
+				if (alm.addons.elementor_next_page === '') {
 					alm.AjaxLoadMore.triggerDone();
 				}
 			}
@@ -3898,12 +3853,12 @@ var alm_is_filtering = false;
 				// Masonry & Preloaded.
 				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
 					// Wrap almMasonry in anonymous async/await function
-					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-						return regeneratorRuntime.wrap(function _callee5$(_context5) {
+					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+						return regeneratorRuntime.wrap(function _callee7$(_context7) {
 							while (1) {
-								switch (_context5.prev = _context5.next) {
+								switch (_context7.prev = _context7.next) {
 									case 0:
-										_context5.next = 2;
+										_context7.next = 2;
 										return (0, _masonry.almMasonry)(alm, true, false);
 
 									case 2:
@@ -3911,10 +3866,10 @@ var alm_is_filtering = false;
 
 									case 3:
 									case 'end':
-										return _context5.stop();
+										return _context7.stop();
 								}
 							}
-						}, _callee5, this);
+						}, _callee7, this);
 					}))().catch(function (e) {
 						console.log('There was an error with ALM Masonry');
 					});
@@ -4124,19 +4079,19 @@ var reset = exports.reset = function reset() {
 
 	if (props && props.type === 'woocommerce') {
 		// WooCommerce
-		_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+		_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
 			var instance, settings;
-			return regeneratorRuntime.wrap(function _callee6$(_context6) {
+			return regeneratorRuntime.wrap(function _callee8$(_context8) {
 				while (1) {
-					switch (_context6.prev = _context6.next) {
+					switch (_context8.prev = _context8.next) {
 						case 0:
 							instance = document.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
 
-							_context6.next = 3;
+							_context8.next = 3;
 							return (0, _woocommerce.wooReset)();
 
 						case 3:
-							settings = _context6.sent;
+							settings = _context8.sent;
 							// Get WooCommerce `settings` via Ajax
 							if (settings) {
 								instance.dataset.wooSettings = settings; // Update data atts
@@ -4145,10 +4100,10 @@ var reset = exports.reset = function reset() {
 
 						case 5:
 						case 'end':
-							return _context6.stop();
+							return _context8.stop();
 					}
 				}
-			}, _callee6, this);
+			}, _callee8, this);
 		}))().catch(function () {
 			console.warn('Ajax Load More: There was an resetting the Ajax Load More instance.');
 		});
@@ -4358,10 +4313,10 @@ var click = exports.click = function click() {
 
 /***/ }),
 
-/***/ "./core/src/js/helpers/almAppendChild.js":
-/*!***********************************************!*\
-  !*** ./core/src/js/helpers/almAppendChild.js ***!
-  \***********************************************/
+/***/ "./core/src/js/helpers/almAppendChildren.js":
+/*!**************************************************!*\
+  !*** ./core/src/js/helpers/almAppendChildren.js ***!
+  \**************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -4371,7 +4326,31 @@ var click = exports.click = function click() {
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
+exports.default = almAppendChildren;
+exports.almAppendChild = almAppendChild;
 var nodeNameArray = ['#text', '#comment'];
+
+/**
+ * Loop array of elements and append to target
+ *
+ * @param {Element} target | Target element to append items
+ * @param {Element} array | An array of elements
+ * @param {string} transition | The transiton
+ * @since 5.0
+ */
+function almAppendChildren() {
+	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+	var array = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+	var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
+
+	if (!target || !array) {
+		return false;
+	}
+	for (var i = 0; i < array.length; i++) {
+		var element = array[i];
+		almAppendChild(target, element, transition);
+	}
+}
 
 /**
  * Append a child element to a container
@@ -4381,7 +4360,7 @@ var nodeNameArray = ['#text', '#comment'];
  * @param {string} transition | The transiton
  * @since 5.0
  */
-var almAppendChild = function almAppendChild() {
+function almAppendChild() {
 	var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 	var element = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 	var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
@@ -4399,56 +4378,7 @@ var almAppendChild = function almAppendChild() {
 		}
 		target.appendChild(element);
 	}
-};
-exports.default = almAppendChild;
-
-/***/ }),
-
-/***/ "./core/src/js/helpers/almAppendChildren.js":
-/*!**************************************************!*\
-  !*** ./core/src/js/helpers/almAppendChildren.js ***!
-  \**************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _almAppendChild = __webpack_require__(/*! ./almAppendChild */ "./core/src/js/helpers/almAppendChild.js");
-
-var _almAppendChild2 = _interopRequireDefault(_almAppendChild);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
 }
-
-/**
- * Loop array of elements and append to target
- *
- * @param {Element} target | Target element to append items
- * @param {Element} array | An array of elements
- * @param {string} transition | The transiton
- * @since 5.0
- */
-
-var almAppendChildren = function almAppendChildren() {
-  var target = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
-  var array = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-  var transition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'fade';
-
-  if (!target || !array) {
-    return false;
-  }
-  for (var i = 0; i < array.length; i++) {
-    var element = array[i];
-    (0, _almAppendChild2.default)(target, element, transition);
-  }
-};
-exports.default = almAppendChildren;
 
 /***/ }),
 
@@ -4468,8 +4398,8 @@ Object.defineProperty(exports, "__esModule", {
 /**
  * Convert a plain text string into an array of HTML nodes
  *
- * @param {*} html | The HTML string
- * @param {*} type
+ * @param {string} html The HTML string
+ * @param {string} type The type.
  * @return array
  * @since 5.0
  */
@@ -4478,13 +4408,55 @@ var almDomParser = function almDomParser() {
   var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'text/html';
 
   if (!html) {
-    return false;
+    return;
   }
   var parser = new DOMParser();
   var data = parser.parseFromString(html, type);
   return data ? Array.prototype.slice.call(data.body.childNodes) : data;
 };
 exports.default = almDomParser;
+
+/***/ }),
+
+/***/ "./core/src/js/helpers/api.js":
+/*!************************************!*\
+  !*** ./core/src/js/helpers/api.js ***!
+  \************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+exports.api = undefined;
+
+var _axios = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) {
+	return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var _alm_localize = alm_localize,
+    rest_api = _alm_localize.rest_api,
+    rest_nonce = _alm_localize.rest_nonce;
+
+/*
+ * Create a Api object with Axios and configure it for the WordPRess Rest Api.
+ *
+ */
+
+var api = exports.api = _axios2.default.create({
+	baseURL: rest_api,
+	headers: {
+		'content-type': 'application/json',
+		'X-WP-Nonce': rest_nonce
+	}
+});
 
 /***/ }),
 
@@ -4577,102 +4549,6 @@ function setButtonAtts(button, page, url) {
 	button.dataset.page = page; // Set Page.
 	button.dataset.url = url ? url : ''; // Set URL.
 }
-
-/***/ }),
-
-/***/ "./core/src/js/helpers/getCacheUrl.js":
-/*!********************************************!*\
-  !*** ./core/src/js/helpers/getCacheUrl.js ***!
-  \********************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _filters = __webpack_require__(/*! ../addons/filters */ "./core/src/js/addons/filters.js");
-
-/**
- * Generate the cache page URL for GET request
- *
- * @param {*} alm
- * @since 5.0
- * @supports Standard, SEO, Filters, Nextpage, Single Posts
- */
-var getCacheUrl = function getCacheUrl(alm) {
-	if (!alm) {
-		return false;
-	}
-
-	var firstpage = '1';
-	var cache_url = '';
-	var ext = '.html';
-	var path = alm.addons.cache_path + alm.addons.cache_id;
-
-	// SEO Add-on
-	if (alm.init && alm.addons.seo && alm.isPaged) {
-		// If request is a paged URL (e.g. /page/3/)
-		cache_url = path + '/page-' + firstpage + '-' + alm.start_page + ext;
-	}
-
-	// Filters
-	else if (alm.addons.filters) {
-			var filtersPath = (0, _filters.parseQuerystring)(path);
-
-			if (alm.init && alm.isPaged) {
-				// First run & Paged
-				cache_url = filtersPath + '/page-' + firstpage + '-' + alm.addons.filters_startpage + ext;
-			} else {
-				var page = alm.page + 1;
-
-				if (alm.addons.preloaded === 'true') {
-					// Preloaded + Filters
-					page = alm.page + 2;
-				}
-				cache_url = filtersPath + '/page-' + page + ext;
-			}
-		}
-
-		// Nextpage
-		else if (alm.addons.nextpage) {
-				var nextpage_cache_url = void 0;
-				if (alm.addons.paging) {
-					nextpage_cache_url = parseInt(alm.page) + 1;
-				} else {
-					nextpage_cache_url = parseInt(alm.page) + 2;
-					if (alm.isPaged) {
-						// If the request a paged URL (/page/3/)
-						nextpage_cache_url = parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1;
-					}
-				}
-
-				cache_url = path + '/page-' + nextpage_cache_url + ext;
-			}
-
-			// Single Post
-			else if (alm.addons.single_post) {
-					cache_url = path + '/' + alm.addons.single_post_id + ext;
-				}
-
-				// Comments & Preloaded
-				else if (alm.addons.comments === 'true' && alm.addons.preloaded === 'true') {
-						// When using comments we need to increase the current page by 2
-						cache_url = path + '/page-' + (alm.page + 2) + ext;
-					}
-
-					// Standard URL request
-					else {
-							cache_url = path + '/page-' + (alm.page + 1) + ext;
-						}
-
-	return cache_url;
-};
-
-exports.default = getCacheUrl;
 
 /***/ }),
 
@@ -5240,28 +5116,36 @@ if (!document.documentElement.dataset && (
 Object.defineProperty(exports, "__esModule", {
 	value: true
 });
-exports.almGetAjaxParams = almGetAjaxParams;
-exports.almGetRestParams = almGetRestParams;
+exports.getAjaxParams = getAjaxParams;
+exports.getTypeParams = getTypeParams;
+exports.getRestAPIParams = getRestAPIParams;
+
+var _cache = __webpack_require__(/*! ../addons/cache */ "./core/src/js/addons/cache.js");
+
 /**
- * almGetAjaxParams
- * Build the data object to send with the Ajax request
+ * Build the data object to send with the Ajax request.
  *
- * @param alm            object
- * @param action         string
- * @param queryType      string
+ * @param {object} alm       The ALM object.
+ * @param {string} queryType The query type.
+ * @return {object}          The data object.
  * @since 3.6
  */
+function getAjaxParams(alm, queryType) {
+	var addons = alm.addons,
+	    extensions = alm.extensions;
 
-function almGetAjaxParams(alm, action, queryType) {
 	// Defaults
+
 	var data = {
+		action: 'alm_get_posts',
+		query_type: queryType,
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		slug: alm.slug,
 		canonical_url: encodeURIComponent(alm.canonical_url),
-		posts_per_page: alm.posts_per_page,
-		page: alm.page,
-		offset: alm.offset,
+		posts_per_page: parseInt(alm.posts_per_page),
+		page: parseInt(alm.page),
+		offset: parseInt(alm.offset),
 		post_type: alm.post_type,
 		repeater: alm.repeater,
 		seo_start_page: alm.start_page
@@ -5269,49 +5153,54 @@ function almGetAjaxParams(alm, action, queryType) {
 
 	// Addons & Extensions
 
+	if (extensions.acf) {
+		data.acf = getTypeParams(alm, 'acf');
+		if (extensions.acf_field_type !== 'relationship') {
+			data.action = 'alm_acf';
+		}
+	}
+	if (addons.comments === 'true') {
+		data.comments = getTypeParams(alm, 'comments');
+		data.posts_per_page = addons.comments_per_page;
+		data.action = 'alm_comments';
+	}
+	if (addons.cta) {
+		data.cta = getTypeParams(alm, 'cta');
+	}
+	if (addons.filters) {
+		data.filters = addons.filters;
+		data.filters_startpage = addons.filters_startpage;
+		data.filters_target = addons.filters_target;
+		data.facets = alm.facets;
+	}
+	if (addons.nextpage) {
+		data.nextpage = getTypeParams(alm, 'nextpage');
+		data.action = 'alm_nextpage';
+	}
+	if (addons.paging) {
+		data.paging = addons.paging;
+	}
+	if (addons.preloaded === 'true') {
+		data.preloaded = addons.preloaded;
+		data.preloaded_amount = parseInt(addons.preloaded_amount);
+	}
+	if (addons.single_post) {
+		data.single_post = getTypeParams(alm, 'single_post');
+	}
+	if (extensions.term_query) {
+		data.term_query = getTypeParams(alm, 'term_query');
+		data.action = 'alm_get_terms';
+	}
 	if (alm.theme_repeater) {
 		data.theme_repeater = alm.theme_repeater;
 	}
-	if (alm.addons.filters) {
-		data.filters = alm.addons.filters;
-		data.filters_startpage = alm.addons.filters_startpage;
-		data.filters_target = alm.addons.filters_target;
-		data.facets = alm.facets;
-	}
-	if (alm.addons.paging) {
-		data.paging = alm.addons.paging;
-	}
-	if (alm.addons.preloaded) {
-		data.preloaded = alm.addons.preloaded;
-		data.preloaded_amount = alm.addons.preloaded_amount;
-	}
-	if (alm.addons.cache === 'true') {
-		data.cache_id = alm.addons.cache_id;
-		data.cache_logged_in = alm.addons.cache_logged_in;
-	}
-	if (alm.acf_array) {
-		data.acf = alm.acf_array;
-	}
-	if (alm.term_query_array) {
-		data.term_query = alm.term_query_array;
-	}
-	if (alm.cta_array) {
-		data.cta = alm.cta_array;
-	}
-	if (alm.comments_array) {
-		data.comments = alm.comments_array;
-	}
-	if (alm.nextpage_array) {
-		data.nextpage = alm.nextpage_array;
-	}
-	if (alm.single_post_array) {
-		data.single_post = alm.single_post_array;
-	}
-	if (alm.users_array) {
-		data.users = alm.users_array;
+	if (alm.addons.users) {
+		data.users = getTypeParams(alm, 'users');
+		data.action = 'alm_users';
 	}
 
-	// Query data
+	// Query Data Params
+
 	if (alm.listing.dataset.lang) {
 		data.lang = alm.listing.dataset.lang;
 	}
@@ -5412,23 +5301,108 @@ function almGetAjaxParams(alm, action, queryType) {
 		data.vars = escape(alm.listing.dataset.vars);
 	}
 
-	data.action = action;
-	data.query_type = queryType;
+	// Cache Params
+
+	if (addons.cache) {
+		data.cache_id = addons.cache_id;
+		data.cache_logged_in = addons.cache_logged_in;
+		data.cache_slug = (0, _cache.getCacheSlug)(alm, data);
+	}
 
 	return data;
 }
 
 /**
- * almGetRestParams
- * Build the REST API data object to send with REST API request
+ * Build the query params for content types.
  *
- * @param alm            object
+ * @param {object} alm  The ALM object.
+ * @param {string} type The query type.
+ * @return {object}     The query params.
+ */
+function getTypeParams(alm, type) {
+	var addons = alm.addons,
+	    extensions = alm.extensions;
+
+	switch (type) {
+		case 'acf':
+			return {
+				acf: 'true',
+				post_id: extensions.acf_post_id,
+				field_type: extensions.acf_field_type,
+				field_name: extensions.acf_field_name,
+				parent_field_name: extensions.acf_parent_field_name,
+				row_index: extensions.acf_row_index
+			};
+
+		case 'comments':
+			return {
+				comments: 'true',
+				post_id: addons.comments_post_id,
+				per_page: addons.comments_per_page,
+				type: addons.comments_type,
+				style: addons.comments_style,
+				template: addons.comments_template,
+				callback: addons.comments_callback
+			};
+
+		case 'cta':
+			return {
+				cta: 'true',
+				cta_position: addons.cta_position,
+				cta_repeater: addons.cta_repeater,
+				cta_theme_repeater: addons.cta_theme_repeater
+			};
+
+		case 'nextpage':
+			return {
+				nextpage: 'true',
+				urls: addons.nextpage_urls,
+				scroll: addons.nextpage_scroll,
+				pageviews: addons.nextpage_pageviews,
+				post_id: addons.nextpage_post_id,
+				startpage: addons.nextpage_startpage,
+				nested: alm.nested
+			};
+
+		case 'single_posts':
+			return {
+				single_post: 'true',
+				id: addons.single_post_id,
+				slug: addons.single_post_slug
+			};
+
+		case 'term_query':
+			return {
+				term_query: 'true',
+				taxonomy: extensions.term_query_taxonomy,
+				hide_empty: extensions.term_query_hide_empty,
+				number: extensions.term_query_number
+			};
+
+		case 'users':
+			return {
+				users: 'true',
+				role: alm.listing.dataset.usersRole,
+				include: alm.listing.dataset.usersInclude,
+				exclude: alm.listing.dataset.usersExclude,
+				per_page: alm.posts_per_page,
+				order: alm.listing.dataset.usersOrder,
+				orderby: alm.listing.dataset.usersOrderby
+			};
+	}
+}
+
+/**
+ * Build the REST API data object to send with REST API request.
+ *
+ * @param {object} alm The ALM object.
+ * @return {object}    The data object.
  * @since 3.6
  */
-function almGetRestParams(alm) {
+function getRestAPIParams(alm) {
 	var data = {
 		id: alm.id,
-		post_id: alm.post_id,
+		post_id: parseInt(alm.post_id),
 		posts_per_page: alm.posts_per_page,
 		page: alm.page,
 		offset: alm.offset,
@@ -5467,7 +5441,6 @@ function almGetRestParams(alm) {
 		preloaded_amount: alm.addons.preloaded_amount,
 		seo_start_page: alm.start_page
 	};
-
 	return data;
 }
 
@@ -6264,33 +6237,23 @@ function _asyncToGenerator(fn) {
 
 /**
  * Load all items after Ajax request.
- *
  * Note: The function is used with WooCommerce and Elementor add-ons.
  *
  * @param {Element} container     The HTML container
  * @param {array}   items         Array of items.
  * @param {Object}  alm	          The ALM object.
- * @param {string}  pageTitle     Current page title.
- * @param {string}  url           Current URL.
- * @param {string}  className     Optional classnames.
  * @param {boolean} waitForImages Wait for images to load before loading next item.
  */
-function loadItems(container, items, alm, pageTitle) {
-	var url = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : window.location;
-	var className = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '';
-	var waitForImages = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : true;
+function loadItems(container, items, alm) {
+	var waitForImages = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
 	return new Promise(function (resolve) {
+		var _alm$rel = alm.rel,
+		    rel = _alm$rel === undefined ? 'next' : _alm$rel;
+
 		var total = items.length;
 		var index = 0;
 		var count = 1;
-
-		// Get load direction.
-		var rel = alm.rel ? alm.rel : 'next';
-
-		// Set load properties.
-		var matchVal = rel === 'prev' ? total : 1; // The item to attach data attributes.
-		var page = rel === 'prev' ? alm.pagePrev : alm.page + 1; // Get the page number.
 
 		// Reverse items array if rel is 'prev'.
 		items = rel === 'prev' ? items.reverse() : items;
@@ -6303,39 +6266,22 @@ function loadItems(container, items, alm, pageTitle) {
 							switch (_context.prev = _context.next) {
 								case 0:
 									items[index].style.opacity = 0;
-
-									// Add data attributes to first or last item for URL updates.
-									if (count == matchVal) {
-										items[index].classList.add(className);
-
-										// Set URL
-										items[index].dataset.url = url;
-
-										// Set page num
-										items[index].dataset.page = page;
-
-										// Set page title
-										items[index].dataset.pageTitle = pageTitle;
-									}
-
-									_context.next = 4;
+									_context.next = 3;
 									return (0, _loadImage2.default)(container, items[index], alm.ua, rel, waitForImages);
 
-								case 4:
-
+								case 3:
 									count++;
 									index++;
-
 									loadItem();
 
-								case 7:
+								case 6:
 								case 'end':
 									return _context.stop();
 							}
 						}
 					}, _callee, this);
 				}))().catch(function () {
-					console.log('There was an error loading the items');
+					console.warn('There was an error loading the items.');
 				});
 			} else {
 				// Delay for effect only
@@ -6344,13 +6290,10 @@ function loadItems(container, items, alm, pageTitle) {
 						item.style.opacity = 1;
 					});
 					if (items[0]) {
-						// Get the item to focus.
-						var focusItem = rel === 'prev' ? items[items.length - 1] : items[0];
-
-						// Set the focus.
-						(0, _setFocus2.default)(alm, focusItem, null, false);
+						var focusItem = rel === 'prev' ? items[items.length - 1] : items[0]; // Get the item to focus.
+						(0, _setFocus2.default)(alm, focusItem, null, false); // Set the focus.
 					}
-				}, 50);
+				}, 25);
 
 				resolve(true);
 			}
@@ -9575,6 +9518,1463 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/babel-polyfill/lib/index.js":
+/*!**************************************************!*\
+  !*** ./node_modules/babel-polyfill/lib/index.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+__webpack_require__(/*! core-js/shim */ "./node_modules/core-js/shim.js");
+
+__webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/babel-polyfill/node_modules/regenerator-runtime/runtime.js");
+
+__webpack_require__(/*! core-js/fn/regexp/escape */ "./node_modules/core-js/fn/regexp/escape.js");
+
+if (global._babelPolyfill) {
+  throw new Error("only one instance of babel-polyfill is allowed");
+}
+global._babelPolyfill = true;
+
+var DEFINE_PROPERTY = "defineProperty";
+function define(O, key, value) {
+  O[key] || Object[DEFINE_PROPERTY](O, key, {
+    writable: true,
+    configurable: true,
+    value: value
+  });
+}
+
+define(String.prototype, "padLeft", "".padStart);
+define(String.prototype, "padRight", "".padEnd);
+
+"pop,reverse,shift,keys,values,entries,indexOf,every,some,forEach,map,filter,find,findIndex,includes,join,slice,concat,push,splice,unshift,sort,lastIndexOf,reduce,reduceRight,copyWithin,fill".split(",").forEach(function (key) {
+  [][key] && define(Array, key, Function.call.bind([][key]));
+});
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/babel-polyfill/node_modules/regenerator-runtime/runtime.js":
+/*!*********************************************************************************!*\
+  !*** ./node_modules/babel-polyfill/node_modules/regenerator-runtime/runtime.js ***!
+  \*********************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  IteratorPrototype[iteratorSymbol] = function () {
+    return this;
+  };
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunctionPrototype[toStringTagSymbol] =
+    GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      if (!(toStringTagSymbol in genFun)) {
+        genFun[toStringTagSymbol] = "GeneratorFunction";
+      }
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  runtime.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return Promise.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return Promise.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration. If the Promise is rejected, however, the
+          // result for this iteration will be rejected with the same
+          // reason. Note that rejections of yielded Promises are not
+          // thrown back into the generator function, as is the case
+          // when an awaited Promise is rejected. This difference in
+          // behavior between yield and await is important, because it
+          // allows the consumer to decide what to do with the yielded
+          // rejection (swallow it and continue, manually .throw it back
+          // into the generator, abandon iteration, whatever). With
+          // await, by contrast, there is no opportunity to examine the
+          // rejection reason outside the generator function, so the
+          // only option is to throw it from the await expression, and
+          // let the generator function handle the exception.
+          result.value = unwrapped;
+          resolve(result);
+        }, reject);
+      }
+    }
+
+    if (typeof global.process === "object" && global.process.domain) {
+      invoke = global.process.domain.bind(invoke);
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new Promise(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  AsyncIterator.prototype[asyncIteratorSymbol] = function () {
+    return this;
+  };
+  runtime.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var method = delegate.iterator[context.method];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method always terminates the yield* loop.
+      context.delegate = null;
+
+      if (context.method === "throw") {
+        if (delegate.iterator.return) {
+          // If the delegate iterator has a return method, give it a
+          // chance to clean up.
+          context.method = "return";
+          context.arg = undefined;
+          maybeInvokeDelegate(delegate, context);
+
+          if (context.method === "throw") {
+            // If maybeInvokeDelegate(context) changed context.method from
+            // "return" to "throw", let that override the TypeError below.
+            return ContinueSentinel;
+          }
+        }
+
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a 'throw' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[toStringTagSymbol] = "Generator";
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // Among the various tricks for obtaining a reference to the global
+  // object, this seems to be the most reliable technique that does not
+  // use indirect eval (which violates Content Security Policy).
+  typeof global === "object" ? global :
+  typeof window === "object" ? window :
+  typeof self === "object" ? self : this
+);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/babel-regenerator-runtime/runtime.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/babel-regenerator-runtime/runtime.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global, process) {/**
+ * Copyright (c) 2014, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * https://raw.github.com/facebook/regenerator/master/LICENSE file. An
+ * additional grant of patent rights can be found in the PATENTS file in
+ * the same directory.
+ */
+
+!(function(global) {
+  "use strict";
+
+  var hasOwn = Object.prototype.hasOwnProperty;
+  var undefined; // More compressible than void 0.
+  var iteratorSymbol =
+    typeof Symbol === "function" && Symbol.iterator || "@@iterator";
+
+  var inModule = typeof module === "object";
+  var runtime = global.regeneratorRuntime;
+  if (runtime) {
+    if (inModule) {
+      // If regeneratorRuntime is defined globally and we're in a module,
+      // make the exports object identical to regeneratorRuntime.
+      module.exports = runtime;
+    }
+    // Don't bother evaluating the rest of this file if the runtime was
+    // already defined globally.
+    return;
+  }
+
+  // Define the runtime globally (as expected by generated code) as either
+  // module.exports (if we're in a module) or a new, empty object.
+  runtime = global.regeneratorRuntime = inModule ? module.exports : {};
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided, then outerFn.prototype instanceof Generator.
+    var generator = Object.create((outerFn || Generator).prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    generator._invoke = makeInvokeMethod(innerFn, self, context);
+
+    return generator;
+  }
+  runtime.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  var Gp = GeneratorFunctionPrototype.prototype = Generator.prototype;
+  GeneratorFunction.prototype = Gp.constructor = GeneratorFunctionPrototype;
+  GeneratorFunctionPrototype.constructor = GeneratorFunction;
+  GeneratorFunction.displayName = "GeneratorFunction";
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      prototype[method] = function(arg) {
+        return this._invoke(method, arg);
+      };
+    });
+  }
+
+  runtime.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  runtime.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `value instanceof AwaitArgument` to determine if the yielded value is
+  // meant to be awaited. Some may consider the name of this method too
+  // cutesy, but they are curmudgeons.
+  runtime.awrap = function(arg) {
+    return new AwaitArgument(arg);
+  };
+
+  function AwaitArgument(arg) {
+    this.arg = arg;
+  }
+
+  function AsyncIterator(generator) {
+    // This invoke function is written in a style that assumes some
+    // calling function (or Promise) will handle exceptions.
+    function invoke(method, arg) {
+      var result = generator[method](arg);
+      var value = result.value;
+      return value instanceof AwaitArgument
+        ? Promise.resolve(value.arg).then(invokeNext, invokeThrow)
+        : Promise.resolve(value).then(function(unwrapped) {
+            // When a yielded Promise is resolved, its final value becomes
+            // the .value of the Promise<{value,done}> result for the
+            // current iteration. If the Promise is rejected, however, the
+            // result for this iteration will be rejected with the same
+            // reason. Note that rejections of yielded Promises are not
+            // thrown back into the generator function, as is the case
+            // when an awaited Promise is rejected. This difference in
+            // behavior between yield and await is important, because it
+            // allows the consumer to decide what to do with the yielded
+            // rejection (swallow it and continue, manually .throw it back
+            // into the generator, abandon iteration, whatever). With
+            // await, by contrast, there is no opportunity to examine the
+            // rejection reason outside the generator function, so the
+            // only option is to throw it from the await expression, and
+            // let the generator function handle the exception.
+            result.value = unwrapped;
+            return result;
+          });
+    }
+
+    if (typeof process === "object" && process.domain) {
+      invoke = process.domain.bind(invoke);
+    }
+
+    var invokeNext = invoke.bind(generator, "next");
+    var invokeThrow = invoke.bind(generator, "throw");
+    var invokeReturn = invoke.bind(generator, "return");
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return invoke(method, arg);
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : new Promise(function (resolve) {
+          resolve(callInvokeWithMethodAndArg());
+        });
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    this._invoke = enqueue;
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  runtime.async = function(innerFn, outerFn, self, tryLocsList) {
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList)
+    );
+
+    return runtime.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          if (method === "return" ||
+              (method === "throw" && delegate.iterator[method] === undefined)) {
+            // A return or throw (when the delegate iterator has no throw
+            // method) always terminates the yield* loop.
+            context.delegate = null;
+
+            // If the delegate iterator has a return method, give it a
+            // chance to clean up.
+            var returnMethod = delegate.iterator["return"];
+            if (returnMethod) {
+              var record = tryCatch(returnMethod, delegate.iterator, arg);
+              if (record.type === "throw") {
+                // If the return method threw an exception, let that
+                // exception prevail over the original return or throw.
+                method = "throw";
+                arg = record.arg;
+                continue;
+              }
+            }
+
+            if (method === "return") {
+              // Continue with the outer return, now that the delegate
+              // iterator has been terminated.
+              continue;
+            }
+          }
+
+          var record = tryCatch(
+            delegate.iterator[method],
+            delegate.iterator,
+            arg
+          );
+
+          if (record.type === "throw") {
+            context.delegate = null;
+
+            // Like returning generator.throw(uncaught), but without the
+            // overhead of an extra function call.
+            method = "throw";
+            arg = record.arg;
+            continue;
+          }
+
+          // Delegate generator ran and handled its own exceptions so
+          // regardless of what the method was, we continue as if it is
+          // "next" with an undefined arg.
+          method = "next";
+          arg = undefined;
+
+          var info = record.arg;
+          if (info.done) {
+            context[delegate.resultName] = info.value;
+            context.next = delegate.nextLoc;
+          } else {
+            state = GenStateSuspendedYield;
+            return info;
+          }
+
+          context.delegate = null;
+        }
+
+        if (method === "next") {
+          context._sent = arg;
+
+          if (state === GenStateSuspendedYield) {
+            context.sent = arg;
+          } else {
+            context.sent = undefined;
+          }
+        } else if (method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw arg;
+          }
+
+          if (context.dispatchException(arg)) {
+            // If the dispatched exception was caught by a catch block,
+            // then let that catch block handle the exception normally.
+            method = "next";
+            arg = undefined;
+          }
+
+        } else if (method === "return") {
+          context.abrupt("return", arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          var info = {
+            value: record.arg,
+            done: context.done
+          };
+
+          if (record.arg === ContinueSentinel) {
+            if (context.delegate && method === "next") {
+              // Deliberately forget the last sent value so that we don't
+              // accidentally pass it on to the delegate.
+              arg = undefined;
+            }
+          } else {
+            return info;
+          }
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(arg) call above.
+          method = "throw";
+          arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  Gp[iteratorSymbol] = function() {
+    return this;
+  };
+
+  Gp.toString = function() {
+    return "[object Generator]";
+  };
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  runtime.keys = function(object) {
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  runtime.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      this.sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+        return !!caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.next = finallyEntry.finallyLoc;
+      } else {
+        this.complete(record);
+      }
+
+      return ContinueSentinel;
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = record.arg;
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      return ContinueSentinel;
+    }
+  };
+})(
+  // Among the various tricks for obtaining a reference to the global
+  // object, this seems to be the most reliable technique that does not
+  // use indirect eval (which violates Content Security Policy).
+  typeof global === "object" ? global :
+  typeof window === "object" ? window :
+  typeof self === "object" ? self : this
+);
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js"), __webpack_require__(/*! ./../process/browser.js */ "./node_modules/process/browser.js")))
+
+/***/ }),
+
 /***/ "./node_modules/core-js/es6/index.js":
 /*!*******************************************!*\
   !*** ./node_modules/core-js/es6/index.js ***!
@@ -9806,6 +11206,19 @@ module.exports = __webpack_require__(/*! ../../modules/_core */ "./node_modules/
 
 /***/ }),
 
+/***/ "./node_modules/core-js/fn/regexp/escape.js":
+/*!**************************************************!*\
+  !*** ./node_modules/core-js/fn/regexp/escape.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ../../modules/core.regexp.escape */ "./node_modules/core-js/modules/core.regexp.escape.js");
+module.exports = __webpack_require__(/*! ../../modules/_core */ "./node_modules/core-js/modules/_core.js").RegExp.escape;
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/fn/string/pad-end.js":
 /*!***************************************************!*\
   !*** ./node_modules/core-js/fn/string/pad-end.js ***!
@@ -10032,6 +11445,24 @@ module.exports = function fill(value /* , start = 0, end = @length */) {
   var endPos = end === undefined ? length : toAbsoluteIndex(end, length);
   while (endPos > index) O[index++] = value;
   return O;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_array-from-iterable.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/_array-from-iterable.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var forOf = __webpack_require__(/*! ./_for-of */ "./node_modules/core-js/modules/_for-of.js");
+
+module.exports = function (iter, ITERATOR) {
+  var result = [];
+  forOf(iter, false, result.push, result, ITERATOR);
+  return result;
 };
 
 
@@ -10447,6 +11878,26 @@ module.exports = {
     // add [@@species], 23.1.2.2, 23.2.2.2
     setSpecies(NAME);
   }
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_collection-to-json.js":
+/*!*************************************************************!*\
+  !*** ./node_modules/core-js/modules/_collection-to-json.js ***!
+  \*************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+var classof = __webpack_require__(/*! ./_classof */ "./node_modules/core-js/modules/_classof.js");
+var from = __webpack_require__(/*! ./_array-from-iterable */ "./node_modules/core-js/modules/_array-from-iterable.js");
+module.exports = function (NAME) {
+  return function toJSON() {
+    if (classof(this) != NAME) throw TypeError(NAME + "#toJSON isn't generic");
+    return from(this);
+  };
 };
 
 
@@ -11683,6 +13134,35 @@ module.exports = Math.log1p || function log1p(x) {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_math-scale.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/core-js/modules/_math-scale.js ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+module.exports = Math.scale || function scale(x, inLow, inHigh, outLow, outHigh) {
+  if (
+    arguments.length === 0
+      // eslint-disable-next-line no-self-compare
+      || x != x
+      // eslint-disable-next-line no-self-compare
+      || inLow != inLow
+      // eslint-disable-next-line no-self-compare
+      || inHigh != inHigh
+      // eslint-disable-next-line no-self-compare
+      || outLow != outLow
+      // eslint-disable-next-line no-self-compare
+      || outHigh != outHigh
+  ) return NaN;
+  if (x === Infinity || x === -Infinity) return x;
+  return (x - inLow) * (outHigh - outLow) / (inHigh - inLow) + outLow;
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_math-sign.js":
 /*!****************************************************!*\
   !*** ./node_modules/core-js/modules/_math-sign.js ***!
@@ -11758,6 +13238,68 @@ var meta = module.exports = {
   fastKey: fastKey,
   getWeak: getWeak,
   onFreeze: onFreeze
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_metadata.js":
+/*!***************************************************!*\
+  !*** ./node_modules/core-js/modules/_metadata.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Map = __webpack_require__(/*! ./es6.map */ "./node_modules/core-js/modules/es6.map.js");
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var shared = __webpack_require__(/*! ./_shared */ "./node_modules/core-js/modules/_shared.js")('metadata');
+var store = shared.store || (shared.store = new (__webpack_require__(/*! ./es6.weak-map */ "./node_modules/core-js/modules/es6.weak-map.js"))());
+
+var getOrCreateMetadataMap = function (target, targetKey, create) {
+  var targetMetadata = store.get(target);
+  if (!targetMetadata) {
+    if (!create) return undefined;
+    store.set(target, targetMetadata = new Map());
+  }
+  var keyMetadata = targetMetadata.get(targetKey);
+  if (!keyMetadata) {
+    if (!create) return undefined;
+    targetMetadata.set(targetKey, keyMetadata = new Map());
+  } return keyMetadata;
+};
+var ordinaryHasOwnMetadata = function (MetadataKey, O, P) {
+  var metadataMap = getOrCreateMetadataMap(O, P, false);
+  return metadataMap === undefined ? false : metadataMap.has(MetadataKey);
+};
+var ordinaryGetOwnMetadata = function (MetadataKey, O, P) {
+  var metadataMap = getOrCreateMetadataMap(O, P, false);
+  return metadataMap === undefined ? undefined : metadataMap.get(MetadataKey);
+};
+var ordinaryDefineOwnMetadata = function (MetadataKey, MetadataValue, O, P) {
+  getOrCreateMetadataMap(O, P, true).set(MetadataKey, MetadataValue);
+};
+var ordinaryOwnMetadataKeys = function (target, targetKey) {
+  var metadataMap = getOrCreateMetadataMap(target, targetKey, false);
+  var keys = [];
+  if (metadataMap) metadataMap.forEach(function (_, key) { keys.push(key); });
+  return keys;
+};
+var toMetaKey = function (it) {
+  return it === undefined || typeof it == 'symbol' ? it : String(it);
+};
+var exp = function (O) {
+  $export($export.S, 'Reflect', O);
+};
+
+module.exports = {
+  store: store,
+  map: getOrCreateMetadataMap,
+  has: ordinaryHasOwnMetadata,
+  get: ordinaryGetOwnMetadata,
+  set: ordinaryDefineOwnMetadata,
+  keys: ordinaryOwnMetadataKeys,
+  key: toMetaKey,
+  exp: exp
 };
 
 
@@ -12022,6 +13564,27 @@ module.exports = __webpack_require__(/*! ./_descriptors */ "./node_modules/core-
   while (length > i) dP.f(O, P = keys[i++], Properties[P]);
   return O;
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_object-forced-pam.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/_object-forced-pam.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// Forced replacement prototype accessors methods
+module.exports = __webpack_require__(/*! ./_library */ "./node_modules/core-js/modules/_library.js") || !__webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js")(function () {
+  var K = Math.random();
+  // In FF throws only define methods
+  // eslint-disable-next-line no-undef, no-useless-call
+  __defineSetter__.call(null, K, function () { /* empty */ });
+  delete __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js")[K];
+});
 
 
 /***/ }),
@@ -12529,6 +14092,25 @@ module.exports = patchedExec;
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/_replacer.js":
+/*!***************************************************!*\
+  !*** ./node_modules/core-js/modules/_replacer.js ***!
+  \***************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = function (regExp, replace) {
+  var replacer = replace === Object(replace) ? function (part) {
+    return replace[part];
+  } : replace;
+  return function (it) {
+    return String(it).replace(regExp, replacer);
+  };
+};
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/_same-value.js":
 /*!*****************************************************!*\
   !*** ./node_modules/core-js/modules/_same-value.js ***!
@@ -12540,6 +14122,70 @@ module.exports = patchedExec;
 module.exports = Object.is || function is(x, y) {
   // eslint-disable-next-line no-self-compare
   return x === y ? x !== 0 || 1 / x === 1 / y : x != x && y != y;
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_set-collection-from.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/_set-collection-from.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://tc39.github.io/proposal-setmap-offrom/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var aFunction = __webpack_require__(/*! ./_a-function */ "./node_modules/core-js/modules/_a-function.js");
+var ctx = __webpack_require__(/*! ./_ctx */ "./node_modules/core-js/modules/_ctx.js");
+var forOf = __webpack_require__(/*! ./_for-of */ "./node_modules/core-js/modules/_for-of.js");
+
+module.exports = function (COLLECTION) {
+  $export($export.S, COLLECTION, { from: function from(source /* , mapFn, thisArg */) {
+    var mapFn = arguments[1];
+    var mapping, A, n, cb;
+    aFunction(this);
+    mapping = mapFn !== undefined;
+    if (mapping) aFunction(mapFn);
+    if (source == undefined) return new this();
+    A = [];
+    if (mapping) {
+      n = 0;
+      cb = ctx(mapFn, arguments[2], 2);
+      forOf(source, false, function (nextItem) {
+        A.push(cb(nextItem, n++));
+      });
+    } else {
+      forOf(source, false, A.push, A);
+    }
+    return new this(A);
+  } });
+};
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/_set-collection-of.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/_set-collection-of.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://tc39.github.io/proposal-setmap-offrom/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+module.exports = function (COLLECTION) {
+  $export($export.S, COLLECTION, { of: function of() {
+    var length = arguments.length;
+    var A = new Array(length);
+    while (length--) A[length] = arguments[length];
+    return new this(A);
+  } });
 };
 
 
@@ -14045,6 +15691,22 @@ module.exports = __webpack_require__(/*! ./_core */ "./node_modules/core-js/modu
     || it['@@iterator']
     || Iterators[classof(it)];
 };
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/core.regexp.escape.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/core.regexp.escape.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/benjamingr/RexExp.escape
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var $re = __webpack_require__(/*! ./_replacer */ "./node_modules/core-js/modules/_replacer.js")(/[\\^$*+?.()|[\]{}]/g, '\\$&');
+
+$export($export.S, 'RegExp', { escape: function escape(it) { return $re(it); } });
 
 
 /***/ }),
@@ -18197,6 +19859,39 @@ __webpack_require__(/*! ./_add-to-unscopables */ "./node_modules/core-js/modules
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es7.array.flatten.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.array.flatten.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://tc39.github.io/proposal-flatMap/#sec-Array.prototype.flatten
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var flattenIntoArray = __webpack_require__(/*! ./_flatten-into-array */ "./node_modules/core-js/modules/_flatten-into-array.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var toLength = __webpack_require__(/*! ./_to-length */ "./node_modules/core-js/modules/_to-length.js");
+var toInteger = __webpack_require__(/*! ./_to-integer */ "./node_modules/core-js/modules/_to-integer.js");
+var arraySpeciesCreate = __webpack_require__(/*! ./_array-species-create */ "./node_modules/core-js/modules/_array-species-create.js");
+
+$export($export.P, 'Array', {
+  flatten: function flatten(/* depthArg = 1 */) {
+    var depthArg = arguments[0];
+    var O = toObject(this);
+    var sourceLen = toLength(O.length);
+    var A = arraySpeciesCreate(O, 0);
+    flattenIntoArray(A, O, O, sourceLen, 0, depthArg === undefined ? 1 : toInteger(depthArg));
+    return A;
+  }
+});
+
+__webpack_require__(/*! ./_add-to-unscopables */ "./node_modules/core-js/modules/_add-to-unscopables.js")('flatten');
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es7.array.includes.js":
 /*!************************************************************!*\
   !*** ./node_modules/core-js/modules/es7.array.includes.js ***!
@@ -18217,6 +19912,394 @@ $export($export.P, 'Array', {
 });
 
 __webpack_require__(/*! ./_add-to-unscopables */ "./node_modules/core-js/modules/_add-to-unscopables.js")('includes');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.asap.js":
+/*!**************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.asap.js ***!
+  \**************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/rwaldron/tc39-notes/blob/master/es6/2014-09/sept-25.md#510-globalasap-for-enqueuing-a-microtask
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var microtask = __webpack_require__(/*! ./_microtask */ "./node_modules/core-js/modules/_microtask.js")();
+var process = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js").process;
+var isNode = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js")(process) == 'process';
+
+$export($export.G, {
+  asap: function asap(fn) {
+    var domain = isNode && process.domain;
+    microtask(domain ? domain.bind(fn) : fn);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.error.is-error.js":
+/*!************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.error.is-error.js ***!
+  \************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/ljharb/proposal-is-error
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var cof = __webpack_require__(/*! ./_cof */ "./node_modules/core-js/modules/_cof.js");
+
+$export($export.S, 'Error', {
+  isError: function isError(it) {
+    return cof(it) === 'Error';
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.global.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.global.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/tc39/proposal-global
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.G, { global: __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js") });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.map.from.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.map.from.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-map.from
+__webpack_require__(/*! ./_set-collection-from */ "./node_modules/core-js/modules/_set-collection-from.js")('Map');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.map.of.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.map.of.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-map.of
+__webpack_require__(/*! ./_set-collection-of */ "./node_modules/core-js/modules/_set-collection-of.js")('Map');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.map.to-json.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.map.to-json.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.P + $export.R, 'Map', { toJSON: __webpack_require__(/*! ./_collection-to-json */ "./node_modules/core-js/modules/_collection-to-json.js")('Map') });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.clamp.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.clamp.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', {
+  clamp: function clamp(x, lower, upper) {
+    return Math.min(upper, Math.max(lower, x));
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.deg-per-rad.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.deg-per-rad.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', { DEG_PER_RAD: Math.PI / 180 });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.degrees.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.degrees.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var RAD_PER_DEG = 180 / Math.PI;
+
+$export($export.S, 'Math', {
+  degrees: function degrees(radians) {
+    return radians * RAD_PER_DEG;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.fscale.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.fscale.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var scale = __webpack_require__(/*! ./_math-scale */ "./node_modules/core-js/modules/_math-scale.js");
+var fround = __webpack_require__(/*! ./_math-fround */ "./node_modules/core-js/modules/_math-fround.js");
+
+$export($export.S, 'Math', {
+  fscale: function fscale(x, inLow, inHigh, outLow, outHigh) {
+    return fround(scale(x, inLow, inHigh, outLow, outHigh));
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.iaddh.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.iaddh.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://gist.github.com/BrendanEich/4294d5c212a6d2254703
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', {
+  iaddh: function iaddh(x0, x1, y0, y1) {
+    var $x0 = x0 >>> 0;
+    var $x1 = x1 >>> 0;
+    var $y0 = y0 >>> 0;
+    return $x1 + (y1 >>> 0) + (($x0 & $y0 | ($x0 | $y0) & ~($x0 + $y0 >>> 0)) >>> 31) | 0;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.imulh.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.imulh.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://gist.github.com/BrendanEich/4294d5c212a6d2254703
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', {
+  imulh: function imulh(u, v) {
+    var UINT16 = 0xffff;
+    var $u = +u;
+    var $v = +v;
+    var u0 = $u & UINT16;
+    var v0 = $v & UINT16;
+    var u1 = $u >> 16;
+    var v1 = $v >> 16;
+    var t = (u1 * v0 >>> 0) + (u0 * v0 >>> 16);
+    return u1 * v1 + (t >> 16) + ((u0 * v1 >>> 0) + (t & UINT16) >> 16);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.isubh.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.isubh.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://gist.github.com/BrendanEich/4294d5c212a6d2254703
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', {
+  isubh: function isubh(x0, x1, y0, y1) {
+    var $x0 = x0 >>> 0;
+    var $x1 = x1 >>> 0;
+    var $y0 = y0 >>> 0;
+    return $x1 - (y1 >>> 0) - ((~$x0 & $y0 | ~($x0 ^ $y0) & $x0 - $y0 >>> 0) >>> 31) | 0;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.rad-per-deg.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.rad-per-deg.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', { RAD_PER_DEG: 180 / Math.PI });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.radians.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.radians.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var DEG_PER_RAD = Math.PI / 180;
+
+$export($export.S, 'Math', {
+  radians: function radians(degrees) {
+    return degrees * DEG_PER_RAD;
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.scale.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.scale.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://rwaldron.github.io/proposal-math-extensions/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', { scale: __webpack_require__(/*! ./_math-scale */ "./node_modules/core-js/modules/_math-scale.js") });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.signbit.js":
+/*!**********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.signbit.js ***!
+  \**********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// http://jfbastien.github.io/papers/Math.signbit.html
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', { signbit: function signbit(x) {
+  // eslint-disable-next-line no-self-compare
+  return (x = +x) != x ? x : x == 0 ? 1 / x == Infinity : x > 0;
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.math.umulh.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.math.umulh.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://gist.github.com/BrendanEich/4294d5c212a6d2254703
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'Math', {
+  umulh: function umulh(u, v) {
+    var UINT16 = 0xffff;
+    var $u = +u;
+    var $v = +v;
+    var u0 = $u & UINT16;
+    var v0 = $v & UINT16;
+    var u1 = $u >>> 16;
+    var v1 = $v >>> 16;
+    var t = (u1 * v0 >>> 0) + (u0 * v0 >>> 16);
+    return u1 * v1 + (t >>> 16) + ((u0 * v1 >>> 0) + (t & UINT16) >>> 16);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.object.define-getter.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.object.define-getter.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var aFunction = __webpack_require__(/*! ./_a-function */ "./node_modules/core-js/modules/_a-function.js");
+var $defineProperty = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js");
+
+// B.2.2.2 Object.prototype.__defineGetter__(P, getter)
+__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && $export($export.P + __webpack_require__(/*! ./_object-forced-pam */ "./node_modules/core-js/modules/_object-forced-pam.js"), 'Object', {
+  __defineGetter__: function __defineGetter__(P, getter) {
+    $defineProperty.f(toObject(this), P, { get: aFunction(getter), enumerable: true, configurable: true });
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.object.define-setter.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.object.define-setter.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var aFunction = __webpack_require__(/*! ./_a-function */ "./node_modules/core-js/modules/_a-function.js");
+var $defineProperty = __webpack_require__(/*! ./_object-dp */ "./node_modules/core-js/modules/_object-dp.js");
+
+// B.2.2.3 Object.prototype.__defineSetter__(P, setter)
+__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && $export($export.P + __webpack_require__(/*! ./_object-forced-pam */ "./node_modules/core-js/modules/_object-forced-pam.js"), 'Object', {
+  __defineSetter__: function __defineSetter__(P, setter) {
+    $defineProperty.f(toObject(this), P, { set: aFunction(setter), enumerable: true, configurable: true });
+  }
+});
 
 
 /***/ }),
@@ -18274,6 +20357,66 @@ $export($export.S, 'Object', {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/modules/es7.object.lookup-getter.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.object.lookup-getter.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var getOwnPropertyDescriptor = __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f;
+
+// B.2.2.4 Object.prototype.__lookupGetter__(P)
+__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && $export($export.P + __webpack_require__(/*! ./_object-forced-pam */ "./node_modules/core-js/modules/_object-forced-pam.js"), 'Object', {
+  __lookupGetter__: function __lookupGetter__(P) {
+    var O = toObject(this);
+    var K = toPrimitive(P, true);
+    var D;
+    do {
+      if (D = getOwnPropertyDescriptor(O, K)) return D.get;
+    } while (O = getPrototypeOf(O));
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.object.lookup-setter.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.object.lookup-setter.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var toObject = __webpack_require__(/*! ./_to-object */ "./node_modules/core-js/modules/_to-object.js");
+var toPrimitive = __webpack_require__(/*! ./_to-primitive */ "./node_modules/core-js/modules/_to-primitive.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var getOwnPropertyDescriptor = __webpack_require__(/*! ./_object-gopd */ "./node_modules/core-js/modules/_object-gopd.js").f;
+
+// B.2.2.5 Object.prototype.__lookupSetter__(P)
+__webpack_require__(/*! ./_descriptors */ "./node_modules/core-js/modules/_descriptors.js") && $export($export.P + __webpack_require__(/*! ./_object-forced-pam */ "./node_modules/core-js/modules/_object-forced-pam.js"), 'Object', {
+  __lookupSetter__: function __lookupSetter__(P) {
+    var O = toObject(this);
+    var K = toPrimitive(P, true);
+    var D;
+    do {
+      if (D = getOwnPropertyDescriptor(O, K)) return D.set;
+    } while (O = getPrototypeOf(O));
+  }
+});
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/modules/es7.object.values.js":
 /*!***********************************************************!*\
   !*** ./node_modules/core-js/modules/es7.object.values.js ***!
@@ -18290,6 +20433,217 @@ $export($export.S, 'Object', {
     return $values(it);
   }
 });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.observable.js":
+/*!********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.observable.js ***!
+  \********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://github.com/zenparsing/es-observable
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var global = __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js");
+var core = __webpack_require__(/*! ./_core */ "./node_modules/core-js/modules/_core.js");
+var microtask = __webpack_require__(/*! ./_microtask */ "./node_modules/core-js/modules/_microtask.js")();
+var OBSERVABLE = __webpack_require__(/*! ./_wks */ "./node_modules/core-js/modules/_wks.js")('observable');
+var aFunction = __webpack_require__(/*! ./_a-function */ "./node_modules/core-js/modules/_a-function.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var anInstance = __webpack_require__(/*! ./_an-instance */ "./node_modules/core-js/modules/_an-instance.js");
+var redefineAll = __webpack_require__(/*! ./_redefine-all */ "./node_modules/core-js/modules/_redefine-all.js");
+var hide = __webpack_require__(/*! ./_hide */ "./node_modules/core-js/modules/_hide.js");
+var forOf = __webpack_require__(/*! ./_for-of */ "./node_modules/core-js/modules/_for-of.js");
+var RETURN = forOf.RETURN;
+
+var getMethod = function (fn) {
+  return fn == null ? undefined : aFunction(fn);
+};
+
+var cleanupSubscription = function (subscription) {
+  var cleanup = subscription._c;
+  if (cleanup) {
+    subscription._c = undefined;
+    cleanup();
+  }
+};
+
+var subscriptionClosed = function (subscription) {
+  return subscription._o === undefined;
+};
+
+var closeSubscription = function (subscription) {
+  if (!subscriptionClosed(subscription)) {
+    subscription._o = undefined;
+    cleanupSubscription(subscription);
+  }
+};
+
+var Subscription = function (observer, subscriber) {
+  anObject(observer);
+  this._c = undefined;
+  this._o = observer;
+  observer = new SubscriptionObserver(this);
+  try {
+    var cleanup = subscriber(observer);
+    var subscription = cleanup;
+    if (cleanup != null) {
+      if (typeof cleanup.unsubscribe === 'function') cleanup = function () { subscription.unsubscribe(); };
+      else aFunction(cleanup);
+      this._c = cleanup;
+    }
+  } catch (e) {
+    observer.error(e);
+    return;
+  } if (subscriptionClosed(this)) cleanupSubscription(this);
+};
+
+Subscription.prototype = redefineAll({}, {
+  unsubscribe: function unsubscribe() { closeSubscription(this); }
+});
+
+var SubscriptionObserver = function (subscription) {
+  this._s = subscription;
+};
+
+SubscriptionObserver.prototype = redefineAll({}, {
+  next: function next(value) {
+    var subscription = this._s;
+    if (!subscriptionClosed(subscription)) {
+      var observer = subscription._o;
+      try {
+        var m = getMethod(observer.next);
+        if (m) return m.call(observer, value);
+      } catch (e) {
+        try {
+          closeSubscription(subscription);
+        } finally {
+          throw e;
+        }
+      }
+    }
+  },
+  error: function error(value) {
+    var subscription = this._s;
+    if (subscriptionClosed(subscription)) throw value;
+    var observer = subscription._o;
+    subscription._o = undefined;
+    try {
+      var m = getMethod(observer.error);
+      if (!m) throw value;
+      value = m.call(observer, value);
+    } catch (e) {
+      try {
+        cleanupSubscription(subscription);
+      } finally {
+        throw e;
+      }
+    } cleanupSubscription(subscription);
+    return value;
+  },
+  complete: function complete(value) {
+    var subscription = this._s;
+    if (!subscriptionClosed(subscription)) {
+      var observer = subscription._o;
+      subscription._o = undefined;
+      try {
+        var m = getMethod(observer.complete);
+        value = m ? m.call(observer, value) : undefined;
+      } catch (e) {
+        try {
+          cleanupSubscription(subscription);
+        } finally {
+          throw e;
+        }
+      } cleanupSubscription(subscription);
+      return value;
+    }
+  }
+});
+
+var $Observable = function Observable(subscriber) {
+  anInstance(this, $Observable, 'Observable', '_f')._f = aFunction(subscriber);
+};
+
+redefineAll($Observable.prototype, {
+  subscribe: function subscribe(observer) {
+    return new Subscription(observer, this._f);
+  },
+  forEach: function forEach(fn) {
+    var that = this;
+    return new (core.Promise || global.Promise)(function (resolve, reject) {
+      aFunction(fn);
+      var subscription = that.subscribe({
+        next: function (value) {
+          try {
+            return fn(value);
+          } catch (e) {
+            reject(e);
+            subscription.unsubscribe();
+          }
+        },
+        error: reject,
+        complete: resolve
+      });
+    });
+  }
+});
+
+redefineAll($Observable, {
+  from: function from(x) {
+    var C = typeof this === 'function' ? this : $Observable;
+    var method = getMethod(anObject(x)[OBSERVABLE]);
+    if (method) {
+      var observable = anObject(method.call(x));
+      return observable.constructor === C ? observable : new C(function (observer) {
+        return observable.subscribe(observer);
+      });
+    }
+    return new C(function (observer) {
+      var done = false;
+      microtask(function () {
+        if (!done) {
+          try {
+            if (forOf(x, false, function (it) {
+              observer.next(it);
+              if (done) return RETURN;
+            }) === RETURN) return;
+          } catch (e) {
+            if (done) throw e;
+            observer.error(e);
+            return;
+          } observer.complete();
+        }
+      });
+      return function () { done = true; };
+    });
+  },
+  of: function of() {
+    for (var i = 0, l = arguments.length, items = new Array(l); i < l;) items[i] = arguments[i++];
+    return new (typeof this === 'function' ? this : $Observable)(function (observer) {
+      var done = false;
+      microtask(function () {
+        if (!done) {
+          for (var j = 0; j < items.length; ++j) {
+            observer.next(items[j]);
+            if (done) return;
+          } observer.complete();
+        }
+      });
+      return function () { done = true; };
+    });
+  }
+});
+
+hide($Observable.prototype, OBSERVABLE, function () { return this; });
+
+$export($export.G, { Observable: $Observable });
+
+__webpack_require__(/*! ./_set-species */ "./node_modules/core-js/modules/_set-species.js")('Observable');
 
 
 /***/ }),
@@ -18322,6 +20676,355 @@ $export($export.P + $export.R, 'Promise', { 'finally': function (onFinally) {
     } : onFinally
   );
 } });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.promise.try.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.promise.try.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://github.com/tc39/proposal-promise-try
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var newPromiseCapability = __webpack_require__(/*! ./_new-promise-capability */ "./node_modules/core-js/modules/_new-promise-capability.js");
+var perform = __webpack_require__(/*! ./_perform */ "./node_modules/core-js/modules/_perform.js");
+
+$export($export.S, 'Promise', { 'try': function (callbackfn) {
+  var promiseCapability = newPromiseCapability.f(this);
+  var result = perform(callbackfn);
+  (result.e ? promiseCapability.reject : promiseCapability.resolve)(result.v);
+  return promiseCapability.promise;
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.define-metadata.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.define-metadata.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var toMetaKey = metadata.key;
+var ordinaryDefineOwnMetadata = metadata.set;
+
+metadata.exp({ defineMetadata: function defineMetadata(metadataKey, metadataValue, target, targetKey) {
+  ordinaryDefineOwnMetadata(metadataKey, metadataValue, anObject(target), toMetaKey(targetKey));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.delete-metadata.js":
+/*!*********************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.delete-metadata.js ***!
+  \*********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var toMetaKey = metadata.key;
+var getOrCreateMetadataMap = metadata.map;
+var store = metadata.store;
+
+metadata.exp({ deleteMetadata: function deleteMetadata(metadataKey, target /* , targetKey */) {
+  var targetKey = arguments.length < 3 ? undefined : toMetaKey(arguments[2]);
+  var metadataMap = getOrCreateMetadataMap(anObject(target), targetKey, false);
+  if (metadataMap === undefined || !metadataMap['delete'](metadataKey)) return false;
+  if (metadataMap.size) return true;
+  var targetMetadata = store.get(target);
+  targetMetadata['delete'](targetKey);
+  return !!targetMetadata.size || store['delete'](target);
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.get-metadata-keys.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.get-metadata-keys.js ***!
+  \***********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Set = __webpack_require__(/*! ./es6.set */ "./node_modules/core-js/modules/es6.set.js");
+var from = __webpack_require__(/*! ./_array-from-iterable */ "./node_modules/core-js/modules/_array-from-iterable.js");
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var ordinaryOwnMetadataKeys = metadata.keys;
+var toMetaKey = metadata.key;
+
+var ordinaryMetadataKeys = function (O, P) {
+  var oKeys = ordinaryOwnMetadataKeys(O, P);
+  var parent = getPrototypeOf(O);
+  if (parent === null) return oKeys;
+  var pKeys = ordinaryMetadataKeys(parent, P);
+  return pKeys.length ? oKeys.length ? from(new Set(oKeys.concat(pKeys))) : pKeys : oKeys;
+};
+
+metadata.exp({ getMetadataKeys: function getMetadataKeys(target /* , targetKey */) {
+  return ordinaryMetadataKeys(anObject(target), arguments.length < 2 ? undefined : toMetaKey(arguments[1]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.get-metadata.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.get-metadata.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var ordinaryHasOwnMetadata = metadata.has;
+var ordinaryGetOwnMetadata = metadata.get;
+var toMetaKey = metadata.key;
+
+var ordinaryGetMetadata = function (MetadataKey, O, P) {
+  var hasOwn = ordinaryHasOwnMetadata(MetadataKey, O, P);
+  if (hasOwn) return ordinaryGetOwnMetadata(MetadataKey, O, P);
+  var parent = getPrototypeOf(O);
+  return parent !== null ? ordinaryGetMetadata(MetadataKey, parent, P) : undefined;
+};
+
+metadata.exp({ getMetadata: function getMetadata(metadataKey, target /* , targetKey */) {
+  return ordinaryGetMetadata(metadataKey, anObject(target), arguments.length < 3 ? undefined : toMetaKey(arguments[2]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.get-own-metadata-keys.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.get-own-metadata-keys.js ***!
+  \***************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var ordinaryOwnMetadataKeys = metadata.keys;
+var toMetaKey = metadata.key;
+
+metadata.exp({ getOwnMetadataKeys: function getOwnMetadataKeys(target /* , targetKey */) {
+  return ordinaryOwnMetadataKeys(anObject(target), arguments.length < 2 ? undefined : toMetaKey(arguments[1]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.get-own-metadata.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.get-own-metadata.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var ordinaryGetOwnMetadata = metadata.get;
+var toMetaKey = metadata.key;
+
+metadata.exp({ getOwnMetadata: function getOwnMetadata(metadataKey, target /* , targetKey */) {
+  return ordinaryGetOwnMetadata(metadataKey, anObject(target)
+    , arguments.length < 3 ? undefined : toMetaKey(arguments[2]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.has-metadata.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.has-metadata.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var getPrototypeOf = __webpack_require__(/*! ./_object-gpo */ "./node_modules/core-js/modules/_object-gpo.js");
+var ordinaryHasOwnMetadata = metadata.has;
+var toMetaKey = metadata.key;
+
+var ordinaryHasMetadata = function (MetadataKey, O, P) {
+  var hasOwn = ordinaryHasOwnMetadata(MetadataKey, O, P);
+  if (hasOwn) return true;
+  var parent = getPrototypeOf(O);
+  return parent !== null ? ordinaryHasMetadata(MetadataKey, parent, P) : false;
+};
+
+metadata.exp({ hasMetadata: function hasMetadata(metadataKey, target /* , targetKey */) {
+  return ordinaryHasMetadata(metadataKey, anObject(target), arguments.length < 3 ? undefined : toMetaKey(arguments[2]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.has-own-metadata.js":
+/*!**********************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.has-own-metadata.js ***!
+  \**********************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var ordinaryHasOwnMetadata = metadata.has;
+var toMetaKey = metadata.key;
+
+metadata.exp({ hasOwnMetadata: function hasOwnMetadata(metadataKey, target /* , targetKey */) {
+  return ordinaryHasOwnMetadata(metadataKey, anObject(target)
+    , arguments.length < 3 ? undefined : toMetaKey(arguments[2]));
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.reflect.metadata.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.reflect.metadata.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var $metadata = __webpack_require__(/*! ./_metadata */ "./node_modules/core-js/modules/_metadata.js");
+var anObject = __webpack_require__(/*! ./_an-object */ "./node_modules/core-js/modules/_an-object.js");
+var aFunction = __webpack_require__(/*! ./_a-function */ "./node_modules/core-js/modules/_a-function.js");
+var toMetaKey = $metadata.key;
+var ordinaryDefineOwnMetadata = $metadata.set;
+
+$metadata.exp({ metadata: function metadata(metadataKey, metadataValue) {
+  return function decorator(target, targetKey) {
+    ordinaryDefineOwnMetadata(
+      metadataKey, metadataValue,
+      (targetKey !== undefined ? anObject : aFunction)(target),
+      toMetaKey(targetKey)
+    );
+  };
+} });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.set.from.js":
+/*!******************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.set.from.js ***!
+  \******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-set.from
+__webpack_require__(/*! ./_set-collection-from */ "./node_modules/core-js/modules/_set-collection-from.js")('Set');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.set.of.js":
+/*!****************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.set.of.js ***!
+  \****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-set.of
+__webpack_require__(/*! ./_set-collection-of */ "./node_modules/core-js/modules/_set-collection-of.js")('Set');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.set.to-json.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.set.to-json.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/DavidBruant/Map-Set.prototype.toJSON
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.P + $export.R, 'Set', { toJSON: __webpack_require__(/*! ./_collection-to-json */ "./node_modules/core-js/modules/_collection-to-json.js")('Set') });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.string.at.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.string.at.js ***!
+  \*******************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://github.com/mathiasbynens/String.prototype.at
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var $at = __webpack_require__(/*! ./_string-at */ "./node_modules/core-js/modules/_string-at.js")(true);
+var $fails = __webpack_require__(/*! ./_fails */ "./node_modules/core-js/modules/_fails.js");
+
+var FORCED = $fails(function () {
+  return '𠮷'.at(0) !== '𠮷';
+});
+
+$export($export.P + $export.F * FORCED, 'String', {
+  at: function at(pos) {
+    return $at(this, pos);
+  }
+});
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.string.match-all.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.string.match-all.js ***!
+  \**************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+// https://tc39.github.io/String.prototype.matchAll/
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+var defined = __webpack_require__(/*! ./_defined */ "./node_modules/core-js/modules/_defined.js");
+var toLength = __webpack_require__(/*! ./_to-length */ "./node_modules/core-js/modules/_to-length.js");
+var isRegExp = __webpack_require__(/*! ./_is-regexp */ "./node_modules/core-js/modules/_is-regexp.js");
+var getFlags = __webpack_require__(/*! ./_flags */ "./node_modules/core-js/modules/_flags.js");
+var RegExpProto = RegExp.prototype;
+
+var $RegExpStringIterator = function (regexp, string) {
+  this._r = regexp;
+  this._s = string;
+};
+
+__webpack_require__(/*! ./_iter-create */ "./node_modules/core-js/modules/_iter-create.js")($RegExpStringIterator, 'RegExp String', function next() {
+  var match = this._r.exec(this._s);
+  return { value: match, done: match === null };
+});
+
+$export($export.P, 'String', {
+  matchAll: function matchAll(regexp) {
+    defined(this);
+    if (!isRegExp(regexp)) throw TypeError(regexp + ' is not a regexp!');
+    var S = String(this);
+    var flags = 'flags' in RegExpProto ? String(regexp.flags) : getFlags.call(regexp);
+    var rx = new RegExp(regexp.source, ~flags.indexOf('g') ? flags : 'g' + flags);
+    rx.lastIndex = toLength(regexp.lastIndex);
+    return new $RegExpStringIterator(rx, S);
+  }
+});
 
 
 /***/ }),
@@ -18424,6 +21127,85 @@ __webpack_require__(/*! ./_string-trim */ "./node_modules/core-js/modules/_strin
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(/*! ./_wks-define */ "./node_modules/core-js/modules/_wks-define.js")('asyncIterator');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.symbol.observable.js":
+/*!***************************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.symbol.observable.js ***!
+  \***************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ./_wks-define */ "./node_modules/core-js/modules/_wks-define.js")('observable');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.system.global.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.system.global.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://github.com/tc39/proposal-global
+var $export = __webpack_require__(/*! ./_export */ "./node_modules/core-js/modules/_export.js");
+
+$export($export.S, 'System', { global: __webpack_require__(/*! ./_global */ "./node_modules/core-js/modules/_global.js") });
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.weak-map.from.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.weak-map.from.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.from
+__webpack_require__(/*! ./_set-collection-from */ "./node_modules/core-js/modules/_set-collection-from.js")('WeakMap');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.weak-map.of.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.weak-map.of.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakmap.of
+__webpack_require__(/*! ./_set-collection-of */ "./node_modules/core-js/modules/_set-collection-of.js")('WeakMap');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.weak-set.from.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.weak-set.from.js ***!
+  \***********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.from
+__webpack_require__(/*! ./_set-collection-from */ "./node_modules/core-js/modules/_set-collection-from.js")('WeakSet');
+
+
+/***/ }),
+
+/***/ "./node_modules/core-js/modules/es7.weak-set.of.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/core-js/modules/es7.weak-set.of.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+// https://tc39.github.io/proposal-setmap-offrom/#sec-weakset.of
+__webpack_require__(/*! ./_set-collection-of */ "./node_modules/core-js/modules/_set-collection-of.js")('WeakSet');
 
 
 /***/ }),
@@ -18545,6 +21327,215 @@ $export($export.G + $export.B + $export.F * MSIE, {
 
 /***/ }),
 
+/***/ "./node_modules/core-js/shim.js":
+/*!**************************************!*\
+  !*** ./node_modules/core-js/shim.js ***!
+  \**************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(/*! ./modules/es6.symbol */ "./node_modules/core-js/modules/es6.symbol.js");
+__webpack_require__(/*! ./modules/es6.object.create */ "./node_modules/core-js/modules/es6.object.create.js");
+__webpack_require__(/*! ./modules/es6.object.define-property */ "./node_modules/core-js/modules/es6.object.define-property.js");
+__webpack_require__(/*! ./modules/es6.object.define-properties */ "./node_modules/core-js/modules/es6.object.define-properties.js");
+__webpack_require__(/*! ./modules/es6.object.get-own-property-descriptor */ "./node_modules/core-js/modules/es6.object.get-own-property-descriptor.js");
+__webpack_require__(/*! ./modules/es6.object.get-prototype-of */ "./node_modules/core-js/modules/es6.object.get-prototype-of.js");
+__webpack_require__(/*! ./modules/es6.object.keys */ "./node_modules/core-js/modules/es6.object.keys.js");
+__webpack_require__(/*! ./modules/es6.object.get-own-property-names */ "./node_modules/core-js/modules/es6.object.get-own-property-names.js");
+__webpack_require__(/*! ./modules/es6.object.freeze */ "./node_modules/core-js/modules/es6.object.freeze.js");
+__webpack_require__(/*! ./modules/es6.object.seal */ "./node_modules/core-js/modules/es6.object.seal.js");
+__webpack_require__(/*! ./modules/es6.object.prevent-extensions */ "./node_modules/core-js/modules/es6.object.prevent-extensions.js");
+__webpack_require__(/*! ./modules/es6.object.is-frozen */ "./node_modules/core-js/modules/es6.object.is-frozen.js");
+__webpack_require__(/*! ./modules/es6.object.is-sealed */ "./node_modules/core-js/modules/es6.object.is-sealed.js");
+__webpack_require__(/*! ./modules/es6.object.is-extensible */ "./node_modules/core-js/modules/es6.object.is-extensible.js");
+__webpack_require__(/*! ./modules/es6.object.assign */ "./node_modules/core-js/modules/es6.object.assign.js");
+__webpack_require__(/*! ./modules/es6.object.is */ "./node_modules/core-js/modules/es6.object.is.js");
+__webpack_require__(/*! ./modules/es6.object.set-prototype-of */ "./node_modules/core-js/modules/es6.object.set-prototype-of.js");
+__webpack_require__(/*! ./modules/es6.object.to-string */ "./node_modules/core-js/modules/es6.object.to-string.js");
+__webpack_require__(/*! ./modules/es6.function.bind */ "./node_modules/core-js/modules/es6.function.bind.js");
+__webpack_require__(/*! ./modules/es6.function.name */ "./node_modules/core-js/modules/es6.function.name.js");
+__webpack_require__(/*! ./modules/es6.function.has-instance */ "./node_modules/core-js/modules/es6.function.has-instance.js");
+__webpack_require__(/*! ./modules/es6.parse-int */ "./node_modules/core-js/modules/es6.parse-int.js");
+__webpack_require__(/*! ./modules/es6.parse-float */ "./node_modules/core-js/modules/es6.parse-float.js");
+__webpack_require__(/*! ./modules/es6.number.constructor */ "./node_modules/core-js/modules/es6.number.constructor.js");
+__webpack_require__(/*! ./modules/es6.number.to-fixed */ "./node_modules/core-js/modules/es6.number.to-fixed.js");
+__webpack_require__(/*! ./modules/es6.number.to-precision */ "./node_modules/core-js/modules/es6.number.to-precision.js");
+__webpack_require__(/*! ./modules/es6.number.epsilon */ "./node_modules/core-js/modules/es6.number.epsilon.js");
+__webpack_require__(/*! ./modules/es6.number.is-finite */ "./node_modules/core-js/modules/es6.number.is-finite.js");
+__webpack_require__(/*! ./modules/es6.number.is-integer */ "./node_modules/core-js/modules/es6.number.is-integer.js");
+__webpack_require__(/*! ./modules/es6.number.is-nan */ "./node_modules/core-js/modules/es6.number.is-nan.js");
+__webpack_require__(/*! ./modules/es6.number.is-safe-integer */ "./node_modules/core-js/modules/es6.number.is-safe-integer.js");
+__webpack_require__(/*! ./modules/es6.number.max-safe-integer */ "./node_modules/core-js/modules/es6.number.max-safe-integer.js");
+__webpack_require__(/*! ./modules/es6.number.min-safe-integer */ "./node_modules/core-js/modules/es6.number.min-safe-integer.js");
+__webpack_require__(/*! ./modules/es6.number.parse-float */ "./node_modules/core-js/modules/es6.number.parse-float.js");
+__webpack_require__(/*! ./modules/es6.number.parse-int */ "./node_modules/core-js/modules/es6.number.parse-int.js");
+__webpack_require__(/*! ./modules/es6.math.acosh */ "./node_modules/core-js/modules/es6.math.acosh.js");
+__webpack_require__(/*! ./modules/es6.math.asinh */ "./node_modules/core-js/modules/es6.math.asinh.js");
+__webpack_require__(/*! ./modules/es6.math.atanh */ "./node_modules/core-js/modules/es6.math.atanh.js");
+__webpack_require__(/*! ./modules/es6.math.cbrt */ "./node_modules/core-js/modules/es6.math.cbrt.js");
+__webpack_require__(/*! ./modules/es6.math.clz32 */ "./node_modules/core-js/modules/es6.math.clz32.js");
+__webpack_require__(/*! ./modules/es6.math.cosh */ "./node_modules/core-js/modules/es6.math.cosh.js");
+__webpack_require__(/*! ./modules/es6.math.expm1 */ "./node_modules/core-js/modules/es6.math.expm1.js");
+__webpack_require__(/*! ./modules/es6.math.fround */ "./node_modules/core-js/modules/es6.math.fround.js");
+__webpack_require__(/*! ./modules/es6.math.hypot */ "./node_modules/core-js/modules/es6.math.hypot.js");
+__webpack_require__(/*! ./modules/es6.math.imul */ "./node_modules/core-js/modules/es6.math.imul.js");
+__webpack_require__(/*! ./modules/es6.math.log10 */ "./node_modules/core-js/modules/es6.math.log10.js");
+__webpack_require__(/*! ./modules/es6.math.log1p */ "./node_modules/core-js/modules/es6.math.log1p.js");
+__webpack_require__(/*! ./modules/es6.math.log2 */ "./node_modules/core-js/modules/es6.math.log2.js");
+__webpack_require__(/*! ./modules/es6.math.sign */ "./node_modules/core-js/modules/es6.math.sign.js");
+__webpack_require__(/*! ./modules/es6.math.sinh */ "./node_modules/core-js/modules/es6.math.sinh.js");
+__webpack_require__(/*! ./modules/es6.math.tanh */ "./node_modules/core-js/modules/es6.math.tanh.js");
+__webpack_require__(/*! ./modules/es6.math.trunc */ "./node_modules/core-js/modules/es6.math.trunc.js");
+__webpack_require__(/*! ./modules/es6.string.from-code-point */ "./node_modules/core-js/modules/es6.string.from-code-point.js");
+__webpack_require__(/*! ./modules/es6.string.raw */ "./node_modules/core-js/modules/es6.string.raw.js");
+__webpack_require__(/*! ./modules/es6.string.trim */ "./node_modules/core-js/modules/es6.string.trim.js");
+__webpack_require__(/*! ./modules/es6.string.iterator */ "./node_modules/core-js/modules/es6.string.iterator.js");
+__webpack_require__(/*! ./modules/es6.string.code-point-at */ "./node_modules/core-js/modules/es6.string.code-point-at.js");
+__webpack_require__(/*! ./modules/es6.string.ends-with */ "./node_modules/core-js/modules/es6.string.ends-with.js");
+__webpack_require__(/*! ./modules/es6.string.includes */ "./node_modules/core-js/modules/es6.string.includes.js");
+__webpack_require__(/*! ./modules/es6.string.repeat */ "./node_modules/core-js/modules/es6.string.repeat.js");
+__webpack_require__(/*! ./modules/es6.string.starts-with */ "./node_modules/core-js/modules/es6.string.starts-with.js");
+__webpack_require__(/*! ./modules/es6.string.anchor */ "./node_modules/core-js/modules/es6.string.anchor.js");
+__webpack_require__(/*! ./modules/es6.string.big */ "./node_modules/core-js/modules/es6.string.big.js");
+__webpack_require__(/*! ./modules/es6.string.blink */ "./node_modules/core-js/modules/es6.string.blink.js");
+__webpack_require__(/*! ./modules/es6.string.bold */ "./node_modules/core-js/modules/es6.string.bold.js");
+__webpack_require__(/*! ./modules/es6.string.fixed */ "./node_modules/core-js/modules/es6.string.fixed.js");
+__webpack_require__(/*! ./modules/es6.string.fontcolor */ "./node_modules/core-js/modules/es6.string.fontcolor.js");
+__webpack_require__(/*! ./modules/es6.string.fontsize */ "./node_modules/core-js/modules/es6.string.fontsize.js");
+__webpack_require__(/*! ./modules/es6.string.italics */ "./node_modules/core-js/modules/es6.string.italics.js");
+__webpack_require__(/*! ./modules/es6.string.link */ "./node_modules/core-js/modules/es6.string.link.js");
+__webpack_require__(/*! ./modules/es6.string.small */ "./node_modules/core-js/modules/es6.string.small.js");
+__webpack_require__(/*! ./modules/es6.string.strike */ "./node_modules/core-js/modules/es6.string.strike.js");
+__webpack_require__(/*! ./modules/es6.string.sub */ "./node_modules/core-js/modules/es6.string.sub.js");
+__webpack_require__(/*! ./modules/es6.string.sup */ "./node_modules/core-js/modules/es6.string.sup.js");
+__webpack_require__(/*! ./modules/es6.date.now */ "./node_modules/core-js/modules/es6.date.now.js");
+__webpack_require__(/*! ./modules/es6.date.to-json */ "./node_modules/core-js/modules/es6.date.to-json.js");
+__webpack_require__(/*! ./modules/es6.date.to-iso-string */ "./node_modules/core-js/modules/es6.date.to-iso-string.js");
+__webpack_require__(/*! ./modules/es6.date.to-string */ "./node_modules/core-js/modules/es6.date.to-string.js");
+__webpack_require__(/*! ./modules/es6.date.to-primitive */ "./node_modules/core-js/modules/es6.date.to-primitive.js");
+__webpack_require__(/*! ./modules/es6.array.is-array */ "./node_modules/core-js/modules/es6.array.is-array.js");
+__webpack_require__(/*! ./modules/es6.array.from */ "./node_modules/core-js/modules/es6.array.from.js");
+__webpack_require__(/*! ./modules/es6.array.of */ "./node_modules/core-js/modules/es6.array.of.js");
+__webpack_require__(/*! ./modules/es6.array.join */ "./node_modules/core-js/modules/es6.array.join.js");
+__webpack_require__(/*! ./modules/es6.array.slice */ "./node_modules/core-js/modules/es6.array.slice.js");
+__webpack_require__(/*! ./modules/es6.array.sort */ "./node_modules/core-js/modules/es6.array.sort.js");
+__webpack_require__(/*! ./modules/es6.array.for-each */ "./node_modules/core-js/modules/es6.array.for-each.js");
+__webpack_require__(/*! ./modules/es6.array.map */ "./node_modules/core-js/modules/es6.array.map.js");
+__webpack_require__(/*! ./modules/es6.array.filter */ "./node_modules/core-js/modules/es6.array.filter.js");
+__webpack_require__(/*! ./modules/es6.array.some */ "./node_modules/core-js/modules/es6.array.some.js");
+__webpack_require__(/*! ./modules/es6.array.every */ "./node_modules/core-js/modules/es6.array.every.js");
+__webpack_require__(/*! ./modules/es6.array.reduce */ "./node_modules/core-js/modules/es6.array.reduce.js");
+__webpack_require__(/*! ./modules/es6.array.reduce-right */ "./node_modules/core-js/modules/es6.array.reduce-right.js");
+__webpack_require__(/*! ./modules/es6.array.index-of */ "./node_modules/core-js/modules/es6.array.index-of.js");
+__webpack_require__(/*! ./modules/es6.array.last-index-of */ "./node_modules/core-js/modules/es6.array.last-index-of.js");
+__webpack_require__(/*! ./modules/es6.array.copy-within */ "./node_modules/core-js/modules/es6.array.copy-within.js");
+__webpack_require__(/*! ./modules/es6.array.fill */ "./node_modules/core-js/modules/es6.array.fill.js");
+__webpack_require__(/*! ./modules/es6.array.find */ "./node_modules/core-js/modules/es6.array.find.js");
+__webpack_require__(/*! ./modules/es6.array.find-index */ "./node_modules/core-js/modules/es6.array.find-index.js");
+__webpack_require__(/*! ./modules/es6.array.species */ "./node_modules/core-js/modules/es6.array.species.js");
+__webpack_require__(/*! ./modules/es6.array.iterator */ "./node_modules/core-js/modules/es6.array.iterator.js");
+__webpack_require__(/*! ./modules/es6.regexp.constructor */ "./node_modules/core-js/modules/es6.regexp.constructor.js");
+__webpack_require__(/*! ./modules/es6.regexp.exec */ "./node_modules/core-js/modules/es6.regexp.exec.js");
+__webpack_require__(/*! ./modules/es6.regexp.to-string */ "./node_modules/core-js/modules/es6.regexp.to-string.js");
+__webpack_require__(/*! ./modules/es6.regexp.flags */ "./node_modules/core-js/modules/es6.regexp.flags.js");
+__webpack_require__(/*! ./modules/es6.regexp.match */ "./node_modules/core-js/modules/es6.regexp.match.js");
+__webpack_require__(/*! ./modules/es6.regexp.replace */ "./node_modules/core-js/modules/es6.regexp.replace.js");
+__webpack_require__(/*! ./modules/es6.regexp.search */ "./node_modules/core-js/modules/es6.regexp.search.js");
+__webpack_require__(/*! ./modules/es6.regexp.split */ "./node_modules/core-js/modules/es6.regexp.split.js");
+__webpack_require__(/*! ./modules/es6.promise */ "./node_modules/core-js/modules/es6.promise.js");
+__webpack_require__(/*! ./modules/es6.map */ "./node_modules/core-js/modules/es6.map.js");
+__webpack_require__(/*! ./modules/es6.set */ "./node_modules/core-js/modules/es6.set.js");
+__webpack_require__(/*! ./modules/es6.weak-map */ "./node_modules/core-js/modules/es6.weak-map.js");
+__webpack_require__(/*! ./modules/es6.weak-set */ "./node_modules/core-js/modules/es6.weak-set.js");
+__webpack_require__(/*! ./modules/es6.typed.array-buffer */ "./node_modules/core-js/modules/es6.typed.array-buffer.js");
+__webpack_require__(/*! ./modules/es6.typed.data-view */ "./node_modules/core-js/modules/es6.typed.data-view.js");
+__webpack_require__(/*! ./modules/es6.typed.int8-array */ "./node_modules/core-js/modules/es6.typed.int8-array.js");
+__webpack_require__(/*! ./modules/es6.typed.uint8-array */ "./node_modules/core-js/modules/es6.typed.uint8-array.js");
+__webpack_require__(/*! ./modules/es6.typed.uint8-clamped-array */ "./node_modules/core-js/modules/es6.typed.uint8-clamped-array.js");
+__webpack_require__(/*! ./modules/es6.typed.int16-array */ "./node_modules/core-js/modules/es6.typed.int16-array.js");
+__webpack_require__(/*! ./modules/es6.typed.uint16-array */ "./node_modules/core-js/modules/es6.typed.uint16-array.js");
+__webpack_require__(/*! ./modules/es6.typed.int32-array */ "./node_modules/core-js/modules/es6.typed.int32-array.js");
+__webpack_require__(/*! ./modules/es6.typed.uint32-array */ "./node_modules/core-js/modules/es6.typed.uint32-array.js");
+__webpack_require__(/*! ./modules/es6.typed.float32-array */ "./node_modules/core-js/modules/es6.typed.float32-array.js");
+__webpack_require__(/*! ./modules/es6.typed.float64-array */ "./node_modules/core-js/modules/es6.typed.float64-array.js");
+__webpack_require__(/*! ./modules/es6.reflect.apply */ "./node_modules/core-js/modules/es6.reflect.apply.js");
+__webpack_require__(/*! ./modules/es6.reflect.construct */ "./node_modules/core-js/modules/es6.reflect.construct.js");
+__webpack_require__(/*! ./modules/es6.reflect.define-property */ "./node_modules/core-js/modules/es6.reflect.define-property.js");
+__webpack_require__(/*! ./modules/es6.reflect.delete-property */ "./node_modules/core-js/modules/es6.reflect.delete-property.js");
+__webpack_require__(/*! ./modules/es6.reflect.enumerate */ "./node_modules/core-js/modules/es6.reflect.enumerate.js");
+__webpack_require__(/*! ./modules/es6.reflect.get */ "./node_modules/core-js/modules/es6.reflect.get.js");
+__webpack_require__(/*! ./modules/es6.reflect.get-own-property-descriptor */ "./node_modules/core-js/modules/es6.reflect.get-own-property-descriptor.js");
+__webpack_require__(/*! ./modules/es6.reflect.get-prototype-of */ "./node_modules/core-js/modules/es6.reflect.get-prototype-of.js");
+__webpack_require__(/*! ./modules/es6.reflect.has */ "./node_modules/core-js/modules/es6.reflect.has.js");
+__webpack_require__(/*! ./modules/es6.reflect.is-extensible */ "./node_modules/core-js/modules/es6.reflect.is-extensible.js");
+__webpack_require__(/*! ./modules/es6.reflect.own-keys */ "./node_modules/core-js/modules/es6.reflect.own-keys.js");
+__webpack_require__(/*! ./modules/es6.reflect.prevent-extensions */ "./node_modules/core-js/modules/es6.reflect.prevent-extensions.js");
+__webpack_require__(/*! ./modules/es6.reflect.set */ "./node_modules/core-js/modules/es6.reflect.set.js");
+__webpack_require__(/*! ./modules/es6.reflect.set-prototype-of */ "./node_modules/core-js/modules/es6.reflect.set-prototype-of.js");
+__webpack_require__(/*! ./modules/es7.array.includes */ "./node_modules/core-js/modules/es7.array.includes.js");
+__webpack_require__(/*! ./modules/es7.array.flat-map */ "./node_modules/core-js/modules/es7.array.flat-map.js");
+__webpack_require__(/*! ./modules/es7.array.flatten */ "./node_modules/core-js/modules/es7.array.flatten.js");
+__webpack_require__(/*! ./modules/es7.string.at */ "./node_modules/core-js/modules/es7.string.at.js");
+__webpack_require__(/*! ./modules/es7.string.pad-start */ "./node_modules/core-js/modules/es7.string.pad-start.js");
+__webpack_require__(/*! ./modules/es7.string.pad-end */ "./node_modules/core-js/modules/es7.string.pad-end.js");
+__webpack_require__(/*! ./modules/es7.string.trim-left */ "./node_modules/core-js/modules/es7.string.trim-left.js");
+__webpack_require__(/*! ./modules/es7.string.trim-right */ "./node_modules/core-js/modules/es7.string.trim-right.js");
+__webpack_require__(/*! ./modules/es7.string.match-all */ "./node_modules/core-js/modules/es7.string.match-all.js");
+__webpack_require__(/*! ./modules/es7.symbol.async-iterator */ "./node_modules/core-js/modules/es7.symbol.async-iterator.js");
+__webpack_require__(/*! ./modules/es7.symbol.observable */ "./node_modules/core-js/modules/es7.symbol.observable.js");
+__webpack_require__(/*! ./modules/es7.object.get-own-property-descriptors */ "./node_modules/core-js/modules/es7.object.get-own-property-descriptors.js");
+__webpack_require__(/*! ./modules/es7.object.values */ "./node_modules/core-js/modules/es7.object.values.js");
+__webpack_require__(/*! ./modules/es7.object.entries */ "./node_modules/core-js/modules/es7.object.entries.js");
+__webpack_require__(/*! ./modules/es7.object.define-getter */ "./node_modules/core-js/modules/es7.object.define-getter.js");
+__webpack_require__(/*! ./modules/es7.object.define-setter */ "./node_modules/core-js/modules/es7.object.define-setter.js");
+__webpack_require__(/*! ./modules/es7.object.lookup-getter */ "./node_modules/core-js/modules/es7.object.lookup-getter.js");
+__webpack_require__(/*! ./modules/es7.object.lookup-setter */ "./node_modules/core-js/modules/es7.object.lookup-setter.js");
+__webpack_require__(/*! ./modules/es7.map.to-json */ "./node_modules/core-js/modules/es7.map.to-json.js");
+__webpack_require__(/*! ./modules/es7.set.to-json */ "./node_modules/core-js/modules/es7.set.to-json.js");
+__webpack_require__(/*! ./modules/es7.map.of */ "./node_modules/core-js/modules/es7.map.of.js");
+__webpack_require__(/*! ./modules/es7.set.of */ "./node_modules/core-js/modules/es7.set.of.js");
+__webpack_require__(/*! ./modules/es7.weak-map.of */ "./node_modules/core-js/modules/es7.weak-map.of.js");
+__webpack_require__(/*! ./modules/es7.weak-set.of */ "./node_modules/core-js/modules/es7.weak-set.of.js");
+__webpack_require__(/*! ./modules/es7.map.from */ "./node_modules/core-js/modules/es7.map.from.js");
+__webpack_require__(/*! ./modules/es7.set.from */ "./node_modules/core-js/modules/es7.set.from.js");
+__webpack_require__(/*! ./modules/es7.weak-map.from */ "./node_modules/core-js/modules/es7.weak-map.from.js");
+__webpack_require__(/*! ./modules/es7.weak-set.from */ "./node_modules/core-js/modules/es7.weak-set.from.js");
+__webpack_require__(/*! ./modules/es7.global */ "./node_modules/core-js/modules/es7.global.js");
+__webpack_require__(/*! ./modules/es7.system.global */ "./node_modules/core-js/modules/es7.system.global.js");
+__webpack_require__(/*! ./modules/es7.error.is-error */ "./node_modules/core-js/modules/es7.error.is-error.js");
+__webpack_require__(/*! ./modules/es7.math.clamp */ "./node_modules/core-js/modules/es7.math.clamp.js");
+__webpack_require__(/*! ./modules/es7.math.deg-per-rad */ "./node_modules/core-js/modules/es7.math.deg-per-rad.js");
+__webpack_require__(/*! ./modules/es7.math.degrees */ "./node_modules/core-js/modules/es7.math.degrees.js");
+__webpack_require__(/*! ./modules/es7.math.fscale */ "./node_modules/core-js/modules/es7.math.fscale.js");
+__webpack_require__(/*! ./modules/es7.math.iaddh */ "./node_modules/core-js/modules/es7.math.iaddh.js");
+__webpack_require__(/*! ./modules/es7.math.isubh */ "./node_modules/core-js/modules/es7.math.isubh.js");
+__webpack_require__(/*! ./modules/es7.math.imulh */ "./node_modules/core-js/modules/es7.math.imulh.js");
+__webpack_require__(/*! ./modules/es7.math.rad-per-deg */ "./node_modules/core-js/modules/es7.math.rad-per-deg.js");
+__webpack_require__(/*! ./modules/es7.math.radians */ "./node_modules/core-js/modules/es7.math.radians.js");
+__webpack_require__(/*! ./modules/es7.math.scale */ "./node_modules/core-js/modules/es7.math.scale.js");
+__webpack_require__(/*! ./modules/es7.math.umulh */ "./node_modules/core-js/modules/es7.math.umulh.js");
+__webpack_require__(/*! ./modules/es7.math.signbit */ "./node_modules/core-js/modules/es7.math.signbit.js");
+__webpack_require__(/*! ./modules/es7.promise.finally */ "./node_modules/core-js/modules/es7.promise.finally.js");
+__webpack_require__(/*! ./modules/es7.promise.try */ "./node_modules/core-js/modules/es7.promise.try.js");
+__webpack_require__(/*! ./modules/es7.reflect.define-metadata */ "./node_modules/core-js/modules/es7.reflect.define-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.delete-metadata */ "./node_modules/core-js/modules/es7.reflect.delete-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.get-metadata */ "./node_modules/core-js/modules/es7.reflect.get-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.get-metadata-keys */ "./node_modules/core-js/modules/es7.reflect.get-metadata-keys.js");
+__webpack_require__(/*! ./modules/es7.reflect.get-own-metadata */ "./node_modules/core-js/modules/es7.reflect.get-own-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.get-own-metadata-keys */ "./node_modules/core-js/modules/es7.reflect.get-own-metadata-keys.js");
+__webpack_require__(/*! ./modules/es7.reflect.has-metadata */ "./node_modules/core-js/modules/es7.reflect.has-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.has-own-metadata */ "./node_modules/core-js/modules/es7.reflect.has-own-metadata.js");
+__webpack_require__(/*! ./modules/es7.reflect.metadata */ "./node_modules/core-js/modules/es7.reflect.metadata.js");
+__webpack_require__(/*! ./modules/es7.asap */ "./node_modules/core-js/modules/es7.asap.js");
+__webpack_require__(/*! ./modules/es7.observable */ "./node_modules/core-js/modules/es7.observable.js");
+__webpack_require__(/*! ./modules/web.timers */ "./node_modules/core-js/modules/web.timers.js");
+__webpack_require__(/*! ./modules/web.immediate */ "./node_modules/core-js/modules/web.immediate.js");
+__webpack_require__(/*! ./modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
+module.exports = __webpack_require__(/*! ./modules/_core */ "./node_modules/core-js/modules/_core.js");
+
+
+/***/ }),
+
 /***/ "./node_modules/core-js/web/index.js":
 /*!*******************************************!*\
   !*** ./node_modules/core-js/web/index.js ***!
@@ -18557,6 +21548,1088 @@ __webpack_require__(/*! ../modules/web.immediate */ "./node_modules/core-js/modu
 __webpack_require__(/*! ../modules/web.dom.iterable */ "./node_modules/core-js/modules/web.dom.iterable.js");
 module.exports = __webpack_require__(/*! ../modules/_core */ "./node_modules/core-js/modules/_core.js");
 
+
+/***/ }),
+
+/***/ "./node_modules/crypto-js/core.js":
+/*!****************************************!*\
+  !*** ./node_modules/crypto-js/core.js ***!
+  \****************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {;(function (root, factory) {
+	if (true) {
+		// CommonJS
+		module.exports = exports = factory();
+	}
+	else {}
+}(this, function () {
+
+	/*globals window, global, require*/
+
+	/**
+	 * CryptoJS core components.
+	 */
+	var CryptoJS = CryptoJS || (function (Math, undefined) {
+
+	    var crypto;
+
+	    // Native crypto from window (Browser)
+	    if (typeof window !== 'undefined' && window.crypto) {
+	        crypto = window.crypto;
+	    }
+
+	    // Native crypto in web worker (Browser)
+	    if (typeof self !== 'undefined' && self.crypto) {
+	        crypto = self.crypto;
+	    }
+
+	    // Native crypto from worker
+	    if (typeof globalThis !== 'undefined' && globalThis.crypto) {
+	        crypto = globalThis.crypto;
+	    }
+
+	    // Native (experimental IE 11) crypto from window (Browser)
+	    if (!crypto && typeof window !== 'undefined' && window.msCrypto) {
+	        crypto = window.msCrypto;
+	    }
+
+	    // Native crypto from global (NodeJS)
+	    if (!crypto && typeof global !== 'undefined' && global.crypto) {
+	        crypto = global.crypto;
+	    }
+
+	    // Native crypto import via require (NodeJS)
+	    if (!crypto && "function" === 'function') {
+	        try {
+	            crypto = __webpack_require__(/*! crypto */ 1);
+	        } catch (err) {}
+	    }
+
+	    /*
+	     * Cryptographically secure pseudorandom number generator
+	     *
+	     * As Math.random() is cryptographically not safe to use
+	     */
+	    var cryptoSecureRandomInt = function () {
+	        if (crypto) {
+	            // Use getRandomValues method (Browser)
+	            if (typeof crypto.getRandomValues === 'function') {
+	                try {
+	                    return crypto.getRandomValues(new Uint32Array(1))[0];
+	                } catch (err) {}
+	            }
+
+	            // Use randomBytes method (NodeJS)
+	            if (typeof crypto.randomBytes === 'function') {
+	                try {
+	                    return crypto.randomBytes(4).readInt32LE();
+	                } catch (err) {}
+	            }
+	        }
+
+	        throw new Error('Native crypto module could not be used to get secure random number.');
+	    };
+
+	    /*
+	     * Local polyfill of Object.create
+
+	     */
+	    var create = Object.create || (function () {
+	        function F() {}
+
+	        return function (obj) {
+	            var subtype;
+
+	            F.prototype = obj;
+
+	            subtype = new F();
+
+	            F.prototype = null;
+
+	            return subtype;
+	        };
+	    }());
+
+	    /**
+	     * CryptoJS namespace.
+	     */
+	    var C = {};
+
+	    /**
+	     * Library namespace.
+	     */
+	    var C_lib = C.lib = {};
+
+	    /**
+	     * Base object for prototypal inheritance.
+	     */
+	    var Base = C_lib.Base = (function () {
+
+
+	        return {
+	            /**
+	             * Creates a new object that inherits from this object.
+	             *
+	             * @param {Object} overrides Properties to copy into the new object.
+	             *
+	             * @return {Object} The new object.
+	             *
+	             * @static
+	             *
+	             * @example
+	             *
+	             *     var MyType = CryptoJS.lib.Base.extend({
+	             *         field: 'value',
+	             *
+	             *         method: function () {
+	             *         }
+	             *     });
+	             */
+	            extend: function (overrides) {
+	                // Spawn
+	                var subtype = create(this);
+
+	                // Augment
+	                if (overrides) {
+	                    subtype.mixIn(overrides);
+	                }
+
+	                // Create default initializer
+	                if (!subtype.hasOwnProperty('init') || this.init === subtype.init) {
+	                    subtype.init = function () {
+	                        subtype.$super.init.apply(this, arguments);
+	                    };
+	                }
+
+	                // Initializer's prototype is the subtype object
+	                subtype.init.prototype = subtype;
+
+	                // Reference supertype
+	                subtype.$super = this;
+
+	                return subtype;
+	            },
+
+	            /**
+	             * Extends this object and runs the init method.
+	             * Arguments to create() will be passed to init().
+	             *
+	             * @return {Object} The new object.
+	             *
+	             * @static
+	             *
+	             * @example
+	             *
+	             *     var instance = MyType.create();
+	             */
+	            create: function () {
+	                var instance = this.extend();
+	                instance.init.apply(instance, arguments);
+
+	                return instance;
+	            },
+
+	            /**
+	             * Initializes a newly created object.
+	             * Override this method to add some logic when your objects are created.
+	             *
+	             * @example
+	             *
+	             *     var MyType = CryptoJS.lib.Base.extend({
+	             *         init: function () {
+	             *             // ...
+	             *         }
+	             *     });
+	             */
+	            init: function () {
+	            },
+
+	            /**
+	             * Copies properties into this object.
+	             *
+	             * @param {Object} properties The properties to mix in.
+	             *
+	             * @example
+	             *
+	             *     MyType.mixIn({
+	             *         field: 'value'
+	             *     });
+	             */
+	            mixIn: function (properties) {
+	                for (var propertyName in properties) {
+	                    if (properties.hasOwnProperty(propertyName)) {
+	                        this[propertyName] = properties[propertyName];
+	                    }
+	                }
+
+	                // IE won't copy toString using the loop above
+	                if (properties.hasOwnProperty('toString')) {
+	                    this.toString = properties.toString;
+	                }
+	            },
+
+	            /**
+	             * Creates a copy of this object.
+	             *
+	             * @return {Object} The clone.
+	             *
+	             * @example
+	             *
+	             *     var clone = instance.clone();
+	             */
+	            clone: function () {
+	                return this.init.prototype.extend(this);
+	            }
+	        };
+	    }());
+
+	    /**
+	     * An array of 32-bit words.
+	     *
+	     * @property {Array} words The array of 32-bit words.
+	     * @property {number} sigBytes The number of significant bytes in this word array.
+	     */
+	    var WordArray = C_lib.WordArray = Base.extend({
+	        /**
+	         * Initializes a newly created word array.
+	         *
+	         * @param {Array} words (Optional) An array of 32-bit words.
+	         * @param {number} sigBytes (Optional) The number of significant bytes in the words.
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.lib.WordArray.create();
+	         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607]);
+	         *     var wordArray = CryptoJS.lib.WordArray.create([0x00010203, 0x04050607], 6);
+	         */
+	        init: function (words, sigBytes) {
+	            words = this.words = words || [];
+
+	            if (sigBytes != undefined) {
+	                this.sigBytes = sigBytes;
+	            } else {
+	                this.sigBytes = words.length * 4;
+	            }
+	        },
+
+	        /**
+	         * Converts this word array to a string.
+	         *
+	         * @param {Encoder} encoder (Optional) The encoding strategy to use. Default: CryptoJS.enc.Hex
+	         *
+	         * @return {string} The stringified word array.
+	         *
+	         * @example
+	         *
+	         *     var string = wordArray + '';
+	         *     var string = wordArray.toString();
+	         *     var string = wordArray.toString(CryptoJS.enc.Utf8);
+	         */
+	        toString: function (encoder) {
+	            return (encoder || Hex).stringify(this);
+	        },
+
+	        /**
+	         * Concatenates a word array to this word array.
+	         *
+	         * @param {WordArray} wordArray The word array to append.
+	         *
+	         * @return {WordArray} This word array.
+	         *
+	         * @example
+	         *
+	         *     wordArray1.concat(wordArray2);
+	         */
+	        concat: function (wordArray) {
+	            // Shortcuts
+	            var thisWords = this.words;
+	            var thatWords = wordArray.words;
+	            var thisSigBytes = this.sigBytes;
+	            var thatSigBytes = wordArray.sigBytes;
+
+	            // Clamp excess bits
+	            this.clamp();
+
+	            // Concat
+	            if (thisSigBytes % 4) {
+	                // Copy one byte at a time
+	                for (var i = 0; i < thatSigBytes; i++) {
+	                    var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                    thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
+	                }
+	            } else {
+	                // Copy one word at a time
+	                for (var j = 0; j < thatSigBytes; j += 4) {
+	                    thisWords[(thisSigBytes + j) >>> 2] = thatWords[j >>> 2];
+	                }
+	            }
+	            this.sigBytes += thatSigBytes;
+
+	            // Chainable
+	            return this;
+	        },
+
+	        /**
+	         * Removes insignificant bits.
+	         *
+	         * @example
+	         *
+	         *     wordArray.clamp();
+	         */
+	        clamp: function () {
+	            // Shortcuts
+	            var words = this.words;
+	            var sigBytes = this.sigBytes;
+
+	            // Clamp
+	            words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
+	            words.length = Math.ceil(sigBytes / 4);
+	        },
+
+	        /**
+	         * Creates a copy of this word array.
+	         *
+	         * @return {WordArray} The clone.
+	         *
+	         * @example
+	         *
+	         *     var clone = wordArray.clone();
+	         */
+	        clone: function () {
+	            var clone = Base.clone.call(this);
+	            clone.words = this.words.slice(0);
+
+	            return clone;
+	        },
+
+	        /**
+	         * Creates a word array filled with random bytes.
+	         *
+	         * @param {number} nBytes The number of random bytes to generate.
+	         *
+	         * @return {WordArray} The random word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.lib.WordArray.random(16);
+	         */
+	        random: function (nBytes) {
+	            var words = [];
+
+	            for (var i = 0; i < nBytes; i += 4) {
+	                words.push(cryptoSecureRandomInt());
+	            }
+
+	            return new WordArray.init(words, nBytes);
+	        }
+	    });
+
+	    /**
+	     * Encoder namespace.
+	     */
+	    var C_enc = C.enc = {};
+
+	    /**
+	     * Hex encoding strategy.
+	     */
+	    var Hex = C_enc.Hex = {
+	        /**
+	         * Converts a word array to a hex string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The hex string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var hexString = CryptoJS.enc.Hex.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            // Shortcuts
+	            var words = wordArray.words;
+	            var sigBytes = wordArray.sigBytes;
+
+	            // Convert
+	            var hexChars = [];
+	            for (var i = 0; i < sigBytes; i++) {
+	                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                hexChars.push((bite >>> 4).toString(16));
+	                hexChars.push((bite & 0x0f).toString(16));
+	            }
+
+	            return hexChars.join('');
+	        },
+
+	        /**
+	         * Converts a hex string to a word array.
+	         *
+	         * @param {string} hexStr The hex string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Hex.parse(hexString);
+	         */
+	        parse: function (hexStr) {
+	            // Shortcut
+	            var hexStrLength = hexStr.length;
+
+	            // Convert
+	            var words = [];
+	            for (var i = 0; i < hexStrLength; i += 2) {
+	                words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
+	            }
+
+	            return new WordArray.init(words, hexStrLength / 2);
+	        }
+	    };
+
+	    /**
+	     * Latin1 encoding strategy.
+	     */
+	    var Latin1 = C_enc.Latin1 = {
+	        /**
+	         * Converts a word array to a Latin1 string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The Latin1 string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var latin1String = CryptoJS.enc.Latin1.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            // Shortcuts
+	            var words = wordArray.words;
+	            var sigBytes = wordArray.sigBytes;
+
+	            // Convert
+	            var latin1Chars = [];
+	            for (var i = 0; i < sigBytes; i++) {
+	                var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+	                latin1Chars.push(String.fromCharCode(bite));
+	            }
+
+	            return latin1Chars.join('');
+	        },
+
+	        /**
+	         * Converts a Latin1 string to a word array.
+	         *
+	         * @param {string} latin1Str The Latin1 string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Latin1.parse(latin1String);
+	         */
+	        parse: function (latin1Str) {
+	            // Shortcut
+	            var latin1StrLength = latin1Str.length;
+
+	            // Convert
+	            var words = [];
+	            for (var i = 0; i < latin1StrLength; i++) {
+	                words[i >>> 2] |= (latin1Str.charCodeAt(i) & 0xff) << (24 - (i % 4) * 8);
+	            }
+
+	            return new WordArray.init(words, latin1StrLength);
+	        }
+	    };
+
+	    /**
+	     * UTF-8 encoding strategy.
+	     */
+	    var Utf8 = C_enc.Utf8 = {
+	        /**
+	         * Converts a word array to a UTF-8 string.
+	         *
+	         * @param {WordArray} wordArray The word array.
+	         *
+	         * @return {string} The UTF-8 string.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var utf8String = CryptoJS.enc.Utf8.stringify(wordArray);
+	         */
+	        stringify: function (wordArray) {
+	            try {
+	                return decodeURIComponent(escape(Latin1.stringify(wordArray)));
+	            } catch (e) {
+	                throw new Error('Malformed UTF-8 data');
+	            }
+	        },
+
+	        /**
+	         * Converts a UTF-8 string to a word array.
+	         *
+	         * @param {string} utf8Str The UTF-8 string.
+	         *
+	         * @return {WordArray} The word array.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var wordArray = CryptoJS.enc.Utf8.parse(utf8String);
+	         */
+	        parse: function (utf8Str) {
+	            return Latin1.parse(unescape(encodeURIComponent(utf8Str)));
+	        }
+	    };
+
+	    /**
+	     * Abstract buffered block algorithm template.
+	     *
+	     * The property blockSize must be implemented in a concrete subtype.
+	     *
+	     * @property {number} _minBufferSize The number of blocks that should be kept unprocessed in the buffer. Default: 0
+	     */
+	    var BufferedBlockAlgorithm = C_lib.BufferedBlockAlgorithm = Base.extend({
+	        /**
+	         * Resets this block algorithm's data buffer to its initial state.
+	         *
+	         * @example
+	         *
+	         *     bufferedBlockAlgorithm.reset();
+	         */
+	        reset: function () {
+	            // Initial values
+	            this._data = new WordArray.init();
+	            this._nDataBytes = 0;
+	        },
+
+	        /**
+	         * Adds new data to this block algorithm's buffer.
+	         *
+	         * @param {WordArray|string} data The data to append. Strings are converted to a WordArray using UTF-8.
+	         *
+	         * @example
+	         *
+	         *     bufferedBlockAlgorithm._append('data');
+	         *     bufferedBlockAlgorithm._append(wordArray);
+	         */
+	        _append: function (data) {
+	            // Convert string to WordArray, else assume WordArray already
+	            if (typeof data == 'string') {
+	                data = Utf8.parse(data);
+	            }
+
+	            // Append
+	            this._data.concat(data);
+	            this._nDataBytes += data.sigBytes;
+	        },
+
+	        /**
+	         * Processes available data blocks.
+	         *
+	         * This method invokes _doProcessBlock(offset), which must be implemented by a concrete subtype.
+	         *
+	         * @param {boolean} doFlush Whether all blocks and partial blocks should be processed.
+	         *
+	         * @return {WordArray} The processed data.
+	         *
+	         * @example
+	         *
+	         *     var processedData = bufferedBlockAlgorithm._process();
+	         *     var processedData = bufferedBlockAlgorithm._process(!!'flush');
+	         */
+	        _process: function (doFlush) {
+	            var processedWords;
+
+	            // Shortcuts
+	            var data = this._data;
+	            var dataWords = data.words;
+	            var dataSigBytes = data.sigBytes;
+	            var blockSize = this.blockSize;
+	            var blockSizeBytes = blockSize * 4;
+
+	            // Count blocks ready
+	            var nBlocksReady = dataSigBytes / blockSizeBytes;
+	            if (doFlush) {
+	                // Round up to include partial blocks
+	                nBlocksReady = Math.ceil(nBlocksReady);
+	            } else {
+	                // Round down to include only full blocks,
+	                // less the number of blocks that must remain in the buffer
+	                nBlocksReady = Math.max((nBlocksReady | 0) - this._minBufferSize, 0);
+	            }
+
+	            // Count words ready
+	            var nWordsReady = nBlocksReady * blockSize;
+
+	            // Count bytes ready
+	            var nBytesReady = Math.min(nWordsReady * 4, dataSigBytes);
+
+	            // Process blocks
+	            if (nWordsReady) {
+	                for (var offset = 0; offset < nWordsReady; offset += blockSize) {
+	                    // Perform concrete-algorithm logic
+	                    this._doProcessBlock(dataWords, offset);
+	                }
+
+	                // Remove processed words
+	                processedWords = dataWords.splice(0, nWordsReady);
+	                data.sigBytes -= nBytesReady;
+	            }
+
+	            // Return processed words
+	            return new WordArray.init(processedWords, nBytesReady);
+	        },
+
+	        /**
+	         * Creates a copy of this object.
+	         *
+	         * @return {Object} The clone.
+	         *
+	         * @example
+	         *
+	         *     var clone = bufferedBlockAlgorithm.clone();
+	         */
+	        clone: function () {
+	            var clone = Base.clone.call(this);
+	            clone._data = this._data.clone();
+
+	            return clone;
+	        },
+
+	        _minBufferSize: 0
+	    });
+
+	    /**
+	     * Abstract hasher template.
+	     *
+	     * @property {number} blockSize The number of 32-bit words this hasher operates on. Default: 16 (512 bits)
+	     */
+	    var Hasher = C_lib.Hasher = BufferedBlockAlgorithm.extend({
+	        /**
+	         * Configuration options.
+	         */
+	        cfg: Base.extend(),
+
+	        /**
+	         * Initializes a newly created hasher.
+	         *
+	         * @param {Object} cfg (Optional) The configuration options to use for this hash computation.
+	         *
+	         * @example
+	         *
+	         *     var hasher = CryptoJS.algo.SHA256.create();
+	         */
+	        init: function (cfg) {
+	            // Apply config defaults
+	            this.cfg = this.cfg.extend(cfg);
+
+	            // Set initial values
+	            this.reset();
+	        },
+
+	        /**
+	         * Resets this hasher to its initial state.
+	         *
+	         * @example
+	         *
+	         *     hasher.reset();
+	         */
+	        reset: function () {
+	            // Reset data buffer
+	            BufferedBlockAlgorithm.reset.call(this);
+
+	            // Perform concrete-hasher logic
+	            this._doReset();
+	        },
+
+	        /**
+	         * Updates this hasher with a message.
+	         *
+	         * @param {WordArray|string} messageUpdate The message to append.
+	         *
+	         * @return {Hasher} This hasher.
+	         *
+	         * @example
+	         *
+	         *     hasher.update('message');
+	         *     hasher.update(wordArray);
+	         */
+	        update: function (messageUpdate) {
+	            // Append
+	            this._append(messageUpdate);
+
+	            // Update the hash
+	            this._process();
+
+	            // Chainable
+	            return this;
+	        },
+
+	        /**
+	         * Finalizes the hash computation.
+	         * Note that the finalize operation is effectively a destructive, read-once operation.
+	         *
+	         * @param {WordArray|string} messageUpdate (Optional) A final message update.
+	         *
+	         * @return {WordArray} The hash.
+	         *
+	         * @example
+	         *
+	         *     var hash = hasher.finalize();
+	         *     var hash = hasher.finalize('message');
+	         *     var hash = hasher.finalize(wordArray);
+	         */
+	        finalize: function (messageUpdate) {
+	            // Final message update
+	            if (messageUpdate) {
+	                this._append(messageUpdate);
+	            }
+
+	            // Perform concrete-hasher logic
+	            var hash = this._doFinalize();
+
+	            return hash;
+	        },
+
+	        blockSize: 512/32,
+
+	        /**
+	         * Creates a shortcut function to a hasher's object interface.
+	         *
+	         * @param {Hasher} hasher The hasher to create a helper for.
+	         *
+	         * @return {Function} The shortcut function.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var SHA256 = CryptoJS.lib.Hasher._createHelper(CryptoJS.algo.SHA256);
+	         */
+	        _createHelper: function (hasher) {
+	            return function (message, cfg) {
+	                return new hasher.init(cfg).finalize(message);
+	            };
+	        },
+
+	        /**
+	         * Creates a shortcut function to the HMAC's object interface.
+	         *
+	         * @param {Hasher} hasher The hasher to use in this HMAC helper.
+	         *
+	         * @return {Function} The shortcut function.
+	         *
+	         * @static
+	         *
+	         * @example
+	         *
+	         *     var HmacSHA256 = CryptoJS.lib.Hasher._createHmacHelper(CryptoJS.algo.SHA256);
+	         */
+	        _createHmacHelper: function (hasher) {
+	            return function (message, key) {
+	                return new C_algo.HMAC.init(hasher, key).finalize(message);
+	            };
+	        }
+	    });
+
+	    /**
+	     * Algorithm namespace.
+	     */
+	    var C_algo = C.algo = {};
+
+	    return C;
+	}(Math));
+
+
+	return CryptoJS;
+
+}));
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/crypto-js/md5.js":
+/*!***************************************!*\
+  !*** ./node_modules/crypto-js/md5.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+;(function (root, factory) {
+	if (true) {
+		// CommonJS
+		module.exports = exports = factory(__webpack_require__(/*! ./core */ "./node_modules/crypto-js/core.js"));
+	}
+	else {}
+}(this, function (CryptoJS) {
+
+	(function (Math) {
+	    // Shortcuts
+	    var C = CryptoJS;
+	    var C_lib = C.lib;
+	    var WordArray = C_lib.WordArray;
+	    var Hasher = C_lib.Hasher;
+	    var C_algo = C.algo;
+
+	    // Constants table
+	    var T = [];
+
+	    // Compute constants
+	    (function () {
+	        for (var i = 0; i < 64; i++) {
+	            T[i] = (Math.abs(Math.sin(i + 1)) * 0x100000000) | 0;
+	        }
+	    }());
+
+	    /**
+	     * MD5 hash algorithm.
+	     */
+	    var MD5 = C_algo.MD5 = Hasher.extend({
+	        _doReset: function () {
+	            this._hash = new WordArray.init([
+	                0x67452301, 0xefcdab89,
+	                0x98badcfe, 0x10325476
+	            ]);
+	        },
+
+	        _doProcessBlock: function (M, offset) {
+	            // Swap endian
+	            for (var i = 0; i < 16; i++) {
+	                // Shortcuts
+	                var offset_i = offset + i;
+	                var M_offset_i = M[offset_i];
+
+	                M[offset_i] = (
+	                    (((M_offset_i << 8)  | (M_offset_i >>> 24)) & 0x00ff00ff) |
+	                    (((M_offset_i << 24) | (M_offset_i >>> 8))  & 0xff00ff00)
+	                );
+	            }
+
+	            // Shortcuts
+	            var H = this._hash.words;
+
+	            var M_offset_0  = M[offset + 0];
+	            var M_offset_1  = M[offset + 1];
+	            var M_offset_2  = M[offset + 2];
+	            var M_offset_3  = M[offset + 3];
+	            var M_offset_4  = M[offset + 4];
+	            var M_offset_5  = M[offset + 5];
+	            var M_offset_6  = M[offset + 6];
+	            var M_offset_7  = M[offset + 7];
+	            var M_offset_8  = M[offset + 8];
+	            var M_offset_9  = M[offset + 9];
+	            var M_offset_10 = M[offset + 10];
+	            var M_offset_11 = M[offset + 11];
+	            var M_offset_12 = M[offset + 12];
+	            var M_offset_13 = M[offset + 13];
+	            var M_offset_14 = M[offset + 14];
+	            var M_offset_15 = M[offset + 15];
+
+	            // Working varialbes
+	            var a = H[0];
+	            var b = H[1];
+	            var c = H[2];
+	            var d = H[3];
+
+	            // Computation
+	            a = FF(a, b, c, d, M_offset_0,  7,  T[0]);
+	            d = FF(d, a, b, c, M_offset_1,  12, T[1]);
+	            c = FF(c, d, a, b, M_offset_2,  17, T[2]);
+	            b = FF(b, c, d, a, M_offset_3,  22, T[3]);
+	            a = FF(a, b, c, d, M_offset_4,  7,  T[4]);
+	            d = FF(d, a, b, c, M_offset_5,  12, T[5]);
+	            c = FF(c, d, a, b, M_offset_6,  17, T[6]);
+	            b = FF(b, c, d, a, M_offset_7,  22, T[7]);
+	            a = FF(a, b, c, d, M_offset_8,  7,  T[8]);
+	            d = FF(d, a, b, c, M_offset_9,  12, T[9]);
+	            c = FF(c, d, a, b, M_offset_10, 17, T[10]);
+	            b = FF(b, c, d, a, M_offset_11, 22, T[11]);
+	            a = FF(a, b, c, d, M_offset_12, 7,  T[12]);
+	            d = FF(d, a, b, c, M_offset_13, 12, T[13]);
+	            c = FF(c, d, a, b, M_offset_14, 17, T[14]);
+	            b = FF(b, c, d, a, M_offset_15, 22, T[15]);
+
+	            a = GG(a, b, c, d, M_offset_1,  5,  T[16]);
+	            d = GG(d, a, b, c, M_offset_6,  9,  T[17]);
+	            c = GG(c, d, a, b, M_offset_11, 14, T[18]);
+	            b = GG(b, c, d, a, M_offset_0,  20, T[19]);
+	            a = GG(a, b, c, d, M_offset_5,  5,  T[20]);
+	            d = GG(d, a, b, c, M_offset_10, 9,  T[21]);
+	            c = GG(c, d, a, b, M_offset_15, 14, T[22]);
+	            b = GG(b, c, d, a, M_offset_4,  20, T[23]);
+	            a = GG(a, b, c, d, M_offset_9,  5,  T[24]);
+	            d = GG(d, a, b, c, M_offset_14, 9,  T[25]);
+	            c = GG(c, d, a, b, M_offset_3,  14, T[26]);
+	            b = GG(b, c, d, a, M_offset_8,  20, T[27]);
+	            a = GG(a, b, c, d, M_offset_13, 5,  T[28]);
+	            d = GG(d, a, b, c, M_offset_2,  9,  T[29]);
+	            c = GG(c, d, a, b, M_offset_7,  14, T[30]);
+	            b = GG(b, c, d, a, M_offset_12, 20, T[31]);
+
+	            a = HH(a, b, c, d, M_offset_5,  4,  T[32]);
+	            d = HH(d, a, b, c, M_offset_8,  11, T[33]);
+	            c = HH(c, d, a, b, M_offset_11, 16, T[34]);
+	            b = HH(b, c, d, a, M_offset_14, 23, T[35]);
+	            a = HH(a, b, c, d, M_offset_1,  4,  T[36]);
+	            d = HH(d, a, b, c, M_offset_4,  11, T[37]);
+	            c = HH(c, d, a, b, M_offset_7,  16, T[38]);
+	            b = HH(b, c, d, a, M_offset_10, 23, T[39]);
+	            a = HH(a, b, c, d, M_offset_13, 4,  T[40]);
+	            d = HH(d, a, b, c, M_offset_0,  11, T[41]);
+	            c = HH(c, d, a, b, M_offset_3,  16, T[42]);
+	            b = HH(b, c, d, a, M_offset_6,  23, T[43]);
+	            a = HH(a, b, c, d, M_offset_9,  4,  T[44]);
+	            d = HH(d, a, b, c, M_offset_12, 11, T[45]);
+	            c = HH(c, d, a, b, M_offset_15, 16, T[46]);
+	            b = HH(b, c, d, a, M_offset_2,  23, T[47]);
+
+	            a = II(a, b, c, d, M_offset_0,  6,  T[48]);
+	            d = II(d, a, b, c, M_offset_7,  10, T[49]);
+	            c = II(c, d, a, b, M_offset_14, 15, T[50]);
+	            b = II(b, c, d, a, M_offset_5,  21, T[51]);
+	            a = II(a, b, c, d, M_offset_12, 6,  T[52]);
+	            d = II(d, a, b, c, M_offset_3,  10, T[53]);
+	            c = II(c, d, a, b, M_offset_10, 15, T[54]);
+	            b = II(b, c, d, a, M_offset_1,  21, T[55]);
+	            a = II(a, b, c, d, M_offset_8,  6,  T[56]);
+	            d = II(d, a, b, c, M_offset_15, 10, T[57]);
+	            c = II(c, d, a, b, M_offset_6,  15, T[58]);
+	            b = II(b, c, d, a, M_offset_13, 21, T[59]);
+	            a = II(a, b, c, d, M_offset_4,  6,  T[60]);
+	            d = II(d, a, b, c, M_offset_11, 10, T[61]);
+	            c = II(c, d, a, b, M_offset_2,  15, T[62]);
+	            b = II(b, c, d, a, M_offset_9,  21, T[63]);
+
+	            // Intermediate hash value
+	            H[0] = (H[0] + a) | 0;
+	            H[1] = (H[1] + b) | 0;
+	            H[2] = (H[2] + c) | 0;
+	            H[3] = (H[3] + d) | 0;
+	        },
+
+	        _doFinalize: function () {
+	            // Shortcuts
+	            var data = this._data;
+	            var dataWords = data.words;
+
+	            var nBitsTotal = this._nDataBytes * 8;
+	            var nBitsLeft = data.sigBytes * 8;
+
+	            // Add padding
+	            dataWords[nBitsLeft >>> 5] |= 0x80 << (24 - nBitsLeft % 32);
+
+	            var nBitsTotalH = Math.floor(nBitsTotal / 0x100000000);
+	            var nBitsTotalL = nBitsTotal;
+	            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 15] = (
+	                (((nBitsTotalH << 8)  | (nBitsTotalH >>> 24)) & 0x00ff00ff) |
+	                (((nBitsTotalH << 24) | (nBitsTotalH >>> 8))  & 0xff00ff00)
+	            );
+	            dataWords[(((nBitsLeft + 64) >>> 9) << 4) + 14] = (
+	                (((nBitsTotalL << 8)  | (nBitsTotalL >>> 24)) & 0x00ff00ff) |
+	                (((nBitsTotalL << 24) | (nBitsTotalL >>> 8))  & 0xff00ff00)
+	            );
+
+	            data.sigBytes = (dataWords.length + 1) * 4;
+
+	            // Hash final blocks
+	            this._process();
+
+	            // Shortcuts
+	            var hash = this._hash;
+	            var H = hash.words;
+
+	            // Swap endian
+	            for (var i = 0; i < 4; i++) {
+	                // Shortcut
+	                var H_i = H[i];
+
+	                H[i] = (((H_i << 8)  | (H_i >>> 24)) & 0x00ff00ff) |
+	                       (((H_i << 24) | (H_i >>> 8))  & 0xff00ff00);
+	            }
+
+	            // Return final computed hash
+	            return hash;
+	        },
+
+	        clone: function () {
+	            var clone = Hasher.clone.call(this);
+	            clone._hash = this._hash.clone();
+
+	            return clone;
+	        }
+	    });
+
+	    function FF(a, b, c, d, x, s, t) {
+	        var n = a + ((b & c) | (~b & d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function GG(a, b, c, d, x, s, t) {
+	        var n = a + ((b & d) | (c & ~d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function HH(a, b, c, d, x, s, t) {
+	        var n = a + (b ^ c ^ d) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    function II(a, b, c, d, x, s, t) {
+	        var n = a + (c ^ (b | ~d)) + x + t;
+	        return ((n << s) | (n >>> (32 - s))) + b;
+	    }
+
+	    /**
+	     * Shortcut function to the hasher's object interface.
+	     *
+	     * @param {WordArray|string} message The message to hash.
+	     *
+	     * @return {WordArray} The hash.
+	     *
+	     * @static
+	     *
+	     * @example
+	     *
+	     *     var hash = CryptoJS.MD5('message');
+	     *     var hash = CryptoJS.MD5(wordArray);
+	     */
+	    C.MD5 = Hasher._createHelper(MD5);
+
+	    /**
+	     * Shortcut function to the HMAC's object interface.
+	     *
+	     * @param {WordArray|string} message The message to hash.
+	     * @param {WordArray|string} key The secret key.
+	     *
+	     * @return {WordArray} The HMAC.
+	     *
+	     * @static
+	     *
+	     * @example
+	     *
+	     *     var hmac = CryptoJS.HmacMD5(message, key);
+	     */
+	    C.HmacMD5 = Hasher._createHmacHelper(MD5);
+	}(Math));
+
+
+	return CryptoJS.MD5;
+
+}));
 
 /***/ }),
 
@@ -21003,444 +25076,58 @@ try {
 
 /***/ }),
 
-/***/ "./node_modules/smoothscroll-polyfill/dist/smoothscroll.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/smoothscroll-polyfill/dist/smoothscroll.js ***!
-  \*****************************************************************/
+/***/ "./node_modules/webpack/buildin/global.js":
+/*!***********************************!*\
+  !*** (webpack)/buildin/global.js ***!
+  \***********************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || new Function("return this")();
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+
+/***/ 0:
+/*!***********************************************************************!*\
+  !*** multi babel-regenerator-runtime ./core/src/js/ajax-load-more.js ***!
+  \***********************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* smoothscroll v0.4.4 - 2019 - Dustan Kasten, Jeremias Menichelli - MIT License */
-(function () {
-  'use strict';
+__webpack_require__(/*! babel-regenerator-runtime */"./node_modules/babel-regenerator-runtime/runtime.js");
+module.exports = __webpack_require__(/*! ./core/src/js/ajax-load-more.js */"./core/src/js/ajax-load-more.js");
 
-  // polyfill
-  function polyfill() {
-    // aliases
-    var w = window;
-    var d = document;
 
-    // return if scroll behavior is supported and polyfill is not forced
-    if (
-      'scrollBehavior' in d.documentElement.style &&
-      w.__forceSmoothScrollPolyfill__ !== true
-    ) {
-      return;
-    }
+/***/ }),
 
-    // globals
-    var Element = w.HTMLElement || w.Element;
-    var SCROLL_TIME = 468;
+/***/ 1:
+/*!************************!*\
+  !*** crypto (ignored) ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-    // object gathering original scroll methods
-    var original = {
-      scroll: w.scroll || w.scrollTo,
-      scrollBy: w.scrollBy,
-      elementScroll: Element.prototype.scroll || scrollElement,
-      scrollIntoView: Element.prototype.scrollIntoView
-    };
-
-    // define timing method
-    var now =
-      w.performance && w.performance.now
-        ? w.performance.now.bind(w.performance)
-        : Date.now;
-
-    /**
-     * indicates if a the current browser is made by Microsoft
-     * @method isMicrosoftBrowser
-     * @param {String} userAgent
-     * @returns {Boolean}
-     */
-    function isMicrosoftBrowser(userAgent) {
-      var userAgentPatterns = ['MSIE ', 'Trident/', 'Edge/'];
-
-      return new RegExp(userAgentPatterns.join('|')).test(userAgent);
-    }
-
-    /*
-     * IE has rounding bug rounding down clientHeight and clientWidth and
-     * rounding up scrollHeight and scrollWidth causing false positives
-     * on hasScrollableSpace
-     */
-    var ROUNDING_TOLERANCE = isMicrosoftBrowser(w.navigator.userAgent) ? 1 : 0;
-
-    /**
-     * changes scroll position inside an element
-     * @method scrollElement
-     * @param {Number} x
-     * @param {Number} y
-     * @returns {undefined}
-     */
-    function scrollElement(x, y) {
-      this.scrollLeft = x;
-      this.scrollTop = y;
-    }
-
-    /**
-     * returns result of applying ease math function to a number
-     * @method ease
-     * @param {Number} k
-     * @returns {Number}
-     */
-    function ease(k) {
-      return 0.5 * (1 - Math.cos(Math.PI * k));
-    }
-
-    /**
-     * indicates if a smooth behavior should be applied
-     * @method shouldBailOut
-     * @param {Number|Object} firstArg
-     * @returns {Boolean}
-     */
-    function shouldBailOut(firstArg) {
-      if (
-        firstArg === null ||
-        typeof firstArg !== 'object' ||
-        firstArg.behavior === undefined ||
-        firstArg.behavior === 'auto' ||
-        firstArg.behavior === 'instant'
-      ) {
-        // first argument is not an object/null
-        // or behavior is auto, instant or undefined
-        return true;
-      }
-
-      if (typeof firstArg === 'object' && firstArg.behavior === 'smooth') {
-        // first argument is an object and behavior is smooth
-        return false;
-      }
-
-      // throw error when behavior is not supported
-      throw new TypeError(
-        'behavior member of ScrollOptions ' +
-          firstArg.behavior +
-          ' is not a valid value for enumeration ScrollBehavior.'
-      );
-    }
-
-    /**
-     * indicates if an element has scrollable space in the provided axis
-     * @method hasScrollableSpace
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function hasScrollableSpace(el, axis) {
-      if (axis === 'Y') {
-        return el.clientHeight + ROUNDING_TOLERANCE < el.scrollHeight;
-      }
-
-      if (axis === 'X') {
-        return el.clientWidth + ROUNDING_TOLERANCE < el.scrollWidth;
-      }
-    }
-
-    /**
-     * indicates if an element has a scrollable overflow property in the axis
-     * @method canOverflow
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function canOverflow(el, axis) {
-      var overflowValue = w.getComputedStyle(el, null)['overflow' + axis];
-
-      return overflowValue === 'auto' || overflowValue === 'scroll';
-    }
-
-    /**
-     * indicates if an element can be scrolled in either axis
-     * @method isScrollable
-     * @param {Node} el
-     * @param {String} axis
-     * @returns {Boolean}
-     */
-    function isScrollable(el) {
-      var isScrollableY = hasScrollableSpace(el, 'Y') && canOverflow(el, 'Y');
-      var isScrollableX = hasScrollableSpace(el, 'X') && canOverflow(el, 'X');
-
-      return isScrollableY || isScrollableX;
-    }
-
-    /**
-     * finds scrollable parent of an element
-     * @method findScrollableParent
-     * @param {Node} el
-     * @returns {Node} el
-     */
-    function findScrollableParent(el) {
-      while (el !== d.body && isScrollable(el) === false) {
-        el = el.parentNode || el.host;
-      }
-
-      return el;
-    }
-
-    /**
-     * self invoked function that, given a context, steps through scrolling
-     * @method step
-     * @param {Object} context
-     * @returns {undefined}
-     */
-    function step(context) {
-      var time = now();
-      var value;
-      var currentX;
-      var currentY;
-      var elapsed = (time - context.startTime) / SCROLL_TIME;
-
-      // avoid elapsed times higher than one
-      elapsed = elapsed > 1 ? 1 : elapsed;
-
-      // apply easing to elapsed time
-      value = ease(elapsed);
-
-      currentX = context.startX + (context.x - context.startX) * value;
-      currentY = context.startY + (context.y - context.startY) * value;
-
-      context.method.call(context.scrollable, currentX, currentY);
-
-      // scroll more if we have not reached our destination
-      if (currentX !== context.x || currentY !== context.y) {
-        w.requestAnimationFrame(step.bind(w, context));
-      }
-    }
-
-    /**
-     * scrolls window or element with a smooth behavior
-     * @method smoothScroll
-     * @param {Object|Node} el
-     * @param {Number} x
-     * @param {Number} y
-     * @returns {undefined}
-     */
-    function smoothScroll(el, x, y) {
-      var scrollable;
-      var startX;
-      var startY;
-      var method;
-      var startTime = now();
-
-      // define scroll context
-      if (el === d.body) {
-        scrollable = w;
-        startX = w.scrollX || w.pageXOffset;
-        startY = w.scrollY || w.pageYOffset;
-        method = original.scroll;
-      } else {
-        scrollable = el;
-        startX = el.scrollLeft;
-        startY = el.scrollTop;
-        method = scrollElement;
-      }
-
-      // scroll looping over a frame
-      step({
-        scrollable: scrollable,
-        method: method,
-        startTime: startTime,
-        startX: startX,
-        startY: startY,
-        x: x,
-        y: y
-      });
-    }
-
-    // ORIGINAL METHODS OVERRIDES
-    // w.scroll and w.scrollTo
-    w.scroll = w.scrollTo = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.scroll.call(
-          w,
-          arguments[0].left !== undefined
-            ? arguments[0].left
-            : typeof arguments[0] !== 'object'
-              ? arguments[0]
-              : w.scrollX || w.pageXOffset,
-          // use top prop, second argument if present or fallback to scrollY
-          arguments[0].top !== undefined
-            ? arguments[0].top
-            : arguments[1] !== undefined
-              ? arguments[1]
-              : w.scrollY || w.pageYOffset
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        arguments[0].left !== undefined
-          ? ~~arguments[0].left
-          : w.scrollX || w.pageXOffset,
-        arguments[0].top !== undefined
-          ? ~~arguments[0].top
-          : w.scrollY || w.pageYOffset
-      );
-    };
-
-    // w.scrollBy
-    w.scrollBy = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0])) {
-        original.scrollBy.call(
-          w,
-          arguments[0].left !== undefined
-            ? arguments[0].left
-            : typeof arguments[0] !== 'object' ? arguments[0] : 0,
-          arguments[0].top !== undefined
-            ? arguments[0].top
-            : arguments[1] !== undefined ? arguments[1] : 0
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        w,
-        d.body,
-        ~~arguments[0].left + (w.scrollX || w.pageXOffset),
-        ~~arguments[0].top + (w.scrollY || w.pageYOffset)
-      );
-    };
-
-    // Element.prototype.scroll and Element.prototype.scrollTo
-    Element.prototype.scroll = Element.prototype.scrollTo = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        // if one number is passed, throw error to match Firefox implementation
-        if (typeof arguments[0] === 'number' && arguments[1] === undefined) {
-          throw new SyntaxError('Value could not be converted');
-        }
-
-        original.elementScroll.call(
-          this,
-          // use left prop, first number argument or fallback to scrollLeft
-          arguments[0].left !== undefined
-            ? ~~arguments[0].left
-            : typeof arguments[0] !== 'object' ? ~~arguments[0] : this.scrollLeft,
-          // use top prop, second argument or fallback to scrollTop
-          arguments[0].top !== undefined
-            ? ~~arguments[0].top
-            : arguments[1] !== undefined ? ~~arguments[1] : this.scrollTop
-        );
-
-        return;
-      }
-
-      var left = arguments[0].left;
-      var top = arguments[0].top;
-
-      // LET THE SMOOTHNESS BEGIN!
-      smoothScroll.call(
-        this,
-        this,
-        typeof left === 'undefined' ? this.scrollLeft : ~~left,
-        typeof top === 'undefined' ? this.scrollTop : ~~top
-      );
-    };
-
-    // Element.prototype.scrollBy
-    Element.prototype.scrollBy = function() {
-      // avoid action when no arguments are passed
-      if (arguments[0] === undefined) {
-        return;
-      }
-
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.elementScroll.call(
-          this,
-          arguments[0].left !== undefined
-            ? ~~arguments[0].left + this.scrollLeft
-            : ~~arguments[0] + this.scrollLeft,
-          arguments[0].top !== undefined
-            ? ~~arguments[0].top + this.scrollTop
-            : ~~arguments[1] + this.scrollTop
-        );
-
-        return;
-      }
-
-      this.scroll({
-        left: ~~arguments[0].left + this.scrollLeft,
-        top: ~~arguments[0].top + this.scrollTop,
-        behavior: arguments[0].behavior
-      });
-    };
-
-    // Element.prototype.scrollIntoView
-    Element.prototype.scrollIntoView = function() {
-      // avoid smooth behavior if not required
-      if (shouldBailOut(arguments[0]) === true) {
-        original.scrollIntoView.call(
-          this,
-          arguments[0] === undefined ? true : arguments[0]
-        );
-
-        return;
-      }
-
-      // LET THE SMOOTHNESS BEGIN!
-      var scrollableParent = findScrollableParent(this);
-      var parentRects = scrollableParent.getBoundingClientRect();
-      var clientRects = this.getBoundingClientRect();
-
-      if (scrollableParent !== d.body) {
-        // reveal element inside parent
-        smoothScroll.call(
-          this,
-          scrollableParent,
-          scrollableParent.scrollLeft + clientRects.left - parentRects.left,
-          scrollableParent.scrollTop + clientRects.top - parentRects.top
-        );
-
-        // reveal parent in viewport unless is fixed
-        if (w.getComputedStyle(scrollableParent).position !== 'fixed') {
-          w.scrollBy({
-            left: parentRects.left,
-            top: parentRects.top,
-            behavior: 'smooth'
-          });
-        }
-      } else {
-        // reveal element in viewport
-        w.scrollBy({
-          left: clientRects.left,
-          top: clientRects.top,
-          behavior: 'smooth'
-        });
-      }
-    };
-  }
-
-  if (true) {
-    // commonjs
-    module.exports = { polyfill: polyfill };
-  } else {}
-
-}());
-
+/* (ignored) */
 
 /***/ })
 

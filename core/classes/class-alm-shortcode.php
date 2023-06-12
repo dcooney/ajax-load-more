@@ -32,9 +32,16 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 * @since 2.10.1
 		 */
 		public static function alm_render_shortcode( $atts ) {
-
 			global $post; // Global $post obj.
-			$options = get_option( 'alm_settings' ); // Get ALM options.
+
+			// Initial variables.
+			self::$counter++; // ALM counter.
+			$slug              = apply_filters( 'alm_page_slug', alm_get_page_slug( $post ) ); // Define page slug.
+			$post_id           = apply_filters( 'alm_page_id', alm_get_page_id( $post ) ); // Define post ID.
+			$wp_posts_per_page = get_option( 'posts_per_page' ); // Global Posts Per Page.
+
+			// Get ALM options.
+			$options = get_option( 'alm_settings' );
 
 			/**
 			 * Override default ALM Settings.
@@ -42,12 +49,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 *
 			 * @return array $options Options array.
 			 */
-			$options = has_filter( 'alm_settings' ) ? apply_filters( 'alm_settings', $options ) : $options;
-
-			self::$counter++; // Counter.
-			$slug              = apply_filters( 'alm_page_slug', alm_get_page_slug( $post ) ); // Define page slug.
-			$post_id           = apply_filters( 'alm_page_id', alm_get_page_id( $post ) ); // Define post ID.
-			$wp_posts_per_page = get_option( 'posts_per_page' ); // Global Posts Per Page.
+			$options            = has_filter( 'alm_settings' ) ? apply_filters( 'alm_settings', $options ) : $options;
+			$options['post_id'] = $post_id; // Add post ID to options array.
+			$options['slug']    = $slug; // Add post slug to options array.
 
 			// Custom CSS for Layouts - Only run this once.
 			if ( has_action( 'alm_layouts_custom_css' ) ) {
@@ -96,6 +100,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'acf_field_type'               => 'repeater',
 						'acf_field_name'               => '',
 						'acf_parent_field_name'        => '',
+						'acf_row_index'                => 0,
 						'restapi'                      => false,
 						'restapi_base'                 => '/wp-json',
 						'restapi_namespace'            => 'ajaxloadmore',
@@ -759,6 +764,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				'acf_field_type'            => $acf_field_type,
 				'acf_field_name'            => $acf_field_name,
 				'acf_parent_field_name'     => $acf_parent_field_name,
+				'acf_row_index'             => $acf_row_index,
 				'term_query'                => [
 					'taxonomy'   => $term_query_taxonomy,
 					'hide_empty' => $term_query_hide_empty,
@@ -843,7 +849,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$acf_field_name,
 					$acf_post_id,
 					$post_id,
-					$acf_parent_field_name
+					$acf_parent_field_name,
+					$acf_row_index
 				);
 				$ajaxloadmore .= wp_kses_post( $acf_return );
 			}
@@ -851,17 +858,18 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Cache Add-on.
 			$alm_auto_cache = isset( $_GET['alm_auto_cache'] ) ? true : false;
 			if ( has_action( 'alm_cache_installed' ) && $cache === 'true' ) {
-				$cache_return = apply_filters(
-					'alm_cache_shortcode',
-					$cache,
-					$cache_id,
-					$options
-				);
-				if ( $alm_auto_cache ) {
-					// Disable paging if auto generate cache active.
-					$paging = false;
+				// Confirm cache version is 2.0 or greater.
+				$cache_version_check = defined( 'ALM_CACHE_VERSION' ) && version_compare( ALM_CACHE_VERSION, '2.0', '>=' );
+				if ( $cache_version_check ) {
+					$cache_return  = apply_filters(
+						'alm_cache_shortcode',
+						$cache,
+						$cache_id,
+						$options
+					);
+					$paging        = $alm_auto_cache ? false : $paging;    // Disable paging if auto generate cache active.
+					$ajaxloadmore .= wp_kses_post( $cache_return );
 				}
-				$ajaxloadmore .= wp_kses_post( $cache_return );
 			}
 
 			// CTA Add-on.

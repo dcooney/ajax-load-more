@@ -58,9 +58,11 @@ jQuery(document).ready(function ($) {
 	 * @since 5.4
 	 */
 	const ACTIVE_TAB_CLASS = 'active';
-	function openTabbedItem(button, index, almTabbedWrapper) {
-		// Get Currently Active Button.
-		let activeBtn = document.querySelector('.alm-tabbed-wrapper--nav button.active');
+	function openTabbedItem(button, almTabbedWrapper) {
+		const activeBtn = document.querySelector('.alm-tabbed-wrapper--nav button.active'); // Get Currently Active Button.
+		const id = button.dataset.id;
+
+		// Remove currently active button.
 		if (activeBtn) {
 			activeBtn.classList.remove(ACTIVE_TAB_CLASS);
 		}
@@ -71,58 +73,49 @@ jQuery(document).ready(function ($) {
 		// Activate Current Section
 		if (almTabbedWrapper) {
 			let currentActive = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section.' + ACTIVE_TAB_CLASS);
-			let sections = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--section');
-			if (currentActive && sections) {
+			let section = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section#' + id);
+			if (currentActive && section) {
 				currentActive.classList.remove(ACTIVE_TAB_CLASS);
-				if (sections[index]) {
-					sections[index].classList.add(ACTIVE_TAB_CLASS);
-					sections[index].focus({ preventScroll: true });
-					$('html, body').animate(
-						{
-							scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45,
-						},
-						350,
-						function () {
-							var section = parseInt(index) + 1;
-							window.location.hash = 'alm-section-' + section;
-						}
-					);
-				}
+				section.classList.add(ACTIVE_TAB_CLASS);
+				section.focus({ preventScroll: true });
+				$('html, body').animate(
+					{
+						scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45,
+					},
+					400,
+					function () {
+						history.replaceState({}, '', '#' + id);
+					}
+				);
 			}
 		}
 	}
 
-	let almTabbedWrapper = document.querySelector('.alm-tabbed-wrapper');
+	const almTabbedWrapper = document.querySelector('.alm-tabbed-wrapper');
 	if (almTabbedWrapper) {
-		let current = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section');
+		const current = almTabbedWrapper.querySelector('.alm-tabbed-wrapper--section');
 		if (current) {
 			current.classList.add(ACTIVE_TAB_CLASS);
 		}
-		let tabbedNav = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--nav button');
+		const tabbedNav = almTabbedWrapper.querySelectorAll('.alm-tabbed-wrapper--nav button');
 		if (tabbedNav) {
 			tabbedNav.forEach(function (item, index) {
 				item.addEventListener('click', function () {
-					openTabbedItem(this, index, almTabbedWrapper);
+					openTabbedItem(this, almTabbedWrapper);
 				});
 			});
 		}
 
-		// Open hash
+		// Open section from hash.
 		let hash = window.location.hash;
-		if (hash && hash.indexOf('alm-section') !== -1) {
+		if (hash) {
 			hash = hash.replace('#', '');
-			let openSection = hash.replace('alm-section-', '');
-			openSection = parseInt(openSection) - 1;
-			// Get button from nodelist.
-			let nodeItem = tabbedNav.item(openSection);
-			if (nodeItem) {
-				// trigger a click.
-				nodeItem.click();
+			const targetBtn = document.querySelector('.alm-tabbed-wrapper--nav button[data-id="' + hash + '"]');
+			if (targetBtn) {
+				targetBtn.click();
 			}
 		} else {
-			if (tabbedNav) {
-				tabbedNav[0].classList.add(ACTIVE_TAB_CLASS);
-			}
+			document.querySelector('.alm-tabbed-wrapper--nav button').classList.add(ACTIVE_TAB_CLASS);
 		}
 	}
 

@@ -159,7 +159,7 @@
 					?>
 				<div class="spacer"></div>
 				<div class="license-no-addons">
-					<p><?php esc_html_e( 'You do not have any Ajax Load More add-ons installed', 'ajax-load-more' ); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php _e( 'Browse Add-ons', 'ajax-load-more' ); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php _e( 'Go Pro', 'ajax-load-more' ); ?></strong></a></p>
+					<p><?php esc_attr_e( 'You do not have any Ajax Load More add-ons installed', 'ajax-load-more' ); ?> | <a href="admin.php?page=ajax-load-more-add-ons"><strong><?php esc_attr_e( 'Browse Add-ons', 'ajax-load-more' ); ?></strong></a> | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank"><strong><?php esc_attr_e( 'Go Pro', 'ajax-load-more' ); ?></strong></a></p>
 				</div>
 				<?php endif; ?>
 			</div>
@@ -168,17 +168,17 @@
 				<div id="cnkt-sticky-wrapper">
 					<div id="cnkt-sticky">
 						<div class="cta">
-							<h3><?php _e( 'About Licenses', 'ajax-load-more' ); ?></h3>
+							<h3><?php esc_attr_e( 'About Licenses', 'ajax-load-more' ); ?></h3>
 							<div class="cta-inner">
 								<ul>
 									<li><?php _e( 'License keys are found in the purchase receipt email that was sent immediately after purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more' ); ?></li>
-									<li><?php _e( 'If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/contact/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more' ); ?></li>
-									<li><strong><?php _e( 'Are you having issues updating an add-on?', 'ajax-load-more' ); ?></strong><br/><?php _e( 'Please try deactivating and then re-activating each license. Once you\'ve done that, try running the update again.', 'ajax-load-more' ); ?></li>
+									<li><?php _e( 'If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/support/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more' ); ?></li>
+									<li><strong><?php esc_attr_e( 'Are you having issues updating an add-on?', 'ajax-load-more' ); ?></strong><br/><?php esc_attr_e( 'Please try deactivating and then re-activating each license. Once you\'ve done that, try running the update again.', 'ajax-load-more' ); ?></li>
 								</ul>
 							</div>
 							<div class="major-publishing-actions">
 								<a class="button button-primary" target="_blank" href="https://connekthq.com/account/">
-									<?php _e( 'Your Account', 'ajax-load-more' ); ?>
+									<?php esc_attr_e( 'Your Account', 'ajax-load-more' ); ?>
 								</a>
 							</div>
 						</div>

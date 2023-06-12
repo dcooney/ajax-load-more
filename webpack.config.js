@@ -6,7 +6,7 @@ const dir = 'core/dist';
 
 module.exports = {
 	entry: {
-		'ajax-load-more': './core/src/js/ajax-load-more.js',
+		'ajax-load-more': ['babel-regenerator-runtime', './core/src/js/ajax-load-more.js'],
 	},
 	output: {
 		path: path.join(__dirname, dir),

@@ -7,15 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 5.6.0.5
+ * Version: 6.0.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '5.6.0.5' );
-define( 'ALM_RELEASE', 'April 3, 2023' );
+define( 'ALM_VERSION', '6.0.0' );
+define( 'ALM_RELEASE', 'June 11, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -360,6 +360,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, $file );
 			}
 
+			// Determine if there is a trailing slash in the permalink structure.
+			$permalink_structure = get_option( 'permalink_structure' );
+			$trailing_slash      = substr( $permalink_structure, -1 ) === '/' ? 'true' : 'false';
+
 			// Localized JS variables.
 			wp_localize_script(
 				'ajax-load-more',
@@ -370,6 +374,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
+					'trailing_slash'  => $trailing_slash,
+					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
 					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),
 					'ga_debug'        => apply_filters( 'alm_ga_debug', 'false' ),
@@ -431,7 +437,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$filters_startpage = isset( $params['filters_startpage'] ) && $is_filters ? $params['filters_startpage'] : 0;
 
 			// Cache.
-			$cache_id        = isset( $params['cache_id'] ) ? $params['cache_id'] : '';
+			$cache_id        = isset( $params['cache_id'] ) && $params['cache_id'] ? $params['cache_id'] : false;
+			$cache_slug      = isset( $params['cache_slug'] ) && $params['cache_slug'] ? $params['cache_slug'] : '';
 			$cache_logged_in = isset( $params['cache_logged_in'] ) ? $params['cache_logged_in'] : false;
 			$do_create_cache = $cache_logged_in === 'true' && is_user_logged_in() ? false : true;
 
@@ -472,13 +479,14 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			// CTA Add-on.
 			$cta      = false;
 			$cta_data = isset( $params['cta'] ) ? $params['cta'] : false;
+
 			if ( $cta_data ) {
 				$cta                = true;
 				$cta_position       = isset( $cta_data['cta_position'] ) ? $cta_data['cta_position'] : 'before:1';
 				$cta_position_array = explode( ':', $cta_position );
 				$cta_pos            = (string) $cta_position_array[0];
-				$cta_val            = (string) $cta_position_array[1];
 				$cta_pos            = $cta_pos !== 'after' ? 'before' : $cta_pos;
+				$cta_val            = (string) $cta_position_array[1];
 				$cta_repeater       = isset( $cta_data['cta_repeater'] ) ? $cta_data['cta_repeater'] : 'null';
 				$cta_theme_repeater = isset( $cta_data['cta_theme_repeater'] ) ? sanitize_file_name( $cta_data['cta_theme_repeater'] ) : 'null';
 			}
@@ -566,19 +574,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				$alm_loop_count  = 0;
 			}
 
-			/**
-			 * Cache Add-on hook - Create cache directory + info .txt file.
-			 */
-			if ( ! empty( $cache_id ) && has_action( 'alm_cache_create_dir' ) && $do_create_cache ) {
-				apply_filters( 'alm_cache_create_dir', $cache_id, $canonical_url );
-
-				// Filters || WooCommerce Cache Support.
-				if ( $is_filters && has_filter( 'alm_cache_create_nested_id' ) ) {
-					$cache_id = apply_filters( 'alm_cache_create_nested_id', $cache_id );
-					apply_filters( 'alm_cache_create_dir', $cache_id, $_SERVER['HTTP_REFERER'] );
-				}
-			}
-
 			if ( $query_type === 'totalposts' ) {
 				// Paging add-on.
 				wp_send_json(
@@ -605,11 +600,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$alm_current     = 0;
 					$alm_has_cta     = false;
 
-					$cta_array = [];
-					if ( $cta && has_action( 'alm_cta_pos_array' ) ) {
-						// Build CTA Position Array.
-						$cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging );
-					}
+					// Build CTA Position Array.
+					$cta_array = $cta && has_action( 'alm_cta_pos_array' ) ? $cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging ) : [];
 
 					ob_start();
 
@@ -622,7 +614,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						$alm_item = ( $alm_page_count * $posts_per_page ) - $posts_per_page + $alm_loop_count;
 
 						// Call to Action [Before].
-						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( (string) $alm_current, $cta_array, true ) ) {
+						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
 							$alm_has_cta = true;
 						}
@@ -631,7 +623,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						alm_loop( $repeater, $type, $theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, $args, false );
 
 						// Call to Action [After].
-						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' && in_array( (string) $alm_current, $cta_array, true ) ) {
+						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
 							$alm_has_cta = true;
 						}
@@ -643,32 +635,11 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$data = ob_get_clean();
 
 					/**
-					 * Cache Add-on hook - If Cache is enabled, check the cache file
-					 *
-					 * @param string $cache_id ID of the ALM cache
-					 * @param boolean $do_create_cache Should cache be created for this user
-					 * @since 3.2.1
+					 * Cache Add-on.
+					 * Create the cache file.
 					 */
-					if ( ! empty( $cache_id ) && has_action( 'alm_cache_installed' ) && $do_create_cache ) {
-						if ( $single_post ) {
-							// Single Post Cache.
-							apply_filters( 'alm_previous_post_cache_file', $cache_id, $single_post_id, $data );
-
-						} else {
-							// Standard Cache.
-
-							// Filters.
-							$startpage = $is_filters ? $filters_startpage : $seo_start_page;
-
-							// Filters and Preloaded.
-							// - add 2 pages to maintain paging compatibility when returning to the same listing via filter.
-							// - set $page to $startpage.
-							if ( $is_filters && $preloaded === 'true' ) {
-								$startpage = $startpage + 1; // phpcs:ignore
-								$page      = $page + 1; // phpcs:ignore
-							}
-							apply_filters( 'alm_cache_file', $cache_id, $page, $startpage, $data, $preloaded );
-						}
+					if ( $cache_id && method_exists( 'ALMCache', 'create_cache_file' ) && $do_create_cache ) {
+						ALMCache::create_cache_file( $cache_id, $cache_slug, $canonical_url, $data, $alm_current, $alm_found_posts );
 					}
 
 					$return = [
