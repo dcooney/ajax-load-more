@@ -30,6 +30,7 @@ import * as resultsText from './modules/resultsText';
 import setFocus from './modules/setFocus';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
+// import '../scss/ajax-load-more.scss';
 
 // External Modules
 let qs = require('qs');
@@ -51,7 +52,6 @@ axios.interceptors.request.use((config) => {
 });
 
 // Polyfills
-require('@babel/polyfill/noConflict');
 require('focus-options-polyfill');
 require('./helpers/polyfills.js');
 
@@ -795,8 +795,8 @@ let alm_is_filtering = false;
 			let pagingContent = alm.listing.querySelector('.alm-paging-content');
 
 			let html = data.html;
-			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 			const meta = data.meta;
+			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 
 			// Get current post counts.
 			const totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
@@ -965,13 +965,7 @@ let alm_is_filtering = false;
 										// First Page
 										if (alm.addons.seo) {
 											// SEO
-											alm_reveal = createSEOAttributes(
-												alm,
-												alm_reveal,
-												querystring,
-												seo_class + preloaded_class,
-												getSEOPageNum(alm.addons.seo_offset, 1)
-											);
+											alm_reveal = createSEOAttributes(alm, alm_reveal, querystring, seo_class + preloaded_class, getSEOPageNum(alm.addons.seo_offset, 1));
 										}
 										if (alm.addons.filters) {
 											// Filters

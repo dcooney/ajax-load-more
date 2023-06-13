@@ -4,8 +4,8 @@ import setFocus from './setFocus';
 /**
  * Create a numbered table of contents navigation
  *
- * @param {object} alm
- * @param {boolean} init
+ * @param {object}  alm  The alm object.
+ * @param {boolean} init Init boolean.
  * @since 5.2
  */
 export function tableOfContents(alm, init = false, from_preloaded = false) {
@@ -76,7 +76,9 @@ export function tableOfContents(alm, init = false, from_preloaded = false) {
 	}
 }
 
-// Clear table of contents
+/**
+ * Clear table of contents.
+ */
 export function clearTOC() {
 	let toc = document.querySelector('.alm-toc');
 	if (toc) {
@@ -84,7 +86,13 @@ export function clearTOC() {
 	}
 }
 
-// Create Standard Page Button
+/**
+ * Create Standard Page Button.
+ *
+ * @param {*} alm    ALM object.
+ * @param {*} page   Current page.
+ * @param {*} offset The page offset.
+ */
 function createTOCButton(alm, page, offset) {
 	if (!alm.tableofcontents) {
 		return false;
@@ -120,7 +128,13 @@ function createTOCButton(alm, page, offset) {
 	});
 }
 
-// Get Button Label
+/**
+ * Get Button Label.
+ *
+ * @param {*} alm The alm object.
+ * @param {*} page Current page.
+ * @return {string} Label.
+ */
 function getTOCLabel(alm, page) {
 	let label = page;
 

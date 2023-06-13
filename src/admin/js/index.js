@@ -1,3 +1,8 @@
+require('./libs/jquery.drops');
+require('./libs/jquery.tooltipster.min');
+require('./libs/select2.min');
+require('./modules/sticky');
+
 var _alm = _alm || {};
 
 jQuery(document).ready(function ($) {
