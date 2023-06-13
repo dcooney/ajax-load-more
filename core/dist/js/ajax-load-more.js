@@ -2613,8 +2613,8 @@ var alm_is_filtering = false;
 			var pagingContent = alm.listing.querySelector('.alm-paging-content');
 
 			var html = data.html;
-			var total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 			var meta = data.meta;
+			var total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 
 			// Get current post counts.
 			var totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;

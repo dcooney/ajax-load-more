@@ -795,8 +795,8 @@ let alm_is_filtering = false;
 			let pagingContent = alm.listing.querySelector('.alm-paging-content');
 
 			let html = data.html;
-			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 			const meta = data.meta;
+			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 
 			// Get current post counts.
 			const totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
