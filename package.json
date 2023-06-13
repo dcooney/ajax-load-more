@@ -5,7 +5,7 @@
 	"scripts": {
 		"watch": "npm run dev",
 		"dev": "cross-env NODE_ENV=development wp-scripts start",
-		"build": "cross-env NODE_ENV=production npm run build:pot && wp-scripts build",
+		"build": "cross-env NODE_ENV=production npm run build:pot && wp-scripts build --config webpack.prod.js",
 		"build:pot": "composer run pot",
 		"format": "wp-scripts format && composer run format",
 		"lint": "run-p lint:*",
@@ -18,6 +18,7 @@
 	},
 	"author": "connekt",
 	"private": true,
+	"main": "./src/js/ajax-load-more.js",
 	"repository": {
 		"private": true
 	},

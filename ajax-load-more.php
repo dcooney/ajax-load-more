@@ -334,13 +334,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 * @since 2.0.0
 		 */
 		public function alm_enqueue_scripts() {
-
 			// Get ALM Options.
 			$options = get_option( 'alm_settings' );
 
 			// Core ALM JS.
-			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off.
-			wp_register_script( 'ajax-load-more', plugins_url( '/build/ajax-load-more.js', __FILE__ ), '', ALM_VERSION, true );
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_register_script( 'ajax-load-more', plugins_url( '/build/ajax-load-more' . $suffix . '.js', __FILE__ ), '', ALM_VERSION, true );
 
 			// LiteSpeed Cache compatability.
 			wp_script_add_data( 'ajax-load-more', 'data-no-optimize', '1' );

@@ -5,7 +5,7 @@ const path = require('path');
 
 module.exports = {
 	entry: {
-		'ajax-load-more': './core/src/js/ajax-load-more.js',
+		'ajax-load-more': './src/frontend/js/ajax-load-more.js',
 		'admin/index': './src/admin/js/index.js',
 	},
 	output: {
