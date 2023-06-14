@@ -62,7 +62,7 @@
 		"gulp-watch": "latest",
 		"imagesloaded": "^4.1.4",
 		"jshint": "latest",
-		"node-sass": "^4.14.1",
+		"node-sass": "^7.0.0",
 		"postcss-import": "^10.0.0",
 		"postcss-loader": "^2.0.6",
 		"qs": "^6.6.0",
