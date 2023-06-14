@@ -15,14 +15,14 @@
 		<div class="cnkt-sticky-wrapper">
 			<ul class="cnkt-sticky">
 				<?php if ( alm_has_addon_shortcodes() ) { ?>
-				<li><button type="button" class="active"><i class="fa fa-plus-circle"></i> <?php _e( 'Add-ons', 'ajax-load-more' ); ?></button></li>
+				<li><button type="button" class="active" data-id="add-ons"><i class="fa fa-plus-circle"></i> <?php _e( 'Add-ons', 'ajax-load-more' ); ?></button></li>
 				<?php } ?>
 				<?php if ( alm_has_extension_shortcodes() ) { ?>
-				<li><button type="button"><i class="fa fa-plug"></i> <?php _e( 'Extensions', 'ajax-load-more' ); ?></button></li>
+				<li><button type="button" data-id="extensions"><i class="fa fa-plug"></i> <?php _e( 'Extensions', 'ajax-load-more' ); ?></button></li>
 				<?php } ?>
-				<li><button type="button"><i class="fa fa-cog"></i> <?php _e( 'Display Settings', 'ajax-load-more' ); ?></button></li>
-				<li><button type="button"><i class="fa fa-database"></i> <?php _e( 'Query Parameters', 'ajax-load-more' ); ?></button></li>
-				<li><button type="button"><i class="fa fa-handshake-o" aria-hidden="true"></i> <?php _e( 'Integrations', 'ajax-load-more' ); ?></button></li>
+				<li><button type="button" data-id="display-settings"><i class="fa fa-cog"></i> <?php _e( 'Display Settings', 'ajax-load-more' ); ?></button></li>
+				<li><button type="button" data-id="query-parameters"><i class="fa fa-database"></i> <?php _e( 'Query Parameters', 'ajax-load-more' ); ?></button></li>
+				<li><button type="button" data-id="integrations"><i class="fa fa-handshake-o" aria-hidden="true"></i> <?php _e( 'Integrations', 'ajax-load-more' ); ?></button></li>
 			</ul>
 		</div>
 	</div>
@@ -33,7 +33,7 @@
 		<?php
 			// ../admin-functions.php
 			if(alm_has_addon_shortcodes()) : ?>
-		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
+		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="add-ons">
 
 			<h2><?php _e('Add-ons', 'ajax-load-more'); ?></h2>
 			<p class="section-intro">
@@ -64,7 +64,7 @@
 		<?php
 			// ../admin-functions.php
 			if ( alm_has_extension_shortcodes() ) : ?>
-		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
+		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="extensions">
 
 			<h2><?php _e('Extensions', 'ajax-load-more'); ?></h2>
 			<p class="section-intro">
@@ -84,7 +84,7 @@
 		<!-- End Extensions -->
 
 		<!-- Display Settings -->
-		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
+		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="display-settings">
 
 			<h2><?php _e('Display Settings', 'ajax-load-more'); ?></h2>
 			<p class="section-intro">
@@ -796,7 +796,7 @@
 		<!-- ****************************** -->
 
 		<!-- Query Parameters -->
-		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
+		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="query-parameters">
 
 			<h2>
 				<?php _e('Query Parameters', 'ajax-load-more'); ?>
@@ -1393,7 +1393,7 @@
 		<!-- ****************************** -->
 
 		<!-- Integrations -->
-		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0">
+		<div class="shortcode-parameter-wrap alm-tabbed-wrapper--section" tabindex="0" id="integrations">
 
 			<h2><?php _e('Integrations', 'ajax-load-more'); ?></h2>
 			<p class="section-intro">
