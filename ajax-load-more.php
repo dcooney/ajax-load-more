@@ -15,7 +15,7 @@
  */
 
 define( 'ALM_VERSION', '6.0.2' );
-define( 'ALM_RELEASE', 'June 27 2023' );
+define( 'ALM_RELEASE', 'June 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
