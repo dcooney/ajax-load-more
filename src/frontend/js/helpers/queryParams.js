@@ -238,7 +238,7 @@ export function getTypeParams(alm, type) {
 				nested: alm.nested,
 			};
 
-		case 'single_posts':
+		case 'single_post':
 			return {
 				single_post: 'true',
 				id: addons.single_post_id,

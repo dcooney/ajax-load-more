@@ -22,16 +22,13 @@
 
 	<!-- Use WordPress "Extra" Coding Standards. -->
 	<rule ref="WordPress-Extra">
-		<!-- Allow array short syntax. -->
 		<exclude name="Generic.Arrays.DisallowShortArraySyntax" />
-		<!-- Allow short prefixes. -->
 		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
-		<!-- Allow Yoda -->
 		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
-		<!-- Allow large posts_per_page -->
 		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page"/>
 		<exclude name="WordPress.Security.NonceVerification.Recommended" />
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
 	</rule>
 
 	<!-- Use WordPress "Docs" Coding Standards. -->

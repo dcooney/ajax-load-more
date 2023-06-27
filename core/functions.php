@@ -45,33 +45,23 @@ add_filter( 'alm_progress_css', 'alm_progress_css', 10, 3 );
 function alm_css_disabled( $setting ) {
 	$options  = get_option( 'alm_settings' );
 	$disabled = true;
-	if ( ! isset( $options[ $setting ] ) || $options[ $setting ] !== '1' ) {
-		$disabled = false;
-	}
-	return $disabled;
+	return ! isset( $options[ $setting ] ) || $options[ $setting ] !== '1' ? false : true;
 }
 
 /**
  * Load ALM CSS inline.
  *
  * @param string $setting The name of the setting field.
- * @return boolean         Is it inline or in a file.
+ * @return boolean        Is it inline or in a file.
  * @since 3.3.1
  */
 function alm_do_inline_css( $setting ) {
-	if ( defined( 'REST_REQUEST' ) ) {
+	if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 		// Exit if this is a REST API request.
-		if ( REST_REQUEST ) {
-			return false;
-		}
+		return false;
 	}
-
 	$options = get_option( 'alm_settings' );
-	$inline  = false;
-	if ( ! isset( $options[ $setting ] ) || $options[ $setting ] === '1' ) {
-		$inline = true;
-	}
-	return $inline;
+	return ! isset( $options[ $setting ] ) || $options[ $setting ] === '1' ? true : false;
 }
 
 /**
@@ -120,7 +110,6 @@ function alm_loop( $repeater, $type, $theme_repeater, $alm_found_posts = '', $al
  * @since 2.5.0
  */
 function alm_get_current_repeater( $repeater, $type ) {
-
 	$template = $repeater;
 	$include  = '';
 

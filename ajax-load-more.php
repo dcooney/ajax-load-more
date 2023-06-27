@@ -14,6 +14,23 @@
  * @package AjaxLoadMore
  */
 
+/*
+In Progress
+- WP Scripts
+	- CSS output. Need to compile the scss.
+	- CSS override functions.
+
+- Updated hook names.
+	- alm/query/<id>
+	- @see https://www.advancedcustomfields.com/resources/acf-load_field/#parameters
+
+
+ADD-ONS
+- Cache
+- Filters
+
+*/
+
 define( 'ALM_VERSION', '6.0.1' );
 define( 'ALM_RELEASE', 'June 13, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -534,11 +551,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$args = apply_filters( 'alm_modify_query_args', $args, $slug );
 
 			/**
-			 * ALM Core Query Filter Hook
+			 * ALM Core Query Filter Hook.
 			 *
 			 * @return array;
 			 */
 			$args = apply_filters( 'alm_query_args_' . $id, $args, $post_id );
+			$args = apply_filters( 'alm/query/' . $id, $args, $post_id );
 
 			/**
 			 * Custom `alm_query` parameter in the WP_Query
