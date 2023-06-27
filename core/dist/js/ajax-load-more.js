@@ -3307,54 +3307,80 @@ var alm_is_filtering = false;
    *
    *  @since 2.7.4
    */
-		alm.AjaxLoadMore.getSinglePost = function () {
-			if (alm.fetchingPreviousPost) {
-				return;
-			}
+		alm.AjaxLoadMore.getSinglePost = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+			var params, singlePostData;
+			return regeneratorRuntime.wrap(function _callee7$(_context7) {
+				while (1) {
+					switch (_context7.prev = _context7.next) {
+						case 0:
+							if (!alm.fetchingPreviousPost) {
+								_context7.next = 2;
+								break;
+							}
 
-			alm.fetchingPreviousPost = true;
+							return _context7.abrupt('return');
 
-			// Get data params
-			var params = {
-				action: 'alm_get_single',
-				id: alm.addons.single_post_id,
-				initial_id: alm.addons.single_post_init_id,
-				order: alm.addons.single_post_order,
-				taxonomy: alm.addons.single_post_taxonomy,
-				excluded_terms: alm.addons.single_post_excluded_terms,
-				post_type: alm.post_type,
-				init: alm.addons.single_post_init
-			};
+						case 2:
 
-			// Send HTTP request via Axios
-			_axios2.default.get(alm_localize.ajaxurl, { params: params }).then(function (response) {
-				// Get data from response.
-				var data = response.data;
+							// Set loading flag.
+							alm.fetchingPreviousPost = true;
 
-				if (data.has_previous_post) {
-					alm.listing.dataset.singlePostId = data.prev_id; // Update single-post-id on instance
-					alm.addons.single_post_id = data.prev_id;
-					alm.addons.single_post_permalink = data.prev_permalink;
-					alm.addons.single_post_title = data.prev_title;
-					alm.addons.single_post_slug = data.prev_slug;
-					alm.addons.single_post_cache = data.cache;
-				} else {
-					alm.addons.single_post_cache = false;
-					if (!data.has_previous_post) {
-						alm.AjaxLoadMore.triggerDone();
+							// Create data params.
+							params = {
+								action: 'alm_get_single',
+								id: alm.addons.single_post_id,
+								initial_id: alm.addons.single_post_init_id,
+								order: alm.addons.single_post_order,
+								taxonomy: alm.addons.single_post_taxonomy,
+								excluded_terms: alm.addons.single_post_excluded_terms,
+								post_type: alm.post_type,
+								init: alm.addons.single_post_init
+							};
+
+							// Send HTTP request via Axios.
+
+							_context7.next = 6;
+							return _axios2.default.get(alm_localize.ajaxurl, { params: params }).then(function (response) {
+								// Get data from response.
+								var data = response.data;
+
+								if (data.has_previous_post) {
+									alm.listing.dataset.singlePostId = data.prev_id; // Update single-post-id on instance
+									alm.addons.single_post_id = data.prev_id;
+									alm.addons.single_post_permalink = data.prev_permalink;
+									alm.addons.single_post_title = data.prev_title;
+									alm.addons.single_post_slug = data.prev_slug;
+									alm.addons.single_post_cache = data.cache;
+								} else {
+									alm.addons.single_post_cache = false;
+									if (!data.has_previous_post) {
+										alm.AjaxLoadMore.triggerDone();
+									}
+								}
+								if (typeof window.almSetSinglePost === 'function') {
+									window.almSetSinglePost(alm, data.current_id, data.permalink, data.title);
+								}
+								alm.fetchingPreviousPost = false;
+								alm.addons.single_post_init = false;
+
+								return data;
+							}).catch(function (error) {
+								// Error
+								alm.AjaxLoadMore.error(error, 'getSinglePost');
+								alm.fetchingPreviousPost = false;
+							});
+
+						case 6:
+							singlePostData = _context7.sent;
+							return _context7.abrupt('return', singlePostData);
+
+						case 8:
+						case 'end':
+							return _context7.stop();
 					}
 				}
-				if (typeof window.almSetSinglePost === 'function') {
-					window.almSetSinglePost(alm, data.current_id, data.permalink, data.title);
-				}
-				alm.fetchingPreviousPost = false;
-				alm.addons.single_post_init = false;
-			}).catch(function (error) {
-				// Error
-				alm.AjaxLoadMore.error(error, 'getSinglePost');
-				alm.fetchingPreviousPost = false;
-			});
-		};
+			}, _callee7, this);
+		}));
 
 		if (alm.addons.single_post_id) {
 			alm.fetchingPreviousPost = false;
@@ -3724,169 +3750,202 @@ var alm_is_filtering = false;
    *
    * @since 2.0
    */
-		alm.AjaxLoadMore.init = function () {
-			// Preloaded and destroy_after is 1.
-			if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
-				alm.AjaxLoadMore.destroyed();
-			}
+		alm.AjaxLoadMore.init = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+			var nextpage_pages, nextpage_first, nextpage_total;
+			return regeneratorRuntime.wrap(function _callee10$(_context10) {
+				while (1) {
+					switch (_context10.prev = _context10.next) {
+						case 0:
+							// Preloaded and destroy_after is 1.
+							if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
+								alm.AjaxLoadMore.destroyed();
+							}
 
-			if (!alm.addons.paging && !alm.addons.single_post) {
-				if (alm.disable_ajax) {
-					alm.finished = true;
-					alm.button.classList.add('done');
-				} else {
-					// Set button label.
-					alm.button.innerHTML = alm.button_label;
+							if (!alm.addons.paging && !alm.addons.single_post) {
+								if (alm.disable_ajax) {
+									alm.finished = true;
+									alm.button.classList.add('done');
+								} else {
+									// Set button label.
+									alm.button.innerHTML = alm.button_label;
 
-					// If Pause.
-					if (alm.pause === 'true') {
-						alm.loading = false;
-					} else {
-						alm.AjaxLoadMore.loadPosts();
-					}
-				}
-			}
-
-			// Single Post Add-on
-			if (alm.addons.single_post) {
-				alm.AjaxLoadMore.getSinglePost(); // Set next post on load
-				alm.loading = false;
-
-				// Trigger done if custom query and no posts to render
-				if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
-					alm.AjaxLoadMore.triggerDone();
-				}
-
-				// Display Table of Contents
-				(0, _tableofcontents.tableOfContents)(alm, true, true);
-			}
-
-			// Preloaded + SEO && !Paging
-			if (alm.addons.preloaded === 'true' && alm.addons.seo && !alm.addons.paging) {
-				// Delay for scripts to load
-				setTimeout(function () {
-					if (typeof almSEO === 'function' && alm.start_page < 1) {
-						window.almSEO(alm, true);
-					}
-				}, alm.speed);
-			}
-
-			// Preloaded && !Paging
-			if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
-				// Delay for scripts to load.
-				setTimeout(function () {
-					if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
-						alm.AjaxLoadMore.triggerDone();
-					}
-					// almEmpty callback.
-					if (alm.addons.preloaded_total_posts === 0) {
-						if (typeof almEmpty === 'function') {
-							window.almEmpty(alm);
-						}
-						if (alm.no_results) {
-							(0, _noResults2.default)(alm.content, alm.no_results);
-						}
-					}
-				}, alm.speed);
-			}
-
-			// Preloaded Add-on ONLY
-			if (alm.addons.preloaded === 'true') {
-				if (alm.resultsText) {
-					resultsText.almInitResultsText(alm, 'preloaded');
-				}
-
-				// Display Table of Contents
-				(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
-			}
-
-			// Next Page Add-on
-			if (alm.addons.nextpage) {
-				// Check that posts remain on load
-				if (alm.listing.querySelector('.alm-nextpage') && !alm.addons.paging) {
-					var nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items
-
-					if (nextpage_pages) {
-						var nextpage_first = nextpage_pages[0];
-						var nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
-
-						// Disable if last page loaded
-						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
-							alm.AjaxLoadMore.triggerDone();
-						}
-					}
-				}
-
-				// Results Text.
-				if (alm.resultsText) {
-					resultsText.almInitResultsText(alm, 'nextpage');
-				}
-
-				// Display Table of Contents
-				(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
-			}
-
-			// WooCommerce Add-on.
-			if (alm.addons.woocommerce) {
-				(0, _woocommerce.wooInit)(alm);
-
-				// Trigger `Done` if `paged is less than `pages`.
-				if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
-					alm.AjaxLoadMore.triggerDone();
-				}
-			}
-
-			// Elementor Add-on.
-			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
-				(0, _elementor.elementorInit)(alm);
-
-				// Trigger `Done` if `elementor_next_page` is empty
-				if (alm.addons.elementor_next_page === '') {
-					alm.AjaxLoadMore.triggerDone();
-				}
-			}
-
-			// Window Load.
-			alm.window.addEventListener('load', function () {
-				// Masonry & Preloaded.
-				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
-					// Wrap almMasonry in anonymous async/await function
-					_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
-						return regeneratorRuntime.wrap(function _callee7$(_context7) {
-							while (1) {
-								switch (_context7.prev = _context7.next) {
-									case 0:
-										_context7.next = 2;
-										return (0, _masonry.almMasonry)(alm, true, false);
-
-									case 2:
-										alm.masonry.init = false;
-
-									case 3:
-									case 'end':
-										return _context7.stop();
+									// If Pause.
+									if (alm.pause === 'true') {
+										alm.loading = false;
+									} else {
+										alm.AjaxLoadMore.loadPosts();
+									}
 								}
 							}
-						}, _callee7, this);
-					}))().catch(function (e) {
-						console.log('There was an error with ALM Masonry');
-					});
-				}
 
-				//  Filters, Facets & Preloaded Facets
-				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
-					if (typeof almFiltersFacets === 'function') {
-						var facets = alm.localize && alm.localize.facets;
-						facets && window.almFiltersFacets(facets);
+							// Single Post Add-on.
+							if (alm.addons.single_post) {
+								// Add delay for setup and scripts to load.
+								setTimeout(_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+									return regeneratorRuntime.wrap(function _callee8$(_context8) {
+										while (1) {
+											switch (_context8.prev = _context8.next) {
+												case 0:
+													_context8.next = 2;
+													return alm.AjaxLoadMore.getSinglePost();
+
+												case 2:
+													// Set next post on load
+
+													// Trigger done if custom query and no posts to render
+													if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
+														alm.AjaxLoadMore.triggerDone();
+													}
+
+													// Set loading flag to false.
+													alm.loading = false;
+
+													// Display Table of Contents
+													(0, _tableofcontents.tableOfContents)(alm, true, true);
+
+												case 5:
+												case 'end':
+													return _context8.stop();
+											}
+										}
+									}, _callee8, this);
+								})), 200);
+							}
+
+							// Preloaded + SEO && !Paging.
+							if (alm.addons.preloaded === 'true' && alm.addons.seo && !alm.addons.paging) {
+								// Add delay for setup and scripts to load.
+								setTimeout(function () {
+									if (typeof almSEO === 'function' && alm.start_page < 1) {
+										window.almSEO(alm, true);
+									}
+								}, 200);
+							}
+
+							// Preloaded && !Paging.
+							if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
+								// Add delay for setup and scripts to load.
+								setTimeout(function () {
+									if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
+										alm.AjaxLoadMore.triggerDone();
+									}
+									// almEmpty callback.
+									if (alm.addons.preloaded_total_posts === 0) {
+										if (typeof almEmpty === 'function') {
+											window.almEmpty(alm);
+										}
+										if (alm.no_results) {
+											(0, _noResults2.default)(alm.content, alm.no_results);
+										}
+									}
+								}, alm.speed);
+							}
+
+							// Preloaded Add-on ONLY.
+							if (alm.addons.preloaded === 'true') {
+								if (alm.resultsText) {
+									resultsText.almInitResultsText(alm, 'preloaded');
+								}
+
+								// Display Table of Contents.
+								(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
+							}
+
+							// Next Page Add-on.
+							if (alm.addons.nextpage) {
+								// Check that posts remain on load
+								if (alm.listing.querySelector('.alm-nextpage') && !alm.addons.paging) {
+									nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items
+
+									if (nextpage_pages) {
+										nextpage_first = nextpage_pages[0];
+										nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
+
+										// Disable if last page loaded
+
+										if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
+											alm.AjaxLoadMore.triggerDone();
+										}
+									}
+								}
+
+								// Results Text.
+								if (alm.resultsText) {
+									resultsText.almInitResultsText(alm, 'nextpage');
+								}
+
+								// Display Table of Contents.
+								(0, _tableofcontents.tableOfContents)(alm, alm.init, true);
+							}
+
+							// WooCommerce Add-on.
+							if (alm.addons.woocommerce) {
+								(0, _woocommerce.wooInit)(alm);
+
+								// Trigger `Done` if `paged is less than `pages`.
+								if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
+									alm.AjaxLoadMore.triggerDone();
+								}
+							}
+
+							// Elementor Add-on.
+							if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
+								(0, _elementor.elementorInit)(alm);
+
+								// Trigger `Done` if `elementor_next_page` is empty
+								if (alm.addons.elementor_next_page === '') {
+									alm.AjaxLoadMore.triggerDone();
+								}
+							}
+
+							// Window Load.
+							alm.window.addEventListener('load', function () {
+								// Masonry & Preloaded.
+								if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
+									// Wrap almMasonry in anonymous async/await function
+									_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+										return regeneratorRuntime.wrap(function _callee9$(_context9) {
+											while (1) {
+												switch (_context9.prev = _context9.next) {
+													case 0:
+														_context9.next = 2;
+														return (0, _masonry.almMasonry)(alm, true, false);
+
+													case 2:
+														alm.masonry.init = false;
+
+													case 3:
+													case 'end':
+														return _context9.stop();
+												}
+											}
+										}, _callee9, this);
+									}))().catch(function () {
+										console.log('There was an error with ALM Masonry');
+									});
+								}
+
+								//  Filters, Facets & Preloaded Facets
+								if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
+									if (typeof almFiltersFacets === 'function') {
+										var facets = alm.localize && alm.localize.facets;
+										facets && window.almFiltersFacets(facets);
+									}
+								}
+
+								// Window Load Callback.
+								if (typeof almOnLoad === 'function') {
+									window.almOnLoad(alm); // eslint-disable-line
+								}
+							});
+
+						case 10:
+						case 'end':
+							return _context10.stop();
 					}
 				}
-
-				// Window Load Callback.
-				if (typeof almOnLoad === 'function') {
-					window.almOnLoad(alm);
-				}
-			});
-		};
+			}, _callee10, this);
+		}));
 
 		/**
    * Handle error messages.
@@ -3897,11 +3956,11 @@ var alm_is_filtering = false;
 			var location = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 			alm.loading = false;
-
 			if (!alm.addons.paging) {
 				alm.button.classList.remove('loading');
 				alm.AjaxLoadMore.resetBtnText();
 			}
+
 			console.log('Error: ', error);
 
 			if (error.response) {
@@ -4001,7 +4060,7 @@ var alm_is_filtering = false;
 			alm.button.click();
 		};
 
-		// Flag to prevent loading of posts on initial page load.
+		// Delay to prevent immediate loading of posts on initial page load via scroll.
 		setTimeout(function () {
 			alm.proceed = true;
 			alm.AjaxLoadMore.scrollSetup();
@@ -4077,19 +4136,19 @@ var reset = exports.reset = function reset() {
 
 	if (props && props.type === 'woocommerce') {
 		// WooCommerce
-		_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+		_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
 			var instance, settings;
-			return regeneratorRuntime.wrap(function _callee8$(_context8) {
+			return regeneratorRuntime.wrap(function _callee11$(_context11) {
 				while (1) {
-					switch (_context8.prev = _context8.next) {
+					switch (_context11.prev = _context11.next) {
 						case 0:
 							instance = document.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
 
-							_context8.next = 3;
+							_context11.next = 3;
 							return (0, _woocommerce.wooReset)();
 
 						case 3:
-							settings = _context8.sent;
+							settings = _context11.sent;
 							// Get WooCommerce `settings` via Ajax
 							if (settings) {
 								instance.dataset.wooSettings = settings; // Update data atts
@@ -4098,10 +4157,10 @@ var reset = exports.reset = function reset() {
 
 						case 5:
 						case 'end':
-							return _context8.stop();
+							return _context11.stop();
 					}
 				}
-			}, _callee8, this);
+			}, _callee11, this);
 		}))().catch(function () {
 			console.warn('Ajax Load More: There was an resetting the Ajax Load More instance.');
 		});
@@ -4282,7 +4341,6 @@ var render = exports.render = function render(el) {
 	if (!el) {
 		return false;
 	}
-	// console.log(el, options);
 };
 
 /**
@@ -5362,7 +5420,7 @@ function getTypeParams(alm, type) {
 				nested: alm.nested
 			};
 
-		case 'single_posts':
+		case 'single_post':
 			return {
 				single_post: 'true',
 				id: addons.single_post_id,
@@ -7047,34 +7105,36 @@ function _interopRequireWildcard(obj) {
  * @since 4.1
  */
 function setLocalizedVars(alm) {
+	var addons = alm.addons;
+
 	return new Promise(function (resolve) {
 		var type = 'standard';
 
-		if (alm.addons.nextpage) {
+		if (addons.nextpage) {
 			// Nextpage
 			type = 'nextpage';
-			if (alm.addons.paging) {
+			if (addons.paging) {
 				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 			} else {
-				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(alm.addons.nextpage_startpage) + 1);
+				alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + parseInt(addons.nextpage_startpage) + 1);
 			}
-		} else if (alm.addons.woocommerce) {
+		} else if (addons.woocommerce) {
 			// WooCommerce
 			type = 'woocommerce';
 			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 		} else {
 			// Standard ALM.
-			var page = alm.addons.preloaded === 'true' ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
+			var page = addons.preloaded === 'true' ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
 			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(page));
 
 			var pages = Math.ceil(alm.totalposts / alm.orginal_posts_per_page);
-			pages = alm.addons.preloaded === 'true' ? pages + 1 : pages;
+			pages = addons.preloaded === 'true' ? pages + 1 : pages;
 			alm.AjaxLoadMore.setLocalizedVar('pages', parseInt(pages));
 		}
 
 		// Total Posts `total_posts`.
 		// Only update if !preloaded && !nextpage && !woocommerce
-		if (alm.addons.preloaded !== 'true' && !alm.addons.nextpage && !alm.addons.woocommerce) {
+		if (addons.preloaded !== 'true' && !addons.nextpage && !addons.woocommerce) {
 			alm.AjaxLoadMore.setLocalizedVar('total_posts', alm.totalposts);
 		}
 
@@ -7090,15 +7150,22 @@ function setLocalizedVars(alm) {
 
 /**
  * Get total post_count.
+ *
+ * @param {Object} alm ALM object.
+ * @returns {number} Total post count.
  */
 function almSetPostCount(alm) {
-	var pc = parseInt(alm.posts);
-	var pa = parseInt(alm.addons.preloaded_amount);
-	var count = pc + pa;
-	count = alm.start_page > 1 ? count - pa : count; // SEO
-	count = alm.addons.filters_startpage > 1 ? count - pa : count; // Filters
-	count = alm.addons.single_post ? count + 1 : count; // Single Posts
-	count = alm.addons.nextpage ? count + 1 : count; // Next Page
+	var postcount = alm.postcount,
+	    addons = alm.addons;
+	var preloaded_amount = addons.preloaded_amount;
+
+	// Construct post count.
+
+	var count = parseInt(postcount) + parseInt(preloaded_amount);
+	count = alm.start_page > 1 ? count - parseInt(preloaded_amount) : count; // SEO
+	count = addons.filters_startpage > 1 ? count - parseInt(preloaded_amount) : count; // Filters
+	count = addons.single_post ? count + 1 : count; // Single Posts
+	count = addons.nextpage ? count + 1 : count; // Next Page
 
 	return count;
 }
