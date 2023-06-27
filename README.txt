@@ -264,7 +264,7 @@ How to install Ajax Load More.
 == Changelog ==
 
 = 6.0.2 - June 27, 2023 =
-* HOTFIX: Fixed issue with Single Posts add-on recieving corrent post ID to fetch.
+* HOTFIX: Fixed issue with Single Posts add-on not receiving correct post ID and caused issues with loading the proper post.
 * FIX: Attempted compatibility fix for WPML and Single Posts add-on loading incorrect language because of WPML language cookies.
 * Fix: Fixed issue with broken [Results Text](https://connekthq.com/plugins/ajax-load-more/docs/results-text/)
 
