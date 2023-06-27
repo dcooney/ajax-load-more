@@ -20,7 +20,7 @@ module.exports = {
 		 *
 		 * @see https://www.npmjs.com/package/eslint-webpack-plugin
 		 */
-		//new ESLintPlugin(),
+		new ESLintPlugin(),
 
 		/**
 		 * Report css warnings and errors to the command line.

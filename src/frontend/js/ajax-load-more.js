@@ -66,7 +66,7 @@ let alm_is_filtering = false;
 	 * Initiate Ajax Load More.
 	 *
 	 * @param {Element} el   The Ajax Load More DOM element/container.
-	 * @param {Number} index The current index number of the Ajax Load More instance.
+	 * @param {number} index The current index number of the Ajax Load More instance.
 	 */
 	const ajaxloadmore = function (el, index) {
 		// Move user to top of page to prevent loading of unnessasry posts
@@ -651,7 +651,7 @@ let alm_is_filtering = false;
 		/**
 		 * Send request to the admin-ajax.php
 		 *
-		 * @param {object} params    Query params.
+		 * @param {Object} params    Query params.
 		 * @param {string} queryType The type of Ajax request (standard/totalposts).
 		 * @since 5.0.0
 		 */
@@ -718,7 +718,7 @@ let alm_is_filtering = false;
 		/**
 		 * Send request to the WP REST API
 		 *
-		 * @param {object} alm The Ajax Load More object.
+		 * @param {Object} alm The Ajax Load More object.
 		 * @since 5.0.0
 		 */
 		alm.AjaxLoadMore.restapi = function (alm) {
@@ -774,7 +774,7 @@ let alm_is_filtering = false;
 		/**
 		 * Display/render results function.
 		 *
-		 * @param {object} data The results of the Ajax request.
+		 * @param {Object} data The results of the Ajax request.
 		 * @since 2.6.0
 		 */
 		alm.AjaxLoadMore.render = function (data) {
@@ -1415,7 +1415,7 @@ let alm_is_filtering = false;
 		/**
 		 *	Automatically trigger nested ALM instances - requires `.alm-reveal` container.
 		 *
-		 * @param {object} instance
+		 * @param {Object} instance
 		 * @since 5.0
 		 */
 		alm.AjaxLoadMore.nested = function (reveal) {

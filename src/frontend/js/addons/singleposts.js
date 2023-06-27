@@ -3,8 +3,8 @@ import { createCache } from './cache';
 /**
  * Create the HTML for loading Single Posts.
  *
- * @param {object} alm        The alm object.
- * @param {object} response   Query response.
+ * @param {Object} alm        The alm object.
+ * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
  * @return {object}           Results data.
  * @since 5.1.8.1
@@ -61,7 +61,7 @@ export default singlePostHTML;
  *
  * e.g. window.almSinglePostsCustomElements = ['#woocommerce-inline-inline-css', '#wc-block-style-css'];
  *
- * @param {object}       content        The HTML element.
+ * @param {Object}       content        The HTML element.
  * @param {array|string} customElements The elements to search for in content.
  * @return {object} HTML elements.
  */

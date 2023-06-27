@@ -4,24 +4,27 @@ import setFocus from './setFocus';
 /**
  * Create a numbered table of contents navigation
  *
- * @param {object}  alm  The alm object.
- * @param {boolean} init Init boolean.
+ * @param {Object}  alm            The alm object.
+ * @param {boolean} init           Init boolean.
+ * @param {boolean} from_preloaded Preloaded boolean.
  * @since 5.2
  */
 export function tableOfContents(alm, init = false, from_preloaded = false) {
-	let totalPosts = alm.localize && alm.localize.post_count ? parseInt(alm.localize.post_count) : 0;
+	const totalPosts = alm.localize && alm.localize.post_count ? parseInt(alm.localize.post_count) : 0;
+
+	// eslint-disable-next-line eqeqeq
 	if (totalPosts == 0 && !alm.addons.single_post) {
 		// Exit if zero posts and not single posts
 		return false;
 	}
 
 	if (alm && alm.tableofcontents && alm.transition_container && alm.transition !== 'masonry') {
-		let offset = alm.tableofcontents.dataset.offset ? parseInt(alm.tableofcontents.dataset.offset) : 30;
-		let startPage = alm.start_page ? parseInt(alm.start_page) : 0;
-		let filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
-		let nextpageStartPage = alm.addons.nextpage_startpage ? parseInt(alm.addons.nextpage_startpage) : 0;
+		const offset = alm.tableofcontents.dataset.offset ? parseInt(alm.tableofcontents.dataset.offset) : 30;
+		const startPage = alm.start_page ? parseInt(alm.start_page) : 0;
+		const filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
+		const nextpageStartPage = alm.addons.nextpage_startpage ? parseInt(alm.addons.nextpage_startpage) : 0;
 		let page = parseInt(alm.page);
-		let preloaded = alm.addons.preloaded === 'true' ? true : false;
+		const preloaded = alm.addons.preloaded === 'true' ? true : false;
 
 		// Exit if Paging or Next Page
 		if (alm.addons.paging || alm.addons.nextpage) {
@@ -80,7 +83,7 @@ export function tableOfContents(alm, init = false, from_preloaded = false) {
  * Clear table of contents.
  */
 export function clearTOC() {
-	let toc = document.querySelector('.alm-toc');
+	const toc = document.querySelector('.alm-toc');
 	if (toc) {
 		toc.innerHTML = '';
 	}
@@ -89,16 +92,16 @@ export function clearTOC() {
 /**
  * Create Standard Page Button.
  *
- * @param {*} alm    ALM object.
- * @param {*} page   Current page.
- * @param {*} offset The page offset.
+ * @param {Object} alm    The alm object.
+ * @param {string} page   Current page.
+ * @param {number} offset The page offset.
  */
 function createTOCButton(alm, page, offset) {
 	if (!alm.tableofcontents) {
 		return false;
 	}
 
-	let button = document.createElement('button');
+	const button = document.createElement('button');
 	button.type = 'button';
 
 	page = parseInt(page) + 1;
@@ -106,24 +109,24 @@ function createTOCButton(alm, page, offset) {
 	button.dataset.page = alm.addons.single_post_target && alm.init ? page - 1 : page;
 	alm.tableofcontents.appendChild(button);
 
-	button.addEventListener('click', function (e) {
-		let page = this.dataset.page;
-		let target = document.querySelector(`.alm-reveal:nth-child(${page})`) || document.querySelector(`.alm-nextpage:nth-child(${page})`);
+	button.addEventListener('click', function () {
+		const thePage = this.dataset.page;
+		let target = document.querySelector(`.alm-reveal:nth-child(${thePage})`) || document.querySelector(`.alm-nextpage:nth-child(${thePage})`);
 
 		// Single Posts
 		if (alm.addons.single_post_target) {
-			target = document.querySelector(`.alm-reveal.alm-single-post[data-page="${page}"]`);
+			target = document.querySelector(`.alm-reveal.alm-single-post[data-page="${thePage}"]`);
 		}
 
 		if (!target) {
 			return false;
 		}
-		let top = typeof getOffset === 'function' ? getOffset(target).top : target.offsetTop;
+		const top = typeof getOffset === 'function' ? getOffset(target).top : target.offsetTop;
 		almScroll(top - offset);
 
 		// Set Focus for A11y
 		setTimeout(function () {
-			setFocus(alm, target, page, false);
+			setFocus(alm, target, thePage, false);
 		}, 1000);
 	});
 }
@@ -131,8 +134,8 @@ function createTOCButton(alm, page, offset) {
 /**
  * Get Button Label.
  *
- * @param {*} alm The alm object.
- * @param {*} page Current page.
+ * @param {Object} alm  The alm object.
+ * @param {string} page Current page.
  * @return {string} Label.
  */
 function getTOCLabel(alm, page) {
@@ -149,7 +152,7 @@ function getTOCLabel(alm, page) {
 			} else {
 				thePage = thePage + 1;
 			}
-			let posts = document.querySelectorAll(`.alm-reveal.alm-single-post`);
+			const posts = document.querySelectorAll(`.alm-reveal.alm-single-post`);
 			if (posts) {
 				element = posts[thePage];
 			}
@@ -160,7 +163,7 @@ function getTOCLabel(alm, page) {
 	}
 
 	// Dynamic function name
-	let funcName = `almTOCLabel_${alm.id}`;
+	const funcName = `almTOCLabel_${alm.id}`;
 	if (typeof window[funcName] === 'function') {
 		label = window[funcName](page, label);
 	}

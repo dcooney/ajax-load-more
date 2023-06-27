@@ -1,9 +1,9 @@
 /**
  * Set user focus to improve accessibility after load events.
  *
- * @param {object} alm ALM object
+ * @param {Object} alm ALM object
  * @param {Element} element The element to focus on.
- * @param {Number} total The total number of posts returned.
+ * @param {number} total The total number of posts returned.
  * @param {Boolean} is_filtering Is this a filtering event?
  * @since 5.1
  */
@@ -42,7 +42,7 @@ export default setFocus;
  * Move user focus to alm-reveal div
  *
  * @param {Boolean} init
- * @param {String} preloaded
+ * @param {string} preloaded
  * @param {HTMLElement} element
  * @param {Boolean} is_filtering
  * @param {Boolean} isSafari

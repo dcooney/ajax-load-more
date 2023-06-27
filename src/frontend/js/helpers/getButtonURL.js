@@ -1,7 +1,7 @@
 /**
  * Get the URL for Load More button.
  *
- * @param {object} alm The Ajax Load More object.
+ * @param {Object} alm The Ajax Load More object.
  * @param {string} rel The type of load more, `next` or `previous`.
  * @since 5.4.0
  */

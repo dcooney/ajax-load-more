@@ -2,7 +2,7 @@
  * createMasonrySEOPage
  * Create data attributes for SEO paged results
  *
- * @param {object} alm
+ * @param {Object} alm
  * @param {array} elements
  * @since 5.3.1
  */
@@ -24,7 +24,7 @@ export function createMasonrySEOPage(alm, element) {
  * createMasonrySEOPages
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
  *
- * @param {object} alm
+ * @param {Object} alm
  * @param {array} elements
  * @since 5.3.1
  */
@@ -67,8 +67,8 @@ export function createMasonrySEOPages(alm, elements) {
 /**
  * Create the attributes (page, url, classes) for the masonry items.
  *
- * @param {object} alm
- * @param {object} element
+ * @param {Object} alm
+ * @param {Object} element
  * @param {string} querystring
  * @param {string} seo_class
  * @param {int} pagenum

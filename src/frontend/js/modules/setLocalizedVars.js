@@ -3,7 +3,7 @@ import * as resultsText from './resultsText';
 /**
  * Set localized variables
  *
- * @param {object} alm ALM object
+ * @param {Object} alm ALM object
  * @since 4.1
  */
 export default function setLocalizedVars(alm) {
@@ -50,15 +50,18 @@ export default function setLocalizedVars(alm) {
 
 /**
  * Get total post_count.
+ *
+ * @param {Object} alm ALM object
+ * @return {number} The total count.
  */
 function almSetPostCount(alm) {
-	let pc = parseInt(alm.posts);
-	let pa = parseInt(alm.addons.preloaded_amount);
+	const pc = parseInt(alm.posts);
+	const pa = parseInt(alm.addons.preloaded_amount);
+
 	let count = pc + pa;
 	count = alm.start_page > 1 ? count - pa : count; // SEO
 	count = alm.addons.filters_startpage > 1 ? count - pa : count; // Filters
 	count = alm.addons.single_post ? count + 1 : count; // Single Posts
 	count = alm.addons.nextpage ? count + 1 : count; // Next Page
-
 	return count;
 }

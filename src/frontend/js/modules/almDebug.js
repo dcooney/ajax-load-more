@@ -2,7 +2,7 @@
  * Display Ajax Load More debug results.
  *
  * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
- * @param {object} alm ALM object.
+ * @param {Object} alm ALM object.
  * @since 5.1.6
  */
 export default function almDebug(alm) {

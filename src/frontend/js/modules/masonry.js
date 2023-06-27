@@ -11,7 +11,7 @@ let imagesLoaded = require('imagesloaded');
 /**
  * Function to trigger built-in Ajax Load More Masonry.
  *
- * @param {object} alm
+ * @param {Object} alm
  * @param {boolean} init
  * @param {boolean} filtering
  * @since 3.1

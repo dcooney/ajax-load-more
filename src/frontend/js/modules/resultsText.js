@@ -3,7 +3,7 @@ import getTotals from '../helpers/getTotals';
 /**
  * Set the results text if required.
  *
- * @param {object} alm  ALM object.
+ * @param {Object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 5.1
  */
@@ -18,7 +18,7 @@ export function almResultsText(alm, type = 'standard') {
 /**
  * Get values for showing results text.
  *
- * @param {object} alm  ALM object.
+ * @param {Object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */
@@ -62,7 +62,7 @@ export function almGetResultsText(alm, type = 'standard') {
 /**
  * Display `Showing {x} of {y} pages` text.
  *
- * @param {object} alm  ALM object.
+ * @param {Object} alm  ALM object.
  * @param {string} type Type of results.
  * @since 4.1
  */

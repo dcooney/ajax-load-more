@@ -1,7 +1,7 @@
 /**
  * Get the scroll distance in pixels from a percentage.
  *
- * @param {object} alm The Ajax Load More object.
+ * @param {Object} alm The Ajax Load More object.
  * @return {number}    The new distance.
  * @since 5.2
  */

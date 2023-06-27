@@ -2,8 +2,8 @@
  * Create a Load Previous button.
  *
  * @param {HTMLElement} content
- * @param {object} alm The Ajax Load More object.
- * @param {object} container The container element.
+ * @param {Object} alm The Ajax Load More object.
+ * @param {Object} container The container element.
  * @param {number} page The previous page number.
  * @param {string} url The previous page url.
  * @param {string} label The label for the button.

@@ -9,7 +9,7 @@ import { createCache } from './cache';
 /**
  * Set up instance of ALM WooCommerce
  *
- * @param {object} alm ALM object.
+ * @param {Object} alm ALM object.
  * @since 5.3.0
  */
 export function wooInit(alm) {
@@ -77,7 +77,7 @@ export function wooInit(alm) {
  * Core ALM WooCommerce product loader
  *
  * @param {Element} content  WooCommerce content container.
- * @param {object} alm       ALM object.
+ * @param {Object} alm       ALM object.
  * @since 5.3.0
  */
 export function woocommerce(content, alm) {
@@ -115,9 +115,9 @@ export function woocommerce(content, alm) {
 /**
  * Get the content, title and results from the Ajax request.
  *
- * @param {object} alm        The alm object.
+ * @param {Object} alm        The alm object.
  * @param {string} url 	      The request URL.
- * @param {object} response   Query response.
+ * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
  * @return {object}           Results data.
  * @since 5.3.0
@@ -185,7 +185,7 @@ export function wooGetContent(alm, url, response, cache_slug) {
 /**
  * Handle WooCommerce loaded functionality and dispatch actions.
  *
- * @param {object} alm ALM object.
+ * @param {Object} alm ALM object.
  * @since 5.5.0
  */
 export function woocommerceLoaded(alm) {

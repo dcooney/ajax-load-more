@@ -6,7 +6,7 @@ import { createCache } from './cache';
 /**
  * Set up the instance on Elementor
  *
- * @param {object} alm
+ * @param {Object} alm
  * @since 5.3.0
  */
 export function elementorInit(alm) {
@@ -56,9 +56,9 @@ export function elementorInit(alm) {
 /**
  * Get the content, title and results text from the Ajax response.
  *
- * @param {object} alm        The alm object.
+ * @param {Object} alm        The alm object.
  * @param {string} url 	      The request URL.
- * @param {object} response   Query response.
+ * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
  * @return {object}           Results data.
  * @since 5.4.0
@@ -120,7 +120,7 @@ export function elementorGetContent(alm, url, response, cache_slug) {
  * Core ALM Elementor loader.
  *
  * @param {HTMLElement} content The HTML data.
- * @param {object}      alm     The alm object.
+ * @param {Object}      alm     The alm object.
  * @since 5.3.0
  */
 export function elementor(content, alm) {
@@ -164,7 +164,7 @@ export function elementor(content, alm) {
 /**
  * Elementor loaded and dispatch actions.
  *
- * @param {object} alm The alm object.
+ * @param {Object} alm The alm object.
  * @since 5.5.0
  */
 export function elementorLoaded(alm) {
@@ -278,7 +278,7 @@ function setElementorClasses(alm, type = 'posts') {
 /**
  * Parse Masonry Settings from Elementor Data atts
  *
- * @param {object} alm The alm object.
+ * @param {Object} alm The alm object.
  * @return {object}    The modified object.
  */
 function parseMasonryConfig(alm) {
@@ -307,7 +307,7 @@ function parseMasonryConfig(alm) {
 /**
  * Position Elementor Masonry Items
  *
- * @param {object} alm             The alm object.
+ * @param {Object} alm             The alm object.
  * @param {string} container_class The container classname.
  * @param {string} item_class      The item classname.
  */

@@ -4,8 +4,8 @@ import { api } from '../helpers/api';
 /**
  * Create unique cache slug from query params.
  *
- * @param {object} alm  The ALM object.
- * @param {object} data The data object.
+ * @param {Object} alm  The ALM object.
+ * @param {Object} data The data object.
  * @return {string}     The cache file slug.
  */
 export function getCacheSlug(alm, data) {
@@ -28,7 +28,7 @@ export function getCacheSlug(alm, data) {
 /**
  * Create a cache file.
  *
- * @param {object} alm  The ALM object.
+ * @param {Object} alm  The ALM object.
  * @param {string} data Content to cache.
  * @param {string} name The cache slug
  * @since 5.3.1
@@ -60,8 +60,8 @@ export async function createCache(alm, data, name) {
 /**
  * Get cache data file.
  *
- * @param {object} alm       The ALM object.
- * @param {object} params    Query params.
+ * @param {Object} alm       The ALM object.
+ * @param {Object} params    Query params.
  * @return {Promise\boolean} Cache data or false.
  */
 export async function getCache(alm, params) {

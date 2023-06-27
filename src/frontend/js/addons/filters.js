@@ -4,7 +4,7 @@ const FILTERS_CLASSNAME = 'alm-filters';
 /**
  * Parse a filter querystring for returning caches directories.
  *
- * @param {object} alm      The ALM object.
+ * @param {Object} alm      The ALM object.
  * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
@@ -48,7 +48,7 @@ export function parseQuerystring(path) {
 /**
  * Build new paging URL for filters.
  *
- * @param {object} alm         The ALM object.
+ * @param {Object} alm         The ALM object.
  * @param {string} querystring The current querystring.
  * @param {number} page        The page number.
  * @since 5.3.5
@@ -83,7 +83,7 @@ export function buildFilterURL(alm, querystring = '', page = 0) {
 /**
  * Create data attributes for Filters paged results.
  *
- * @param {object} alm      The ALM object.
+ * @param {Object} alm      The ALM object.
  * @param {array}  elements An array of filter elements.
  * @since 5.3.1
  */
@@ -103,7 +103,7 @@ export function createMasonryFiltersPage(alm, element) {
 /**
  * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
  *
- * @param {object} alm     The ALM object.
+ * @param {Object} alm     The ALM object.
  * @param {array} elements An array of filter elements.
  * @since 5.3.1
  */
@@ -148,7 +148,7 @@ export function createMasonryFiltersPages(alm, elements) {
 /**
  * Create the attributes (page, url, classes)  for the masonry items.
  *
- * @param {object}  alm         The ALM object.
+ * @param {Object}  alm         The ALM object.
  * @param {Element} element     The container element.
  * @param {string}  querystring The current querystring.
  * @param {number}  page        The page number.

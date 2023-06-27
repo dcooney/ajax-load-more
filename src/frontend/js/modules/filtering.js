@@ -6,7 +6,7 @@ import { clearTOC } from './tableofcontents';
  * Filter an Ajax Load More instance.
  *
  * @param {string} transition Transition type.
- * @param {Number} speed      Transition speed.
+ * @param {number} speed      Transition speed.
  * @param {Object} data       Data object.
  * @param {string} type       Type of filter.
  * @since 2.6.1
@@ -37,7 +37,7 @@ export default function almFilter(transition, speed = 150, data, type = 'filter'
  * Transition Ajax Load More
  *
  * @param {string}  transition Transition type.
- * @param {Number}  speed      Transition speed.
+ * @param {number}  speed      Transition speed.
  * @param {Object}  data       Data object.
  * @param {string}  type       Type of filter.
  * @param {Element} element    Target element.
@@ -76,7 +76,7 @@ function almFilterTransition(transition, speed, data, type, element) {
  * Complete the filter transition
  *
  * @param {number}  speed    Transition speed.
- * @param {object}  data     Data object.
+ * @param {Object}  data     Data object.
  * @param {string}  type     Type of filter.
  * @param {Element} element  Target element.
  * @since 3.3
@@ -118,7 +118,7 @@ function almCompleteFilterTransition(speed, data, type, element) {
  * Set filter parameters on .alm-listing element.
  *
  * @param {number}  speed   Transition speed.
- * @param {object}  data    Data object.
+ * @param {Object}  data    Data object.
  * @param {string}  type    Type of filter.
  * @param {Element} element Target element.
  * @updated 3.3
