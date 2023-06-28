@@ -292,10 +292,10 @@
 								<div class="inner alm-placeholder-target" style="display: none;">
 									<div class="alm-styled-input">
 										<label for="placeholder" aria-label="Enter Placeholder URL"><?php _e('URL:', 'ajax-load-more'); ?></label>
-										<input class="alm_element" name="placeholder" type="text" id="placeholder" data-empty="<?php echo ALM_URL; ?>/core/img/placeholder.png" value="<?php echo ALM_URL; ?>/core/img/placeholder.png" style="width: 100%;" />
+										<input class="alm_element" name="placeholder" type="text" id="placeholder" data-empty="<?php echo ALM_URL; ?>/build/frontend/img/placeholder.png" value="<?php echo ALM_URL; ?>/build/frontend/img/placeholder.png" style="width: 100%;" />
 									</div>
 									<div class="spacer"></div>
-									<img id="placeholder-img" style="padding: 10px; border: 2px dashed #efefef;" src="<?php echo ALM_URL; ?>/core/img/placeholder.png" value="<?php echo ALM_URL; ?>/core/img/placeholder.png" alt="" />
+									<img id="placeholder-img" style="padding: 10px; border: 2px dashed #efefef;" src="<?php echo ALM_URL; ?>/build/frontend/img/placeholder.png" value="<?php echo ALM_URL; ?>/build/frontend/img/placeholder.png" alt="" />
 								</div>
 							</div>
 						</section>

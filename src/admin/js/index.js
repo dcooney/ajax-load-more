@@ -3,6 +3,8 @@ require('./libs/jquery.tooltipster.min');
 require('./libs/select2.min');
 require('./modules/sticky');
 
+import '../scss/admin.scss';
+
 var _alm = _alm || {};
 
 jQuery(document).ready(function ($) {

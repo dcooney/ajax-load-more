@@ -5,13 +5,12 @@
 		padding: $padding $padding $padding 80px;
 		margin: 0;
 		min-height: 48px;
-		background: #fff url('../../img/alm-logo-48x48.png') no-repeat $padding $padding;
-		background: #fff url('../../img/alm-logo-48x48.svg') no-repeat $padding $padding;
+		background: #fff url('../img/alm-logo.svg') no-repeat $padding $padding;
 		font-size: 18px;
 		font-weight: 800;
+		width: 100%;
 		border-bottom: 1px solid $light_border;
 		//border-bottom: 1px solid $border;
-		width: 100%;
 		@media screen and (max-width: 900px) {
 			border-bottom: 1px solid $border;
 		}

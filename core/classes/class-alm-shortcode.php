@@ -284,8 +284,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Inline Core CSS.
 			$inline_css = '';
 			if ( ! is_admin() && alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) && self::$counter === 1 ) {
-				$file       = ALM_PATH . '/core/dist/css/' . ALM_SLUG . '.min.css'; // Core Ajax Load More.
-				$inline_css = ALM_ENQUEUE::alm_inline_css( ALM_SLUG, $file, ALM_URL );
+				$inline_css = ALM_ENQUEUE::alm_inline_css( ALM_SLUG, ALM_CSS_PATH, ALM_URL );
 			}
 
 			// Legacy Callback - ALM Setting.
@@ -353,20 +352,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// SEO.
 			if ( has_action( 'alm_seo_installed' ) && $seo === 'true' ) {
 				wp_enqueue_script( 'ajax-load-more-seo' );
-			}
-
-			// Tabs.
-			$inline_tabs_css = '';
-			if ( has_action( 'alm_tabs_installed' ) && $tabs === 'true' ) {
-				wp_enqueue_script( 'ajax-load-more-tabs' );
-
-				// Inline tabs CSS.
-				if ( ! is_admin() && alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_tabs_disable_css' ) ) {
-					if ( defined( 'ALM_TABS_PATH' ) && defined( 'ALM_TABS_URL' ) ) {
-						$file            = ALM_TABS_PATH . '/core/css/ajax-load-more-tabs.min.css';
-						$inline_tabs_css = ALM_ENQUEUE::alm_inline_css( 'ajax-load-more-tabs', $file, ALM_TABS_URL );
-					}
-				}
 			}
 
 			// WooCommerce.
@@ -559,7 +544,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$alm_direction = $scroll_direction ? ' alm-' . $scroll_direction : '';
 
 			// Append Inline CSS.
-			$ajaxloadmore .= $inline_css . $inline_layouts_css . $inline_paging_css . $inline_tabs_css . $inline_single_posts_css;
+			$ajaxloadmore .= $inline_css . $inline_layouts_css . $inline_paging_css . $inline_single_posts_css;
 
 			// Horizontal Scroll CSS.
 			if ( $scroll_direction === 'horizontal' && $scroll_container ) {

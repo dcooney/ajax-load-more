@@ -7,7 +7,7 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.0.1
+ * Version: 6.0.2
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
@@ -31,8 +31,8 @@ ADD-ONS
 
 */
 
-define( 'ALM_VERSION', '6.0.1' );
-define( 'ALM_RELEASE', 'June 13, 2023' );
+define( 'ALM_VERSION', '6.0.2' );
+define( 'ALM_RELEASE', 'June 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -129,6 +129,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			define( 'ALM_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'ALM_URL', plugins_url( '', __FILE__ ) );
 			define( 'ALM_ADMIN_URL', plugins_url( 'admin/', __FILE__ ) );
+			define( 'ALM_CSS_PATH', ALM_PATH . '/build/frontend/ajax-load-more.css' );
 			define( 'ALM_TITLE', 'Ajax Load More' );
 			define( 'ALM_SLUG', 'ajax-load-more' );
 			define( 'ALM_REST_NAMESPACE', 'ajaxloadmore' );
@@ -356,7 +357,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 			// Core ALM JS.
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
-			wp_register_script( 'ajax-load-more', plugins_url( '/build/ajax-load-more' . $suffix . '.js', __FILE__ ), '', ALM_VERSION, true );
+			wp_register_script( 'ajax-load-more', plugins_url( '/build/frontend/ajax-load-more' . $suffix . '.js', __FILE__ ), [], ALM_VERSION, true );
 
 			// LiteSpeed Cache compatability.
 			wp_script_add_data( 'ajax-load-more', 'data-no-optimize', '1' );
@@ -372,13 +373,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 			// Core CSS.
 			if ( ! alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) ) { // Not inline or disabled.
-				$file = plugins_url( '/core/dist/css/' . ALM_SLUG . '.min.css', __FILE__ );
-				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, $file );
+				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, ALM_CSS_PATH );
 			}
-
-			// Determine if there is a trailing slash in the permalink structure.
-			$permalink_structure = get_option( 'permalink_structure' );
-			$trailing_slash      = substr( $permalink_structure, -1 ) === '/' ? 'true' : 'false';
 
 			// Localized JS variables.
 			wp_localize_script(
@@ -390,7 +386,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
-					'trailing_slash'  => $trailing_slash,
+					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
 					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),

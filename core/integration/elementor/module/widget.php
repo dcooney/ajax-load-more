@@ -14,8 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @since 1.1.0
  */
 class ALMElementor extends Widget_Base {
-
-	const LOGO_PATH = ALM_ADMIN_URL .'/img/alm-logo-48x48.svg';
+	const LOGO_PATH = ALM_ADMIN_URL .'/img/alm-logo.svg';
 	const CSS = 'cursor: default; height: 120px; width: 100%; background: #f7f7f7 url('. self::LOGO_PATH .') no-repeat center 40%; border: 1px solid #efefef; text-align: center; font-size: 12px; font-weight: 600; padding-top: 85px;"';
 
   /**

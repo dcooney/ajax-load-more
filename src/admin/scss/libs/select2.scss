@@ -115,7 +115,7 @@
 	display: block;
 	width: 100%;
 	height: 100%;
-	background: #fff url('../../img/bkg-select.png') no-repeat center center;
+	background: #fff url('../img/ui/bkg-select.png') no-repeat center center;
 }
 
 .select2-dropdown-open.select2-container-active div b {
@@ -137,7 +137,7 @@
 		height: 35px !important;
 		line-height: 35px !important;
 		box-shadow: none !important;
-		background: #fff url('../../img/icon-search.png') no-repeat right 7px center;
+		background: #fff url('../img/ui/icon-search.png') no-repeat right 7px center;
 		background-size: 16px 16px;
 	}
 }
@@ -181,9 +181,9 @@
 	position: relative;
 }
 #alm-builder ul.select2-choices .select2-input {
-	background: #fff url('../../img/bkg-select.png') no-repeat right center;
+	background: #fff url('../img/ui/bkg-select.png') no-repeat right center;
 	&.select2-focused {
-		background: #fff url('../../img/icon-search.png') no-repeat right 7px center;
+		background: #fff url('../img/ui/icon-search.png') no-repeat right 7px center;
 		background-size: 16px 16px;
 	}
 }
@@ -193,7 +193,7 @@
 	top: 3px;
 	width: 17px;
 	height: 17px;
-	background: $grey url('../../img/ico-close.png') no-repeat center center;
+	background: $grey url('../img/ui/ico-close.png') no-repeat center center;
 	display: block;
 	border-radius: $radius;
 	&:hover,

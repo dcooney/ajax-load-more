@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.2
-Stable tag: 6.0.1
+Stable tag: 6.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -263,6 +263,12 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 6.0.2 - June 27, 2023 =
+* HOTFIX: Fixed issue with Single Posts add-on not receiving correct post ID and caused issues with loading the proper post.
+* FIX: Attempted compatibility fix for WPML and Single Posts add-on loading incorrect language because of WPML language cookies.
+* Fix: Fixed issue with broken [Results Text](https://connekthq.com/plugins/ajax-load-more/docs/results-text/)
+
+
 = 6.0.1 - June 13, 2023 =
 * HOTFIX: Fixed issue with Shortcode Builder JavaScript error causing issues in admin.
 * HOTFIX: Fixed issue with posts_per_page="-1" unintentionally not loading any posts.
@@ -272,6 +278,7 @@ How to install Ajax Load More.
 * NOTICE: Ajax Load More 6.0 is a major update and includes a breaking changes with regards to the Cache add-on. Please review the information below before updating.
 * NOTICE: Cache add-on < 2.0 is no longer supported by Ajax Load More. Please update to the latest version of the add-on to continue using the Cache functionality.
 
+
 * NEW: Adding required functionality for the Cache 2.0 update. This introduces a new cache structure using MD5 hash for many cache URLs.
 * UPDATE: Core ALM JavaScript refactoring to stremline content loading using async/await and promises.
 * UPDATE: Updated WooCommerce and Elementor add-on functionality to load content in a normalized manner.
@@ -280,7 +287,7 @@ How to install Ajax Load More.
 * FIX: Fixed issue with Elementor and Cache add-ons not working in some instances.
 * FIX: Fixed issue with WooCommerce and Cache add-ons not working in some instances.
 * FIX: Fixed issue with ACF extension and Paging add-on not getting correct amount of posts loaded.
-*/
+
 
 = 5.6.0.5 - April 3, 2023 =
 * HOTFIX: Fixed issue with `taxonomy_relation` parameter resolving to `AND`.
@@ -299,17 +306,14 @@ How to install Ajax Load More.
 * UPDATE: Various code cleanup and refactoring.
 * FIX: Added further security fixes to shortcode attribute rendering and escaping params.
 
-
 = 5.6.0.2 - February 17, 2023 =
 * HOTFIX: Fixed error with compiled Ajax Load More JS causing issues with addons.
 * FIX: Adding fix for new ALM JavaScript Object not rendering when using default ID.
-
 
 = 5.6.0.1 - February 16, 2023 =
 * FIX: Added security fix for missing escaping on various shortcode params.
 * FIX: Added fix for new alm object parameter.
 * UPDATE: HTML data-attribute clean up on rendered shortcode parameters.
-
 
 = 5.6.0 - February 14, 2023 =
 * NEW: Added new ajaxloadmore.click() public JS function to manually trigger an Ajax Load More load action from any element on the screen.
@@ -320,7 +324,6 @@ How to install Ajax Load More.
 * FIX: Fixed deprecation notice in Elementor widgetregistration
 * UPDATE: Security fix for escaping data attributes in shortcode.
 * UPDATE: Code cleanup.
-
 
 = 5.5.5 - January 5, 2013 =
 * UPDATE: Removed requirement of `transition_container` to be present when using Preloaded.

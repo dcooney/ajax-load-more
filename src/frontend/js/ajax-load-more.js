@@ -30,7 +30,8 @@ import * as resultsText from './modules/resultsText';
 import setFocus from './modules/setFocus';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
-// import '../scss/ajax-load-more.scss';
+
+import '../scss/ajax-load-more.scss';
 
 // External Modules
 let qs = require('qs');
@@ -1435,14 +1436,15 @@ let alm_is_filtering = false;
 		 *
 		 *  @since 2.7.4
 		 */
-		alm.AjaxLoadMore.getSinglePost = function () {
+		alm.AjaxLoadMore.getSinglePost = async function () {
 			if (alm.fetchingPreviousPost) {
 				return;
 			}
 
+			// Set loading flag.
 			alm.fetchingPreviousPost = true;
 
-			// Get data params
+			// Create data params.
 			const params = {
 				action: 'alm_get_single',
 				id: alm.addons.single_post_id,
@@ -1454,12 +1456,12 @@ let alm_is_filtering = false;
 				init: alm.addons.single_post_init,
 			};
 
-			// Send HTTP request via Axios
-			axios
+			// Send HTTP request via Axios.
+			const singlePostData = await axios
 				.get(alm_localize.ajaxurl, { params })
 				.then(function (response) {
 					// Get data from response.
-					const data = response.data;
+					const { data } = response;
 
 					if (data.has_previous_post) {
 						alm.listing.dataset.singlePostId = data.prev_id; // Update single-post-id on instance
@@ -1479,12 +1481,17 @@ let alm_is_filtering = false;
 					}
 					alm.fetchingPreviousPost = false;
 					alm.addons.single_post_init = false;
+
+					return data;
 				})
 				.catch(function (error) {
 					// Error
 					alm.AjaxLoadMore.error(error, 'getSinglePost');
 					alm.fetchingPreviousPost = false;
 				});
+
+			// Send the response.
+			return singlePostData;
 		};
 
 		if (alm.addons.single_post_id) {
@@ -1860,7 +1867,7 @@ let alm_is_filtering = false;
 		 *
 		 * @since 2.0
 		 */
-		alm.AjaxLoadMore.init = function () {
+		alm.AjaxLoadMore.init = async function () {
 			// Preloaded and destroy_after is 1.
 			if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
 				alm.AjaxLoadMore.destroyed();
@@ -1883,33 +1890,38 @@ let alm_is_filtering = false;
 				}
 			}
 
-			// Single Post Add-on
+			// Single Post Add-on.
 			if (alm.addons.single_post) {
-				alm.AjaxLoadMore.getSinglePost(); // Set next post on load
-				alm.loading = false;
+				// Add delay for setup and scripts to load.
+				setTimeout(async function () {
+					await alm.AjaxLoadMore.getSinglePost(); // Set next post on load
 
-				// Trigger done if custom query and no posts to render
-				if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
-					alm.AjaxLoadMore.triggerDone();
-				}
+					// Trigger done if custom query and no posts to render
+					if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
+						alm.AjaxLoadMore.triggerDone();
+					}
 
-				// Display Table of Contents
-				tableOfContents(alm, true, true);
+					// Set loading flag to false.
+					alm.loading = false;
+
+					// Display Table of Contents
+					tableOfContents(alm, true, true);
+				}, 200);
 			}
 
-			// Preloaded + SEO && !Paging
+			// Preloaded + SEO && !Paging.
 			if (alm.addons.preloaded === 'true' && alm.addons.seo && !alm.addons.paging) {
-				// Delay for scripts to load
+				// Add delay for setup and scripts to load.
 				setTimeout(function () {
 					if (typeof almSEO === 'function' && alm.start_page < 1) {
 						window.almSEO(alm, true);
 					}
-				}, alm.speed);
+				}, 200);
 			}
 
-			// Preloaded && !Paging
+			// Preloaded && !Paging.
 			if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
-				// Delay for scripts to load.
+				// Add delay for setup and scripts to load.
 				setTimeout(function () {
 					if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
 						alm.AjaxLoadMore.triggerDone();
@@ -1926,13 +1938,13 @@ let alm_is_filtering = false;
 				}, alm.speed);
 			}
 
-			// Preloaded Add-on ONLY
+			// Preloaded Add-on ONLY.
 			if (alm.addons.preloaded === 'true') {
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'preloaded');
 				}
 
-				// Display Table of Contents
+				// Display Table of Contents.
 				tableOfContents(alm, alm.init, true);
 			}
 

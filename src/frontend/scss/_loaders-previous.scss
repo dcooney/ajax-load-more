@@ -39,35 +39,35 @@
 					transform: translateY(-50%);
 					width: 16px;
 					height: 16px;
-					background: url('../../img/ajax-loader-lg.gif') no-repeat left center;
+					background: url('../img/ajax-loader-lg.gif') no-repeat left center;
 					background-size: 16px 16px;
 				}
 			}
 			&.skype {
 				&.loading {
 					&:before {
-						background-image: url('../../img/spinner-skype.gif');
+						background-image: url('../img/spinner-skype.gif');
 					}
 				}
 			}
 			&.ring {
 				&.loading {
 					&:before {
-						background-image: url('../../img/spinner-ring.gif');
+						background-image: url('../img/spinner-ring.gif');
 					}
 				}
 			}
 			&.fading-blocks {
 				&.loading {
 					&:before {
-						background-image: url('../../img/spinner-fading-blocks.gif');
+						background-image: url('../img/loader-fading-blocks.gif');
 					}
 				}
 			}
 			&.chasing-arrows {
 				&.loading {
 					&:before {
-						background-image: url('../../img/spinner-chasing-arrows.gif');
+						background-image: url('../img/spinner-chasing-arrows.gif');
 					}
 				}
 			}

@@ -10,7 +10,7 @@ const path = require('path');
 const config = {
 	watch: false,
 	entry: {
-		'ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
+		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
 	},
 	output: {
 		path: path.join(__dirname, 'build'),

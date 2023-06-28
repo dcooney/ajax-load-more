@@ -153,7 +153,7 @@ function alm_set_admin_vars() {
  * @since 2.0.0
  */
 function alm_admin_menu() {
-	$icon = ALM_ADMIN_URL . '/img/alm-logo-16x16.svg';
+	$icon = ALM_ADMIN_URL . '/img/alm-icon-menu.svg';
 
 	$alm_page = add_menu_page(
 		'Ajax Load More',
@@ -161,7 +161,7 @@ function alm_admin_menu() {
 		'edit_theme_options',
 		'ajax-load-more',
 		'alm_settings_page',
-		$icon
+		alm_admin_menu_icon_svg()
 	);
 
 	$alm_settings_page = add_submenu_page(
@@ -507,8 +507,8 @@ function alm_load_filters_admin_scripts() {
  */
 function alm_enqueue_admin_scripts() {
 	// Admin CSS.
-	wp_enqueue_style( 'alm-admin', ALM_ADMIN_URL . 'dist/css/admin.css', '', ALM_VERSION );
-	wp_enqueue_style( 'alm-core', ALM_URL . '/core/dist/css/ajax-load-more.css', '', ALM_VERSION );
+	wp_enqueue_style( 'alm-admin', ALM_URL . '/build/admin/index.css', '', ALM_VERSION );
+	wp_enqueue_style( 'alm-core', ALM_URL . '/build/frontend/ajax-load-more.css', '', ALM_VERSION );
 
 	// Disable ACF select2 on ALM pages.
 	wp_dequeue_style( 'acf-input' );
@@ -581,6 +581,24 @@ function alm_get_tax_terms() {
 	}
 }
 add_action( 'wp_ajax_alm_get_tax_terms', 'alm_get_tax_terms' );
+
+/**
+ * Returns a base64 URL for the svg for use in the menu.
+ *
+ * @param bool $base64 Whether or not to return base64'd output.
+ * @return string SVG icon.
+ */
+function alm_admin_menu_icon_svg( $base64 = true ) {
+	$svg  = '<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">';
+	$svg .= '<path fill-rule="evenodd" clip-rule="evenodd" d="M8 0C3.58172 0 0 3.58172 0 8V72C0 76.4183 3.58172 80 8 80H72C76.4183 80 80 76.4183 80 72V8C80 3.58172 76.4183 0 72 0H8ZM33.585 59H20V56.91C20.5867 56.5433 21.2192 56.2225 21.8975 55.9475C22.5758 55.6725 23.245 55.4617 23.905 55.315L38.095 19.84H42.165L55.97 55.315C56.7033 55.4617 57.4367 55.6725 58.17 55.9475C58.9033 56.2225 59.545 56.5433 60.095 56.91V59H42.88V56.91C43.5767 56.58 44.3283 56.2683 45.135 55.975C45.9417 55.6817 46.7117 55.4617 47.445 55.315L44.255 46.57H32.045L28.8 55.315C30.4867 55.535 32.0817 56.0667 33.585 56.91V59ZM43.1 42.995L38.2325 28.3232L33.365 42.995H43.1Z" fill="#a7aaad"/>';
+	$svg .= '</svg>';
+
+	if ( $base64 ) {
+		//phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- This encoding is intended.
+		return 'data:image/svg+xml;base64,' . base64_encode( $svg );
+	}
+	return $svg;
+}
 
 /**
  * Filter the WP Admin footer text only on ALM pages
