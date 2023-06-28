@@ -129,12 +129,17 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			define( 'ALM_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'ALM_URL', plugins_url( '', __FILE__ ) );
 			define( 'ALM_ADMIN_URL', plugins_url( 'admin/', __FILE__ ) );
-			define( 'ALM_CSS_PATH', ALM_PATH . '/build/frontend/ajax-load-more.css' );
 			define( 'ALM_TITLE', 'Ajax Load More' );
 			define( 'ALM_SLUG', 'ajax-load-more' );
 			define( 'ALM_REST_NAMESPACE', 'ajaxloadmore' );
 			define( 'ALM_SETTINGS', 'alm_settings' );
 
+			// CSS constants.
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			define( 'ALM_CSS_PATH', ALM_PATH . 'build/frontend/ajax-load-more' . $suffix . '.css' );
+			define( 'ALM_CSS_URL', ALM_URL . '/build/frontend/ajax-load-more' . $suffix . '.css' );
+
+			// Add-on constants.
 			if ( ! defined( 'ALM_CACHE_ITEM_NAME' ) ) {
 				define( 'ALM_CACHE_ITEM_NAME', '4878' );
 			}
@@ -373,7 +378,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 			// Core CSS.
 			if ( ! alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) ) { // Not inline or disabled.
-				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, ALM_CSS_PATH );
+				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, ALM_CSS_URL );
 			}
 
 			// Localized JS variables.
