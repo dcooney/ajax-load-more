@@ -1,26 +1,44 @@
 const TerserPlugin = require('terser-webpack-plugin');
-const path = require('path');
+const { merge } = require('webpack-merge');
+const common = require('./webpack.config.js');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
-/**
- * Webpack config (Production mode)
- * Only create .min file of core ALM script.
- *
- * @see https://webpack.js.org/guides/production/
- */
-const config = {
-	watch: false,
+const config = merge(common, {
 	entry: {
+		'frontend/ajax-load-more': './src/frontend/js/ajax-load-more.js',
 		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
-	},
-	output: {
-		path: path.join(__dirname, 'build'),
-		library: 'ajaxloadmore',
-		libraryTarget: 'var',
+		'admin/index': './src/admin/js/index.js',
 	},
 	optimization: {
 		minimize: true,
-		minimizer: [new TerserPlugin()],
+		minimizer: [
+			/**
+			 * Minify JS.
+			 *
+			 * @see https://webpack.js.org/plugins/terser-webpack-plugin/
+			 */
+			new TerserPlugin({
+				extractComments: false,
+				test: /\.min.js(\?.*)?$/i,
+			}),
+
+			/**
+			 * Minify CSS.
+			 *
+			 * @see https://webpack.js.org/plugins/css-minimizer-webpack-plugin/
+			 */
+			new CssMinimizerPlugin({
+				minimizerOptions: {
+					preset: [
+						'default',
+						{
+							discardComments: { removeAll: true },
+						},
+					],
+				},
+			}),
+		],
 	},
-};
+});
 
 module.exports = config;

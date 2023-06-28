@@ -4,10 +4,12 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
 	entry: {
 		'frontend/ajax-load-more': './src/frontend/js/ajax-load-more.js',
+		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
 		'admin/index': './src/admin/js/index.js',
 	},
 	output: {
@@ -50,10 +52,15 @@ module.exports = {
 	plugins: [
 		...defaults.plugins,
 
+		/**
+		 * Minify CSS files.
+		 *
+		 * @see https://www.npmjs.com/package/mini-css-extract-plugin
+		 */
 		new MiniCssExtractPlugin(),
 
 		/**
-		 * Copy source files/directories to a build directory.
+		 * Copy the following files to build directory.
 		 *
 		 * @see https://www.npmjs.com/package/copy-webpack-plugin
 		 */

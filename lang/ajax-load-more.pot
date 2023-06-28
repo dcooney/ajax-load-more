@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 6.0.1\n"
+"Project-Id-Version: Ajax Load More 6.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-06-14T02:10:34+00:00\n"
+"POT-Creation-Date: 2023-06-28T18:06:37+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
@@ -69,7 +69,6 @@ msgid "Inactive"
 msgstr ""
 
 #: admin/admin.php:113
-#: admin/editor/editor-build.php:71
 msgid "Applying layout"
 msgstr ""
 
@@ -79,33 +78,26 @@ msgid "Template Updated"
 msgstr ""
 
 #: admin/admin.php:116
-#: admin/editor/editor-build.php:75
 msgid "Select Author(s)"
 msgstr ""
 
 #: admin/admin.php:117
-#: admin/editor/editor-build.php:76
 msgid "Select Categories"
 msgstr ""
 
 #: admin/admin.php:118
-#: admin/editor/editor-build.php:77
 msgid "Select Tags"
 msgstr ""
 
 #: admin/admin.php:119
-#: admin/editor/editor-build.php:74
 msgid "Select"
 msgstr ""
 
 #: admin/admin.php:120
-#: admin/editor/editor-build.php:41
-#: admin/editor/editor-build.php:78
 msgid "Jump to Option"
 msgstr ""
 
 #: admin/admin.php:121
-#: admin/editor/editor-build.php:79
 msgid "Jump to Template"
 msgstr ""
 
@@ -139,7 +131,7 @@ msgstr ""
 
 #: admin/admin.php:169
 #: admin/admin.php:170
-#: ajax-load-more.php:299
+#: ajax-load-more.php:317
 msgid "Settings"
 msgstr ""
 
@@ -214,22 +206,6 @@ msgstr ""
 #: admin/admin.php:303
 #: admin/admin.php:304
 msgid "WooCommerce"
-msgstr ""
-
-#: admin/editor/editor-build.php:45
-msgid "Create your own Ajax Load More shortcode by adjusting the parameters below:"
-msgstr ""
-
-#: admin/editor/editor-build.php:53
-msgid "Insert Shortcode"
-msgstr ""
-
-#: admin/editor/editor-build.php:56
-msgid "Copy"
-msgstr ""
-
-#: admin/editor/editor.php:19
-msgid "You are not allowed to be here"
 msgstr ""
 
 #: admin/functions/layouts.php:36
@@ -532,15 +508,15 @@ msgstr ""
 msgid "Get More Layouts"
 msgstr ""
 
-#: admin/includes/cta/about.php:2
+#: admin/includes/cta/about.php:10
 msgid "Other Plugins by Connekt"
 msgstr ""
 
-#: admin/includes/cta/add-ons.php:2
+#: admin/includes/cta/add-ons.php:10
 msgid "About the Add-ons"
 msgstr ""
 
-#: admin/includes/cta/add-ons.php:8
+#: admin/includes/cta/add-ons.php:17
 msgid "View Add-ons"
 msgstr ""
 
@@ -2746,15 +2722,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:276
+#: ajax-load-more.php:294
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:382
+#: ajax-load-more.php:394
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:383
+#: ajax-load-more.php:395
 msgid "No results found."
 msgstr ""
 
@@ -2954,28 +2930,28 @@ msgstr ""
 msgid " The WooCommerce add-on automatically integrates infinite scrolling into your existing shop templates."
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:44
+#: core/integration/elementor/module/widget.php:43
 msgid "ALM Shortcode"
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:91
+#: core/integration/elementor/module/widget.php:90
 msgid "Shortcode"
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:98
-#: core/integration/elementor/module/widget.php:123
-#: core/integration/elementor/module/widget.php:144
+#: core/integration/elementor/module/widget.php:97
+#: core/integration/elementor/module/widget.php:122
+#: core/integration/elementor/module/widget.php:143
 msgid "Ajax Load More Shortcode"
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:100
+#: core/integration/elementor/module/widget.php:99
 msgid "[ajax_load_more]"
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:101
+#: core/integration/elementor/module/widget.php:100
 msgid "The shortcode will not render while Elementor is in live edit mode, you must preview the page to view Ajax Load More functionality."
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:101
+#: core/integration/elementor/module/widget.php:100
 msgid "%sBuild Shortcode%s"
 msgstr ""
