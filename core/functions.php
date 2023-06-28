@@ -158,7 +158,6 @@ function alm_get_current_repeater( $repeater, $type ) {
  * @since 2.5.0
  */
 function alm_get_default_repeater() {
-
 	global $wpdb;
 	$file         = null;
 	$template_dir = apply_filters( 'alm_template_path', 'alm_templates' );

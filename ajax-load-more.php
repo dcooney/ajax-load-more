@@ -36,7 +36,7 @@ define( 'ALM_RELEASE', 'June 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
-require_once plugin_dir_path( __FILE__ ) . 'core/install.php';
+require_once plugin_dir_path( __FILE__ ) . 'core/functions/install.php';
 
 /**
  * Activation hook - Create table & repeater.

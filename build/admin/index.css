@@ -646,11 +646,11 @@ disabled look for disabled choices in the results dropdown
   padding: 20px 20px 20px 80px;
   margin: 0;
   min-height: 48px;
-  background: #fff url(../admin/img/alm-logo-48x48.svg) no-repeat 20px 20px;
+  background: #fff url(../admin/img/alm-logo.svg) no-repeat 20px 20px;
   font-size: 18px;
   font-weight: 800;
-  border-bottom: 1px solid #efefef;
   width: 100%;
+  border-bottom: 1px solid #efefef;
 }
 @media screen and (max-width: 900px) {
   .ajax-load-more .header-wrap h1 {
