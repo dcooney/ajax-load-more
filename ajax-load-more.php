@@ -25,6 +25,11 @@ In Progress
 	- @see https://www.advancedcustomfields.com/resources/acf-load_field/#parameters
 
 
+TO DO:
+- Fix ESLint errors.
+- Fix Stylelint errors.
+- Test github actions deploy script.
+
 ADD-ONS
 - Cache
 - Filters
