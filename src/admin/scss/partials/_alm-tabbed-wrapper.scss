@@ -12,10 +12,9 @@
 		display: block;
 		font-size: 20px;
 		color: $grey;
-		font-weight: 700;
+		font-weight: 500;
 		+ p {
-			margin-top: -10px;
-			font-size: 14px;
+			margin-top: -8px;
 		}
 	}
 
@@ -31,8 +30,7 @@
 			padding: 0;
 			border: 1px solid $border;
 			border-right: none;
-			border-bottom: none;
-			border-radius: $radius $radius 0 0;
+			border-radius: $radius_lg $radius_lg 0 $radius_lg;
 			position: relative;
 			z-index: 1;
 			margin: 0;
@@ -55,7 +53,7 @@
 						top: -1px;
 						button {
 							border-top: 1px solid $border;
-							border-radius: $radius 0 0 0;
+							border-radius: $radius_lg 0 0 0;
 						}
 					}
 				}
@@ -122,17 +120,14 @@
 	// Sections Column
 	&--sections {
 		flex: 1;
-
-		padding: 0 20px 20px;
+		padding: 0 $padding $padding;
 		display: block;
 		background: #fff;
 		border: 1px solid $border;
 		@media screen and (min-width: $desktop) {
-			border-bottom: none;
-			border-radius: 0 $radius 0 0;
+			border-radius: 0 $radius_lg $radius_lg 0;
 		}
 	}
-
 	&--section {
 		display: none;
 		&.active {

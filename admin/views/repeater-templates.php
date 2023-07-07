@@ -17,19 +17,13 @@
 
 <div class="admin ajax-load-more" id="alm-repeaters">
 	<div class="wrap main-cnkt-wrap">
-
-		<header class="header-wrap">
-			<h1>
-				<?php echo ALM_TITLE; ?>: <strong><?php _e( 'Repeater Templates', 'ajax-load-more' ); ?></strong>
-				<em><?php _e( 'The library of editable templates for use within your theme', 'ajax-load-more' ); ?></em>
-			</h1>
-			<?php alm_render_transient_notification(); ?>
-		</header>
+		<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
+		<div class="alm-admin-heading">
+			<h1><?php esc_attr_e( 'Templates', 'ajax-load-more' ); ?></h1>
+		</div>
 
 		<div class="ajax-load-more-inner-wrapper">
-
 			<div class="cnkt-main stylefree repeaters">
-
 				<ul class="alm-toggle-switch">
 					<li>
 						<a href="?page=ajax-load-more-repeaters" class="<?php if ( ! $theme_repeaters ) { echo 'active'; } ?>">
@@ -475,48 +469,38 @@
 					</script>
 			   <!-- End Repeaters -->
 				<?php } ?>
-
 			   </div>
-
 		   </div>
 
-		   <aside class="cnkt-sidebar">
-	   	   <div id="cnkt-sticky-wrapper">
-		   	   <div id="cnkt-sticky">
-
-			   	   <?php
-			      	   // Add TOC if users has Custom Repeaters
-			      	   if (has_action('alm_unlimited_repeaters') || $theme_repeaters){
-			   	   ?>
-			   	   <div class="table-of-contents repeaters-toc">
-			   	   	<div class="cta">
-			      	   	<div class="cta-inner">
-			   	   	      <select class="toc"></select>
-			      	   	</div>
-			   	   	</div>
-			   	   </div>
-						<?php } ?>
-
-		      	   <div class="cta">
-		   				<h3><?php _e('What\'s a Repeater Template?', 'ajax-load-more'); ?></h3>
-		   				<div class="cta-inner">
-		   					<p><?php _e('A <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">Repeater Template</a> is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>', 'ajax-load-more'); ?>.</p>
-		   				</div>
-							<div class="major-publishing-actions">
-								<a class="button button-primary" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank"><?php _e('Learn More', 'ajax-load-more'); ?></a>
-							</div>
+		   <aside class="cnkt-sidebar" data-sticky>
+				<?php
+					// Add TOC if users has Custom Repeaters
+					if ( has_action( 'alm_unlimited_repeaters' ) || $theme_repeaters ) {
+				?>
+				<div class="table-of-contents repeaters-toc">
+					<div class="cta">
+						<div class="cta-inner">
+							<select class="toc"></select>
 						</div>
-		            <?php
-		               if(!$theme_repeaters){
-		                  include_once ALM_PATH . 'admin/includes/cta/writeable.php';
-		               }
-		            ?>
-		   	   </div>
-	   	   </div>
+					</div>
+				</div>
+				<?php } ?>
+
+				<div class="cta">
+					<h3><?php _e('What\'s a Repeater Template?', 'ajax-load-more'); ?></h3>
+					<div class="cta-inner">
+						<p><?php _e('A <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">Repeater Template</a> is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>', 'ajax-load-more'); ?>.</p>
+					</div>
+					<div class="major-publishing-actions">
+						<a class="button button-primary" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank"><?php _e('Learn More', 'ajax-load-more'); ?></a>
+					</div>
+				</div>
+				<?php
+					if ( ! $theme_repeaters ) {
+						include_once ALM_PATH . 'admin/includes/cta/writeable.php';
+					}
+				?>
 		   </aside>
-
-		   <div class="clear"></div>
 		</div>
-
 	</div>
 </div>

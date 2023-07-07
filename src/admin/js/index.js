@@ -1,7 +1,7 @@
 require('./libs/jquery.drops');
 require('./libs/jquery.tooltipster.min');
 require('./libs/select2.min');
-require('./modules/sticky');
+// require('./modules/sticky');
 
 import '../scss/admin.scss';
 
@@ -87,7 +87,7 @@ jQuery(document).ready(function ($) {
 				section.focus({ preventScroll: true });
 				$('html, body').animate(
 					{
-						scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 45,
+						scrollTop: $('.alm-tabbed-wrapper--sections').offset().top - 120,
 					},
 					400,
 					function () {

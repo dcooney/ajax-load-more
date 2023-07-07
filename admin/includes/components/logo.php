@@ -1,3 +1,10 @@
+<?php
+/**
+ * The ALM Logo as an SVG.
+ *
+ * @package AjaxLoadMore
+ */
+?>
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="48px" height="48px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve">
 	<g>
 		<path fill="#E44846" d="M44,48H4c-2.2,0-4-1.8-4-4V4c0-2.2,1.8-4,4-4h40c2.2,0,4,1.8,4,4v40C48,46.2,46.2,48,44,48z"/>

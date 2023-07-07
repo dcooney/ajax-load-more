@@ -9,14 +9,12 @@
 ?>
 <div class="alm-settings-feedback"></div>
 <div class="admin ajax-load-more settings" id="alm-settings">
+	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
+	<div class="alm-admin-heading">
+		<h1>Settings</h1>
+	</div>
+	<?php alm_pro_transient_notification(); ?>
 	<div class="wrap main-cnkt-wrap">
-		<header class="header-wrap">
-			<h1>
-				<?php echo esc_attr( ALM_TITLE ); ?> <span><?php echo esc_attr( ALM_VERSION ); ?></span>
-				<em><?php esc_attr_e( 'A powerful plugin to add infinite scroll functionality to your website.', 'ajax-load-more' ); ?></em>
-			</h1>
-			<?php alm_render_transient_notification(); ?>
-		</header>
 		<div class="ajax-load-more-inner-wrapper">
 			<section class="cnkt-main stylefree">
 				<div class="alm-tabbed-wrapper">
@@ -85,16 +83,12 @@
 						</form>
 					</div>
 				</div>
-				<p class="back2top">
-					<a href="#wpcontent" class="group no-shadow"><i class="fa fa-angle-up"></i> <?php esc_attr_e( 'Back to Top', 'ajax-load-more' ); ?></a>
-				</p>
 			</section>
 			<aside class="cnkt-sidebar">
 				<?php require_once ALM_PATH . 'admin/includes/cta/resources.php'; ?>
 				<?php require_once ALM_PATH . 'admin/includes/cta/dyk.php'; ?>
 				<?php require_once ALM_PATH . 'admin/includes/cta/about.php'; ?>
 			</aside>
-		<div class="clear"></div>
 		</div>
 	</div>
 </div>

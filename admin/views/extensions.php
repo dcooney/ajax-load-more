@@ -14,7 +14,7 @@
 				<?php echo esc_attr( ALM_TITLE ); ?>: <strong><?php esc_attr_e( 'Extensions', 'ajax-load-more' ); ?></strong>
 				<em><?php esc_attr_e( 'Free extensions that provide compatibility with popular plugins and core WordPress functionality', 'ajax-load-more' ); ?>.</em>
 			</h1>
-			<?php alm_render_transient_notification(); ?>
+			<?php alm_pro_transient_notification(); ?>
 		</header>
 		<div class="ajax-load-more-inner-wrapper">
 			<div class="cnkt-main full">

@@ -16,7 +16,7 @@
 			<?php echo ALM_TITLE; ?>: <strong><?php _e( 'Add-ons', 'ajax-load-more' ); ?></strong>
 			<em><?php _e( 'Add-ons are available to extend and enhance the core functionality of Ajax Load More', 'ajax-load-more' ); ?>.</em>
 		 </h1>
-		 <?php alm_render_transient_notification(); ?>
+		 <?php alm_pro_transient_notification(); ?>
 		</header>
 
 		<div class="ajax-load-more-inner-wrapper">

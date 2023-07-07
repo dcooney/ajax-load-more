@@ -18,7 +18,7 @@
 				<?php echo ALM_TITLE; ?>: <strong><?php echo esc_html( $alm_pg_title ); ?></strong>
 				<em><?php echo $alm_pg_desc; ?>.</em>
 			</h1>
-			<?php alm_render_transient_notification(); ?>
+			<?php alm_pro_transient_notification(); ?>
 		</header>
 		<div class="ajax-load-more-inner-wrapper">
 			<div class="cnkt-main">

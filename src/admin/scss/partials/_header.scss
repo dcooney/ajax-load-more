@@ -1,6 +1,61 @@
+
+.ajax-load-more {
+	.alm-admin-toolbar{
+		display: flex;
+		width: 100%;
+		padding: $padding_sm $padding;
+		background-color: $alm_red;
+		@media screen and (min-width: $wp_mobile) {
+			position: sticky;
+			top: 32px;
+			z-index: 9999;
+			box-shadow:0 2px 5px rgba(0, 0, 0, 0.075);
+		}
+		&--logo{
+			display: flex;
+			align-items: center;
+			font-weight: 700;
+			font-size: 22px;
+			line-height: 1;
+			color: #fff;
+			text-decoration: none;
+			&:hover,
+			&:focus{
+				color: #fff;
+				text-decoration: none;
+			}
+			@media screen and (min-width: 768px) {
+				font-size: 26px;
+			}
+
+			& svg {
+				margin-right: 10px;
+				width: 42px;
+				height: 42px;
+			}
+
+			span {
+				color: #555;
+				font-weight: 400;
+				margin: 0 0 0 10px;
+				vertical-align: top;
+				font-size: 12px;
+				font-weight: 400;
+				background-color: rgba($yellow, 0.80);
+				border-radius: $radius;
+				padding: 6px 5px 5px;
+				display: inline-block;
+				line-height: 1;
+				opacity: 0.95;
+			}
+		}
+	}
+}
+
 .ajax-load-more .header-wrap {
 	position: relative;
 	z-index: 1;
+	display: none;
 	h1 {
 		padding: $padding $padding $padding 80px;
 		margin: 0;

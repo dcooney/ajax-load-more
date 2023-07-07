@@ -32,7 +32,7 @@ function alm_admin_hooks() {
  *
  * @since 4.0
  */
-function alm_render_transient_notification() {
+function alm_pro_transient_notification() {
 	if ( ! has_action( 'alm_pro_installed' ) ) {
 		$msg = '🔥&nbsp; <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank">Ajax Load More Pro</a></strong>: Get instant access to all 15 add-ons in a single installation! &nbsp; <strong><a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" class="button button-primary">Upgrade Now</a></strong>';
 		alm_transient_notification( $msg, 'alm_pro_upgrade', 'YEAR_IN_SECONDS', true );
@@ -55,7 +55,7 @@ function alm_transient_notification( $message = '', $transient = '', $duration =
 		$dismissible     = $dismissible ? ' is-dismissible' : '';
 		if ( ! isset( $transient_value ) || empty( $transient_value ) && ! empty( $message ) ) {
 			?>
-		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> alm-transient" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
+		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> inline alm-transient" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
 			<p><?php echo wp_kses_post( $message ); ?></p>
 		</div>
 			<?php
@@ -175,8 +175,8 @@ function alm_admin_menu() {
 
 	$alm_template_page = add_submenu_page(
 		'ajax-load-more',
-		__( 'Repeater Templates', 'ajax-load-more' ),
-		__( 'Repeater Templates', 'ajax-load-more' ),
+		__( 'Templates', 'ajax-load-more' ),
+		__( 'Templates', 'ajax-load-more' ),
 		'edit_theme_options',
 		'ajax-load-more-repeaters',
 		'alm_repeater_page'
