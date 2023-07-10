@@ -2,18 +2,19 @@
 @import './variables';
 @import './libs/tooltipster';
 @import './libs/select2';
-@import './partials/header';
-@import './partials/pro-listing';
-@import './partials/codemirror';
-@import './partials/sidebar';
 @import './partials/alm-settings-feedback';
+@import './partials/alm-tabbed-wrapper';
+@import './partials/builder-option-toggle';
+@import './partials/cache';
+@import './partials/codemirror';
+@import './partials/header';
+@import './partials/license';
+@import './partials/pro-listing';
 @import './partials/select2';
 @import './partials/shortcode-builder';
-@import './partials/cache';
-@import './partials/woocommerce';
-@import './partials/builder-option-toggle';
+@import './partials/sidebar';
 @import './partials/template-tags';
-@import './partials/alm-tabbed-wrapper';
+@import './partials/woocommerce';
 
 body.toplevel_page_ajax-load-more,
 body.ajax-load-more_page_ajax-load-more-repeaters,
@@ -77,7 +78,8 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 		border-bottom: 1px solid $border;
 		margin-bottom: calc($padding/2);
 		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.025);
-		& h1 {
+
+		h1 {
 			margin: 5px 0;
 			padding: 0;
 			line-height: 1.25;
@@ -90,7 +92,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 .ajax-load-more-inner-wrapper {
 	display: block;
 	padding: calc($padding/2) $padding $padding;
-	max-width: 1440px;
+	max-width: 1600px;
 	position: relative;
 	width: 100%;
 	@media screen and (min-width: $break){
@@ -102,10 +104,11 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 .ajax-load-more .notice,
 .ajax-load-more div.updated,
 .ajax-load-more div.error{
-	margin: 5px $padding;
+	margin: 5px 0;
 	border-radius: $radius;
 	overflow: hidden;
 	padding: 5px 10px;
+
 }
 
 .ajax-load-more .alm-transient {
@@ -822,13 +825,13 @@ a.button-small {
 .ajax-load-more input[type='number'] {
 	height: auto;
 }
-.admin.ajax-load-more .form-table textarea {
+.ajax-load-more .form-table textarea {
 	clear: both;
 	display: inline-block;
 	float: none;
 	width: 100%;
 }
-.admin.ajax-load-more textarea.disabled,
+.ajax-load-more textarea.disabled,
 .ajax-load-more input.disabled-input {
 	opacity: 0.5;
 	filter: alpha(opacity=50);
@@ -927,15 +930,15 @@ a.button-small {
 .ajax-load-more#alm-repeaters .row {
 	overflow: visible;
 }
-.admin.ajax-load-more .row {
+.ajax-load-more .row {
 	border-color: $border;
 }
-.admin.ajax-load-more .repeaters .row:hover,
-.admin.ajax-load-more.shortcode-builder .row:hover {
+.ajax-load-more .repeaters .row:hover,
+.ajax-load-more.shortcode-builder .row:hover {
 	border-color: #d9d9d9;
 	box-shadow: 0 0 0 3px $light_grey;
 }
-.admin.ajax-load-more .row:first-of-type {
+.ajax-load-more .row:first-of-type {
 	margin-top: 20px;
 	padding-top: 0;
 }
@@ -969,7 +972,7 @@ a.button-small {
 		padding-right: 5%;
 	}
 }
-.admin.ajax-load-more .jump-menu {
+.ajax-load-more .jump-menu {
 	display: none;
 }
 
@@ -1068,7 +1071,7 @@ hr.indented {
 	top: 1px;
 }
 .ajax-load-more .section-title p span,
-.admin.ajax-load-more.settings .form-table p.notify span {
+.ajax-load-more.settings .form-table p.notify span {
 	display: inline-block;
 	padding: 0 4px;
 	border-radius: 2px;
@@ -1131,15 +1134,13 @@ hr.indented {
 	padding: 0 15px 15px 36px;
 }
 
-/* ***********************************
--- Shortcode Output
-**************************************/
+// Shortcode Output.
 .ajax-load-more .output-wrap {
 	margin: 20px 0 0;
-	background: $red;
+	background: #838d99;
 	width: 100%;
 	display: block;
-	border-radius: 3px;
+	border-radius: $radius;
 	textarea {
 		background-color: transparent !important;
 		resize: none !important;
@@ -1168,12 +1169,7 @@ hr.indented {
 	display: inline-block;
 }
 
-/*
-*  Insert Shortcode Button
-*
-*  @since 1.0
-*/
-
+// Insert Shortcode Button.
 #insert.insert_alm {
 	background: #fff !important;
 	color: #ca5252 !important;
@@ -1184,25 +1180,23 @@ hr.indented {
 	display: inline-block;
 	text-align: center;
 	margin: 15px 0;
-	float: left;
 	line-height: normal !important;
 	height: auto !important;
 	box-shadow: inset 0 -15px 15px rgba(0, 0, 0, 0.1), 0 1px 0px #ca5252;
 	text-shadow: none !important;
 	max-width: 20%;
 	border-radius: 2px;
-}
-.admin.ajax-load-more #insert.insert_alm {
-	display: none;
-}
-
-#insert.insert_alm:hover {
-	box-shadow: inset 0 -15px 15px rgba(0, 0, 0, 0.1), 0 0 3px rgba(255, 255, 255, 1);
-}
-#insert.insert_alm:active {
-	background: #d0413f !important;
-	box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
-	color: #fff !important;
+	#insert.insert_alm {
+		display: none;
+	}
+	&:hover {
+		box-shadow: inset 0 -15px 15px rgba(0, 0, 0, 0.1), 0 0 3px rgba(255, 255, 255, 1);
+	}
+	&:active {
+		background: #d0413f !important;
+		box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+		color: #fff !important;
+	}
 }
 
 .ajax-load-more .clear {
@@ -1214,12 +1208,7 @@ hr.indented {
 	margin: 0;
 }
 
-/*
-*  Admin Screens - Setting pages
-*
-*  @since 1.0
-*/
-
+// Admin Screens - Setting pages
 .form-table label {
 	display: block;
 	clear: both;
@@ -1250,8 +1239,8 @@ hr.indented {
 	padding-bottom: 5px;
 }
 
-.admin.ajax-load-more textarea.disabled,
-.admin.ajax-load-more input.disabled {
+.ajax-load-more textarea.disabled,
+.ajax-load-more input.disabled {
 	opacity: 0.9;
 	filter: alpha(opacity=90);
 	cursor: default;
@@ -1262,20 +1251,20 @@ hr.indented {
 	resize: none;
 }
 
-.admin.ajax-load-more .form-table input[type='radio'],
-.admin.ajax-load-more .form-table input[type='checkbox'] {
+.ajax-load-more .form-table input[type='radio'],
+.ajax-load-more .form-table input[type='checkbox'] {
 	margin-right: 10px;
 	margin-top: 0 !important;
 }
 
-.admin.ajax-load-more.settings input[type='text'],
-.admin.ajax-load-more.settings input[type='number'],
-.admin.ajax-load-more.settings input[type='email'],
-.admin.ajax-load-more.settings .select2-container {
+.ajax-load-more.settings input[type='text'],
+.ajax-load-more.settings input[type='number'],
+.ajax-load-more.settings input[type='email'],
+.ajax-load-more.settings .select2-container {
 	margin-top: 10px;
 }
 // Button Preview.
-.admin.ajax-load-more .ajax-load-more-wrap {
+.ajax-load-more .ajax-load-more-wrap {
 	position: relative;
 	top: 10px;
 	padding: 20px;
@@ -1312,7 +1301,7 @@ hr.indented {
 	}
 }
 
-.admin.ajax-load-more.settings {
+.ajax-load-more.settings {
 	.ajax-load-more-wrap.pages li {
 		font-size: 14px;
 		a {
@@ -1344,7 +1333,6 @@ hr.indented {
 		margin-top: 0;
 	}
 	.form-table p.notify {
-		font-size: 12px;
 		padding: 10px 0 0;
 		margin: 5px 0 20px;
 		overflow: hidden;
@@ -1625,7 +1613,6 @@ table.highlight {
 		display: inline-block;
 		margin: 14px 0 0;
 		width: auto;
-		float: right;
 		opacity: 0;
 		transition: all 0.2s ease;
 		position: absolute;
@@ -1910,202 +1897,6 @@ span.cnkt-button.installed i,
 	top: 0;
 }
 
-/*
- * Licenses
- *
- *  @since 2.7.0
- */
-
-.license {
-	overflow: hidden;
-	margin: 0;
-	display: block;
-	padding: $padding_sm 0 0;
-	position: relative;
-	&:first-of-type {
-		padding: 10px 0 0;
-	}
-	.license-title {
-		border-radius: 3px 3px 0 0;
-		padding: $padding_sm;
-		border: 1px solid $border;
-		background-color: $light_grey;
-		position: relative;
-		display: flex;
-		align-items: center;
-		width: 100%;
-		.status {
-			width: 10px;
-			height: 10px;
-			border-radius: 100%;
-			background: #d45656;
-			box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
-			margin-right: 8px;
-			&.valid {
-				background-color: $green;
-			}
-		}
-		h3 {
-			margin: 0;
-			padding: 0;
-			font-size: 15px;
-			font-weight: 600;
-			line-height: 1;
-		}
-		.fa.tooltip{
-			top: 0;
-			margin-left: auto;
-		}
-	}
-	p,
-	label {
-		font-size: 400;
-		font-size: 14px;
-	}
-	.cnkt-button {
-		position: absolute;
-		top: 9px;
-		right: 15px;
-		padding: 5px 7px !important;
-	}
-	a.cnkt-button.installed {
-		background-color: none !important;
-		box-shadow: none !important;
-		border-color: transparent !important;
-	}
-	.no-license {
-		display: block;
-		padding: 12px;
-		margin: 0 0 $padding_sm;
-		border: 1px solid #e7e7c6;
-		background-color: #ffffe5;
-		border-radius: 2px;
-		h4 {
-			margin: 0 0 3px;
-		}
-		p {
-			margin: 5px 0 0;
-			padding: 0;
-		}
-	}
-
-	.loading {
-		position: absolute;
-		left: 0;
-		top: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(255, 255, 255, 0.6) url('../img/ui/loader.gif') no-repeat center center;
-		z-index: 9;
-		display: none;
-	}
-	.license-btn.hide,
-	.renew-btn.hide {
-		display: none;
-	}
-	.license-btn-wrap {
-		display: flex;
-		width: 100%;
-		align-items: center;
-		gap: 6px;
-		.msg {
-			display: block;
-			padding: 15px 0 0;
-			font-size: 14px;
-			line-height: 24px;
-			position: relative;
-			top: 4px;
-			strong {
-				display: block;
-			}
-			em {
-				opacity: 0.7;
-				font-style: normal;
-			}
-		}
-	}
-
-	.license-wrap,
-	.license-no-addons {
-		overflow: hidden;
-		display: block;
-		padding: 18px 15px;
-		border: 1px solid $border;
-		border-top: none;
-		background-color: #fff;
-		border-radius: 0 0 3px 3px;
-	}
-	.license-wrap{
-		label {
-			font-weight: 600;
-			top: -3px;
-		}
-		input[type='text'],
-		input[type='password'] {
-			margin: 0;
-			width: 100% !important;
-			padding: $padding_sm;
-			min-height: 0;
-			border-color: $border;
-			line-height: 1;
-			&[disabled]{
-				color: #ccc;
-				cursor: not-allowed;
-			}
-			&:focus{
-				border-color: $border_hover;
-			}
-		}
-		.button-primary {
-			margin-right: 10px;
-		}
-	}
-	.license-key-field {
-		position: relative;
-		display: block;
-		margin: 0 0 $padding_sm;
-	}
-	.license-key-field .status {
-		position: absolute;
-		right: 10px;
-		top: 50%;
-		transform: translateY(-50%);
-		display: inline-block;
-		border-radius: $radius;
-		padding: 6px 10px;
-		line-height: 1.35;
-		color: #fff;
-		cursor: default;
-		font-weight: 500;
-	}
-	.license-key-field .status.active {
-		background-color: $green;
-	}
-	.license-key-field .status.inactive {
-		background-color: #d45656;
-	}
-
-	.ajax-load-more .alm-nav {
-		font-size: 600;
-		font-size: 14px;
-		margin: 0 !important;
-		padding: 5px 0 5px;
-	}
-	.ajax-load-more .alm-nav a {
-		display: inline-block;
-	}
-
-	.license-no-addons {
-		border: 1px solid #bad0da;
-		border-radius: 3px;
-		background-color: #e0f5ff;
-	}
-	.license-no-addons p {
-		margin: 0;
-		padding: 0;
-	}
-}
-
 // Plugin Sidebar CTAs
 .ajax-load-more .cnkt-sidebar .cta {
 	background: #fff;
@@ -2361,7 +2152,7 @@ span.cnkt-button.installed i,
 	display: block;
 	overflow: visible;
 }
-.admin.ajax-load-more .row.unlimited:first-of-type {
+.ajax-load-more .row.unlimited:first-of-type {
 	margin-top: 10px;
 }
 
@@ -2378,33 +2169,33 @@ span.cnkt-button.installed i,
 	display: none;
 }
 
-.admin.ajax-load-more .row.unlimited.deleting {
+.ajax-load-more .row.unlimited.deleting {
 	/* Deleting Row */
 	background: #fff url('../img/ui/loader-unlimited.gif') no-repeat center center;
 	border-color: #fff;
 	opacity: 0.4;
 }
-.admin.ajax-load-more .row.unlimited.deleting.deleted {
+.ajax-load-more .row.unlimited.deleting.deleted {
 	/* Deleting Row */
 	background-image: none !important;
 }
-.admin.ajax-load-more .row.unlimited.new {
+.ajax-load-more .row.unlimited.new {
 	/* New Row */
 	background: url('../img/ui/loader-unlimited.gif') no-repeat center center;
 	border-color: $light_border !important;
 	min-height: 60px;
 	display: none;
 }
-.admin.ajax-load-more .row.unlimited.new.done {
+.ajax-load-more .row.unlimited.new.done {
 	background-image: none !important;
 }
-.admin.ajax-load-more .row.unlimited.loaded {
+.ajax-load-more .row.unlimited.loaded {
 	/* Loading complete */
 	background-color: #64e49d;
 	border-color: #64e49d;
 }
 
-.admin.ajax-load-more .row.unlimited.deleting .expand-wrap,
+.ajax-load-more .row.unlimited.deleting .expand-wrap,
 .row.unlimited.deleting h3.heading {
 	opacity: 0.6;
 }
@@ -2495,68 +2286,66 @@ span.cnkt-button.installed i,
 }
 
 // Directory Listing
-.alm-dir-listing {
-	ul {
-		padding: 0;
-		margin: 0;
-		display: flex;
-		width: 100%;
-		flex-wrap: wrap;
-		li {
+.ajax-load-more{
+	.alm-dir-listing {
+		ul {
+			padding: 0;
 			margin: 0;
-			padding: 10px 5px 5px 55px;
-			background: transparent url('../img/ui/directory-list.gif') no-repeat left 46%;
-			position: relative;
-			display: block;
-			width: 50%;
-			&.full {
-				width: 100%;
-			}
-			&:last-child,
-			&:nth-last-child(2) {
-				background-image: url('../img/ui/directory-list-btm.gif');
-			}
-			a {
-				text-decoration: none;
+			display: flex;
+			width: 100%;
+			flex-wrap: wrap;
+			li {
+				margin: 0;
+				padding: 10px 5px 5px 50px;
+				background: transparent url('../img/ui/directory-list.gif') no-repeat left 46%;
+				position: relative;
 				display: block;
-				word-break: break-all;
-			}
-			i {
-				width: 15px;
-				color: $grey_text;
-				position: absolute;
-				left: 36px;
-				top: 13px;
+				width: 50%;
+				&.full {
+					width: 100%;
+				}
+				&:last-child,
+				&:nth-last-child(2) {
+					background-image: url('../img/ui/directory-list-btm.gif');
+				}
+				a {
+					text-decoration: none;
+					display: block;
+					word-break: break-all;
+				}
+				i {
+					width: 15px;
+					color: $grey_text;
+					position: absolute;
+					left: 38px;
+					top: 6px;
+					display: none;
+				}
 			}
 		}
-	}
-	p.theme-title {
-		font-weight: 600;
-		margin: 0 0 20px !important;
-		padding: 0;
-	}
-	&.theme-repeaters ul li {
-		display: block;
-		width: 100%;
-		padding-top: 10px;
-		padding: 0 0 0 36px;
-		background-position: left 54%;
-		label {
+		p.theme-title {
+			font-weight: 600;
+			margin: 0 0 20px !important;
+			padding: 0;
+		}
+		&.theme-repeaters ul li {
 			display: block;
 			width: 100%;
-		}
-		&:nth-last-child(2) {
-			background: transparent url('../img/ui/directory-list.gif') no-repeat left center;
+			padding-top: 10px;
+			padding: 0 0 0 36px;
+			background-position: left 54%;
+			label {
+				display: block;
+				width: 100%;
+			}
+			&:nth-last-child(2) {
+				background: transparent url('../img/ui/directory-list.gif') no-repeat left center;
+			}
 		}
 	}
 }
 
-/*
-* Error Handling
-*
-* @since 2.6
-*/
-
+// Error Handling.
 .alm-error {
 	position: absolute;
 	z-index: 9999;
@@ -2564,12 +2353,7 @@ span.cnkt-button.installed i,
 	padding: 10px;
 }
 
-/*
-* Form Replacements
-*
-* @since 2.4
-*/
-
+//Form Replacements.
 .ajax-load-more .alm-styled-input {
 	display: flex;
 	width: 100%;
@@ -3133,7 +2917,7 @@ span.dismiss a {
 		position: static !important;
 		width: 100% !important;
 	}
-	.admin.ajax-load-more.settings .form-table td {
+	.ajax-load-more.settings .form-table td {
 		padding: 24px 20px 20px;
 	}
 	.call-out.light {
@@ -3145,7 +2929,7 @@ span.dismiss a {
 }
 
 @media screen and (max-width: 782px) {
-	.admin.ajax-load-more.settings .form-table th {
+	.ajax-load-more.settings .form-table th {
 		border: none;
 		border-bottom: 1px solid $light_border;
 		width: 100%;

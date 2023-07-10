@@ -25,6 +25,7 @@ In Progress
 	- @see https://www.advancedcustomfields.com/resources/acf-load_field/#parameters
 
 
+
 TO DO:
 - Fix ESLint errors.
 - Fix Stylelint errors.
@@ -32,7 +33,14 @@ TO DO:
 
 ADD-ONS
 - Cache
+	- Admin Page [TODO]
 - Filters
+	- Admin Page [TODO]
+- WooCommerce
+	- Admin Page [TODO]
+- PRO
+	- Updated add-ons settings page.
+	- Admin Page [DONE]
 
 */
 

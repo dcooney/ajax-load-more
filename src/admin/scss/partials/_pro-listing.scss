@@ -1,10 +1,11 @@
-	
+
 /* Pro Add-on Listing */
 .alm-pro-listing{
 	padding: 0;
 	border-top: none;
 	position: relative;
 	padding-bottom: 20px;
+
 	.loader{
    	position: absolute;
    	left: 0;
@@ -13,6 +14,7 @@
    	height: 100%;
    	z-index: 99;
    	display: none;
+		background: rgba(255,255,255,0.25);
 	}
 	&.loading{
    	.loader{
@@ -20,41 +22,44 @@
    	}
 	}
 	&--header{
-   	border: 1px solid #e1e1e1;
-   	background: #f7f7f7;
-   	padding: 18px;
-   	font-size: 13px;
-   	font-weight: 600;
-   	text-transform: uppercase;
-   	color: #23282d;
+   	color: $grey;
    	position: relative;
-   	margin-bottom: 30px;
-   	border-radius: 2px;
-   	div{
-      	position: absolute;
-      	right: 15px;
-      	top: 50%;
-      	transform: translateY(-50%);
+   	margin-bottom: $padding;
+		@media screen and (min-width: $break){
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 15px;
+		}
+		h2 {
+			margin: 0 0 10px;
+		}
+		p{
+			@media screen and (min-width: $break){
+				margin: 0 !important;
+			}
+		}
+   	div.totals{
       	font-size: 13px;
       	opacity: 0.7;
       	font-weight: normal;
       	text-transform: none;
-      	font-style: italic;
-      	@media screen and (max-width: 480px){
-            display: none;	
-         }
+
+			span {
+				font-weight: 600;
+			}
    	}
-	}	
+	}
 	&--wrap{
    	display: flex;
    	flex-wrap: wrap;
    	width: calc(100% + 10px);
    	margin-left: -5px;
 	}
-	
+
 	.item{
 		width: calc(50% - 10px);
-   	display: flex;    
+   	display: flex;
    	margin: 0 5px 10px;
    	@media screen and (min-width: 1500px){
 			width: calc(33.333% - 10px);
@@ -70,12 +75,12 @@
 			text-decoration: none !important;
 			padding: 0 55px 0 0;
 			position: relative;
-         display: flex;         
+         display: flex;
    		border: 1px solid #e1e1e1;
-         transition: all 0.15s ease;   
+         transition: all 0.15s ease;
          border-radius: 2px;
          @media screen and (max-width: 1100px){
-            padding: 0 10px 20px;  
+            padding: 0 10px 20px;
          }
          &:hover,
          &:focus{
@@ -83,7 +88,7 @@
             h2{
                text-decoration: none;
             }
-         }     
+         }
 		}
 		&--detail{
 			padding: 20px;
@@ -92,7 +97,7 @@
 			display: flex;
 			align-items: flex-start;
 			@media screen and (max-width: 1100px){
-   		   display: block;	
+   		   display: block;
    		   text-align: center;
    		   img{
       		   padding-bottom: 20px;
@@ -101,7 +106,7 @@
 			div{
    			padding: 0;
 			}
-			img{ 
+			img{
 				width: 110px;
 				height: auto;
 				margin-right: 20px;
@@ -119,7 +124,7 @@
 			h2{
 				margin: 0 0 7px;
 				font-size: 16px;
-				line-height: 1;	
+				line-height: 1;
 				transition: all 0.15s ease;
 				span{
 					font-weight: 400;
@@ -129,7 +134,7 @@
 					top: 0;
 					left: 3px;
 					text-decoration: none !important;
-				}			
+				}
 			}
 			p{
 				margin: 0;
@@ -139,14 +144,14 @@
 					font-size: 13px;
 					padding-top: 2px;
 					opacity: 0;
-					transition: opacity 0.15s ease; 
+					transition: opacity 0.15s ease;
 				}
 			}
 			.highlight-addon{
 				padding-top: 15px;
 				font-size: 12px;
 				margin: 0;
-				
+
 				span{
 					display: inline-block;
 					padding: 5px;
@@ -200,10 +205,10 @@
 				font-family: 'FontAwesome';
 				content: '\f00c';
 				display: block;
-				
+
 			}
 		}
-		
+
 		&.active{
    		a{
       		border-color: #57d48c;
@@ -214,7 +219,7 @@
 				}
 			}
 		}
-		
+
 		&.inactive{
 			h2, p, img, .state{
 				opacity: 0.5;
@@ -228,15 +233,15 @@
 			&:hover{
 				h2, p, img, .state{
 					opacity: 0.8;
-				}	
-			
+				}
+
 				.state{
    				background: #ccc;
 					&:before{
 						opacity: 1;
 					}
 				}
-			}		
+			}
 		}
-	}	
+	}
 }

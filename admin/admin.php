@@ -55,7 +55,7 @@ function alm_transient_notification( $message = '', $transient = '', $duration =
 		$dismissible     = $dismissible ? ' is-dismissible' : '';
 		if ( ! isset( $transient_value ) || empty( $transient_value ) && ! empty( $message ) ) {
 			?>
-		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> inline alm-transient" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
+		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> inline alm-transient has-margin" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
 			<p><?php echo wp_kses_post( $message ); ?></p>
 		</div>
 			<?php
