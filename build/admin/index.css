@@ -967,19 +967,6 @@ disabled look for disabled choices in the results dropdown
 .alm-cache .alm-dir-listing--nested .alm-dir-listing {
   margin: 0;
 }
-.alm-cache .alm-dir-listing.theme-repeaters {
-  padding: 15px;
-  margin: 0;
-}
-.alm-cache .alm-dir-listing.theme-repeaters ul {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-.alm-cache .alm-dir-listing.theme-repeaters i {
-  color: #ccc;
-  font-size: 1.1em;
-}
 .alm-cache .alm-dir-listing.deleting {
   opacity: 0.5;
   background: #fff url(../admin/img/ui/loader-unlimited.gif) no-repeat center center;
@@ -1065,7 +1052,7 @@ disabled look for disabled choices in the results dropdown
   position: relative;
   display: block;
   width: 100%;
-  background: none;
+  background: none !important;
   padding: 0 10px 0 28px;
   margin: 0 0 10px;
 }
@@ -1084,7 +1071,8 @@ disabled look for disabled choices in the results dropdown
 }
 .alm-cache .dir-empty,
 .alm-cache .cache-cleared {
-  background-color: #fff2b9;
+  border-radius: 3px;
+  background-color: rgba(255, 242, 185, 0.5);
   border: 1px solid #e4e4c8;
   padding: 20px;
   display: block;
@@ -1095,11 +1083,11 @@ disabled look for disabled choices in the results dropdown
   margin: 0 0 20px;
   background-color: #e0f5ff;
   border-color: #bad0da;
-  color: #666;
 }
 .alm-cache .cache-cleared i {
   color: #111;
   margin: 0 5px 0 0;
+  font-size: 15px;
 }
 .alm-cache .cache-cleared .remove {
   float: right;
@@ -4641,7 +4629,7 @@ span.cnkt-button.installed i,
 }
 .ajax-load-more .alm-dir-listing ul li {
   margin: 0;
-  padding: 10px 5px 5px 50px;
+  padding: 10px 5px 5px 55px;
   background: transparent url(../admin/img/ui/directory-list.gif) no-repeat left 46%;
   position: relative;
   display: block;
@@ -4662,9 +4650,8 @@ span.cnkt-button.installed i,
   width: 15px;
   color: #999;
   position: absolute;
-  left: 38px;
-  top: 6px;
-  display: none;
+  left: 35px;
+  top: 12px;
 }
 .ajax-load-more .alm-dir-listing p.theme-title {
   font-weight: 600;
@@ -4681,6 +4668,9 @@ span.cnkt-button.installed i,
 .ajax-load-more .alm-dir-listing.theme-repeaters ul li label {
   display: block;
   width: 100%;
+}
+.ajax-load-more .alm-dir-listing.theme-repeaters ul li label i {
+  display: none;
 }
 .ajax-load-more .alm-dir-listing.theme-repeaters ul li:nth-last-child(2) {
   background: transparent url(../admin/img/ui/directory-list.gif) no-repeat left center;

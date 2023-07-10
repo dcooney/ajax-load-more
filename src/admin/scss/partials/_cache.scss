@@ -74,22 +74,6 @@
 				margin: 0;
 			}
 		}
-
-		&.theme-repeaters {
-			padding: 15px;
-			margin: 0;
-
-			ul {
-				border: none;
-				padding: 0;
-				margin: 0;
-			}
-
-			i {
-				color: #ccc;
-				font-size: 1.1em;
-			}
-		}
 	}
 
 	.alm-dir-listing.deleting {
@@ -193,7 +177,7 @@
 			position: relative;
 			display: block;
 			width: 100%;
-			background: none;
+			background: none !important;
 			padding: 0 10px 0 28px;
 			margin: 0 0 10px;
 
@@ -217,25 +201,23 @@
 
 	.dir-empty,
 	.cache-cleared {
-		background-color: $yellow;
+		border-radius: $radius;
+		background-color: rgba( $yellow, 0.5 );
 		border: 1px solid $yellow_dark;
-		padding: 20px;
+		padding: $padding;
 		display: block;
 		color: #222;
 		text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
 	}
-
 	.cache-cleared {
 		margin: 0 0 20px;
 		background-color: #e0f5ff;
 		border-color: #bad0da;
-		color: #666;
-
 		i {
 			color: #111;
 			margin: 0 5px 0 0;
+			font-size: 15px;
 		}
-
 		.remove {
 			float: right;
 			font-size: 12px;

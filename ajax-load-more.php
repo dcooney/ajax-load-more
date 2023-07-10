@@ -15,6 +15,8 @@
  */
 
 /*
+* FIX: Fixed issue with Canonical URL not being set correctly.
+
 In Progress
 - WP Scripts
 	- CSS output. Need to compile the scss.
@@ -33,7 +35,7 @@ TO DO:
 
 ADD-ONS
 - Cache
-	- Admin Page [TODO]
+	- Admin Page [DONE]
 - Filters
 	- Admin Page [TODO]
 - WooCommerce
