@@ -8,8 +8,7 @@ $blue: #3784c2;
 $blue_hover: #58a1de;
 $yellow: #fff2b9;
 $yellow_dark: #e4e4c8;
-$red: #e84648;
-$red_alert: #c71316;
+$red: #d63638;
 $alm_red: #c24243;
 $grey: #393d41;
 $paragraph: #6a7178;
@@ -27,6 +26,8 @@ $small: 480px;
 $desktop: 620px;
 $wp_mobile: 782px;
 $break: 900px;
+$lg: 1270px;
+$xl: 1600px;
 
 @mixin ellipsis {
 	white-space: nowrap;

@@ -9,9 +9,9 @@
 $alm_admin_heading = __( 'Settings', 'ajax-load-more' );
 ?>
 <div class="alm-settings-feedback"></div>
+<?php alm_pro_transient_notification(); ?>
 <div class="wrap ajax-load-more settings main-cnkt-wrap" id="alm-settings">
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
-	<?php alm_pro_transient_notification(); ?>
 	<div class="ajax-load-more-inner-wrapper">
 		<section class="cnkt-main stylefree">
 			<div class="alm-tabbed-wrapper">

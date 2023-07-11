@@ -1,23 +1,20 @@
 require('./libs/jquery.drops');
 require('./libs/jquery.tooltipster.min');
 require('./libs/select2.min');
-// require('./modules/sticky');
-
 import '../scss/admin.scss';
 
-var _alm = _alm || {};
+var ajax_load_more = ajax_load_more || {};
 
 jQuery(document).ready(function ($) {
 	'use strict';
-
-	_alm.options = {
+	ajax_load_more.options = {
 		speed: 200,
 	};
 
-	/*
-	 *  Test REST API access
+	/**
+	 * Test REST API access
 	 *
-	 *  @since 5.1.1
+	 * @since 5.1.1
 	 */
 	if ($('.restapi-access').length) {
 		$.ajax({
@@ -163,7 +160,7 @@ jQuery(document).ready(function ($) {
 	});
 
 	/**
-	 * Setting panel save actions
+	 * Setting panel save actions.
 	 *
 	 * @since 3.2.0
 	 */
@@ -176,8 +173,10 @@ jQuery(document).ready(function ($) {
 		document.body.appendChild(settingsTarget);
 	}
 
-	_alm.saveSettings = function () {
-		if (savingSettings) return false;
+	ajax_load_more.saveSettings = function () {
+		if (savingSettings) {
+			return false;
+		}
 
 		savingSettings = true;
 		settingsForm.classList.add('--saving');
@@ -228,7 +227,7 @@ jQuery(document).ready(function ($) {
 		// Set a timer to avoid updating settings to frequently
 		if (settingsTimer) clearTimeout(settingsTimer);
 		settingsTimer = setTimeout(function () {
-			_alm.saveSettings();
+			ajax_load_more.saveSettings();
 		}, 500);
 	});
 
@@ -239,8 +238,7 @@ jQuery(document).ready(function ($) {
 	 * @since 3.6
 	 */
 	$('.download-repeater').on('click', function () {
-		let el = this;
-		el.closest('form').submit();
+		this.closest('form').submit();
 	});
 
 	/**
@@ -252,8 +250,8 @@ jQuery(document).ready(function ($) {
 	$('.ajax-load-more-inner-wrapper').on('mouseenter', '.tooltip:not(.tooltipstered)', function () {
 		$(this)
 			.tooltipster({
-				delay: 100,
-				speed: 150,
+				delay: 125,
+				speed: 125,
 				maxWidth: 325,
 			})
 			.tooltipster('show');
@@ -330,7 +328,7 @@ jQuery(document).ready(function ($) {
 		}
 	});
 
-	_alm.copyToClipboard = function (text) {
+	ajax_load_more.copyToClipboard = function (text) {
 		window.prompt('Copy link to your clipboard: Press Ctrl + C then hit Enter to copy.', text);
 	};
 
@@ -341,7 +339,7 @@ jQuery(document).ready(function ($) {
 
 		if (el === 'default') el = 'template-default';
 		var c = $('#' + el).val(); // Get textarea val()
-		_alm.copyToClipboard(c);
+		ajax_load_more.copyToClipboard(c);
 	});
 
 	/*
@@ -355,13 +353,13 @@ jQuery(document).ready(function ($) {
 		if ($(el).hasClass('open')) {
 			$(el)
 				.next('.expand-wrap')
-				.slideDown(_alm.options.speed, 'alm_easeInOutQuad', function () {
+				.slideDown(ajax_load_more.options.speed, 'alm_easeInOutQuad', function () {
 					$(el).removeClass('open');
 				});
 		} else {
 			$(el)
 				.next('.expand-wrap')
-				.slideUp(_alm.options.speed, 'alm_easeInOutQuad', function () {
+				.slideUp(ajax_load_more.options.speed, 'alm_easeInOutQuad', function () {
 					$(el).addClass('open');
 				});
 		}
@@ -374,14 +372,14 @@ jQuery(document).ready(function ($) {
 			el.removeClass('closed');
 
 			$('h3.heading, h2.shortcode-title').removeClass('open');
-			$('.section-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');
-			$('.expand-wrap').slideDown(_alm.options.speed, 'alm_easeInOutQuad');
+			$('.section-wrap').slideDown(ajax_load_more.options.speed, 'alm_easeInOutQuad');
+			$('.expand-wrap').slideDown(ajax_load_more.options.speed, 'alm_easeInOutQuad');
 		} else {
 			el.addClass('closed');
 
 			$('h3.heading, h2.shortcode-title').addClass('open');
-			$('.section-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
-			$('.expand-wrap').slideUp(_alm.options.speed, 'alm_easeInOutQuad');
+			$('.section-wrap').slideUp(ajax_load_more.options.speed, 'alm_easeInOutQuad');
+			$('.expand-wrap').slideUp(ajax_load_more.options.speed, 'alm_easeInOutQuad');
 		}
 	});
 

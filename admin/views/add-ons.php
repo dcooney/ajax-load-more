@@ -13,9 +13,10 @@ $alm_admin_heading = __( 'Add-ons', 'ajax-load-more' );
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
 	<div class="ajax-load-more-inner-wrapper">
 		<div class="cnkt-main stylefree">
+			<?php require_once ALM_PATH . 'admin/includes/cta/pro-hero.php'; ?>
+			<div class="spacer lg"></div>
 			<div class="flexbox-wrap">
 				<?php
-				require_once ALM_PATH . 'admin/includes/cta/pro-hero.php';
 				$target = 'target="_blank"';
 				$addons = alm_get_addons();
 				foreach ( $addons as $addon ) {

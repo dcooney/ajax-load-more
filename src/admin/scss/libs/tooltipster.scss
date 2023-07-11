@@ -1,9 +1,9 @@
 /* This is the default Tooltipster theme (feel free to modify or duplicate and create multiple themes!): */
 .tooltipster-default {
-	border-radius: 3px; 
+	border-radius: 3px;
 	border: 2px solid #222;
 	border: none;
-	background: #0073aa; 
+	background: #0073aa;
 	background: rgba(33, 149, 204, 0.95);
 	color: #e7f3f8;
 }
@@ -17,24 +17,11 @@
 	text-align: center;
 }
 
-/* This next selector defines the color of the border on the outside of the arrow. This will automatically match the color and size of the border set on the main tooltip styles. Set display: none; if you would like a border around the tooltip but no border around the arrow */
-.tooltipster-default .tooltipster-arrow .tooltipster-arrow-border {
-	/* border-color: ... !important; */
-}
-
-
 /* If you're using the icon option, use this next selector to style them */
 .tooltipster-icon {
 	cursor: help;
 	margin-left: 4px;
 }
-
-
-
-
-
-
-
 
 /* This is the base styling required to make all Tooltipsters work */
 .tooltipster-base {
@@ -67,7 +54,7 @@
 }
 .tooltipster-arrow span, .tooltipster-arrow-border {
 	display: block;
-	width: 0; 
+	width: 0;
 	height: 0;
 	position: absolute;
 }
@@ -115,7 +102,7 @@
 }
 .tooltipster-arrow-left span, .tooltipster-arrow-left .tooltipster-arrow-border {
 	border-top: 8px solid transparent !important;
-	border-bottom: 8px solid transparent !important; 
+	border-bottom: 8px solid transparent !important;
 	border-left: 8px solid;
 	top: 50%;
 	margin-top: -7px;
@@ -123,13 +110,13 @@
 }
 .tooltipster-arrow-left .tooltipster-arrow-border {
 	border-top: 9px solid transparent !important;
-	border-bottom: 9px solid transparent !important; 
+	border-bottom: 9px solid transparent !important;
 	border-left: 9px solid;
 	margin-top: -8px;
 }
 .tooltipster-arrow-right span, .tooltipster-arrow-right .tooltipster-arrow-border {
 	border-top: 8px solid transparent !important;
-	border-bottom: 8px solid transparent !important; 
+	border-bottom: 8px solid transparent !important;
 	border-right: 8px solid;
 	top: 50%;
 	margin-top: -7px;
@@ -137,7 +124,7 @@
 }
 .tooltipster-arrow-right .tooltipster-arrow-border {
 	border-top: 9px solid transparent !important;
-	border-bottom: 9px solid transparent !important; 
+	border-bottom: 9px solid transparent !important;
 	border-right: 9px solid;
 	margin-top: -8px;
 }
@@ -158,57 +145,23 @@
 }
 
 .tooltipster-grow {
-	-webkit-transform: scale(0,0);
-	-moz-transform: scale(0,0);
-	-o-transform: scale(0,0);
-	-ms-transform: scale(0,0);
 	transform: scale(0,0);
-	-webkit-transition-property: -webkit-transform;
-	-moz-transition-property: -moz-transform;
-	-o-transition-property: -o-transform;
-	-ms-transition-property: -ms-transform;
 	transition-property: transform;
-	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
 }
 .tooltipster-grow-show {
-	-webkit-transform: scale(1,1);
-	-moz-transform: scale(1,1);
-	-o-transform: scale(1,1);
-	-ms-transform: scale(1,1);
 	transform: scale(1,1);
-	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
-	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
 	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
 }
 
 .tooltipster-swing {
 	opacity: 0;
-	-webkit-transform: rotateZ(4deg);
-	-moz-transform: rotateZ(4deg);
-	-o-transform: rotateZ(4deg);
-	-ms-transform: rotateZ(4deg);
 	transform: rotateZ(4deg);
-	-webkit-transition-property: -webkit-transform, opacity;
-	-moz-transition-property: -moz-transform;
-	-o-transition-property: -o-transform;
-	-ms-transition-property: -ms-transform;
 	transition-property: transform;
 }
 .tooltipster-swing-show {
 	opacity: 1;
-	-webkit-transform: rotateZ(0deg);
-	-moz-transform: rotateZ(0deg);
-	-o-transform: rotateZ(0deg);
-	-ms-transform: rotateZ(0deg);
 	transform: rotateZ(0deg);
-	-webkit-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 1);
-	-webkit-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4); 
-	-moz-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4); 
-	-ms-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4); 
-	-o-transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4); 
 	transition-timing-function: cubic-bezier(0.230, 0.635, 0.495, 2.4);
 }
 
@@ -220,13 +173,11 @@
 	-ms-transition-property: top;
 	transition-property: top;
 	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
-	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-}
-.tooltipster-fall-show {
+	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
 }
 .tooltipster-fall.tooltipster-dying {
 	-webkit-transition-property: all;
@@ -237,7 +188,6 @@
 	top: 0px !important;
 	opacity: 0;
 }
-
 .tooltipster-slide {
 	left: -40px;
 	-webkit-transition-property: left;
@@ -246,13 +196,11 @@
 	-ms-transition-property: left;
 	transition-property: left;
 	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
-	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
-	-o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15); 
+	-webkit-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-moz-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-ms-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
+	-o-transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
 	transition-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1.15);
-}
-.tooltipster-slide.tooltipster-slide-show {
 }
 .tooltipster-slide.tooltipster-dying {
 	-webkit-transition-property: all;
@@ -263,7 +211,6 @@
 	left: 0px !important;
 	opacity: 0;
 }
-
 
 /* CSS transition for when contenting is changing in a tooltip that is still open. The only properties that will NOT transition are: width, height, top, and left */
 .tooltipster-content-changing {

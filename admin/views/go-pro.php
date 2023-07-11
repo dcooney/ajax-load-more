@@ -12,10 +12,8 @@ $alm_admin_heading = __( 'Ajax Load More Pro', 'ajax-load-more' );
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
 	<div class="ajax-load-more-inner-wrapper">
 		<div class="cnkt-main stylefree">
-			<div class="flexbox-wrap">
-				<?php require_once ALM_PATH . 'admin/includes/cta/pro-hero.php'; ?>
-			</div>
-			<p class="alm-text-center intro">
+			<?php require_once ALM_PATH . 'admin/includes/cta/pro-hero.php'; ?>
+			<p style="text-align: center; margin: 15px 0;">
 				<?php esc_html_e( 'The following products are included when you purchase Ajax Load More Pro:', 'ajax-load-more' ); ?>
 			</p>
 			<div class="flexbox-wrap">

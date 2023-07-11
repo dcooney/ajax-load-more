@@ -3,13 +3,13 @@
 	overflow: hidden;
 	margin: 0;
 	display: block;
-	padding: $padding_sm 0 0;
+	padding: calc($padding/2) 0 0;
 	position: relative;
 	&:first-of-type {
 		padding: 10px 0 0;
 	}
 	.license-title {
-		border-radius: 3px 3px 0 0;
+		border-radius: $radius $radius 0 0;
 		padding: $padding_sm;
 		border: 1px solid $border;
 		background-color: $light_grey;
@@ -21,7 +21,7 @@
 			width: 10px;
 			height: 10px;
 			border-radius: 100%;
-			background: #d45656;
+			background: $red;
 			box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
 			margin-right: 8px;
 			&.valid {
@@ -40,7 +40,6 @@
 			margin-left: auto;
 		}
 	}
-	p,
 	label {
 		font-size: 400;
 		font-size: 14px;
@@ -62,7 +61,7 @@
 		margin: 0 0 $padding_sm;
 		border: 1px solid #e7e7c6;
 		background-color: #ffffe5;
-		border-radius: 2px;
+		border-radius: $radius;
 		h4 {
 			margin: 0 0 3px;
 		}
@@ -116,7 +115,7 @@
 		border: 1px solid $border;
 		border-top: none;
 		background-color: #fff;
-		border-radius: 0 0 3px 3px;
+		border-radius: 0 0 $radius $radius;
 	}
 	.license-wrap{
 		label {
@@ -154,7 +153,7 @@
 		top: 50%;
 		transform: translateY(-50%);
 		display: inline-block;
-		border-radius: 2px;
+		border-radius: $radius;
 		padding: 5px 8px;
 		line-height: 1;
 		color: #fff;
@@ -166,7 +165,7 @@
 		background-color: $green;
 	}
 	.license-key-field .status.inactive {
-		background-color: #d45656;
+		background-color: $red;
 	}
 
 	.ajax-load-more .alm-nav {
@@ -181,7 +180,7 @@
 
 	.license-no-addons {
 		border: 1px solid #bad0da;
-		border-radius: 3px;
+		border-radius: $radius;
 		background-color: #e0f5ff;
 	}
 	.license-no-addons p {

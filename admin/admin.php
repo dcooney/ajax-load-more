@@ -55,7 +55,7 @@ function alm_transient_notification( $message = '', $transient = '', $duration =
 		$dismissible     = $dismissible ? ' is-dismissible' : '';
 		if ( ! isset( $transient_value ) || empty( $transient_value ) && ! empty( $message ) ) {
 			?>
-		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> inline alm-transient has-margin" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
+		<div class="alm-admin-notice notice-<?php echo esc_html( $type ); ?> notice<?php echo esc_html( $dismissible ); ?> alm-transient" data-transient="<?php echo esc_html( $transient ); ?>" data-duration="<?php echo esc_html( $duration ); ?>">
 			<p><?php echo wp_kses_post( $message ); ?></p>
 		</div>
 			<?php
@@ -94,65 +94,12 @@ function alm_set_transient() {
 add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient.
 
 /**
- * Create admin variables and ajax nonce.
- *
- * @since 2.0.0
- */
-function alm_admin_vars() {
-	?>
-<script type='text/javascript'>
-	/* <![CDATA[ */
-	var alm_admin_localize =
-	<?php
-	echo wp_json_encode(
-		array(
-			'ajax_admin_url'   => admin_url( 'admin-ajax.php' ),
-			'ajax_load_more'   => __( 'Ajax Load More', 'ajax-load-more' ),
-			'active'           => __( 'Active', 'ajax-load-more' ),
-			'inactive'         => __( 'Inactive', 'ajax-load-more' ),
-			'applying_layout'  => __( 'Applying layout', 'ajax-load-more' ),
-			'template_updated' => __( 'Template Updated', 'ajax-load-more' ),
-			'alm_admin_nonce'  => wp_create_nonce( 'alm_repeater_nonce' ),
-			'select_authors'   => __( 'Select Author(s)', 'ajax-load-more' ),
-			'select_cats'      => __( 'Select Categories', 'ajax-load-more' ),
-			'select_tags'      => __( 'Select Tags', 'ajax-load-more' ),
-			'select'           => __( 'Select', 'ajax-load-more' ),
-			'jump_to_option'   => __( 'Jump to Option', 'ajax-load-more' ),
-			'jump_to_template' => __( 'Jump to Template', 'ajax-load-more' ),
-			'install_now'      => __( 'Are you sure you want to install this Ajax Load More extension?', 'ajax-load-more' ),
-			'install_btn'      => __( 'Install Now', 'ajax-load-more' ),
-			'activate_btn'     => __( 'Activate', 'ajax-load-more' ),
-			'settings_saving'  => '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' . __( 'Saving Settings', 'ajax-load-more' ),
-			'settings_saved'   => '<i class="fa fa-check" aria-hidden="true"></i> ' . __( 'Settings Saved Successfully', 'ajax-load-more' ),
-			'settings_error'   => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __( 'Error Saving Settings', 'ajax-load-more' ),
-			'shortcode_max'    => __( 'There is a maximum of 3 tax_query objects while using the shortcode builder', 'ajax-load-more' ),
-			'restapi'          => array(
-				'url'       => function_exists( 'get_rest_url' ) ? get_rest_url() : '',
-				'namespace' => ALM_REST_NAMESPACE,
-			),
-		)
-	);
-	?>
-	/* ]]> */
-</script>
-	<?php
-}
-
-/**
- * Add script localization variables to the `<head/>` on admin pages.
- *
- * @since 2.8.2
- */
-function alm_set_admin_vars() {
-	add_action( 'admin_head', 'alm_admin_vars' );
-}
-
-/**
  * Create Admin Menu.
  *
  * @since 2.0.0
  */
 function alm_admin_menu() {
+	global $alm_menu_items;
 	$icon = ALM_ADMIN_URL . '/img/alm-icon-menu.svg';
 
 	$alm_page = add_menu_page(
@@ -173,6 +120,12 @@ function alm_admin_menu() {
 		'alm_settings_page'
 	);
 
+	// Add to custom menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Settings', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more',
+	];
+
 	$alm_template_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Templates', 'ajax-load-more' ),
@@ -181,6 +134,12 @@ function alm_admin_menu() {
 		'ajax-load-more-repeaters',
 		'alm_repeater_page'
 	);
+
+	// Add to custom menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Templates', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-repeaters',
+	];
 
 	$alm_shortcode_page = add_submenu_page(
 		'ajax-load-more',
@@ -191,6 +150,12 @@ function alm_admin_menu() {
 		'alm_shortcode_builder_page'
 	);
 
+	// Add to custom menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Shortcode Builder', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-shortcode-builder',
+	];
+
 	if ( ! has_action( 'alm_pro_installed' ) ) { // Not Pro.
 		$alm_addons_page = add_submenu_page(
 			'ajax-load-more',
@@ -200,6 +165,12 @@ function alm_admin_menu() {
 			'ajax-load-more-add-ons',
 			'alm_add_ons_page'
 		);
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Add-ons', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-add-ons',
+		];
 	}
 
 	$alm_extensions_page = add_submenu_page(
@@ -210,6 +181,12 @@ function alm_admin_menu() {
 		'ajax-load-more-extensions',
 		'alm_extensions_page'
 	);
+
+	// Add to custom menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Extensions', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-extensions',
+	];
 
 	$alm_help_page = add_submenu_page(
 		'ajax-load-more',
@@ -230,6 +207,12 @@ function alm_admin_menu() {
 		'alm_licenses_page'
 	);
 
+	// Add to custom menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Licenses', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-licenses',
+	];
+
 	$before_link     = '<span style="display:block; border-top: 1px solid #555; padding-top: 8px;">';
 	$after_link      = '</span>';
 	$style_link_icon = 'style="opacity: 0.6; font-size: 18px; height: 18px; width: 18px; position: relative; left: -2px;"';
@@ -244,6 +227,12 @@ function alm_admin_menu() {
 			'ajax-load-more-pro',
 			'alm_pro_page'
 		);
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Pro', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-pro',
+		];
 	} else {
 		$alm_go_pro_page = add_submenu_page(
 			'ajax-load-more',
@@ -253,6 +242,12 @@ function alm_admin_menu() {
 			'ajax-load-more-go-pro',
 			'alm_go_pro_page'
 		);
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Go Pro', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-go-pro',
+		];
 	}
 
 	// Cache.
@@ -267,12 +262,16 @@ function alm_admin_menu() {
 		);
 		add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
 		add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
-		add_action( 'load-' . $alm_cache_page, 'alm_set_admin_vars' );
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Cache', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-cache',
+		];
 	}
 
 	// Filters.
 	if ( has_action( 'alm_filters_installed' ) ) {
-
 		if ( has_action( 'alm_cache_installed' ) ) {
 			$before_link = '<span style="display:block;">';
 		}
@@ -287,12 +286,16 @@ function alm_admin_menu() {
 		);
 		add_action( 'load-' . $alm_filters_page, 'alm_load_admin_js' );
 		add_action( 'load-' . $alm_filters_page, 'alm_load_filters_admin_scripts' );
-		add_action( 'load-' . $alm_filters_page, 'alm_set_admin_vars' );
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Filters', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-filters',
+		];
 	}
 
 	// WooCommerce.
 	if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { // phpcs:ignore
-
 		if ( has_action( 'alm_cache_installed' ) || has_action( 'alm_filters_installed' ) ) {
 			$before_link = '<span style="display:block;">';
 		}
@@ -307,35 +310,31 @@ function alm_admin_menu() {
 			'alm_woocommerce_page'
 		);
 		add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
-		add_action( 'load-' . $alm_woocommerce_page, 'alm_set_admin_vars' );
+
+		// Add to custom menu.
+		$alm_menu_items[] = [
+			'label' => __( 'WooCommerce', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-woocommerce',
+		];
 	}
 
 	// Add admin scripts.
 	add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_settings_page, 'alm_set_admin_vars' );
 	add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_template_page, 'alm_set_admin_vars' );
 	add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_shortcode_page, 'alm_set_admin_vars' );
 	add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_help_page, 'alm_set_admin_vars' );
 
 	// Pro.
 	if ( has_action( 'alm_pro_installed' ) ) {
 		add_action( 'load-' . $alm_pro_page, 'alm_load_admin_js' );
 		add_action( 'load-' . $alm_pro_page, 'alm_load_pro_admin_js' );
-		add_action( 'load-' . $alm_pro_page, 'alm_set_admin_vars' );
 
 	} else {
 		add_action( 'load-' . $alm_addons_page, 'alm_load_admin_js' );
-		add_action( 'load-' . $alm_addons_page, 'alm_set_admin_vars' );
 		add_action( 'load-' . $alm_go_pro_page, 'alm_load_admin_js' );
-		add_action( 'load-' . $alm_go_pro_page, 'alm_set_admin_vars' );
 	}
 	add_action( 'load-' . $alm_extensions_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_extensions_page, 'alm_set_admin_vars' );
 	add_action( 'load-' . $alm_licenses_page, 'alm_load_admin_js' );
-	add_action( 'load-' . $alm_licenses_page, 'alm_set_admin_vars' );
 }
 add_action( 'admin_menu', 'alm_admin_menu' );
 
@@ -510,13 +509,16 @@ function alm_enqueue_admin_scripts() {
 	wp_enqueue_style( 'alm-admin', ALM_URL . '/build/admin/index.css', '', ALM_VERSION );
 	wp_enqueue_style( 'alm-core', ALM_URL . '/build/frontend/ajax-load-more.css', '', ALM_VERSION );
 
-	// Disable ACF select2 on ALM pages.
+	// Dequeue ACF select2 on ALM pages.
 	wp_dequeue_style( 'acf-input' );
+
+	// Dequeue external ToolTipster on ALM pages.
+	wp_dequeue_style( 'sbi_tooltipster' );
+	wp_dequeue_script( 'sbi_tooltipster' );
 
 	// CodeMirror Syntax Highlighting if on Repater Template page.
 	$screen = get_current_screen();
 	if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters' ), true ) ) {
-
 		// CodeMirror CSS.
 		wp_enqueue_style( 'alm-codemirror-css', ALM_ADMIN_URL . 'codemirror/lib/codemirror.css', '', ALM_VERSION );
 
@@ -535,6 +537,38 @@ function alm_enqueue_admin_scripts() {
 	wp_enqueue_script( 'jquery-form' );
 	wp_enqueue_script( 'alm-admin', ALM_URL . '/build/admin/index.js', array( 'jquery' ), ALM_VERSION, false );
 	wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL . 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ), ALM_VERSION, false );
+
+	// Localized JS variables.
+	wp_localize_script(
+		'alm-admin',
+		'alm_admin_localize',
+		[
+			'ajax_admin_url'   => admin_url( 'admin-ajax.php' ),
+			'ajax_load_more'   => __( 'Ajax Load More', 'ajax-load-more' ),
+			'active'           => __( 'Active', 'ajax-load-more' ),
+			'inactive'         => __( 'Inactive', 'ajax-load-more' ),
+			'applying_layout'  => __( 'Applying layout', 'ajax-load-more' ),
+			'template_updated' => __( 'Template Updated', 'ajax-load-more' ),
+			'alm_admin_nonce'  => wp_create_nonce( 'alm_repeater_nonce' ),
+			'select_authors'   => __( 'Select Author(s)', 'ajax-load-more' ),
+			'select_cats'      => __( 'Select Categories', 'ajax-load-more' ),
+			'select_tags'      => __( 'Select Tags', 'ajax-load-more' ),
+			'select'           => __( 'Select', 'ajax-load-more' ),
+			'jump_to_option'   => __( 'Jump to Option', 'ajax-load-more' ),
+			'jump_to_template' => __( 'Jump to Template', 'ajax-load-more' ),
+			'install_now'      => __( 'Are you sure you want to install this Ajax Load More extension?', 'ajax-load-more' ),
+			'install_btn'      => __( 'Install Now', 'ajax-load-more' ),
+			'activate_btn'     => __( 'Activate', 'ajax-load-more' ),
+			'settings_saving'  => '<i class="fa fa-spinner fa-spin" aria-hidden="true"></i> ' . __( 'Saving Settings', 'ajax-load-more' ),
+			'settings_saved'   => '<i class="fa fa-check" aria-hidden="true"></i> ' . __( 'Settings Saved Successfully', 'ajax-load-more' ),
+			'settings_error'   => '<i class="fa fa-exclamation-circle" aria-hidden="true"></i> ' . __( 'Error Saving Settings', 'ajax-load-more' ),
+			'shortcode_max'    => __( 'There is a maximum of 3 tax_query objects while using the shortcode builder', 'ajax-load-more' ),
+			'restapi'          => [
+				'url'       => function_exists( 'get_rest_url' ) ? get_rest_url() : '',
+				'namespace' => ALM_REST_NAMESPACE,
+			],
+		]
+	);
 }
 
 /**

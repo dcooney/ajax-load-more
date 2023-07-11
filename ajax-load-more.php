@@ -37,9 +37,9 @@ ADD-ONS
 - Cache
 	- Admin Page [DONE]
 - Filters
-	- Admin Page [TODO]
+	- Admin Page [DONE]
 - WooCommerce
-	- Admin Page [TODO]
+	- Admin Page [DONE]
 - PRO
 	- Updated add-ons settings page.
 	- Admin Page [DONE]
