@@ -12,7 +12,13 @@ $alm_admin_heading = __( 'Add-ons', 'ajax-load-more' );
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
 	<div class="ajax-load-more-inner-wrapper">
 		<div class="cnkt-main stylefree">
-			<?php require_once ALM_PATH . 'admin/includes/cta/pro-hero.php'; ?>
+			<?php
+			// Go Pro Upgrade CTA.
+			$alm_pro_cta = alm_get_pro_addon();
+			if ( $alm_pro_cta && $alm_pro_cta[0] ) {
+				echo wp_kses_post( alm_display_featured_addon( $alm_pro_cta[0], 'Upgrade Now' ) );
+			}
+			?>
 			<div class="spacer lg"></div>
 			<div class="flexbox-wrap">
 				<?php

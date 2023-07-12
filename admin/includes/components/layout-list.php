@@ -38,12 +38,18 @@ $alm_layouts_href = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layout
 				// List custom layouts.
 				require ALM_PATH . 'admin/includes/components/custom-layouts.php';
 				?>
-				<div class="alm-layout-cta">
-					<span>
-						<?php echo wp_kses_post( _e( 'Get predefined responsive layouts with the <strong>Layouts add-on</strong>.', 'ajax-load-more' ) ); ?>
-					</span>
+				<div class="call-out call-out--centered radius-normal margin-top-half">
+					<p style="font-size: 13px;">
+						<i class="fa fa-file-code-o" aria-hidden="true"></i>
+						<?php
+						// translators: %1$s is the opening <a> tag, %2$s is the closing </a> tag.
+						$alm_layouts_translation = sprintf( __( 'Get predefined responsive layouts with the %1$sLayouts%2$s add-on.', 'ajax-load-more' ), '<a href="' . $alm_layouts_href . '">', '</a>' );
+						echo wp_kses_post( $alm_layouts_translation );
+						?>
+					</p>
 					<div>
-						<a class="button button-primary" href="<?php echo esc_attr( $alm_layouts_href ); ?>">
+						<a class="cnkt-button" href="<?php echo esc_attr( $alm_layouts_href ); ?>">
+							<i class="fa fa-angle-right" aria-hidden="true"></i>
 							<?php esc_attr_e( 'Get More Layouts', 'ajax-load-more' ); ?>
 						</a>
 					</div>

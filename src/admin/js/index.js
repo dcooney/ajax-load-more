@@ -333,7 +333,7 @@ jQuery(document).ready(function ($) {
 	};
 
 	// Copy link on repeater templates
-	$('.alm-dropdown .copy a').click(function () {
+	$('.alm-dropdown button.copy').click(function () {
 		var container = $(this).closest('.repeater-wrap'), // find closet wrap
 			el = container.data('name'); // get template name
 
@@ -486,7 +486,8 @@ jQuery(document).ready(function ($) {
 			name = el.closest('.repeater-wrap').data('name');
 
 		if (!el.hasClass('updating')) {
-			el.addClass('updating').text(alm_admin_localize.applying_layout + '...');
+			el.addClass('updating');
+			$('span', el).text(alm_admin_localize.applying_layout + '...');
 			textarea.addClass('loading');
 
 			// Get Codemirror Editor ID
@@ -515,7 +516,7 @@ jQuery(document).ready(function ($) {
 
 					// Clear button styles
 					setTimeout(function () {
-						el.text(alm_admin_localize.template_updated).blur();
+						$('span', el).text(alm_admin_localize.template_updated).blur();
 						setTimeout(function () {
 							el.removeClass('updating').html(layout_btn_text).blur(); // Close drop menu.
 							el.closest('.alm-drop-btn').trigger('click');
@@ -523,7 +524,7 @@ jQuery(document).ready(function ($) {
 						}, 400);
 					}, 400);
 				},
-				error: function (xhr, status, error) {
+				error: function (status) {
 					console.log(status);
 					textarea.removeClass('loading');
 				},

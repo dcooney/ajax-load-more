@@ -167,7 +167,7 @@ function alm_admin_menu() {
 	$alm_filters_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Filters', 'ajax-load-more' ),
-		'<span class="dashicons dashicons-filter" ' . $style_link_icon . '></span> ' . __( 'Filters', 'ajax-load-more' ),
+		$before_link . __( 'Filters', 'ajax-load-more' ) . $after_link,
 		'edit_theme_options',
 		'ajax-load-more-filters',
 		'alm_filters_page'
@@ -184,7 +184,7 @@ function alm_admin_menu() {
 		$alm_cache_page = add_submenu_page(
 			'ajax-load-more',
 			__( 'Cache', 'ajax-load-more' ),
-			'<span class="dashicons dashicons-admin-generic" ' . $style_link_icon . '></span> ' . __( 'Cache', 'ajax-load-more' ),
+			__( 'Cache', 'ajax-load-more' ),
 			'edit_theme_options',
 			'ajax-load-more-cache',
 			'alm_cache_page'
@@ -554,7 +554,7 @@ function alm_enqueue_admin_scripts() {
 			'ajax_load_more'   => __( 'Ajax Load More', 'ajax-load-more' ),
 			'active'           => __( 'Active', 'ajax-load-more' ),
 			'inactive'         => __( 'Inactive', 'ajax-load-more' ),
-			'applying_layout'  => __( 'Applying layout', 'ajax-load-more' ),
+			'applying_layout'  => __( 'Applying Layout', 'ajax-load-more' ),
 			'template_updated' => __( 'Template Updated', 'ajax-load-more' ),
 			'alm_admin_nonce'  => wp_create_nonce( 'alm_repeater_nonce' ),
 			'select_authors'   => __( 'Select Author(s)', 'ajax-load-more' ),

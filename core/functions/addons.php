@@ -126,7 +126,7 @@ function alm_get_addons(){
       array(
          'name' => __(' Filters', 'ajax-load-more' ),
          'intro' => __(' Create custom Ajax Load More filters in seconds.', 'ajax-load-more' ),
-         'desc' => __(' The Filters add-on provides front-end and admin functionality for building and managing Ajax filters.', 'ajax-load-more' ),
+         'desc' => __(' The Filters add-on provides both front-end and admin functionality for building and managing your Ajax filters.', 'ajax-load-more' ),
          'action' => 'alm_filters_installed',
          'key' => 'alm_filters_license_key',
          'status' => 'alm_filters_license_status',

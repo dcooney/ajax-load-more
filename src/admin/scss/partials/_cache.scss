@@ -195,36 +195,6 @@
 		}
 	}
 
-	.dir-empty {
-		margin-top: 10px;
-	}
-
-	.dir-empty,
-	.cache-cleared {
-		border-radius: $radius;
-		background-color: rgba( $yellow, 0.5 );
-		border: 1px solid $yellow_dark;
-		padding: $padding;
-		display: block;
-		color: #222;
-		text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.2);
-	}
-	.cache-cleared {
-		margin: 0 0 20px;
-		background-color: #e0f5ff;
-		border-color: #bad0da;
-		i {
-			color: #111;
-			margin: 0 5px 0 0;
-			font-size: 15px;
-		}
-		.remove {
-			float: right;
-			font-size: 12px;
-			font-weight: 600;
-		}
-	}
-
 	p.cache-stats {
 		min-height: 38px;
 		line-height: 37px;

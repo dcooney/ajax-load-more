@@ -11,7 +11,7 @@
 		border-radius: 0 $radius $radius 0;
 		padding: 3px;
 		width: auto;
-		border: 1px solid #ccc;
+		border: 1px solid $border;
 		background-color: $lighter_grey;
 		border-left: none;
 		display: flex;
@@ -45,8 +45,8 @@
 				border-radius: 0 $radius $radius 0;
 			}
 			&.active {
-				border-color: $grey;
-				background-color: $grey;
+				border-color: $blue_grey;
+				background-color: $blue_grey;
 				color: #fff;
 				cursor: default;
 			}

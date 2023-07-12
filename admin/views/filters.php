@@ -13,7 +13,7 @@ $alm_pg_desc       = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro
 <div class="wrap ajax-load-more main-cnkt-wrap" id="alm-licenses">
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
 	<div class="ajax-load-more-inner-wrapper">
-		<div class="cnkt-main">
+		<div class="cnkt-main stylefree">
 			<?php
 			// Display Filters CTA.
 			$alm_filters_cta = alm_get_addon( 'filters' );

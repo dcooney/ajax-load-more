@@ -150,11 +150,9 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 					}
 					?>
 
-				<?php } else { ?>
-
-				<!-- Repeaters -->
-
 					<?php
+				} else {
+					// Custom Repeaters.
 					if ( has_action( 'alm_custom_repeaters' ) || has_action( 'alm_unlimited_repeaters' ) ) {
 						?>
 				<span class="toggle-all" role="button" tabindex="0">
@@ -169,10 +167,10 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 				<div class="row template default-repeater" id="default-template">
 
 					<?php
-						// Check for local repeater template
-						$local_template = false;
-						$readOnly       = 'false';
-						$template_dir   = 'alm_templates';
+						// Check for local repeater template.
+						$alm_local_template = false;
+						$alm_read_only      = 'false';
+						$template_dir       = 'alm_templates';
 					if ( is_child_theme() ) {
 						$template_theme_file = get_stylesheet_directory() . '/' . $template_dir . '/default.php';
 						if ( ! file_exists( $template_theme_file ) ) {
@@ -181,48 +179,48 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 					} else {
 						$template_theme_file = get_template_directory() . '/' . $template_dir . '/default.php';
 					}
-						// if theme or child theme contains the template, use that file
+						// if theme or child theme contains the template, use that file.
 					if ( file_exists( $template_theme_file ) ) {
-						$local_template = true;
-						$readOnly       = true;
+						$alm_local_template = true;
+						$alm_read_only      = true;
 					}
 
-						$filename = alm_get_default_repeater(); // Get default repeater template
+						$filename = alm_get_default_repeater(); // Get default repeater template.
 
-						$handle   = fopen( $filename, 'r' ); // Open file
+						$handle   = fopen( $filename, 'r' ); // Open file.
 						$contents = '';
 					if ( filesize( $filename ) != 0 ) {
 						$contents = fread( $handle, filesize( $filename ) );
 					}
 						fclose( $handle );
 					?>
-					<h3 class="heading" tabindex="0"><?php _e( 'Default Template', 'ajax-load-more' ); ?></h3>
+					<h3 class="heading" tabindex="0"><?php esc_attr_e( 'Default Template', 'ajax-load-more' ); ?></h3>
 					<div class="expand-wrap">
 						<div class="wrap repeater-wrap
 						<?php
-						if ( $local_template ) {
+						if ( $alm_local_template ) {
 							echo ' cm-readonly'; }
 						?>
 						" data-name="default" data-type="default">
 							<?php
-							if ( ! $local_template ) {
+							if ( ! $alm_local_template ) {
 								echo '<div class="alm-row alm-row--margin-btm">';
 									echo '<div class="column column--two-third">';
-										// Add Label
+										// Add Label.
 										echo '<label class="template-title trigger-codemirror" data-id="default" for="template-default">';
-											_e( 'Template Code:', 'ajax-load-more' );
-											echo '<span>' . __( 'Enter the PHP and HTML markup for this template.', 'ajax-load-more' ) . '</span>';
+											esc_attr_e( 'Template Code:', 'ajax-load-more' );
+											echo '<span>' . esc_attr__( 'Enter the PHP and HTML markup for this template.', 'ajax-load-more' ) . '</span>';
 										echo '</label>';
 									echo '</div>';
 									echo '<div class="column column--one-third">';
-										do_action( 'alm_get_layouts' ); // Layouts - Template Selection
+										do_action( 'alm_get_layouts' ); // Layouts - Template Selection.
 									echo '</div>';
 								echo '</div>';
 							}
 							?>
 							<div class="alm-row alm-row--margin-btm">
 								<div class="column">
-									<textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; ?></textarea>
+									<textarea rows="10" id="template-default" class="_alm_repeater"><?php echo $contents; // phpcs:ignore ?></textarea>
 									<script>
 										var editor_default = CodeMirror.fromTextArea(document.getElementById("template-default"), {
 											mode:  "application/x-httpd-php",
@@ -230,7 +228,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 											lineWrapping: true,
 											indentUnit: 0,
 											matchBrackets: true,
-											readOnly: <?php echo $readOnly; ?>,
+											readOnly: <?php echo esc_attr( $alm_read_only ); ?>,
 											viewportMargin: Infinity,foldGutter: true,
 	gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 											extraKeys: {"Ctrl-Space": "autocomplete"},
@@ -241,17 +239,17 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 
 							<div class="alm-row">
 								<div class="column">
-									<?php if ( ! $local_template ) { ?>
+									<?php if ( ! $alm_local_template ) { ?>
 
 										<?php if ( ! defined( 'ALM_DISABLE_REPEATER_TEMPLATES' ) || ( defined( 'ALM_DISABLE_REPEATER_TEMPLATES' ) && ! ALM_DISABLE_REPEATER_TEMPLATES ) ) { ?>
 											<input type="submit" value="<?php _e( 'Save Template', 'ajax-load-more' ); ?>" class="button button-primary save-repeater" data-editor-id="template-default">
 											<div class="saved-response">&nbsp;</div>
 											<?php
-												$repeater_options = array(
+												$repeater_options = [  // phpcs:ignore
 													'path' => $filename,
 													'name' => 'default',
 													'type' => 'standard',
-												);
+												];
 												include ALM_PATH . 'admin/includes/components/repeater-options.php';
 												unset( $repeater_options );
 												?>
@@ -263,23 +261,22 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 										?>
 									<p class="warning-callout" style="margin-right: 0; margin-left: 0;"><?php _e( 'It appears you are loading the <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/#default-template" target="_blank"><b>default template</b></a> (<em>default.php</em>) from your current theme directory. To modify this template, you must edit the file directly on your server.', 'ajax-load-more' ); ?></p>
 									<div class="file-location">
-										<p title="<?php echo $filename; ?>"><?php _e( 'Location', 'ajax-load-more' ); ?>:</p>
-										<code><?php echo $file_directory; ?></code>
+										<p title="<?php echo esc_attr( $filename ); ?>"><?php esc_attr_e( 'Location', 'ajax-load-more' ); ?>:</p>
+										<code><?php echo $file_directory; // phpcs:ignore ?></code>
 									</div>
 									<?php } ?>
 
 									<?php
-										// Disbaled Repeater Templates warning
-									if ( ! $local_template && defined( 'ALM_DISABLE_REPEATER_TEMPLATES' ) && ALM_DISABLE_REPEATER_TEMPLATES ) {
+									// Disbaled Repeater Templates warning.
+									if ( ! $alm_local_template && defined( 'ALM_DISABLE_REPEATER_TEMPLATES' ) && ALM_DISABLE_REPEATER_TEMPLATES ) {
 										?>
 										<p class="warning-callout notify" style="margin-right: 0; margin-left: 0; margin-bottom: 0;">
-											<?php _e( 'Repeater Templates editing has been disabled for this instance of Ajax Load More. To enable the template editing, please remove the <strong>ALM_DISABLE_REPEATER_TEMPLATES</strong> PHP constant in your wp-config.php and then re-activate this plugin.', 'ajax-load-more' ); ?>
+											<?php echo wp_kses_post( __( 'Repeater Templates editing has been disabled for this instance of Ajax Load More. To enable the template editing, please remove the <strong>ALM_DISABLE_REPEATER_TEMPLATES</strong> PHP constant from your wp-config.php (or functions.php) and re-activate the plugin.', 'ajax-load-more' ) ); ?>
 										</p>
 									<?php } ?>
 
 								</div>
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -287,34 +284,32 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 
 				<!-- Custom Repeaters -->
 					<?php
+					// Custom Repeaters CTA.
 					if ( ! has_action( 'alm_get_unlimited_repeaters' ) && ! has_action( 'alm_get_custom_repeaters' ) ) {
-						// If Custom Repeaters & Theme Repeaters is NOT installed.
-						echo '<div class="alm-row" style="padding-top: 15px;">';
-						require_once ALM_PATH . 'admin/includes/cta/extend.php';
-						echo '</div>';
+						// If Custom Repeaters NOT installed.
+						echo '<div class="spacer lg"></div>';
+						include_once ALM_PATH . 'admin/includes/cta/extend.php';
 					}
-					// Custom Repeaters V1.
+
+					// Render Custom Repeaters V1.
 					if ( has_action( 'alm_custom_repeaters' ) ) {
 						do_action( 'alm_custom_repeaters' );
 					}
-					// Custom Repeaters V2.
+					// Render Custom Repeaters V2.
 					if ( has_action( 'alm_unlimited_repeaters' ) ) {
 						do_action( 'alm_unlimited_repeaters' );
 					}
 					?>
-
 				<script>
 					jQuery(document).ready(function($) {
 						"use strict";
 						var _alm_admin = {};
 
-							/*
-							*  _alm_admin.saveRepeater
-							*  Save Custom Repeater Value
-							*
-							*  @since 2.0.0
-							*/
-
+						/**
+						 * Save Custom Repeater Value
+						 *
+						 * @since 2.0.0
+						 */
 						_alm_admin.saveRepeater = function(btn, editorId) {
 							var container = btn.closest('.repeater-wrap'),
 								el = $('textarea._alm_repeater', container),
@@ -345,7 +340,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 								value = '&nbsp;';
 							}
 
-							//If template is not already saving, then proceed
+							// If template is not already saving, then proceed
 							if (!btn.hasClass('saving')) {
 								btn.addClass('saving');
 								textarea.addClass('loading');
@@ -393,21 +388,17 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 							}
 						}
 
-
 						$(document).on('click', 'input.save-repeater', function(){
 							var btn = $(this),
 									editorId = btn.data('editor-id');
 							_alm_admin.saveRepeater(btn, editorId);
 						});
 
-
-						/*
-							*  _alm_admin.updateRepeater
-							*  Update Repeater Value
-							*
-							*  @since 2.5
-							*/
-
+						/**
+						 * Update Repeater Value
+						 *
+						 *  @since 2.5
+						 */
 						_alm_admin.updateRepeater = function(btn, editorId) {
 							var container = btn.closest('.repeater-wrap'),
 								el = $('textarea._alm_repeater', container),
@@ -423,7 +414,8 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 
 							//If template is not already saving, then proceed
 							if (!btn.hasClass('updating')) {
-								btn.addClass('updating').text("<?php _e( 'Updating template...', 'ajax-load-more' ); ?>");
+								btn.addClass('updating');
+								$('span', btn).text("<?php esc_attr_e( 'Updating Template', 'ajax-load-more' ); ?>...");
 								editor.addClass('loading');
 								$.ajax({
 									type: 'POST',
@@ -444,7 +436,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 
 										// Clear button styles
 										setTimeout(function() {
-											btn.text("<?php _e( 'Template Updated', 'ajax-load-more' ); ?>").blur();
+											$('span', btn).text("<?php esc_attr_e( 'Template Updated', 'ajax-load-more' ); ?>").blur();
 											setTimeout(function() {
 												btn.closest('.alm-drop-btn').trigger('click'); // CLose drop menu
 												btn.removeClass('updating').html(btn_text).blur();
@@ -461,7 +453,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 							}
 						}
 
-						$('.option-update a').click(function(){
+						$('button.option-update').click(function(){
 							var btn = $(this);
 							_alm_admin.updateRepeater(btn);
 						});
@@ -475,7 +467,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 
 		<aside class="cnkt-sidebar" data-sticky>
 			<?php
-				// Add TOC if users has Custom Repeaters
+				// Add TOC if users has Custom Repeaters.
 			if ( has_action( 'alm_unlimited_repeaters' ) || $alm_theme_repeaters ) {
 				?>
 			<div class="table-of-contents repeaters-toc">
@@ -488,12 +480,14 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 			<?php } ?>
 
 			<div class="cta">
-				<h3><?php _e( 'What\'s a Repeater Template?', 'ajax-load-more' ); ?></h3>
+				<h3><?php esc_attr_e( 'What\'s a Repeater Template?', 'ajax-load-more' ); ?></h3>
 				<div class="cta-inner">
-					<p><?php _e( 'A <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">Repeater Template</a> is a snippet of code that will execute over and over within a <a href="http://codex.wordpress.org/The_Loop" target="_blank">WordPress loop</a>', 'ajax-load-more' ); ?>.</p>
+					<p><?php echo wp_kses_post( __( 'A <a href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">Repeater Template</a> is a snippet of code that will execute over and over within a <a href="https://developer.wordpress.org/themes/basics/the-loop/" target="_blank">WordPress loop</a>', 'ajax-load-more' ) ); ?>.</p>
 				</div>
 				<div class="major-publishing-actions">
-					<a class="button button-primary" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank"><?php _e( 'Learn More', 'ajax-load-more' ); ?></a>
+					<a class="button button-primary" href="https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/" target="_blank">
+						<?php esc_attr_e( 'Learn More', 'ajax-load-more' ); ?>
+					</a>
 				</div>
 			</div>
 			<?php
