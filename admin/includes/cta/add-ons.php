@@ -1,6 +1,6 @@
 <?php
 /**
- * Include for displaying add-on info.
+ * Add-on CTA.
  *
  * @package AjaxLoadMore
  */
@@ -13,7 +13,7 @@
 		<p>Add-ons can be purchased individually or in a <a href="https://connekthq.com/plugins/ajax-load-more/pro/?utm_source=WP%20Admin&utm_medium=Addons%20Dashboard&utm_campaign=Pro%20Bundle" target="_blank">Pro bundle</a> which gives you access to all current and future Ajax Load More add-ons at over 50% off the regular price!</p>
 	</div>
 	<div class="major-publishing-actions">
-		<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/" class="button" target="_blank">
+		<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/" class="button button-primary" target="_blank">
 			<?php esc_attr_e( 'View Add-ons', 'ajax-load-more' ); ?>
 		</a>
 	</div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Include for displaying related plugins.
+ * About CTA
  *
  * @package AjaxLoadMore
  */

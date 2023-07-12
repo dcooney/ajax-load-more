@@ -20,13 +20,13 @@ $alm_current_page = filter_input( INPUT_GET, 'page', @FILTER_SANITIZE_STRING );
 </header>
 <?php
 if ( $alm_menu_items ) {
-?>
+	?>
 <div class="alm-admin-nav">
 	<nav>
 		<?php
-		foreach( $alm_menu_items as $menu_item ) {
-			$class = $alm_current_page === $menu_item['slug'] ? ' class="current"' : '';
-			echo '<a href="admin.php?page=' . esc_attr( $menu_item['slug'] ) . '"' . $class .'>' . esc_attr( $menu_item['label'] ) . '</a>';
+		foreach ( $alm_menu_items as $alm_menu_item ) {
+			$alm_menu_class = $alm_current_page === $alm_menu_item['slug'] ? ' class="current"' : '';
+			echo '<a href="admin.php?page=' . esc_attr( $alm_menu_item['slug'] ) . '"' . wp_kses_post( $alm_menu_class ) . '>' . esc_attr( $alm_menu_item['label'] ) . '</a>';
 		}
 		?>
 	</nav>

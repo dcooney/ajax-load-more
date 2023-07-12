@@ -100,7 +100,11 @@ add_action( 'wp_ajax_alm_set_transient', 'alm_set_transient' ); // Set transient
  */
 function alm_admin_menu() {
 	global $alm_menu_items;
-	$icon = ALM_ADMIN_URL . '/img/alm-icon-menu.svg';
+	$icon            = ALM_ADMIN_URL . '/img/alm-icon-menu.svg';
+	$before_link     = '<span style="display:block; border-top: 1px solid #555; padding-top: 8px;">';
+	$after_link      = '</span>';
+	$style_link_icon = 'style="opacity: 0.6; font-size: 18px; height: 18px; width: 18px; position: relative; left: -2px;"';
+	$license_title   = has_action( 'alm_pro_installed' ) ? __( 'License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
 
 	$alm_page = add_menu_page(
 		'Ajax Load More',
@@ -111,6 +115,7 @@ function alm_admin_menu() {
 		alm_admin_menu_icon_svg()
 	);
 
+	// Settings.
 	$alm_settings_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Settings', 'ajax-load-more' ),
@@ -120,12 +125,13 @@ function alm_admin_menu() {
 		'alm_settings_page'
 	);
 
-	// Add to custom menu.
+	// Add to custom admin menu.
 	$alm_menu_items[] = [
 		'label' => __( 'Settings', 'ajax-load-more' ),
 		'slug'  => 'ajax-load-more',
 	];
 
+	// Repeater Templates.
 	$alm_template_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Templates', 'ajax-load-more' ),
@@ -135,12 +141,13 @@ function alm_admin_menu() {
 		'alm_repeater_page'
 	);
 
-	// Add to custom menu.
+	// Add to custom admin menu.
 	$alm_menu_items[] = [
 		'label' => __( 'Templates', 'ajax-load-more' ),
 		'slug'  => 'ajax-load-more-repeaters',
 	];
 
+	// Shortcode Builder.
 	$alm_shortcode_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Shortcode Builder', 'ajax-load-more' ),
@@ -150,29 +157,88 @@ function alm_admin_menu() {
 		'alm_shortcode_builder_page'
 	);
 
-	// Add to custom menu.
+	// Add to custom admin menu.
 	$alm_menu_items[] = [
 		'label' => __( 'Shortcode Builder', 'ajax-load-more' ),
 		'slug'  => 'ajax-load-more-shortcode-builder',
 	];
 
-	if ( ! has_action( 'alm_pro_installed' ) ) { // Not Pro.
+	// Filters.
+	$alm_filters_page = add_submenu_page(
+		'ajax-load-more',
+		__( 'Filters', 'ajax-load-more' ),
+		'<span class="dashicons dashicons-filter" ' . $style_link_icon . '></span> ' . __( 'Filters', 'ajax-load-more' ),
+		'edit_theme_options',
+		'ajax-load-more-filters',
+		'alm_filters_page'
+	);
+
+	// Add to custom admin menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Filters', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-filters',
+	];
+
+	// Cache.
+	if ( has_action( 'alm_cache_installed' ) ) {
+		$alm_cache_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'Cache', 'ajax-load-more' ),
+			'<span class="dashicons dashicons-admin-generic" ' . $style_link_icon . '></span> ' . __( 'Cache', 'ajax-load-more' ),
+			'edit_theme_options',
+			'ajax-load-more-cache',
+			'alm_cache_page'
+		);
+		add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
+		add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
+
+		// Add to custom admin menu.
+		$alm_menu_items[] = [
+			'label' => __( 'Cache', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-cache',
+		];
+	}
+
+	// WooCommerce.
+	if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { // phpcs:ignore
+		$woo_icon             = '<style>.dashicons.alm-woo:before{font-family: WooCommerce!important; content: "\e03d"; font-size: 16px; margin-top: 2px;}</style>';
+		$alm_woocommerce_page = add_submenu_page(
+			'ajax-load-more',
+			__( 'WooCommerce', 'ajax-load-more' ),
+			$woo_icon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" ' . $style_link_icon . '></span> ' . __( 'WooCommerce', 'ajax-load-more' ),
+			'edit_theme_options',
+			'ajax-load-more-woocommerce',
+			'alm_woocommerce_page'
+		);
+		add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
+
+		// Add to custom admin menu.
+		$alm_menu_items[] = [
+			'label' => __( 'WooCommerce', 'ajax-load-more' ),
+			'slug'  => 'ajax-load-more-woocommerce',
+		];
+	}
+
+	// Add-ons.
+	if ( ! has_action( 'alm_pro_installed' ) ) {
+		// Don't show if Pro activated.
 		$alm_addons_page = add_submenu_page(
 			'ajax-load-more',
 			__( 'Add-ons', 'ajax-load-more' ),
-			__( 'Add-ons', 'ajax-load-more' ),
+			$before_link . __( 'Add-ons', 'ajax-load-more' ) . $after_link,
 			'edit_theme_options',
 			'ajax-load-more-add-ons',
 			'alm_add_ons_page'
 		);
 
-		// Add to custom menu.
+		// Add to custom admin menu.
 		$alm_menu_items[] = [
 			'label' => __( 'Add-ons', 'ajax-load-more' ),
 			'slug'  => 'ajax-load-more-add-ons',
 		];
 	}
 
+	// Extensions.
 	$alm_extensions_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Extensions', 'ajax-load-more' ),
@@ -182,40 +248,11 @@ function alm_admin_menu() {
 		'alm_extensions_page'
 	);
 
-	// Add to custom menu.
+	// Add to custom admin menu.
 	$alm_menu_items[] = [
 		'label' => __( 'Extensions', 'ajax-load-more' ),
 		'slug'  => 'ajax-load-more-extensions',
 	];
-
-	$alm_help_page = add_submenu_page(
-		'ajax-load-more',
-		__( 'Help', 'ajax-load-more' ),
-		__( 'Help', 'ajax-load-more' ),
-		'edit_theme_options',
-		'ajax-load-more-help',
-		'alm_help_page'
-	);
-
-	$license_title     = ( has_action( 'alm_pro_installed' ) ) ? __( 'License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
-	$alm_licenses_page = add_submenu_page(
-		'ajax-load-more',
-		$license_title,
-		$license_title,
-		'edit_theme_options',
-		'ajax-load-more-licenses',
-		'alm_licenses_page'
-	);
-
-	// Add to custom menu.
-	$alm_menu_items[] = [
-		'label' => __( 'Licenses', 'ajax-load-more' ),
-		'slug'  => 'ajax-load-more-licenses',
-	];
-
-	$before_link     = '<span style="display:block; border-top: 1px solid #555; padding-top: 8px;">';
-	$after_link      = '</span>';
-	$style_link_icon = 'style="opacity: 0.6; font-size: 18px; height: 18px; width: 18px; position: relative; left: -2px;"';
 
 	// Pro.
 	if ( has_action( 'alm_pro_installed' ) ) {
@@ -228,7 +265,7 @@ function alm_admin_menu() {
 			'alm_pro_page'
 		);
 
-		// Add to custom menu.
+		// Add to custom admin menu.
 		$alm_menu_items[] = [
 			'label' => __( 'Pro', 'ajax-load-more' ),
 			'slug'  => 'ajax-load-more-pro',
@@ -243,87 +280,52 @@ function alm_admin_menu() {
 			'alm_go_pro_page'
 		);
 
-		// Add to custom menu.
+		// Add to custom admin menu.
 		$alm_menu_items[] = [
 			'label' => __( 'Go Pro', 'ajax-load-more' ),
 			'slug'  => 'ajax-load-more-go-pro',
 		];
 	}
 
-	// Cache.
-	if ( has_action( 'alm_cache_installed' ) ) {
-		$alm_cache_page = add_submenu_page(
-			'ajax-load-more',
-			__( 'Cache', 'ajax-load-more' ),
-			$before_link . '<span class="dashicons dashicons-admin-generic" ' . $style_link_icon . '></span> ' . __( 'Cache', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
-			'ajax-load-more-cache',
-			'alm_cache_page'
-		);
-		add_action( 'load-' . $alm_cache_page, 'alm_load_admin_js' );
-		add_action( 'load-' . $alm_cache_page, 'alm_load_cache_admin_js' );
+	// Licenses.
+	$alm_licenses_page = add_submenu_page(
+		'ajax-load-more',
+		$license_title,
+		$before_link . $license_title . $after_link,
+		'edit_theme_options',
+		'ajax-load-more-licenses',
+		'alm_licenses_page'
+	);
 
-		// Add to custom menu.
-		$alm_menu_items[] = [
-			'label' => __( 'Cache', 'ajax-load-more' ),
-			'slug'  => 'ajax-load-more-cache',
-		];
-	}
+	// Add to custom admin menu.
+	$alm_menu_items[] = [
+		'label' => $license_title,
+		'slug'  => 'ajax-load-more-licenses',
+	];
 
-	// Filters.
-	if ( has_action( 'alm_filters_installed' ) ) {
-		if ( has_action( 'alm_cache_installed' ) ) {
-			$before_link = '<span style="display:block;">';
-		}
+	// Help.
+	$alm_help_page = add_submenu_page(
+		'ajax-load-more',
+		__( 'Help', 'ajax-load-more' ),
+		__( 'Help', 'ajax-load-more' ),
+		'edit_theme_options',
+		'ajax-load-more-help',
+		'alm_help_page'
+	);
 
-		$alm_filters_page = add_submenu_page(
-			'ajax-load-more',
-			__( 'Filters', 'ajax-load-more' ),
-			$before_link . '<span class="dashicons dashicons-filter" ' . $style_link_icon . '></span> ' . __( 'Filters', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
-			'ajax-load-more-filters',
-			'alm_filters_page'
-		);
-		add_action( 'load-' . $alm_filters_page, 'alm_load_admin_js' );
-		add_action( 'load-' . $alm_filters_page, 'alm_load_filters_admin_scripts' );
-
-		// Add to custom menu.
-		$alm_menu_items[] = [
-			'label' => __( 'Filters', 'ajax-load-more' ),
-			'slug'  => 'ajax-load-more-filters',
-		];
-	}
-
-	// WooCommerce.
-	if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { // phpcs:ignore
-		if ( has_action( 'alm_cache_installed' ) || has_action( 'alm_filters_installed' ) ) {
-			$before_link = '<span style="display:block;">';
-		}
-		$woo_icon = '<style>.dashicons.alm-woo:before{font-family: WooCommerce!important; content: "\e03d"; font-size: 16px; margin-top: 2px;}</style>';
-
-		$alm_woocommerce_page = add_submenu_page(
-			'ajax-load-more',
-			__( 'WooCommerce', 'ajax-load-more' ),
-			$before_link . $woo_icon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" ' . $style_link_icon . '></span> ' . __( 'WooCommerce', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
-			'ajax-load-more-woocommerce',
-			'alm_woocommerce_page'
-		);
-		add_action( 'load-' . $alm_woocommerce_page, 'alm_load_admin_js' );
-
-		// Add to custom menu.
-		$alm_menu_items[] = [
-			'label' => __( 'WooCommerce', 'ajax-load-more' ),
-			'slug'  => 'ajax-load-more-woocommerce',
-		];
-	}
+	// Add to custom admin menu.
+	$alm_menu_items[] = [
+		'label' => __( 'Help', 'ajax-load-more' ),
+		'slug'  => 'ajax-load-more-help',
+	];
 
 	// Add admin scripts.
 	add_action( 'load-' . $alm_settings_page, 'alm_load_admin_js' );
 	add_action( 'load-' . $alm_template_page, 'alm_load_admin_js' );
 	add_action( 'load-' . $alm_shortcode_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_filters_page, 'alm_load_admin_js' );
+	add_action( 'load-' . $alm_filters_page, 'alm_load_filters_admin_scripts' );
 	add_action( 'load-' . $alm_help_page, 'alm_load_admin_js' );
-
 	// Pro.
 	if ( has_action( 'alm_pro_installed' ) ) {
 		add_action( 'load-' . $alm_pro_page, 'alm_load_admin_js' );
@@ -434,7 +436,9 @@ function alm_pro_page() {
  * @since 2.6.0
  */
 function alm_cache_page() {
-	include_once ALM_CACHE_ADMIN_PATH . 'admin/views/cache.php';
+	if ( defined( 'ALM_CACHE_ADMIN_PATH' ) && file_exists( ALM_CACHE_ADMIN_PATH . 'admin/views/cache.php' ) ) {
+		include_once ALM_CACHE_ADMIN_PATH . 'admin/views/cache.php';
+	}
 }
 
 /**
@@ -443,10 +447,14 @@ function alm_cache_page() {
  *  @since 3.4.0
  */
 function alm_filters_page() {
-	if ( ! function_exists( 'alm_list_all_filters' ) ) {
-		include_once ALM_FILTERS_PATH . 'admin/functions.php'; // Deprecated: This is loaded in Filters add-on.
+	if ( has_action( 'alm_filters_installed' ) && defined( 'ALM_FILTERS_PATH' ) && file_exists( ALM_FILTERS_PATH . 'admin/views/filters.php' ) ) {
+		if ( ! function_exists( 'alm_list_all_filters' ) ) {
+			include_once ALM_FILTERS_PATH . 'admin/functions.php'; // Deprecated: This is now loaded in Filters add-on.
+		}
+		include_once ALM_FILTERS_PATH . 'admin/views/filters.php';
+	} else {
+		include_once ALM_PATH . 'admin/views/filters.php';
 	}
-	include_once ALM_FILTERS_PATH . 'admin/views/filters.php';
 }
 
 /**
@@ -455,7 +463,9 @@ function alm_filters_page() {
  * @since 5.3.0
  */
 function alm_woocommerce_page() {
-	include_once ALM_WOO_PATH . 'admin/views/woocommerce.php';
+	if ( defined( 'ALM_WOO_PATH' ) && file_exists( ALM_WOO_PATH . 'admin/views/woocommerce.php' ) ) {
+		include_once ALM_WOO_PATH . 'admin/views/woocommerce.php';
+	}
 }
 
 /**
@@ -500,7 +510,7 @@ function alm_load_filters_admin_scripts() {
 }
 
 /**
- * Enqueue Admin CSS & JS.
+ * Enqueue ALM admin CSS & JS.
  *
  * @since 2.0.15
  */
@@ -509,11 +519,8 @@ function alm_enqueue_admin_scripts() {
 	wp_enqueue_style( 'alm-admin', ALM_URL . '/build/admin/index.css', '', ALM_VERSION );
 	wp_enqueue_style( 'alm-core', ALM_URL . '/build/frontend/ajax-load-more.css', '', ALM_VERSION );
 
-	// Dequeue ACF select2 on ALM pages.
-	wp_dequeue_style( 'acf-input' );
-
-	// Dequeue external ToolTipster on ALM pages.
-	wp_dequeue_style( 'sbi_tooltipster' );
+	wp_dequeue_style( 'acf-input' ); // Dequeue ACF select2 on ALM pages.
+	wp_dequeue_style( 'sbi_tooltipster' ); // Dequeue external ToolTipster on ALM pages.
 	wp_dequeue_script( 'sbi_tooltipster' );
 
 	// CodeMirror Syntax Highlighting if on Repater Template page.
@@ -535,8 +542,8 @@ function alm_enqueue_admin_scripts() {
 
 	// Admin JS.
 	wp_enqueue_script( 'jquery-form' );
-	wp_enqueue_script( 'alm-admin', ALM_URL . '/build/admin/index.js', array( 'jquery' ), ALM_VERSION, false );
-	wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL . 'shortcode-builder/js/shortcode-builder.js', array( 'jquery' ), ALM_VERSION, false );
+	wp_enqueue_script( 'alm-admin', ALM_URL . '/build/admin/index.js', [ 'jquery' ], ALM_VERSION, false );
+	wp_enqueue_script( 'alm-shortcode-builder', ALM_ADMIN_URL . 'shortcode-builder/js/shortcode-builder.js', [ 'jquery' ], ALM_VERSION, false );
 
 	// Localized JS variables.
 	wp_localize_script(
@@ -580,22 +587,20 @@ function alm_get_tax_terms() {
 	$form_data = filter_input_array( INPUT_GET );
 
 	if ( ! current_user_can( 'edit_theme_options' ) || ! isset( $form_data['nonce'] ) ) {
-		// Bail early if missing WP capabilities or nonce.
-		wp_die( esc_attr__( 'You don\'t belong here.', 'ajax-load-more' ) );
+		wp_die( esc_attr__( 'You don\'t belong here.', 'ajax-load-more' ) ); // Bail early if missing WP capabilities or nonce.
 	}
 
 	if ( ! wp_verify_nonce( $form_data['nonce'], 'alm_repeater_nonce' ) ) {
-		// Verify nonce.
-		wp_die( esc_attr__( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) );
+		wp_die( esc_attr__( 'Error - unable to verify nonce, please try again.', 'ajax-load-more' ) ); // Verify nonce.
 	}
 
 	$taxonomy = isset( $form_data['taxonomy'] ) ? esc_attr( $form_data['taxonomy'] ) : '';
 	$index    = isset( $form_data['index'] ) ? esc_attr( $form_data['index'] ) : '1';
-	$tax_args = array(
+	$tax_args = [
 		'orderby'    => 'name',
 		'order'      => 'ASC',
 		'hide_empty' => false,
-	);
+	];
 
 	$terms = get_terms( $taxonomy, $tax_args );
 	$value = '';

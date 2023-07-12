@@ -1,6 +1,6 @@
 .ajax-load-more .alm-tabbed-wrapper {
 	width: 100%;
-	@media screen and (min-width: $desktop) {
+	@media screen and (min-width: $tablet) {
 		display: flex;
 		flex-wrap: nowrap;
 	}
@@ -10,25 +10,21 @@
 		padding: $padding 0 0;
 		margin: 0 0 15px;
 		display: block;
-		font-size: 20px;
 		color: $grey;
-		font-weight: 500;
-		+ p {
-			margin-top: -8px;
-		}
+		font-weight: 600;
 	}
 
 	// Navigation.
 	&--nav {
-		border: 1px solid $border;
+		border: 1px solid $light_border;
 		margin-bottom: $padding;
 		padding: 10px;
 		background: #fff;
-		@media screen and (min-width: $desktop) {
+		@media screen and (min-width: $tablet) {
 			width: 165px;
 			background-color: $light_grey;
 			padding: 0;
-			border: 1px solid $border;
+			border: 1px solid $light_border;
 			border-right: none;
 			border-radius: $radius_lg $radius_lg 0 $radius_lg;
 			position: relative;
@@ -38,9 +34,9 @@
 		ul {
 			margin: 0;
 			padding: 0 0 35px;
-			@media screen and (max-width: $desktop) {
+			@media screen and (max-width: $tablet) {
 				padding: 0;
-				border: 1px solid $border;
+				border: 1px solid $light_border;
 			}
 			li {
 				width: 100% !important;
@@ -48,25 +44,25 @@
 				padding: 0;
 				list-style: none;
 				&:first-of-type {
-					@media screen and (min-width: $desktop) {
+					@media screen and (min-width: $tablet) {
 						position: relative;
 						top: -1px;
 						button {
-							border-top: 1px solid $border;
+							border-top: 1px solid $light_border;
 							border-radius: $radius_lg 0 0 0;
 						}
 					}
 				}
 				&:last-of-type {
 					button {
-						@media screen and (max-width: $desktop) {
+						@media screen and (max-width: $tablet) {
 							border: none;
 						}
 					}
 				}
 			}
 			&.attached {
-				@media screen and (min-width: $desktop) {
+				@media screen and (min-width: $tablet) {
 					position: fixed;
 					width: auto;
 					top: 70px;
@@ -110,7 +106,7 @@
 				i {
 					color: $grey;
 				}
-				@media screen and (min-width: $desktop) {
+				@media screen and (min-width: $tablet) {
 					width: calc(100% + 1px);
 				}
 			}
@@ -123,8 +119,8 @@
 		padding: 0 $padding $padding;
 		display: block;
 		background: #fff;
-		border: 1px solid $border;
-		@media screen and (min-width: $desktop) {
+		border: 1px solid $light_border;
+		@media screen and (min-width: $tablet) {
 			border-radius: 0 $radius_lg $radius_lg 0;
 		}
 	}

@@ -78,11 +78,7 @@ function alm_has_extension_shortcodes() {
 		}
 	}
 
-	if ( $installed ) {
-		return true;
-	} else {
-		return false;
-	}
+	return $installed ? true : false;
 }
 
 /**

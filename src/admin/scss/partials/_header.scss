@@ -6,13 +6,13 @@
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
-		padding: $padding_sm $padding;
+		padding: $padding;
 		background-color: $alm_red;
 		@media screen and (min-width: $wp_mobile) {
 			position: sticky;
 			top: 32px;
 			z-index: 9999;
-			box-shadow:0 2px 5px rgba(0, 0, 0, 0.075);
+			box-shadow: 0 1px 6px rgba(0, 0, 0, 0.025);
 		}
 		&--logo{
 			display: flex;
@@ -39,15 +39,15 @@
 		}
 
 		a.plugin-link {
-			color: #121212;
+			color: rgba(255, 255, 255, 0.7);
 			font-weight: 400;
 			margin: 0 0 0 10px;
 			vertical-align: top;
 			font-size: 13px;
 			font-weight: 400;
-			background-color: rgba(#fff, 0.3);
+			background-color: rgba(#000, 0.2);
 			border-radius: $radius;
-			padding: 6px 8px 6px 6px;
+			padding: 7px 9px 7px 8px;
 			text-decoration: none;
 			display: flex;
 			align-items: center;
@@ -63,7 +63,8 @@
 			}
 			&:hover,
 			&:focus{
-				background-color: rgba(#fff, 0.85);
+				color: rgba(255, 255, 255, 0.9);
+				background-color: rgba(#000, 0.4);
 			}
 		}
 	}
@@ -72,37 +73,36 @@
 	.alm-admin-nav{
 		background-color: #fff;
 		border-bottom: 1px solid $border;
-		margin-bottom: calc($padding/2);
-		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.025);
+		margin-bottom: $padding_sm;
+		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.025);
 		nav {
 			width: 100%;
 			display: flex;
+			align-items: center;
 			flex-wrap: nowrap;
 			overflow-y: hidden;
 			overflow-x: auto;
-			padding: 0 $padding;
+			padding: 8px $padding;
 			a {
 				display: block;
 				white-space: nowrap;
-				padding: 15px;
-				@media screen and (min-width: $break) {
-					padding: 17px $padding;
-				}
-				border-left: 1px solid $border;
+				padding: 5px $padding_sm;
 				color: $grey;
 				text-decoration: none;
 				position: relative;
+				padding: 9px 15px;
+				border-radius: $radius;
+				margin-right: 3px;
+				transition: all 0.15s ease;
 				&:hover,
 				&:focus,
 				&.current{
 					background-color: $light_grey;
-					color: #212121;
+					color: #2f2e2e;
 				}
 				&.current{
 					font-weight: 500;
-				}
-				&:last-of-type{
-					border-right: 1px solid $border;
+					box-shadow: 0 1px 2px rgba(0, 0, 0, 0.125);
 				}
 			}
 		}

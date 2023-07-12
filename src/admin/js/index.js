@@ -476,7 +476,7 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @since 2.8.7
 	 */
-	$(document).on('click', '.alm-layout-selection li a.layout', function (e) {
+	$('.alm-layout-selection li .layout').on('click', function (e) {
 		e.preventDefault();
 		var el = $(this),
 			type = el.data('type'),
@@ -517,7 +517,7 @@ jQuery(document).ready(function ($) {
 					setTimeout(function () {
 						el.text(alm_admin_localize.template_updated).blur();
 						setTimeout(function () {
-							el.removeClass('updating').html(layout_btn_text).blur(); // CLose drop menu
+							el.removeClass('updating').html(layout_btn_text).blur(); // Close drop menu.
 							el.closest('.alm-drop-btn').trigger('click');
 							textarea.removeClass('loading');
 						}, 400);

@@ -27,11 +27,17 @@ In Progress
 	- @see https://www.advancedcustomfields.com/resources/acf-load_field/#parameters
 
 
-
 TO DO:
 - Fix ESLint errors.
 - Fix Stylelint errors.
 - Test github actions deploy script.
+- Finish Filters Upgrade screen.
+	- https://wpdev.local/wp-admin/admin.php?page=ajax-load-more-filters
+
+Repeater Templates
+- Finish layout list styling on Repeater Templates Screen.
+- Improve Custom Repeaters upgrade screen.
+
 
 ADD-ONS
 - Cache
@@ -40,6 +46,8 @@ ADD-ONS
 	- Admin Page [DONE]
 - WooCommerce
 	- Admin Page [DONE]
+- Layouts
+  - New admin functions.
 - PRO
 	- Updated add-ons settings page.
 	- Admin Page [DONE]
