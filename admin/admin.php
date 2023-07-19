@@ -238,10 +238,13 @@ function alm_admin_menu() {
 	}
 
 	// Extensions.
+	$alm_extensions_page_before = has_action( 'alm_pro_installed' ) ? $before_link : '';
+	$alm_extensions_page_after  = has_action( 'alm_pro_installed' ) ? $after_link : '';
+
 	$alm_extensions_page = add_submenu_page(
 		'ajax-load-more',
 		__( 'Extensions', 'ajax-load-more' ),
-		__( 'Extensions', 'ajax-load-more' ),
+		$alm_extensions_page_before . __( 'Extensions', 'ajax-load-more' ) . $alm_extensions_page_after,
 		'edit_theme_options',
 		'ajax-load-more-extensions',
 		'alm_extensions_page'
