@@ -664,3 +664,25 @@ function alm_sticky_post__not_in( $ids = '', $not_in = '' ) {
 	}
 	return $ids;
 }
+
+/**
+ * Check if the current query is an ALM query.
+ *
+ * @since 5.5.1
+ * @return boolean
+ */
+function is_alm_query() {
+	global $is_alm_query;
+	return $is_alm_query;
+}
+
+/**
+ * Get the current ALM query.
+ *
+ * @since 5.5.1
+ * @return \WP_Query
+ */
+function wp_alm_query() {
+	global $wp_alm_query;
+	return $wp_alm_query;
+}

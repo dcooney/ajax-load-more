@@ -599,6 +599,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$alm_post_count  = $alm_query->post_count;
 					$alm_current     = 0;
 					$alm_has_cta     = false;
+					$is_alm_query    = false;
+					$wp_alm_query    = false;
 
 					// Build CTA Position Array.
 					$cta_array = $cta && has_action( 'alm_cta_pos_array' ) ? $cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging ) : [];
@@ -610,8 +612,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 						$alm_loop_count++;
 						$alm_current++; // Current item in loop.
-						$alm_page = $alm_page_count; // Get page number.
-						$alm_item = ( $alm_page_count * $posts_per_page ) - $posts_per_page + $alm_loop_count;
+						$alm_page     = $alm_page_count; // Get page number.
+						$alm_item     = ($alm_page_count * $posts_per_page) - $posts_per_page + $alm_loop_count;
+						$is_alm_query = true;
+						$wp_alm_query = $alm_query;
 
 						// Call to Action [Before].
 						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
@@ -629,7 +633,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						}
 
 					endwhile; wp_reset_query(); // phpcs:ignore
-
+					$is_alm_query = false;
+					$wp_alm_query = false;
+					$GLOBALS['is_alm_query'] = $is_alm_query;
+					$GLOBALS['wp_alm_query'] = $wp_alm_query;
 					// End Ajax Load More Loop.
 
 					$data = ob_get_clean();
