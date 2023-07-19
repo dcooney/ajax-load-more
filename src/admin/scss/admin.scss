@@ -311,7 +311,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 		outline: none;
 		text-decoration: underline;
 	}
-	&:after {
+	&::after {
 		font-family: 'FontAwesome';
 		content: '\f056';
 		color: $border;

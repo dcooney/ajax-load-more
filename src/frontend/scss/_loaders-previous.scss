@@ -7,7 +7,7 @@
 		clear: both;
 		padding: 0;
 		margin: 0;
-		&:after {
+		&::after {
 			display: table;
 			clear: both;
 			height: 0;
@@ -30,7 +30,7 @@
 			&.loading:focus {
 				cursor: wait;
 				text-decoration: none;
-				&:before {
+				&::before {
 					content: '';
 					display: block;
 					position: absolute;
@@ -45,28 +45,28 @@
 			}
 			&.skype {
 				&.loading {
-					&:before {
+					&::before {
 						background-image: url('../img/spinner-skype.gif');
 					}
 				}
 			}
 			&.ring {
 				&.loading {
-					&:before {
+					&::before {
 						background-image: url('../img/spinner-ring.gif');
 					}
 				}
 			}
 			&.fading-blocks {
 				&.loading {
-					&:before {
+					&::before {
 						background-image: url('../img/loader-fading-blocks.gif');
 					}
 				}
 			}
 			&.chasing-arrows {
 				&.loading {
-					&:before {
+					&::before {
 						background-image: url('../img/spinner-chasing-arrows.gif');
 					}
 				}

@@ -89,7 +89,7 @@
 	.alm-dir-listing h3.heading {
 		padding-left: 40px !important;
 
-		&:after {
+		&::after {
 			content: '\f07c';
 		}
 

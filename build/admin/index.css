@@ -935,7 +935,7 @@ disabled look for disabled choices in the results dropdown
 .alm-cache .alm-dir-listing h3.heading {
   padding-left: 40px !important;
 }
-.alm-cache .alm-dir-listing h3.heading:after {
+.alm-cache .alm-dir-listing h3.heading::after {
   content: "\f07c";
 }
 .alm-cache .alm-dir-listing h3.heading.open:after {
@@ -1752,7 +1752,7 @@ disabled look for disabled choices in the results dropdown
   font-size: 12px;
   transition: all 0.15s ease;
 }
-.alm-pro-listing .item .state:before {
+.alm-pro-listing .item .state::before {
   font-family: "FontAwesome";
   content: "\f00c";
   display: block;
@@ -1769,7 +1769,7 @@ disabled look for disabled choices in the results dropdown
 .alm-pro-listing .item.inactive .state {
   background: #e1e1e1;
 }
-.alm-pro-listing .item.inactive .state:before {
+.alm-pro-listing .item.inactive .state::before {
   opacity: 0;
 }
 .alm-pro-listing .item.inactive:hover h2, .alm-pro-listing .item.inactive:hover p, .alm-pro-listing .item.inactive:hover img, .alm-pro-listing .item.inactive:hover .state {
@@ -1778,7 +1778,7 @@ disabled look for disabled choices in the results dropdown
 .alm-pro-listing .item.inactive:hover .state {
   background: #ccc;
 }
-.alm-pro-listing .item.inactive:hover .state:before {
+.alm-pro-listing .item.inactive:hover .state::before {
   opacity: 1;
 }
 
@@ -1876,7 +1876,7 @@ disabled look for disabled choices in the results dropdown
 .shortcode-builder a.group {
   border-radius: 0 0 3px 3px;
 }
-.shortcode-builder p.warning-callout:before {
+.shortcode-builder p.warning-callout::before {
   display: block;
   width: calc(100% + 36px);
   height: 1px;
@@ -2031,7 +2031,7 @@ disabled look for disabled choices in the results dropdown
   padding: 0;
   position: relative;
 }
-.shortcode-builder .nested-component:after, .shortcode-builder .nested-component:before {
+.shortcode-builder .nested-component::after, .shortcode-builder .nested-component::before {
   top: 0;
   left: 35px;
   border: solid transparent;
@@ -2042,13 +2042,13 @@ disabled look for disabled choices in the results dropdown
   pointer-events: none;
   z-index: 2;
 }
-.shortcode-builder .nested-component:after {
+.shortcode-builder .nested-component::after {
   border-color: rgba(255, 255, 255, 0);
   border-top-color: #fcfcfc;
   border-width: 10px;
   margin-left: -10px;
 }
-.shortcode-builder .nested-component:before {
+.shortcode-builder .nested-component::before {
   border-color: rgba(239, 239, 239, 0);
   border-top-color: #e7e7e7;
   border-width: 11px;
@@ -2059,7 +2059,7 @@ disabled look for disabled choices in the results dropdown
   padding: 0;
   position: relative;
 }
-.shortcode-builder .nested-component--inner:after {
+.shortcode-builder .nested-component--inner::after {
   clear: both;
   display: table;
   content: "";
@@ -2569,7 +2569,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce #wpfooter p {
   outline: none;
   text-decoration: underline;
 }
-.ajax-load-more h3.heading:after {
+.ajax-load-more h3.heading::after {
   font-family: "FontAwesome";
   content: "\f056";
   color: #e7e7e7;

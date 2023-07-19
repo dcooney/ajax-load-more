@@ -1723,7 +1723,6 @@ let alm_is_filtering = false;
 						let scrollHeight = alm.main.offsetHeight; // ALM height
 						let scrollWidth = alm.main.offsetWidth; // ALM Width
 						let scrollPosition = '';
-
 						if (alm.scroll_direction === 'horizontal') {
 							// Left/Right
 							alm.AjaxLoadMore.horizontal();

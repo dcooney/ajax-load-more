@@ -2,7 +2,7 @@
 .alm-listing {
 	.alm-reveal {
 		outline: none;
-		&:after {
+		&::after {
 			display: table;
 			clear: both;
 			height: 0;
@@ -132,7 +132,6 @@
 			flex-wrap: nowrap;
 			flex-direction: row;
 			> li.alm-item {
-				padding: 0;
 				text-align: center;
 				margin: 0 2px;
 				padding: 20px 20px 30px;
@@ -143,7 +142,6 @@
 				width: 300px;
 				img {
 					position: static;
-					border-radius: 100%;
 					max-width: 125px;
 					margin: 0 auto 15px;
 					border-radius: 4px;
@@ -151,7 +149,7 @@
 				}
 			}
 		}
-		.alm-listing .alm-reveal:after {
+		.alm-listing .alm-reveal::after {
 			display: none;
 		}
 	}

@@ -8,7 +8,7 @@
   margin: 0 0 15px;
   position: relative;
 }
-.alm-btn-wrap:after {
+.alm-btn-wrap::after {
   display: table;
   clear: both;
   height: 0;
@@ -62,11 +62,11 @@
   outline: none !important;
   box-shadow: none !important;
 }
-.alm-btn-wrap .alm-load-more-btn:before, .alm-btn-wrap .alm-load-more-btn.done:before {
+.alm-btn-wrap .alm-load-more-btn::before, .alm-btn-wrap .alm-load-more-btn.done::before {
   background: none;
   width: 0;
 }
-.alm-btn-wrap .alm-load-more-btn.loading:before {
+.alm-btn-wrap .alm-load-more-btn.loading::before {
   background: #fff url(../frontend/img/ajax-loader.gif) no-repeat center center;
   width: 30px;
   height: 31px;
@@ -123,7 +123,7 @@
   box-shadow: none !important;
   padding-left: 20px;
 }
-.ajax-load-more-wrap.white .alm-load-more-btn.loading:before {
+.ajax-load-more-wrap.white .alm-load-more-btn.loading::before {
   margin: 0;
   left: 0;
   top: 0;
@@ -157,7 +157,7 @@
   box-shadow: none !important;
   padding-left: 20px;
 }
-.ajax-load-more-wrap.light-grey .alm-load-more-btn.loading:before {
+.ajax-load-more-wrap.light-grey .alm-load-more-btn.loading::before {
   margin: 0;
   left: 0;
   top: 0;
@@ -217,7 +217,7 @@
   cursor: default !important;
   outline: none !important;
 }
-.ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:before {
+.ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn::before {
   display: none !important;
 }
 .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:focus, .ajax-load-more-wrap.infinite > .alm-btn-wrap .alm-load-more-btn:active {
@@ -266,7 +266,7 @@
   padding: 0;
   margin: 0;
 }
-.alm-btn-wrap--prev:after {
+.alm-btn-wrap--prev::after {
   display: table;
   clear: both;
   height: 0;
@@ -289,7 +289,7 @@
   cursor: wait;
   text-decoration: none;
 }
-.alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:before, .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:focus:before {
+.alm-btn-wrap--prev a.alm-load-more-btn--prev.loading::before, .alm-btn-wrap--prev a.alm-load-more-btn--prev.loading:focus::before {
   content: "";
   display: block;
   position: absolute;
@@ -301,16 +301,16 @@
   background: url(../frontend/img/ajax-loader-lg.gif) no-repeat left center;
   background-size: 16px 16px;
 }
-.alm-btn-wrap--prev a.alm-load-more-btn--prev.skype.loading:before {
+.alm-btn-wrap--prev a.alm-load-more-btn--prev.skype.loading::before {
   background-image: url(../frontend/img/spinner-skype.gif);
 }
-.alm-btn-wrap--prev a.alm-load-more-btn--prev.ring.loading:before {
+.alm-btn-wrap--prev a.alm-load-more-btn--prev.ring.loading::before {
   background-image: url(../frontend/img/spinner-ring.gif);
 }
-.alm-btn-wrap--prev a.alm-load-more-btn--prev.fading-blocks.loading:before {
+.alm-btn-wrap--prev a.alm-load-more-btn--prev.fading-blocks.loading::before {
   background-image: url(../frontend/img/loader-fading-blocks.gif);
 }
-.alm-btn-wrap--prev a.alm-load-more-btn--prev.chasing-arrows.loading:before {
+.alm-btn-wrap--prev a.alm-load-more-btn--prev.chasing-arrows.loading::before {
   background-image: url(../frontend/img/spinner-chasing-arrows.gif);
 }
 .alm-btn-wrap--prev a.alm-load-more-btn--prev:not(.disabled),
@@ -324,7 +324,7 @@
 .alm-listing .alm-reveal {
   outline: none;
 }
-.alm-listing .alm-reveal:after {
+.alm-listing .alm-reveal::after {
   display: table;
   clear: both;
   height: 0;
@@ -481,7 +481,6 @@
 }
 .ajax-load-more-wrap.alm-horizontal .alm-listing > li.alm-item,
 .ajax-load-more-wrap.alm-horizontal .alm-listing .alm-reveal > li.alm-item {
-  padding: 0;
   text-align: center;
   margin: 0 2px;
   padding: 20px 20px 30px;
@@ -494,13 +493,12 @@
 .ajax-load-more-wrap.alm-horizontal .alm-listing > li.alm-item img,
 .ajax-load-more-wrap.alm-horizontal .alm-listing .alm-reveal > li.alm-item img {
   position: static;
-  border-radius: 100%;
   max-width: 125px;
   margin: 0 auto 15px;
   border-radius: 4px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.075);
 }
-.ajax-load-more-wrap.alm-horizontal .alm-listing .alm-reveal:after {
+.ajax-load-more-wrap.alm-horizontal .alm-listing .alm-reveal::after {
   display: none;
 }
 

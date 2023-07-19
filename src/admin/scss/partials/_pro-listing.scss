@@ -203,7 +203,7 @@
 			text-decoration: none !important;
 			font-size: 12px;
 			transition: all 0.15s ease;
-			&:before{
+			&::before{
 				font-family: 'FontAwesome';
 				content: '\f00c';
 				display: block;
@@ -228,7 +228,7 @@
 			}
 			.state{
 				background: #e1e1e1;
-				&:before{
+				&::before{
 					opacity: 0;
 				}
 			}
@@ -239,7 +239,7 @@
 
 				.state{
    				background: #ccc;
-					&:before{
+					&::before{
 						opacity: 1;
 					}
 				}
