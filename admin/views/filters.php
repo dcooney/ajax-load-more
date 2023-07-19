@@ -25,21 +25,23 @@ $alm_pg_desc       = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro
 
 		<aside class="cnkt-sidebar" data-sticky>
 			<div class="cta">
-				<h3><?php esc_attr_e( 'About Licenses', 'ajax-load-more' ); ?></h3>
+				<h3><?php esc_attr_e( 'About Filters', 'ajax-load-more' ); ?></h3>
 				<div class="cta-inner">
-					<ul>
-						<li><?php _e( 'License keys are found in the purchase receipt email that was sent immediately after purchase and in the <a target="_blank" href="https://connekthq.com/account/">Account</a> section on our website', 'ajax-load-more' ); ?></li>
-						<li><?php _e( 'If you cannot locate your key please open a support ticket by filling out the <a href="https://connekthq.com/support/">support form</a> and reference the email address used when you completed the purchase.', 'ajax-load-more' ); ?></li>
-						<li><strong><?php esc_attr_e( 'Are you having issues updating an add-on?', 'ajax-load-more' ); ?></strong><br/><?php esc_attr_e( 'Please try deactivating and then re-activating each license. Once you\'ve done that, try running the update again.', 'ajax-load-more' ); ?></li>
-					</ul>
+					<p><?php esc_attr_e( 'The Filters add-on is a no-coding required solution that makes filtering with Ajax Load More easy and intuitive for both site developers and the frontend users.', 'ajax-load-more' ); ?></p>
+					<p><strong><?php esc_attr_e( 'Examples:', 'ajax-load-more' ); ?></strong><br/>
+						<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/#examples" target="_blank"><?php esc_attr_e( 'Basic Filtering', 'ajax-load-more' ); ?></a>,
+						<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/facet-filtering/" target="_blank"><?php esc_attr_e( 'Facets', 'ajax-load-more' ); ?></a>,
+						<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/datepicker-range/" target="_blank"><?php esc_attr_e( 'Date Picker', 'ajax-load-more' ); ?></a>,
+						<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/search/?search=Ajax%20Load%20More" target="_blank"><?php esc_attr_e( 'Search', 'ajax-load-more' ); ?></a>,
+						<a href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/selected-filters/?category=open-source+release-notes" target="_blank"><?php esc_attr_e( 'Selected Filters', 'ajax-load-more' ); ?></a>
+					</p>
 				</div>
 				<div class="major-publishing-actions">
-					<a class="button button-primary" target="_blank" href="https://connekthq.com/account/">
-						<?php esc_attr_e( 'Your Account', 'ajax-load-more' ); ?>
+					<a class="button button-primary" target="_blank" href="https://connekthq.com/plugins/ajax-load-more/add-ons/filters/">
+						<?php esc_attr_e( 'Learn More', 'ajax-load-more' ); ?>
 					</a>
 				</div>
 			</div>
-			<div class="clear"></div>
 		</aside>
 	</div>
 </div>

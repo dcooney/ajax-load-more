@@ -1333,35 +1333,54 @@ $show_max                = 100; // Max number of items to show.
 					<div class="expand-wrap">
 						<section class="first">
 							<div class="shortcode-builder--label">
-								<p><?php _e( 'Sort posts by Order and Orderby parameters.', 'ajax-load-more' ); ?></p>
+								<h4><?php _e( 'Order', 'ajax-load-more' ); ?></h4>
+								<p><?php _e( 'Return results by ascending or descending order.', 'ajax-load-more' ); ?></p>
 							</div>
 							<div class="shortcode-builder--fields">
-								<div class="inner flex-grid flex-grid--two">
-									<div>
-										<label class="full"><?php _e( 'Order', 'ajax-load-more' ); ?>:</label>
-										<select class="alm_element" name="post-order" id="post-order">
-											<option value="DESC" selected="selected">DESC (default)</option>
-											<option value="ASC">ASC</option>
-										</select>
-									</div>
-									<div>
-										<label class="full"><?php _e( 'Order By', 'ajax-load-more' ); ?>:</label>
-										<select class="alm_element" name="post-orderby" id="post-orderby">
-											<option value="date" selected="selected">Date (default)</option>
-											<option value="title">Title</option>
-											<option value="name">Name (slug)</option>
-											<option value="menu_order">Menu Order</option>
-											<option value="author">Author</option>
-											<option value="ID">ID</option>
-											<option value="comment_count">Comment Count</option>
-											<option value="modified">Modified</option>
-											<option value="post__in">Post In</option>
-											<option value="meta_value_num">meta_value_num</option>
-										</select>
-									</div>
+								<div class="inner">
+									<select class="alm_element" name="post-order" id="post-order">
+										<option value="DESC" selected="selected">DESC (default)</option>
+										<option value="ASC">ASC</option>
+									</select>
 								</div>
 							</div>
 						</section>
+						<section>
+							<div class="shortcode-builder--label">
+								<h4><?php _e( 'Orderby', 'ajax-load-more' ); ?></h4>
+								<p><?php _e( 'Sort results by specific ordering parameter.', 'ajax-load-more' ); ?></p>
+							</div>
+							<div class="shortcode-builder--fields">
+								<div class="inner">
+									<select class="alm_element" name="post-orderby" id="post-orderby">
+										<option value="date" selected="selected">Date (default)</option>
+										<option value="title">Title</option>
+										<option value="name">Name (slug)</option>
+										<option value="menu_order">Menu Order</option>
+										<option value="author">Author</option>
+										<option value="ID">ID</option>
+										<option value="comment_count">Comment Count</option>
+										<option value="modified">Modified</option>
+										<option value="post__in">Post In</option>
+										<option value="meta_value">meta_value</option>
+										<option value="meta_value_num">meta_value_num</option>
+									</select>
+								</div>
+							</div>
+						</section>
+						<div class="sort-key-options nested-component hide-section">
+							<section>
+								<div class="shortcode-builder--label">
+									<h4><?php _e( 'Sort Key', 'ajax-load-more' ); ?></h4>
+									<p><?php _e( 'The custom field key for sorting results by custom field value.', 'ajax-load-more' ); ?></p>
+								</div>
+								<div class="shortcode-builder--fields">
+									<div class="inner">
+										<input class="alm_element" name="sort-key" type="text" id="sort-key" value="" placeholder="my_custom_field">
+									</div>
+								</div>
+							</section>
+						</div>
 					</div>
 				</div>
 				<!-- End Ordering -->

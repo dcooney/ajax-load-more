@@ -16,7 +16,7 @@
 .ajax-load-more .cm-readonly .CodeMirror {
 	opacity: 0.8;
 }
-.ajax-load-more .cm-readonly .CodeMirror pre {
+.ajax-load-more  .CodeMirror pre {
 	cursor: default !important;
 }
 .ajax-load-more .CodeMirror pre {
@@ -33,11 +33,11 @@
 .CodeMirror-linenumber.CodeMirror-gutter-elt {
 	padding: 0 20px 0 0 !important;
 }
-.ajax-load-more .cm-readonly.sm-margin .CodeMirror {
+.ajax-load-more .sm-margin .CodeMirror {
 	margin: 0 0 10px;
 }
 .ajax-load-more .cm-readonly p.warning-callout {
-	margin: 0 0 10px;
+	margin: -10px 0 10px;
 }
 .ajax-load-more .CodeMirror.loading {
 	background: $light_grey url('../img/ui/loader-unlimited.gif') no-repeat center center;

@@ -769,49 +769,45 @@ a.button-small {
 	margin: 0 2% 1% 0;
 }
 
-// 2018 Grid
+// 2023 Grid
 .ajax-load-more .alm-row {
-	display: block;
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	align-items: start;
+	gap: 15px;
+	@media screen and (min-width: $break){
+		gap: $padding;
+	}
+	padding: $padding;
 	width: 100%;
-	&:after {
-		content: '';
-		clear: both;
-		display: table;
+	+ .alm-row {
+		padding-top: 0;
 	}
-	&--margin-btm {
-		margin-bottom: $padding;
-	}
-	&--margin-btm-lg {
-		margin-bottom: $gutter;
+	&.no-padding-btm{
+		padding-bottom: 0;
 	}
 	.column {
-		width: 100%;
-		float: none;
-		padding: 0 $padding;
-		&--half {
-			width: 50%;
-			float: left;
-		}
-		&--one-third {
-			width: 33.333%;
-			float: left;
-		}
-		&--two-third {
-			width: 66.666%;
-			float: left;
-		}
-		&--one-fourth {
-			width: 25%;
-			float: left;
-		}
-		@media screen and (max-width: $small) {
-			&--half,
-			&--one-third {
-				float: none;
-				width: 100%;
+		grid-column: span 12 / span 12;
+		@media screen and (min-width: $break){
+			&.column-3 {
+				grid-column: span 3 / span 3;
+			}
+			&.column-6 {
+				grid-column: span 6 / span 6;
+			}
+			&.column-9 {
+				grid-column: span 9 / span 9;
 			}
 		}
 	}
+}
+
+.alm-template-actions{
+	display: flex;
+	gap: 10px;
+	width: 100%;
+	justify-content: end;
+	padding: 0 0 10px;
 }
 
 // Row.
@@ -994,14 +990,6 @@ hr.indented {
 }
 .ajax-load-more .repeaters .section-title p {
 	padding-left: 0 !important;
-}
-.ajax-load-more label.template-title {
-	padding: 3px 2px 0;
-	margin: 0;
-	display: block;
-	&.has-margin-btm {
-		margin-bottom: 10px;
-	}
 }
 
 .ajax-load-more label input._alm_repeater_alias {
@@ -1288,8 +1276,8 @@ hr.indented {
 
 .ajax-load-more {
 	h2.addon-title {
-		font-size: 20px !important;
-		line-height: 24px;
+		font-size: 18px !important;
+		line-height: 22px;
 		font-weight: 600 !important;
 		color: $grey !important;
 		padding: 0;
@@ -1452,17 +1440,17 @@ hr.indented {
 
 /* Repeaters */
 .repeaters {
-	.repeater-wrap {
-		padding: 15px 0 !important;
-	}
 	.repeater-wrap label {
-		font-weight: 600;
+		font-weight: 500;
+		padding: 0;
+		margin: 0 0 10px;
 		span {
 			display: block;
 			font-weight: 400;
-			color: $grey_text;
-			font-size: 13px;
-			padding-top: 2px;
+			color: $paragraph;
+			font-size: 12px;
+			padding-top: 3px;
+			opacity: 0.75;
 		}
 	}
 	input.save-repeater {
@@ -1487,38 +1475,36 @@ hr.indented {
 		padding-bottom: 10px;
 	}
 	.alm-delete {
-		clear: none;
 		display: inline-block;
-		margin: 14px 0 0;
+		margin: 0;
 		width: auto;
 		opacity: 0;
 		transition: $transition;
 		position: absolute;
-		right: 15px;
-		bottom: 15px;
-		a {
-			border-radius: $radius;
-			background: none;
-			color: #c94141;
-			font-size: 14px;
-			line-height: 30px;
-			height: 30px;
-			text-decoration: none;
-			display: block;
-			padding: 0 12px;
-			&:hover {
-				background-color: #c94141;
-				color: #fff;
-			}
-			&:focus {
-				box-shadow: none;
-			}
-			&:active {
-				background-color: #b93636;
-			}
+		right: $padding;
+		bottom: $padding;
+		border: none;
+		border-radius: $radius;
+		background: none;
+		color: #c94141;
+		font-size: 14px;
+		line-height: 30px;
+		height: 30px;
+		text-decoration: none;
+		display: block;
+		padding: 0 10px;
+		cursor: pointer;
+		&:hover,
+		&:focus {
+			background-color: #c94141;
+			color: #fff;
+		}
+		&:active {
+			background-color: #b93636;
 		}
 	}
-	.row:hover .alm-delete {
+	.row:hover .alm-delete,
+	.row:focus-within .alm-delete {
 		opacity: 1;
 	}
 }
@@ -1757,34 +1743,39 @@ hr.indented {
 		p {
 			margin: 5px;
 			color: #fff;
-			font-size: 14px;
-			line-height: 1.35;
+			//font-size: 14px;
+			line-height: 1.45;
 			text-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
 			display: flex;
 			align-items: center;
 			width: 100%;
 			i {
-				font-size: 16px;
+				font-size: 15px;
 				margin-right: 5px;
 				position: relative;
-				left: -5px;
+				left: -4px;
 				display: block;
 				font-size: 22px;
 				opacity: 0.5;
+				@media screen and (max-width: $tablet){
+					display: none;
+				}
 			}
 		}
 
 		// Centered.
 		&--centered{
 			flex-direction: column;
-			padding: $padding;
 			p {
 				display: block;
 				text-align: center;
-				margin: 0 10px 15px;
+				margin: 0 10px 0;
 				i {
 					position: static;
 					margin: 0 0 10px;
+				}
+				+ div {
+					margin-top: 10px;
 				}
 			}
 
@@ -1873,7 +1864,7 @@ hr.indented {
 			font-size: 13px;
 			display: block;
 			flex: 1;
-			padding: 8px 14px;
+			padding: 7px 14px;
 			background: #77498e;
 			color: #fff;
 			border: none;
@@ -2239,49 +2230,53 @@ span.cnkt-button.installed,
 }
 
 // Add Repeater Template
-.alm-add-template {
-	text-align: center;
-	margin: 20px 0 5px !important;
-	display: block;
-	font-size: 15px !important;
-	font-weight: 700;
-	text-transform: none !important;
-	text-align: center;
-	a {
-		background: $light_grey;
-		border: 1px solid $border;
-		color: $grey;
-		display: inline-block;
-		padding: 15px 18px;
-		line-height: 1;
-		border-radius: $radius;
-		text-decoration: none;
-		i {
-			color: $red;
-			margin: 0 5px 0 0;
-			position: relative;
-			left: -1px;
-		}
-		&:hover,
-		&:focus {
-			background: $red;
-			border-color: $red;
-			color: #fff;
-			text-shadow: none;
-			color: #fff;
+.ajax-load-more{
+	.alm-add-template {
+		text-align: center;
+		margin: 20px 0 5px !important;
+		display: block;
+		font-size: 14px;
+		font-weight: 500;
+		text-transform: none !important;
+		text-align: center;
+		a {
+			background: $light_grey;
+			border: 1px solid $border;
+			color: $grey;
+			display: inline-block;
+			padding: 15px;
+			line-height: 1;
+			border-radius: $radius;
+			text-decoration: none;
+			transition: $transition;
 			i {
-				color: #fff;
-				opacity: 0.65;
+				color: $red;
+				margin: 0 4px 0 0;
+				position: relative;
+				left: -1px;
+				font-size: 16px;
 			}
-		}
-		&.active {
-			opacity: 0.5;
-			cursor: default;
-			color: #333 !important;
-			background: $light_border !important;
-			border-color: $light_border !important;
-			i {
-				color: $grey;
+			&:hover,
+			&:focus {
+				background: $red;
+				border-color: $red;
+				color: #fff;
+				text-shadow: none;
+				color: #fff;
+				i {
+					color: #fff;
+					opacity: 0.65;
+				}
+			}
+			&.active {
+				opacity: 0.5;
+				cursor: default;
+				color: #333 !important;
+				background: $light_border !important;
+				border-color: $light_border !important;
+				i {
+					color: $grey;
+				}
 			}
 		}
 	}
@@ -2535,6 +2530,9 @@ span.cnkt-button.installed,
 	&.active {
 		a.target{
 			background-color: #fff;
+			& > i {
+				color: $grey;
+			}
 		}
 	}
 	a.target {
@@ -2558,8 +2556,11 @@ span.cnkt-button.installed,
 		&:hover,
 		&:focus{
 			border-color: $border_hover;
+			& > i {
+				color: $grey;
+			}
 		}
-		}
+	}
 }
 
 /* Active / Hover state */
@@ -2581,8 +2582,12 @@ span.cnkt-button.installed,
 /* Layout Dropdown */
 .ajax-load-more {
 	.alm-drop-btn.alm-layout-selection {
-		float: right;
-		margin: 6px 0 0;
+		float: left;
+		margin: -15px 0 15px;
+		@media screen and (min-width: $break) {
+			float: right;
+			margin: 0;
+		}
 		.alm-dropdown {
 			@media screen and (max-width: $small) {
 				right: auto;
@@ -2637,7 +2642,7 @@ span.cnkt-button.installed,
 			border-radius: $radius;
 			border: 1px solid $border;
 			box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-			padding: $padding_sm;
+			padding: 10px;
 			width: 240px;
 			&::after,
 			&::before {
@@ -2697,7 +2702,7 @@ span.cnkt-button.installed,
 				display: flex;
 				align-items: center;
 				width: 100%;
-				padding: 10px 10px 10px 2px;
+				padding: 10px 10px 10px 3px;
 				line-height: 1;
 				cursor: pointer;
 				> i {

@@ -20,20 +20,19 @@ $alm_admin_heading = __( 'Add-ons', 'ajax-load-more' );
 			}
 			?>
 			<div class="spacer lg"></div>
-			<div class="flexbox-wrap">
+			<section class="flexbox-wrap">
 				<?php
-				$target = 'target="_blank"';
-				$addons = alm_get_addons();
-				foreach ( $addons as $addon ) {
-					$name           = $addon['name'];
-					$intro          = $addon['intro'];
-					$desc           = $addon['desc'];
-					$action         = $addon['action'];
-					$key            = $addon['key'];
-					$status         = $addon['status'];
-					$settings_field = $addon['settings_field'];
-					$url            = $addon['url'];
-					$img            = $addon['img'];
+				$alm_addons = alm_get_addons();
+				foreach ( $alm_addons as $alm_addon ) {
+					$name           = $alm_addon['name']; //phpcs:ignore
+					$intro          = $alm_addon['intro']; //phpcs:ignore
+					$desc           = $alm_addon['desc']; //phpcs:ignore
+					$action         = $alm_addon['action']; //phpcs:ignore
+					$key            = $alm_addon['key']; //phpcs:ignore
+					$status         = $alm_addon['status']; //phpcs:ignore
+					$settings_field = $alm_addon['settings_field']; //phpcs:ignore
+					$url            = $alm_addon['url']; //phpcs:ignore
+					$img            = $alm_addon['img']; //phpcs:ignore
 					?>
 				<div class="group no-shadow
 					<?php
@@ -41,23 +40,23 @@ $alm_admin_heading = __( 'Add-ons', 'ajax-load-more' );
 						echo ' installed'; }
 					?>
 				">
-				<a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo $name; ?>"<?php echo ' ' . $target; ?>>
-					<img src="<?php echo ALM_ADMIN_URL; ?><?php echo $img; ?>" alt="">
-					<h2 class="addon-title"><?php echo $name; ?></h2>
-					<p class="lg"><?php echo $intro; ?></p>
-					<p><?php echo $desc; ?></p>
+				<a href="<?php echo esc_url( $url ); ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo esc_attr( $name ); ?>" target="_blank">
+					<img src="<?php echo esc_url( ALM_ADMIN_URL ) . esc_attr( $img ); ?>" alt="">
+					<h2 class="addon-title"><?php echo esc_attr( $name ); ?></h2>
+					<p class="lg"><?php echo esc_attr( $intro ); ?></p>
+					<p><?php echo esc_attr( $desc ); ?></p>
 					<?php
 					if ( has_action( $action ) ) {
-						echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> ' . __( 'Installed', 'ajax-load-more' ) . '</span> ';
+						echo '<span class="cnkt-button installed"><i class="fa fa-check-square"></i> ' . esc_attr__( 'Installed', 'ajax-load-more' ) . '</span> ';
 					} else {
-						echo '<span class="cnkt-button">' . __( 'Purchase', 'ajax-load-more' ) . '</span>';
+						echo '<span class="cnkt-button">' . esc_attr__( 'Purchase', 'ajax-load-more' ) . '</span>';
 					}
 					?>
 				</a>
 				</div>
 				<?php } ?>
-			</div>
-			<div class="call-out light no-shadow">
+			</section>
+			<div class="call-out call-out--centered light no-shadow">
 				<p><?php echo wp_kses_post( __( 'All add-ons are installed as stand alone plugins and with a valid license key will receive plugin update notifications directly within the <a href="plugins.php">WordPress plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
 			</div>
 		</div>

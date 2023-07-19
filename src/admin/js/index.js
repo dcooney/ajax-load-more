@@ -472,11 +472,11 @@ jQuery(document).ready(function ($) {
 	});
 
 	/**
-	 * Get layout value Ajax.
+	 * Get layout value via Ajax and inject into template.
 	 *
 	 * @since 2.8.7
 	 */
-	$('.alm-layout-selection li .layout').on('click', function (e) {
+	$(document).on('click', '.alm-layout-selection li .layout', function (e) {
 		e.preventDefault();
 		var el = $(this),
 			type = el.data('type'),

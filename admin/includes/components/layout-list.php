@@ -12,7 +12,7 @@ $alm_layouts_href = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layout
 ?>
 <div class="alm-drop-btn alm-layout-selection">
 	<a href="javascript:void(0);" class="target">
-		<i class="fa fa-caret-down"></i> <?php esc_attr_e( 'Apply Layout', 'ajax-load-more' ); ?>
+		<i class="fa fa-file-code-o" aria-hidden="true"></i> <?php esc_attr_e( 'Layouts', 'ajax-load-more' ); ?>
 	</a>
 	<div class="alm-dropdown">
 		<div class="alm-drop-inner">
@@ -50,7 +50,7 @@ $alm_layouts_href = 'https://connekthq.com/plugins/ajax-load-more/add-ons/layout
 					<div>
 						<a class="cnkt-button" href="<?php echo esc_attr( $alm_layouts_href ); ?>">
 							<i class="fa fa-angle-right" aria-hidden="true"></i>
-							<?php esc_attr_e( 'Get More Layouts', 'ajax-load-more' ); ?>
+							<?php esc_attr_e( 'Upgrade Now', 'ajax-load-more' ); ?>
 						</a>
 					</div>
 				</div>

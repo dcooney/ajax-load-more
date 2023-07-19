@@ -15,7 +15,11 @@
  */
 
 /*
+* NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
+* NEW: Admin interface updates.
 * FIX: Fixed issue with Canonical URL not being set correctly.
+* UPDATE: Updated ALM build process to use wp-scripts.
+* UPDATE: Code cleanup and organization.
 
 In Progress
 - WP Scripts
@@ -31,24 +35,35 @@ TO DO:
 - Fix ESLint errors.
 - Fix Stylelint errors.
 - Test github actions deploy script.
-- Finish Filters Upgrade screen.
-	- https://wpdev.local/wp-admin/admin.php?page=ajax-load-more-filters
+- Update Filters Upgrade screen. [DONE]
+- Update Add-ons and Go Pro admin sreens. They are currently identical.
 
 Repeater Templates
-- Finish layout list styling on Repeater Templates Screen.
-- Improve Custom Repeaters upgrade screen.
+- Finish layout list styling on Repeater Templates Screen. [DONE]
+- Improve Custom Repeaters upgrade screen. [DONE]
 
 
 ADD-ONS
-- Cache
+- Cache.
+* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
+* UPDATE: Improved admin notices and warnings.
+* FIX: Fixed issue with Rest API access warning being incorrectly displayed on Cache admin pages.
+
+- Filters.
+* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
+
+- WooCommerce.
 	- Admin Page [DONE]
-- Filters
-	- Admin Page [DONE]
-- WooCommerce
-	- Admin Page [DONE]
-- Layouts
-  - New admin functions.
-- PRO
+
+- Layouts.
+* UPDATE: Updated layout listing design and display.
+* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
+
+- Customer Repeaters.
+* UPDATE: Admin UI updates to match core Ajax Load More 6.1 updates.
+* UPDATE: Code cleanup and organization.
+
+- PRO.
 	- Updated add-ons settings page.
 	- Admin Page [DONE]
 

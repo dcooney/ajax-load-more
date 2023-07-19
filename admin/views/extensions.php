@@ -38,7 +38,7 @@ $alm_admin_heading = __( 'Extensions', 'ajax-load-more' );
 			}
 			?>
 		</div>
-		<div class="call-out light no-shadow" style="width: 100%;">
+		<div class="call-out call-out--centered light no-shadow" style="width: 100%;">
 			<p><?php echo wp_kses_post( __( 'Extensions are installed as stand alone plugins and receive update notifications in the <a href="plugins.php">plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
 		</div>
 	</div>

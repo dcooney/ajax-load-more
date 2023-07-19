@@ -5,7 +5,7 @@ jQuery(document).ready(function ($) {
 		output_div = $('.ajax-load-more.shortcode-builder #shortcode_output'),
 		output = '[ajax_load_more]';
 
-	//Init the shortcode output.
+	// Init the shortcode output.
 	output_div.text(output);
 
 	/**
@@ -1084,28 +1084,48 @@ jQuery(document).ready(function ($) {
 
 		var search = $('.search-term input').val();
 		search = $.trim(search);
-		if (search !== '') output += ' search="' + search + '"';
+		if (search !== '') {
+			output += ' search="' + search + '"';
+		}
 
 		// ---------------------------
 		// - Ordering
 		// ---------------------------
 		var order = $('select#post-order').val(),
-			orderby = $('select#post-orderby').val();
-		if (order !== 'DESC') output += ' order="' + order + '"';
-		if (orderby !== 'date') output += ' orderby="' + orderby + '"';
+			orderby = $('select#post-orderby').val(),
+			sort_key = $('#sort-key').val();
+		if (order !== 'DESC') {
+			output += ' order="' + order + '"';
+		}
+		if (orderby !== 'date') {
+			output += ' orderby="' + orderby + '"';
+		}
+		// Sort key.
+		if (orderby.search(/meta_value/) !== -1) {
+			$('.sort-key-options').slideDown(250, 'alm_easeInOutQuad');
+			if (sort_key) {
+				output += ' sort_key="' + sort_key + '"';
+			}
+		} else {
+			$('.sort-key-options').slideUp(250, 'alm_easeInOutQuad');
+		}
 
 		// ---------------------------
 		// - Post Status
 		// ---------------------------
 		var post_status = $('select#post-status').val();
-		if (post_status !== 'publish') output += ' post_status="' + post_status + '"';
+		if (post_status !== 'publish') {
+			output += ' post_status="' + post_status + '"';
+		}
 
 		// ---------------------------
 		// - Post Offset
 		// ---------------------------
 
 		var offset = $('.offset input').val();
-		if (offset > 0) output += ' offset="' + offset + '"';
+		if (offset > 0) {
+			output += ' offset="' + offset + '"';
+		}
 
 		// ---------------------------
 		// - Custom Arguments
@@ -1113,7 +1133,9 @@ jQuery(document).ready(function ($) {
 
 		var custom_args = $('.custom-arguments input').val();
 		custom_args = $.trim(custom_args);
-		if (custom_args !== '') output += ' custom_args="' + custom_args + '"';
+		if (custom_args !== '') {
+			output += ' custom_args="' + custom_args + '"';
+		}
 
 		// ---------------------------
 		// - Pause
@@ -1527,21 +1549,18 @@ jQuery(document).ready(function ($) {
 	});
 
 	/* Table of Contents */
-
 	if ($('.table-of-contents').hasClass('repeaters-toc')) {
 		$('.table-of-contents .toc').append('<option value="#">-- ' + alm_admin_localize.jump_to_template + ' --</option>');
 	} else {
 		$('.table-of-contents .toc').append('<option value="#">-- ' + alm_admin_localize.jump_to_option + ' --</option>');
 	}
-
 	$('.table-of-contents .toc').append(jumpMenuOptions).select2();
-
 	$('.table-of-contents .toc').change(function () {
 		var pos = $(this).val();
 		if (pos !== 'null' && pos !== '#') {
 			$('html,body').animate(
 				{
-					scrollTop: $('#' + pos).offset().top - 46,
+					scrollTop: $('#' + pos).offset().top - 120,
 				},
 				500,
 				'alm_easeInOutQuad'

@@ -7,8 +7,8 @@
  */
 
 $alm_admin_heading = __( 'Licenses', 'ajax-load-more' );
-$alm_pg_title = ( has_action( 'alm_pro_installed' ) ) ? __( 'Pro License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
-$alm_pg_desc  = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro license key to enable updates from the plugins dashboard', 'ajax-load-more' ) : __( 'Enter your license keys below to enable <a href="admin.php?page=ajax-load-more-add-ons">add-on</a> updates from the plugins dashboard', 'ajax-load-more' );
+$alm_pg_title      = ( has_action( 'alm_pro_installed' ) ) ? __( 'Pro License', 'ajax-load-more' ) : __( 'Licenses', 'ajax-load-more' );
+$alm_pg_desc       = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro license key to enable updates from the plugins dashboard', 'ajax-load-more' ) : __( 'Enter your license keys below to enable <a href="admin.php?page=ajax-load-more-add-ons">add-on</a> updates from the plugins dashboard', 'ajax-load-more' );
 ?>
 <div class="wrap ajax-load-more main-cnkt-wrap" id="alm-licenses">
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
@@ -172,7 +172,6 @@ $alm_pg_desc  = ( has_action( 'alm_pro_installed' ) ) ? __( 'Enter your Pro lice
 					</a>
 				</div>
 			</div>
-			<div class="clear"></div>
 		</aside>
 	</div>
 </div>

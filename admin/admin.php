@@ -201,11 +201,10 @@ function alm_admin_menu() {
 
 	// WooCommerce.
 	if ( has_action( 'alm_woocommerce_installed' ) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { // phpcs:ignore
-		$woo_icon             = '<style>.dashicons.alm-woo:before{font-family: WooCommerce!important; content: "\e03d"; font-size: 16px; margin-top: 2px;}</style>';
 		$alm_woocommerce_page = add_submenu_page(
 			'ajax-load-more',
 			__( 'WooCommerce', 'ajax-load-more' ),
-			$woo_icon . '<span class="dashicons dashicons-before dashicons-admin-generic alm-woo" ' . $style_link_icon . '></span> ' . __( 'WooCommerce', 'ajax-load-more' ),
+			__( 'WooCommerce', 'ajax-load-more' ),
 			'edit_theme_options',
 			'ajax-load-more-woocommerce',
 			'alm_woocommerce_page'

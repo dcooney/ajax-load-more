@@ -17,7 +17,8 @@
 			background: none;
 			list-style: none;
 			a {
-				display: block;
+				display: flex;
+				align-items: center;
 				padding: $padding_sm $padding;
 				line-height: 1;
 				text-decoration: none;

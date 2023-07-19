@@ -119,6 +119,9 @@ export function getAjaxParams(alm, queryType) {
 	if (alm.listing.dataset.taxonomyRelation) {
 		data.taxonomy_relation = alm.listing.dataset.taxonomyRelation;
 	}
+	if (alm.listing.dataset.sortKey) {
+		data.sort_key = alm.listing.dataset.sortKey;
+	}
 	if (alm.listing.dataset.metaKey) {
 		data.meta_key = alm.listing.dataset.metaKey;
 	}
