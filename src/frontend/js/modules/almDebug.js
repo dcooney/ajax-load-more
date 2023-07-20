@@ -7,10 +7,10 @@
  */
 export default function almDebug(alm) {
 	if (alm && alm.debug) {
-		let obj = {
+		const obj = {
 			query: alm.debug,
 			localize: alm.localize,
 		};
-		console.log('ALM Debug:', obj);
+		console.log('ALM Debug:', obj); // eslint-disable-line no-console
 	}
 }

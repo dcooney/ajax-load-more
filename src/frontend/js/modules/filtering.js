@@ -1,5 +1,4 @@
-import almFadeIn from './fadeIn';
-import almFadeOut from './fadeOut';
+import { almFadeIn, almFadeOut } from './fade';
 import { clearTOC } from './tableofcontents';
 
 /**
@@ -73,12 +72,12 @@ function almFilterTransition(transition, speed, data, type, element) {
 }
 
 /**
- * Complete the filter transition
+ * Complete the filter transition.
  *
- * @param {number}  speed    Transition speed.
- * @param {Object}  data     Data object.
- * @param {string}  type     Type of filter.
- * @param {Element} element  Target element.
+ * @param {number}  speed   Transition speed.
+ * @param {Object}  data    Data object.
+ * @param {string}  type    Type of filter.
+ * @param {Element} element Target element.
  * @since 3.3
  */
 function almCompleteFilterTransition(speed, data, type, element) {
@@ -121,7 +120,6 @@ function almCompleteFilterTransition(speed, data, type, element) {
  * @param {Object}  data    Data object.
  * @param {string}  type    Type of filter.
  * @param {Element} element Target element.
- * @updated 3.3
  * @since 2.6.1
  */
 function almSetFilters(speed, data, type, element) {

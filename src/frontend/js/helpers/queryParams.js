@@ -5,7 +5,7 @@ import { getCacheSlug } from '../addons/cache';
  *
  * @param {Object} alm       The ALM object.
  * @param {string} queryType The query type.
- * @return {object}          The data object.
+ * @return {Object}          The data object.
  * @since 3.6
  */
 export function getAjaxParams(alm, queryType) {
@@ -196,7 +196,7 @@ export function getAjaxParams(alm, queryType) {
  *
  * @param {Object} alm  The ALM object.
  * @param {string} type The query type.
- * @return {object}     The query params.
+ * @return {Object}     The query params.
  */
 export function getTypeParams(alm, type) {
 	const { addons, extensions } = alm;
@@ -273,7 +273,7 @@ export function getTypeParams(alm, type) {
  * Build the REST API data object to send with REST API request.
  *
  * @param {Object} alm The ALM object.
- * @return {object}    The data object.
+ * @return {Object}    The data object.
  * @since 3.6
  */
 export function getRestAPIParams(alm) {

@@ -8,7 +8,6 @@
  *   (via https://github.com/adalgiso/html5-dataset/blob/master/html5-dataset.js )
  * Depends on Function.bind and Object.defineProperty/Object.getOwnPropertyDescriptor (polyfills below)
  * All code below is Licensed under the X11/MIT License
- * eslint-ignore-file
  */
 if (!Function.prototype.bind) {
 	Function.prototype.bind = function (oThis) {

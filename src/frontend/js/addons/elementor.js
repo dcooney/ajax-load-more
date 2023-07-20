@@ -60,7 +60,7 @@ export function elementorInit(alm) {
  * @param {string} url 	      The request URL.
  * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
- * @return {object}           Results data.
+ * @return {Object}           Results data.
  * @since 5.4.0
  */
 export function elementorGetContent(alm, url, response, cache_slug) {
@@ -202,7 +202,7 @@ export function elementorLoaded(alm) {
  * Create Elementor params for ALM.
  *
  * @param  {object} alm The alm object.
- * @return {object}     The modified object.
+ * @return {Object}     The modified object.
  */
 export function elementorCreateParams(alm) {
 	// Get Settings
@@ -258,7 +258,7 @@ export function elementorCreateParams(alm) {
  *
  * @param  {object} alm  The alm object.
  * @param  {string} type The Elementor type.
- * @return {object}      The modified object.
+ * @return {Object}      The modified object.
  */
 function setElementorClasses(alm, type = 'posts') {
 	// Container Class
@@ -279,7 +279,7 @@ function setElementorClasses(alm, type = 'posts') {
  * Parse Masonry Settings from Elementor Data atts
  *
  * @param {Object} alm The alm object.
- * @return {object}    The modified object.
+ * @return {Object}    The modified object.
  */
 function parseMasonryConfig(alm) {
 	if (!alm.addons.elementor_element) {

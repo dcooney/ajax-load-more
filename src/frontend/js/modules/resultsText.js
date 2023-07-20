@@ -31,7 +31,7 @@ export function almGetResultsText(alm, type = 'standard') {
 	let pages = 0;
 	let post_count = 0;
 	let total_posts = 0;
-	let posts_per_page = alm.orginal_posts_per_page;
+	const posts_per_page = alm.orginal_posts_per_page;
 
 	switch (type) {
 		// Nextpage
@@ -74,7 +74,7 @@ export function almInitResultsText(alm, type = 'standard') {
 	let page = 0;
 	let pages = Math.ceil(alm.localize.total_posts / alm.orginal_posts_per_page);
 	let post_count = parseInt(alm.localize.post_count);
-	let total_posts = parseInt(alm.localize.total_posts);
+	const total_posts = parseInt(alm.localize.total_posts);
 
 	switch (type) {
 		case 'nextpage': // Nextpage
@@ -94,20 +94,20 @@ export function almInitResultsText(alm, type = 'standard') {
 			break;
 
 		default:
-			console.log('No results to set.');
+			console.log('No results to set.'); // eslint-disable-line no-console
 	}
 }
 
 /**
- *  Render `Showing {x} of {y} results` text.
+ * Render `Showing {x} of {y} results` text.
  *
- *  @param {Element} el          The results text HTML element.
- *  @param {string}  page        The current page number.
- *  @param {string}  pages       The total pages.
- *  @param {string}  post_count  Total posts displayed.
- *  @param {string}  total_posts Total amount of posts in query.
- *  @param {string}  per_page    Total amount of posts per page.
- *  @since 4.1
+ * @param {Element} el          The results text HTML element.
+ * @param {string}  page        The current page number.
+ * @param {string}  pages       The total pages.
+ * @param {string}  post_count  Total posts displayed.
+ * @param {string}  total_posts Total amount of posts in query.
+ * @param {string}  per_page    Total amount of posts per page.
+ * @since 4.1
  */
 const almRenderResultsText = function (el, page, pages, post_count, total_posts, per_page) {
 	el.forEach(function (result) {

@@ -1,7 +1,7 @@
 /**
  * Dispatch a window scroll event.
  *
- * @param {Boolean} delay Should this be delayed.
+ * @param {boolean} delay Should this be delayed.
  * @since 5.5
  */
 const dispatchScrollEvent = function (delay = true) {
@@ -14,5 +14,4 @@ const dispatchScrollEvent = function (delay = true) {
 		);
 	}
 };
-
 export default dispatchScrollEvent;

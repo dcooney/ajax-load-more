@@ -5,3 +5,6 @@ node_modules/
 vendor/
 dist/
 lang/
+src/admin/js/*
+src/frontend/js/helpers/helpers.js
+src/frontend/js/helpers/polyfills.js

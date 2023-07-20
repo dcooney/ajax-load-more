@@ -1,6 +1,6 @@
 import srcsetPolyfill from '../helpers/srcsetPolyfill';
 import { lazyImagesReplace } from './lazyImages';
-let imagesLoaded = require('imagesloaded');
+const imagesLoaded = require('imagesloaded');
 
 /**
  * Load the image with imagesLoaded

@@ -131,7 +131,7 @@ export function createSEOAttributes(alm, element, querystring, seo_class, pagenu
  *
  * @param  {string} seo_offset Is this an SEO offset.
  * @param  {Number} page       The page number,
- * @return {Number}            The page number.
+ * @return {number}            The page number.
  */
 export function getSEOPageNum(seo_offset, page) {
 	if (seo_offset === 'true') {

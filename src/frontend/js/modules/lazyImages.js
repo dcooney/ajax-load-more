@@ -21,7 +21,7 @@ export function lazyImagesReplace(container) {
 	const images = container.getElementsByTagName('img');
 	if (images) {
 		// Loop all images.
-		Array.prototype.forEach.call(images, img => {
+		Array.prototype.forEach.call(images, (img) => {
 			if (img) {
 				replaceSrc(img);
 			}

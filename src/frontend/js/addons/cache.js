@@ -11,18 +11,13 @@ import { api } from '../helpers/api';
 export function getCacheSlug(alm, data) {
 	const { addons, pagePrev, page, rel = 'next' } = alm;
 	if (addons.nextpage) {
-		// Nextpage.
-		return `page-${page + addons.nextpage_startpage}`;
+		return `page-${page + addons.nextpage_startpage}`; // Nextpage.
 	} else if (addons.single_post) {
-		// Single Post.
-		return addons.single_post_id;
+		return addons.single_post_id; // Single Post.
 	} else if (addons.woocommerce || addons.elementor) {
-		// WooCommerce || Elementor.
-		return rel === 'prev' ? `page-${pagePrev}` : `page-${page + 1}`;
-	} else {
-		// Standard.
-		return MD5(JSON.stringify(data)).toString();
+		return rel === 'prev' ? `page-${pagePrev}` : `page-${page + 1}`; // WooCommerce || Elementor.
 	}
+	return MD5(JSON.stringify(data)).toString(); // Standard.
 }
 
 /**
@@ -44,7 +39,7 @@ export async function createCache(alm, data, name) {
 		cache_id: alm.addons.cache_id,
 		cache_logged_in: alm.addons.cache_logged_in,
 		canonical_url: alm.canonical_url,
-		name: name,
+		name,
 		html: html.trim(),
 		postcount: meta.postcount,
 		totalposts: meta.totalposts,
@@ -53,16 +48,16 @@ export async function createCache(alm, data, name) {
 	// Create the cache file via REST API.
 	const res = await api.post('ajax-load-more/cache/create', params);
 	if (res.status === 200 && res.data && res.data.success) {
-		console.log(res.data.msg);
+		console.log(res.data.msg); // eslint-disable-line no-console
 	}
 }
 
 /**
  * Get cache data file.
  *
- * @param {Object} alm       The ALM object.
- * @param {Object} params    Query params.
- * @return {Promise\boolean} Cache data or false.
+ * @param {Object} alm    The ALM object.
+ * @param {Object} params Query params.
+ * @return {Promise}      Cache data or false.
  */
 export async function getCache(alm, params) {
 	if (!alm.addons.cache || (alm.addons.cache && alm.addons.cache_logged_in)) {
@@ -78,7 +73,7 @@ export async function getCache(alm, params) {
 	const res = await api.get('ajax-load-more/cache/get', { params: restParams });
 	if (res.status === 200 && res.data) {
 		return res.data;
-	} else {
-		return false;
 	}
+
+	return false;
 }

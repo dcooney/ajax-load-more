@@ -1,12 +1,11 @@
 /**
  * Create a Load Previous button.
  *
- * @param {HTMLElement} content
- * @param {Object} alm The Ajax Load More object.
+ * @param {Object} alm       The Ajax Load More object.
  * @param {Object} container The container element.
- * @param {number} page The previous page number.
- * @param {string} url The previous page url.
- * @param {string} label The label for the button.
+ * @param {number} page      The previous page number.
+ * @param {string} url       The previous page url.
+ * @param {string} label     The label for the button.
  * @since 5.5.0
  */
 export function createLoadPreviousButton(alm, container, page = 1, url, label) {

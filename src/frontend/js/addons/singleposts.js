@@ -6,7 +6,7 @@ import { createCache } from './cache';
  * @param {Object} alm        The alm object.
  * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
- * @return {object}           Results data.
+ * @return {Object}           Results data.
  * @since 5.1.8.1
  */
 export function singlePostHTML(alm, response, cache_slug) {
@@ -61,11 +61,11 @@ export default singlePostHTML;
  *
  * e.g. window.almSinglePostsCustomElements = ['#woocommerce-inline-inline-css', '#wc-block-style-css'];
  *
- * @param {Object}       content        The HTML element.
- * @param {array|string} customElements The elements to search for in content.
- * @return {object} HTML elements.
+ * @param {HTMLElement} content        The HTML element.
+ * @param {Array}       customElements The elements to search for in content.
+ * @return {HTMLElement}               The HTML elements.
  */
-function singlePostsGetCustomElements(content = '', customElements = false) {
+function singlePostsGetCustomElements(content = '', customElements = []) {
 	// Create container element to hold elements.
 	const container = document.createElement('div');
 	container.classList.add('alm-custom-elements');

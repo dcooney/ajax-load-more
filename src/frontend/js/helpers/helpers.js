@@ -1,5 +1,3 @@
-// eslint-ignore-file
-
 // Object.entries
 if (!Object.entries) {
 	Object.entries = function (obj) {

@@ -119,7 +119,7 @@ export function woocommerce(content, alm) {
  * @param {string} url 	      The request URL.
  * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
- * @return {object}           Results data.
+ * @return {Object}           Results data.
  * @since 5.3.0
  */
 export function wooGetContent(alm, url, response, cache_slug) {
@@ -319,7 +319,7 @@ function returnButton(text, link, label, seperator) {
  * Get total count of WooCommerce containers.
  *
  * @param {string} container The container class.
- * @return {Number}          The total umber of containers.
+ * @return {number}          The total umber of containers.
  */
 function getContainerCount(container) {
 	if (!container) {

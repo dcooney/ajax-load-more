@@ -1,5 +1,4 @@
-import almFadeIn from './fadeIn';
-import almFadeOut from './fadeOut';
+import { almFadeIn, almFadeOut } from './fade';
 
 export function showPlaceholder(alm) {
 	if (!alm || !alm.main || alm.addons.paging || alm.rel === 'prev') {

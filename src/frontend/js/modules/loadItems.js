@@ -3,12 +3,13 @@ import setFocus from './setFocus';
 
 /**
  * Load all items after Ajax request.
+ *
  * Note: The function is used with WooCommerce and Elementor add-ons.
  *
- * @param {Element} container     The HTML container
- * @param {array}   items         Array of items.
- * @param {Object}  alm	          The ALM object.
- * @param {boolean} waitForImages Wait for images to load before loading next item.
+ * @param {HTMLElement} container     The HTML container.
+ * @param {Array}       items         Array of items.
+ * @param {Object}      alm           The ALM object.
+ * @param {boolean}     waitForImages Wait for images to load before loading next item.
  */
 export default function loadItems(container, items, alm, waitForImages = true) {
 	return new Promise((resolve) => {
@@ -36,6 +37,7 @@ export default function loadItems(container, items, alm, waitForImages = true) {
 				setTimeout(function () {
 					items.map(function (item) {
 						item.style.opacity = 1;
+						return item;
 					});
 					if (items[0]) {
 						const focusItem = rel === 'prev' ? items[items.length - 1] : items[0]; // Get the item to focus.

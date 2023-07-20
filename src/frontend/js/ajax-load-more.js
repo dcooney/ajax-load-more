@@ -18,8 +18,7 @@ import srcsetPolyfill from './helpers/srcsetPolyfill';
 import stripEmptyNodes from './helpers/stripEmptyNodes';
 import tableWrap from './helpers/tableWrap';
 import almDebug from './modules/almDebug';
-import almFadeIn from './modules/fadeIn';
-import almFadeOut from './modules/fadeOut';
+import { almFadeIn, almFadeOut } from './modules/fade';
 import almFilter from './modules/filtering';
 import insertScript from './modules/insertScript';
 import { lazyImages } from './modules/lazyImages';
@@ -704,6 +703,7 @@ let alm_is_filtering = false;
 					break;
 
 				case 'totalposts':
+				case 'totalpages':
 					if (alm.addons.paging && alm.addons.nextpage && typeof almBuildPagination === 'function') {
 						window.almBuildPagination(data.totalpages, alm);
 						alm.totalpages = data.totalpages;
@@ -1346,7 +1346,7 @@ let alm_is_filtering = false;
 		 * @since 2.14.0
 		 */
 		alm.AjaxLoadMore.pagingNextpageInit = function (data) {
-			data = data == null ? '' : data; // Check for null data object
+			data = data === null ? '' : data; // Check for null data object
 
 			// Add paging containers and content
 			alm.AjaxLoadMore.pagingInit(data, 'alm-reveal alm-nextpage');
@@ -1360,12 +1360,12 @@ let alm_is_filtering = false;
 		/**
 		 * First run for Paging to create required containers.
 		 *
-		 * @param {data} Ajax results
-		 * @param {classes} added classes
+		 * @param {string} data    The Ajax response data.
+		 * @param {string} classes The classes to add to the container.
 		 * @since 5.0
 		 */
 		alm.AjaxLoadMore.pagingInit = function (data, classes = 'alm-reveal') {
-			data = data == null ? '' : data; // Check for null data object.
+			data = data === null ? '' : data; // Check for null data object.
 
 			// Create `alm-reveal` container.
 			const reveal = document.createElement('div');
@@ -1416,14 +1416,14 @@ let alm_is_filtering = false;
 		/**
 		 *	Automatically trigger nested ALM instances - requires `.alm-reveal` container.
 		 *
-		 * @param {Object} instance
+		 * @param {HTMLElement} reveal The reveal div.
 		 * @since 5.0
 		 */
 		alm.AjaxLoadMore.nested = function (reveal) {
 			if (!reveal || !alm.transition_container) {
 				return false; // Exit if not `transition_container`
 			}
-			let nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances
+			const nested = reveal.querySelectorAll('.ajax-load-more-wrap'); // Get all instances
 			if (nested) {
 				nested.forEach(function (element) {
 					window.almInit(element);
@@ -1502,6 +1502,7 @@ let alm_is_filtering = false;
 		/**
 		 * Triggers various add-on functions (if available) after load complete.
 		 *
+		 * @param {Object} alm The ALM object.
 		 * @since 2.14.0
 		 */
 		alm.AjaxLoadMore.triggerAddons = function (alm) {
@@ -1593,7 +1594,7 @@ let alm_is_filtering = false;
 		 * @since 4.2.0
 		 */
 		alm.AjaxLoadMore.click = function (e) {
-			let button = e.target || e.currentTarget;
+			const button = e.target || e.currentTarget;
 			alm.rel = 'next';
 			if (alm.pause === 'true') {
 				alm.pause = false;
@@ -1615,7 +1616,7 @@ let alm_is_filtering = false;
 		 * @since 5.5.0
 		 */
 		alm.AjaxLoadMore.prevClick = function (e) {
-			let button = e.target || e.currentTarget;
+			const button = e.target || e.currentTarget;
 			e.preventDefault();
 			if (!alm.loading && !button.classList.contains('done')) {
 				alm.loading = true;
@@ -1650,7 +1651,6 @@ let alm_is_filtering = false;
 		 * Window resize functions for Paging, Scroll Distance Percentage etc.
 		 *
 		 * @since 2.1.2
-		 * @updated 5.2
 		 */
 		if (alm.addons.paging || alm.scroll_distance_perc || alm.scroll_direction === 'horizontal') {
 			let resize;
@@ -1695,7 +1695,7 @@ let alm_is_filtering = false;
 				window.dispatchEvent(new Event('resize'));
 			} else {
 				//This will be executed on old browsers and especially IE
-				let resizeEvent = window.document.createEvent('UIEvents');
+				const resizeEvent = window.document.createEvent('UIEvents');
 				resizeEvent.initUIEvent('resize', true, false, window, 0);
 				window.dispatchEvent(resizeEvent);
 			}
@@ -1705,7 +1705,6 @@ let alm_is_filtering = false;
 		 * Load posts as user scrolls the page.
 		 *
 		 * @since 1.0
-		 * @updated 4.2.0
 		 */
 		alm.AjaxLoadMore.scroll = function () {
 			if (alm.timer) {
@@ -1714,14 +1713,14 @@ let alm_is_filtering = false;
 
 			alm.timer = setTimeout(function () {
 				if (alm.AjaxLoadMore.isVisible() && !alm.fetchingPreviousPost) {
-					let trigger = alm.trigger.getBoundingClientRect();
-					let btnPos = Math.round(trigger.top - alm.window.innerHeight) + alm.scroll_distance;
+					const trigger = alm.trigger.getBoundingClientRect();
+					const btnPos = Math.round(trigger.top - alm.window.innerHeight) + alm.scroll_distance;
 					let scrollTrigger = btnPos <= 0 ? true : false;
 
 					// Scroll Container
 					if (alm.window !== window) {
-						let scrollHeight = alm.main.offsetHeight; // ALM height
-						let scrollWidth = alm.main.offsetWidth; // ALM Width
+						const scrollHeight = alm.main.offsetHeight; // ALM height
+						const scrollWidth = alm.main.offsetWidth; // ALM Width
 						let scrollPosition = '';
 						if (alm.scroll_direction === 'horizontal') {
 							// Left/Right
@@ -1777,14 +1776,14 @@ let alm_is_filtering = false;
 				alm.window.addEventListener('touchstart', alm.AjaxLoadMore.scroll); // Touch Devices
 				alm.window.addEventListener('wheel', function (e) {
 					// Mousewheel
-					let direction = Math.sign(e.deltaY);
+					const direction = Math.sign(e.deltaY);
 					if (direction > 0) {
 						alm.AjaxLoadMore.scroll();
 					}
 				});
 				alm.window.addEventListener('keyup', function (e) {
 					// End, Page Down
-					let code = e.key ? e.key : e.code;
+					const code = e.key ? e.key : e.code;
 					switch (code) {
 						case 35:
 						case 34:
@@ -1868,7 +1867,7 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.init = async function () {
 			// Preloaded and destroy_after is 1.
-			if (alm.addons.preloaded === 'true' && alm.destroy_after == 1) {
+			if (alm.addons.preloaded === 'true' && alm.destroy_after === 1) {
 				alm.AjaxLoadMore.destroyed();
 			}
 
@@ -1951,11 +1950,10 @@ let alm_is_filtering = false;
 			if (alm.addons.nextpage) {
 				// Check that posts remain on load
 				if (alm.listing.querySelector('.alm-nextpage') && !alm.addons.paging) {
-					let nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items
-
+					const nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items.
 					if (nextpage_pages) {
-						let nextpage_first = nextpage_pages[0];
-						let nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
+						const nextpage_first = nextpage_pages[0];
+						const nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
 
 						// Disable if last page loaded
 						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
@@ -2001,8 +1999,8 @@ let alm_is_filtering = false;
 					(async function () {
 						await almMasonry(alm, true, false);
 						alm.masonry.init = false;
-					})().catch((e) => {
-						console.log('There was an error with ALM Masonry');
+					})().catch(() => {
+						console.log('There was an error with ALM Masonry'); // eslint-disable-line no-console
 					});
 				}
 
@@ -2010,7 +2008,9 @@ let alm_is_filtering = false;
 				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
 					if (typeof almFiltersFacets === 'function') {
 						const facets = alm.localize && alm.localize.facets;
-						facets && window.almFiltersFacets(facets);
+						if (facets) {
+							window.almFiltersFacets(facets);
+						}
 					}
 				}
 
@@ -2024,6 +2024,8 @@ let alm_is_filtering = false;
 		/**
 		 * Handle error messages.
 		 *
+		 * @param {string} error    The error message.
+		 * @param {string} location The location the error occured.
 		 * @since 2.6.0
 		 */
 		alm.AjaxLoadMore.error = function (error, location = null) {
@@ -2033,36 +2035,40 @@ let alm_is_filtering = false;
 				alm.button.classList.remove('loading');
 				alm.AjaxLoadMore.resetBtnText();
 			}
-			console.log('Error: ', error);
+			console.log('Error: ', error); // eslint-disable-line no-console
 
 			if (error.response) {
 				// The request was made and the server responded with a status code
 				// that falls out of the range of 2xx
-				console.log('Error Msg: ', error.message);
+				console.log('Error Msg: ', error.message); // eslint-disable-line no-console
 			} else if (error.request) {
 				// The request was made but no response was received
 				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of ClientRequest in node.js
-				console.log(error.request);
+				console.log(error.request); // eslint-disable-line no-console
 			} else {
 				// Something happened in setting up the request that triggered an Error
-				console.log('Error Msg: ', error.message);
+				console.log('Error Msg: ', error.message); // eslint-disable-line no-console
 			}
 
 			if (location) {
-				console.log('ALM Error started in ' + location);
+				console.log('ALM Error started in ' + location); // eslint-disable-line no-console
 			}
 			if (error.config) {
-				console.log('ALM Error Debug: ', error.config);
+				console.log('ALM Error Debug: ', error.config); // eslint-disable-line no-console
 			}
 		};
 
 		/**
 		 * Update Current Page.
-		 *
 		 * Note: Callback function triggered from Paging add-on.
+		 *
+		 * @param {number} current Current page number.
+		 * @param {Object} obj     Optional object (Deprecated).
+		 * @param {Object} alm     The ALM object.
 		 * @since 2.7.0
 		 */
 		window.almUpdateCurrentPage = function (current, obj, alm) {
+			// eslint-disable-line
 			alm.page = current;
 			alm.page = alm.addons.nextpage && !alm.addons.paging ? alm.page - 1 : alm.page; // Next Page add-on
 
@@ -2099,26 +2105,25 @@ let alm_is_filtering = false;
 		/**
 		 * Get the parent ALM container.
 		 *
+		 * @return {HTMLElement} The ALM listing container.
 		 * @since 2.7.0
-		 * @return element
 		 */
 		window.almGetParentContainer = function () {
-			return alm.listing;
+			return alm?.listing;
 		};
 
 		/**
 		 * Returns the current ALM obj.
 		 *
-		 * @param {string} specific obj
+		 * @param {string} obj The ALM object to return.
+		 * @return {Object}    The ALM object.
 		 * @since 2.7.0
-		 * @return object
 		 */
 		window.almGetObj = function (obj = '') {
-			if (obj !== '') {
-				return alm[obj]; // Return specific param
-			} else {
-				return alm; // Return the entire alm object
+			if (obj) {
+				return alm[obj]; // Return specific param.
 			}
+			return alm; // Return the entire alm object
 		};
 
 		/**
@@ -2143,9 +2148,11 @@ let alm_is_filtering = false;
 	// End ajaxloadmore
 
 	/**
-	 *  Initiate instance of Ajax load More
+	 * Initiate instance of Ajax load More
 	 *
-	 *  @since 5.0
+	 * @param {HTMLElement} el The ALM element.
+	 * @param {number}      id The ALM instance ID.
+	 * @since 5.0
 	 */
 	window.almInit = function (el, id = 0) {
 		new ajaxloadmore(el, id);
@@ -2167,15 +2174,16 @@ let alm_is_filtering = false;
 /**
  * Filter an Ajax Load More instance.
  *
+ * @param {string} transition The transition type.
+ * @param {string} speed      The speed of the filter transition.
+ * @param {Object} data       Query data as an object.
  * @since 5.0
- * @param {*} transition
- * @param {*} speed
- * @param {*} data
  */
 export const filter = function (transition = 'fade', speed = '200', data = '') {
 	if (!transition || !speed || !data) {
 		return false;
 	}
+	console.log(transition, speed, data);
 	alm_is_filtering = true;
 	almFilter(transition, speed, data, 'filter');
 };
@@ -2184,7 +2192,7 @@ export const filter = function (transition = 'fade', speed = '200', data = '') {
  * Reset an Ajax Load More instance.
  *
  * @since 5.3.8
- * @param {*} target
+ * @param {Object} props The ALM props as an object.
  */
 export const reset = function (props = {}) {
 	let data = {};
@@ -2192,7 +2200,7 @@ export const reset = function (props = {}) {
 
 	if (props && props.target) {
 		data = {
-			target: target,
+			target,
 		};
 	}
 
@@ -2206,7 +2214,7 @@ export const reset = function (props = {}) {
 				almFilter('fade', '100', data, 'filter');
 			}
 		})().catch(() => {
-			console.warn('Ajax Load More: There was an resetting the Ajax Load More instance.');
+			console.warn('Ajax Load More: There was an issue resetting the Ajax Load More instance.');
 		});
 	} else {
 		// Standard ALM
@@ -2216,12 +2224,11 @@ export const reset = function (props = {}) {
 
 /**
  * Get the total post count in the current query by ALM instance ID.
- *
  * Note: Uses localized ALM variables.
- * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
  *
- * @param  {string} id An optional Ajax Load More ID.
- * @return {Number}    The results from the localized variable.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ * @param {string} id An optional Ajax Load More ID.
+ * @return {number}   The results from the localized variable.
  */
 export const getPostCount = function (id = '') {
 	return getTotals('post_count', id);
@@ -2229,10 +2236,10 @@ export const getPostCount = function (id = '') {
 
 /**
  * Get the total number of posts by ALM instance ID.
- *
  * Note: Uses localized ALM variables.
- * @param  {string} id An optional Ajax Load More ID.
- * @return {Number}    The results from the localized variable.
+ *
+ * @param {string} id An optional Ajax Load More ID.
+ * @return {number}   The results from the localized variable.
  */
 export const getTotalPosts = function (id = '') {
 	return getTotals('total_posts', id);
@@ -2240,12 +2247,11 @@ export const getTotalPosts = function (id = '') {
 
 /**
  * Get the total posts remaining in the current query by ALM instance ID.
- *
  * Note: Uses localized ALM variables.
- * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
  *
- * @param  {string} id An optional Ajax Load More ID.
- * @return {Number}    The total remaining posts.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ * @param {string} id An optional Ajax Load More ID.
+ * @return {number}   The total remaining posts.
  */
 export const getTotalRemaining = function (id = '') {
 	return getTotals('remaining', id);
@@ -2270,7 +2276,7 @@ export const tracking = function (path) {
 				page_path: window.location.pathname,
 			});
 			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (gtag)');
+				console.log('Pageview sent to Google Analytics (gtag)'); //eslint-disable-line no-console
 			}
 		}
 
@@ -2279,7 +2285,7 @@ export const tracking = function (path) {
 			ga('set', 'page', path);
 			ga('send', 'pageview');
 			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (ga)');
+				console.log('Pageview sent to Google Analytics (ga)'); //eslint-disable-line no-console
 			}
 		}
 
@@ -2288,7 +2294,7 @@ export const tracking = function (path) {
 			__gaTracker('set', 'page', path);
 			__gaTracker('send', 'pageview');
 			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (__gaTracker)');
+				console.log('Pageview sent to Google Analytics (__gaTracker)'); //eslint-disable-line no-console
 			}
 		}
 
@@ -2297,25 +2303,6 @@ export const tracking = function (path) {
 			window.almAnalytics(path);
 		}
 	}, 200);
-};
-
-/**
- * Tabbed content for Ajax Load More instance.
- *
- * @since 5.2
- * @param {*} data
- * @param {*} url
- */
-export const tab = function (data = '', url = false) {
-	let transition = 'fade';
-	let speed = alm_localize.speed ? parseInt(alm_localize.speed) : 200;
-
-	if (!data) {
-		return false;
-	}
-
-	alm_is_filtering = true;
-	almFilter(transition, speed, data, 'tab');
 };
 
 /**
@@ -2332,10 +2319,10 @@ export const start = function (el) {
 };
 
 /**
- *  Scroll window to position (global function).
+ * Scroll window to position (global function).
  *
- *  @since 5.0
- *  @param {string} position The position of the scrollto.
+ * @since 5.0
+ * @param {string} position The position to scroll.
  */
 export const almScroll = function (position) {
 	if (!position) {
@@ -2348,31 +2335,20 @@ export const almScroll = function (position) {
 };
 
 /**
- *  Get the current top/left coordinates of an element relative to the document.
+ * Get the current top/left coordinates of an element relative to the document.
  *
- *  @since 5.0
- *  @param {*} el
+ * @since 5.0
+ * @param {HTMLElement} el The HTML element.
+ * @return {Object}        The top/left coordinates.
  */
 export const getOffset = function (el = null) {
 	if (!el) {
 		return false;
 	}
-	let rect = el.getBoundingClientRect(),
-		scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-		scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	const rect = el.getBoundingClientRect();
+	const scrollLeft = window.scrollX || document.documentElement.scrollLeft;
+	const scrollTop = window.scrollY || document.documentElement.scrollTop;
 	return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
-};
-
-/**
- *  ALM Render (in progress)
- *
- *  @since 5.0
- */
-export const render = function (el, options = null) {
-	if (!el) {
-		return false;
-	}
-	// console.log(el, options);
 };
 
 /**
@@ -2386,13 +2362,17 @@ export const click = function (id = '') {
 	if (!id && alm) {
 		// Default ALM element.
 		button = alm.querySelector('button.alm-load-more-btn');
-		button && button.click();
+		if (button) {
+			button.click();
+		}
 	} else {
 		// Ajax Load More by ID.
 		alm = document.querySelector(`.ajax-load-more-wrap[data-id="${id}"]`);
 		if (alm) {
 			button = alm.querySelector('button.alm-load-more-btn');
-			button && button.click();
+			if (button) {
+				button.click();
+			}
 		}
 	}
 };

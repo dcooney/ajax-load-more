@@ -1,12 +1,11 @@
 /**
  * Get the total posts remaining in the current query by ALM instance ID.
- *
  * Note: Uses localized ALM variables.
- * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
  *
- * @param  {string} type The type of total to retrieve.
- * @param  {string} id   An optional Ajax Load More ID.
- * @return {Number}      A total post count.
+ * @see https://github.com/dcooney/wordpress-ajax-load-more/blob/main/core/classes/class-alm-localize.php
+ * @param {string} type The type of total to retrieve.
+ * @param {string} id   An optional Ajax Load More ID.
+ * @return {number}     A total post count.
  */
 export default function getTotals(type, id = '') {
 	// Get the ALM localized variable name.

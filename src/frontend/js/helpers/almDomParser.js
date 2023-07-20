@@ -1,17 +1,17 @@
 /**
- * Convert a plain text string into an array of HTML nodes
+ * Convert a plain text string into an array of HTML nodes.
  *
  * @param {string} html The HTML string
- * @param {string} type The type.
- * @return array
+ * @param {string} type The element type.
+ * @return {Array}      The HTML nodes as an array.
  * @since 5.0
  */
-const almDomParser = function (html = '', type = 'text/html') {
+export default function almDomParser(html = '', type = 'text/html') {
 	if (!html) {
-		return;
+		return '';
 	}
 	const parser = new DOMParser();
 	const data = parser.parseFromString(html, type);
-	return data ? Array.prototype.slice.call(data.body.childNodes) : data;
-};
-export default almDomParser;
+	const results = data ? Array.prototype.slice.call(data.body.childNodes) : data;
+	return results;
+}

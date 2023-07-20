@@ -18,6 +18,7 @@
 * NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
 * NEW: Admin interface updates.
 * FIX: Fixed issue with Canonical URL not being set correctly.
+* FIX: Fixed issue with Nextpage and Paging add-on not working in some instances.
 * UPDATE: Updated ALM build process to use wp-scripts.
 * UPDATE: Code cleanup and organization.
 

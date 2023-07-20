@@ -2,8 +2,8 @@
  * Remove empty HTML nodes from array of nodes
  * Remove all empty text nodes from SEO and Filters return
  *
- * @param {*} nodes | Array of HTML nodes
- * @return array
+ * @param {Array} nodes Array of HTML nodes
+ * @return {Array}      The filtered array of HTML nodes
  * @since 5.1.3
  */
 const stripEmptyNodes = function (nodes = '') {
@@ -12,12 +12,9 @@ const stripEmptyNodes = function (nodes = '') {
 	}
 
 	// Exclude these nodeNames from being rendered
-	let nodeNameArray = ['#text', '#comment'];
+	const nodeNameArray = ['#text', '#comment'];
 
 	// Filter data by nodeName
-	let results = nodes.filter((node) => nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1);
-
-	// Send the results
-	return results;
+	return nodes.filter((node) => nodeNameArray.indexOf(node.nodeName.toLowerCase()) === -1);
 };
 export default stripEmptyNodes;

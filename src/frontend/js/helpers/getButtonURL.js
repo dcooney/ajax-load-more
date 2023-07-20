@@ -22,8 +22,8 @@ export function getButtonURL(alm, rel = 'next') {
  * Set button dataset attributes.
  *
  * @param {Element} button The HTML element.
- * @param {number} page The current page number.
- * @param {string} url The URL for updating.
+ * @param {number}  page   The current page number.
+ * @param {string}  url    The URL for updating.
  */
 export function setButtonAtts(button, page, url) {
 	if (!button) {

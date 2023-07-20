@@ -4,8 +4,7 @@ const FILTERS_CLASSNAME = 'alm-filters';
 /**
  * Parse a filter querystring for returning caches directories.
  *
- * @param {Object} alm      The ALM object.
- * @param {array}  elements An array of filter elements.
+ * @param {string} path The URL path.
  * @since 5.3.1
  */
 export function parseQuerystring(path) {

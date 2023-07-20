@@ -1,8 +1,8 @@
 /**
  * Set the results text if required.
  *
- * @param {*} target The target HTML element
- * @param {*} html The HTML
+ * @param {HTMLElement} target The target HTML element
+ * @param {string}      html   The HTML.
  * @since 5.1
  */
 const almNoResults = (target, html = '') => {
