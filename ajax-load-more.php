@@ -15,6 +15,11 @@
  */
 
 /*
+* UPGRADE NOTICE:
+This ALM update adds a new `sort_key` parameter that is used for ordering results by custom field values.
+Users who were previously using `meta_key` for custom field ordering will need to update their shortcodes as this update is NOT backwards compatible.
+
+
 * NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
 * NEW: Admin interface updates.
 * FIX: Fixed issue with Canonical URL not being set correctly.
