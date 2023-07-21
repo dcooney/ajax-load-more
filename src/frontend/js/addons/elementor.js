@@ -13,7 +13,7 @@ export function elementorInit(alm) {
 	if (!alm.addons.elementor || !alm.addons.elementor_type || !alm.addons.elementor_type === 'posts') {
 		return false;
 	}
-	let target = alm.addons.elementor_element;
+	const target = alm.addons.elementor_element;
 
 	if (target) {
 		// Set button data attributes
@@ -57,7 +57,7 @@ export function elementorInit(alm) {
  * Get the content, title and results text from the Ajax response.
  *
  * @param {Object} alm        The alm object.
- * @param {string} url 	      The request URL.
+ * @param {string} url        The request URL.
  * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
  * @return {Object}           Results data.
@@ -153,7 +153,7 @@ export function elementor(content, alm) {
 
 				resolve(true);
 			})().catch((e) => {
-				console.log(e, 'There was an error with Elementor');
+				console.log(e, 'There was an error with Elementor'); // eslint-disable-line no-console
 			});
 		} else {
 			resolve(false);
@@ -172,7 +172,7 @@ export function elementorLoaded(alm) {
 	const { page, button, canonical_url, AjaxLoadMore, addons } = alm;
 	const nextPage = page + 1;
 
-	const sep = is_front_page === 'true' ? 'page/' : trailing_slash === 'true' ? '' : '/';
+	const sep = is_front_page === 'true' ? 'page/' : trailing_slash === 'true' ? '' : '/'; // eslint-disable-line no-nested-ternary
 	const slash = trailing_slash === 'true' ? '/' : '';
 	const url = `${canonical_url + sep}${nextPage + 1}${slash}`;
 
@@ -201,8 +201,8 @@ export function elementorLoaded(alm) {
 /**
  * Create Elementor params for ALM.
  *
- * @param  {object} alm The alm object.
- * @return {Object}     The modified object.
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
  */
 export function elementorCreateParams(alm) {
 	// Get Settings
@@ -256,9 +256,9 @@ export function elementorCreateParams(alm) {
 /**
  * Set the required classnames for parsing data and injecting content into the Elementor listing
  *
- * @param  {object} alm  The alm object.
- * @param  {string} type The Elementor type.
- * @return {Object}      The modified object.
+ * @param {Object} alm  The alm object.
+ * @param {string} type The Elementor type.
+ * @return {Object}     The modified object.
  */
 function setElementorClasses(alm, type = 'posts') {
 	// Container Class
@@ -312,7 +312,7 @@ function parseMasonryConfig(alm) {
  * @param {string} item_class      The item classname.
  */
 function positionMasonryItems(alm, container_class, item_class) {
-	let heights = [];
+	const heights = [];
 
 	// Get Elementor Settings
 	const columnsCount = alm.addons.elementor_masonry_columns;
@@ -346,12 +346,12 @@ function positionMasonryItems(alm, container_class, item_class) {
 
 	// Loop items
 	items.forEach((item, index) => {
-		let row = Math.floor(index / columns);
-		let itemHeight = item.getBoundingClientRect().height + verticalSpaceBetween;
+		const row = Math.floor(index / columns);
+		const itemHeight = item.getBoundingClientRect().height + verticalSpaceBetween;
 
 		if (row) {
-			let itemPosition = jQuery(item).position();
-			let indexAtRow = index % columns;
+			const itemPosition = jQuery(item).position();
+			const indexAtRow = index % columns;
 			let pullHeight = Math.round(itemPosition.top) - heights[indexAtRow];
 
 			pullHeight *= -1;
@@ -366,8 +366,8 @@ function positionMasonryItems(alm, container_class, item_class) {
 /**
  * Determine the type of elementor widget (woocommerce || posts)
  *
- * @param  {HTMLElement} target The target element.
- * @return {string}             The Elementor type.
+ * @param {HTMLElement} target The target element.
+ * @return {string}            The Elementor type.
  */
 function elementorGetWidgetType(target) {
 	if (!target) {
@@ -381,11 +381,11 @@ function elementorGetWidgetType(target) {
 /**
  * Get the upcoming URL from the a.next link from the HTML
  *
- * @param  {HTMLElement} element   The target element
- * @param  {string}      classname The classname.
- * @return {HTMLElement | string}
+ * @param {HTMLElement} element   The target element
+ * @param {string}      classname The classname.
+ * @return {HTMLElement}          The next page element.
  */
-function elementorGetNextPage(element, classname) {
+export function elementorGetNextPage(element, classname) {
 	const pagination = element.querySelector(classname);
 	return pagination ? elementorGetNextUrl(pagination) : '';
 }
@@ -394,7 +394,7 @@ function elementorGetNextPage(element, classname) {
  * Get the URL of the next page to load from the a.next href
  *
  * @param {HTMLElement} element The target element
- * @return {HTMLElement | string}
+ * @return {HTMLElement}        The next page element.
  */
 function elementorGetNextUrl(element) {
 	if (!element) {

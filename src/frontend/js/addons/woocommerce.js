@@ -76,8 +76,8 @@ export function wooInit(alm) {
 /**
  * Core ALM WooCommerce product loader
  *
- * @param {Element} content  WooCommerce content container.
- * @param {Object} alm       ALM object.
+ * @param {Element} content WooCommerce content container.
+ * @param {Object}  alm     ALM object.
  * @since 5.3.0
  */
 export function woocommerce(content, alm) {
@@ -101,7 +101,7 @@ export function woocommerce(content, alm) {
 				await loadItems(container, wooProducts, alm, waitForImages);
 				resolve(true);
 			})().catch((e) => {
-				console.log(e, 'There was an error with WooCommerce');
+				console.log(e, 'There was an error with WooCommerce'); // eslint-disable-line no-console
 			});
 
 			// Trigger almWooCommerceLoaded callback.
@@ -116,7 +116,7 @@ export function woocommerce(content, alm) {
  * Get the content, title and results from the Ajax request.
  *
  * @param {Object} alm        The alm object.
- * @param {string} url 	      The request URL.
+ * @param {string} url        The request URL.
  * @param {Object} response   Query response.
  * @param {string} cache_slug The cache slug.
  * @return {Object}           Results data.
@@ -189,13 +189,13 @@ export function wooGetContent(alm, url, response, cache_slug) {
  * @since 5.5.0
  */
 export function woocommerceLoaded(alm) {
-	let nextPageNum = alm.page + 2;
-	let nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // Get URL.
+	const nextPageNum = alm.page + 2;
+	const nextPage = alm.addons.woocommerce_settings.paged_urls[nextPageNum - 1]; // Get URL.
 
 	// Set button data attributes.
 	if (alm.rel === 'prev' && alm.buttonPrev) {
-		let prevPageNum = alm.pagePrev - 1;
-		let prevPage = alm.addons.woocommerce_settings.paged_urls[alm.pagePrev - 2];
+		const prevPageNum = alm.pagePrev - 1;
+		const prevPage = alm.addons.woocommerce_settings.paged_urls[alm.pagePrev - 2];
 		setButtonAtts(alm.buttonPrev, prevPageNum, prevPage);
 		dispatchScrollEvent(true);
 	} else {
@@ -234,11 +234,11 @@ export function wooReset() {
 			.get(url)
 			.then((response) => {
 				if (response.status === 200 && response.data) {
-					let div = document.createElement('div');
+					const div = document.createElement('div');
 					div.innerHTML = response.data; // Add data to div
 
-					let alm = div.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
-					let settings = alm ? alm.dataset.wooSettings : ''; // Get settings data
+					const alm = div.querySelector('.ajax-load-more-wrap .alm-listing[data-woo="true"]'); // Get ALM instance
+					const settings = alm ? alm.dataset.wooSettings : ''; // Get settings data
 					resolve(settings);
 				} else {
 					resolve(false);
@@ -251,11 +251,11 @@ export function wooReset() {
 }
 
 /**
- *  Set results text for WooCommerce Add-on.
+ * Set results text for WooCommerce Add-on.
  *
- *  @param {Element} target The target HTML element.
- *  @param {Object}  alm    ALM object.
- *  @since 5.3
+ * @param {Element} target The target HTML element.
+ * @param {Object}  alm    ALM object.
+ * @since 5.3
  */
 function almWooCommerceResultsText(target = '', alm) {
 	if (target && alm && alm.addons.woocommerce_settings.results_text) {
@@ -284,15 +284,15 @@ function almWooCommerceResultsText(target = '', alm) {
  * @since 5.3
  * @deprecated 5.5
  */
-function almWooCommerceResultsTextInit(alm) {
+export function almWooCommerceResultsTextInit(alm) {
 	if (alm && alm.addons.woocommerce_settings.results_text) {
-		let results = document.querySelectorAll(alm.addons.woocommerce_settings.results);
+		const results = document.querySelectorAll(alm.addons.woocommerce_settings.results);
 		if (results.length < 1) {
 			return false;
 		}
-		let link = alm.addons.woocommerce_settings.settings.previous_page_link;
-		let label = alm.addons.woocommerce_settings.settings.previous_page_label;
-		let sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
+		const link = alm.addons.woocommerce_settings.settings.previous_page_link;
+		const label = alm.addons.woocommerce_settings.settings.previous_page_label;
+		const sep = alm.addons.woocommerce_settings.settings.previous_page_sep;
 		// Loop all result text elements
 		results.forEach((element) => {
 			if (link && label) {
@@ -328,7 +328,6 @@ function getContainerCount(container) {
 	const containers = document.querySelectorAll(container); // Get all containers.
 	if (containers) {
 		return containers.length;
-	} else {
-		return 0;
 	}
+	return 0;
 }

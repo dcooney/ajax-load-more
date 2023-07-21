@@ -32,9 +32,9 @@ import { tableOfContents } from './modules/tableofcontents';
 
 import '../scss/ajax-load-more.scss';
 
-// External Modules
-let qs = require('qs');
-let imagesLoaded = require('imagesloaded');
+// External packages.
+const qs = require('qs');
+const imagesLoaded = require('imagesloaded');
 
 // Axios Config.
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -65,8 +65,8 @@ let alm_is_filtering = false;
 	/**
 	 * Initiate Ajax Load More.
 	 *
-	 * @param {Element} el   The Ajax Load More DOM element/container.
-	 * @param {number} index The current index number of the Ajax Load More instance.
+	 * @param {Element} el    The Ajax Load More DOM element/container.
+	 * @param {number}  index The current index number of the Ajax Load More instance.
 	 */
 	const ajaxloadmore = function (el, index) {
 		// Move user to top of page to prevent loading of unnessasry posts
@@ -127,7 +127,7 @@ let alm_is_filtering = false;
 		alm.id = el.dataset.id ? el.dataset.id : '';
 
 		// No results template
-		let alm_no_results = el.querySelector('.alm-no-results');
+		const alm_no_results = el.querySelector('.alm-no-results');
 		alm.no_results = alm_no_results ? alm_no_results.innerHTML : '';
 
 		// Shortcode Params
@@ -346,7 +346,7 @@ let alm_is_filtering = false;
 			}
 
 			// Get Paged Querystring Val
-			let page = getParameterByName('pg');
+			const page = getParameterByName('pg');
 			alm.addons.filters_startpage = page !== null ? parseInt(page) : 0;
 
 			// If not Paging add-on
@@ -491,7 +491,7 @@ let alm_is_filtering = false;
 		/* Scroll Distance */
 		alm.scroll_distance = alm.scroll_distance === undefined ? 100 : alm.scroll_distance;
 		alm.scroll_distance_perc = false;
-		if (alm.scroll_distance.toString().indexOf('%') == -1) {
+		if (alm.scroll_distance.toString().indexOf('%') === -1) {
 			// Standard scroll_distance
 			alm.scroll_distance = parseInt(alm.scroll_distance);
 		} else {
@@ -687,10 +687,10 @@ let alm_is_filtering = false;
 					} else if (alm.addons.elementor) {
 						// Elementor
 						return elementorGetContent(alm, ajaxurl, response, cache_slug);
-					} else {
-						// Get data from response
-						return response.data;
 					}
+
+					// Standard ALM - Get data from response.
+					return response.data;
 				})
 				.catch(function (error) {
 					// Error
@@ -739,10 +739,10 @@ let alm_is_filtering = false;
 					// loop results to get data from each.
 					let data = '';
 					for (let i = 0; i < html.length; i++) {
-						let result = html[i];
+						const result = html[i];
 						if (alm.restapi_debug === 'true') {
 							// If debug
-							console.log(result);
+							console.log(result); // eslint-disable-line no-console
 						}
 						data += alm_rest_template(result);
 					}
@@ -751,8 +751,8 @@ let alm_is_filtering = false;
 					const obj = {
 						html: data,
 						meta: {
-							postcount: postcount,
-							totalposts: totalposts,
+							postcount,
+							totalposts,
 						},
 					};
 					alm.AjaxLoadMore.render(obj);
@@ -792,11 +792,8 @@ let alm_is_filtering = false;
 			reveal.style.height = 0;
 			reveal.style.outline = 'none';
 
-			// Paging container
-			let pagingContent = alm.listing.querySelector('.alm-paging-content');
-
-			let html = data.html;
-			const meta = data.meta;
+			// Pase data.
+			const { html, meta } = data;
 			let total = meta ? parseInt(meta.postcount) : parseInt(alm.posts_per_page);
 
 			// Get current post counts.
@@ -945,7 +942,7 @@ let alm_is_filtering = false;
 
 								// Loop data array to build .alm-reveal containers
 								for (let k = 0; k < data.length; k++) {
-									let p = alm.addons.preloaded === 'true' ? 1 : 0; // Add 1 page if items are preloaded.
+									const p = alm.addons.preloaded === 'true' ? 1 : 0; // Add 1 page if items are preloaded.
 									let alm_reveal = document.createElement('div');
 
 									if (k > 0 || alm.addons.preloaded === 'true') {
@@ -1000,7 +997,7 @@ let alm_is_filtering = false;
 							else {
 								// Preloaded OR SEO (and Paged)
 								if ((alm.addons.seo && alm.page > 0) || alm.addons.preloaded === 'true') {
-									let p2 = alm.addons.preloaded === 'true' ? 1 : 0; // Add 1 page if items are preloaded.
+									const p2 = alm.addons.preloaded === 'true' ? 1 : 0; // Add 1 page if items are preloaded.
 
 									// SEO [Paged]
 									pagenum = alm.page + 1 + p2;
@@ -1112,7 +1109,7 @@ let alm_is_filtering = false;
 							// Lazy load images if necessary.
 							lazyImages(alm);
 						})().catch(() => {
-							console.log('There was an error with ALM Masonry');
+							console.log('There was an error with ALM Masonry'); //eslint-disable-line no-console
 						});
 					}
 
@@ -1148,6 +1145,9 @@ let alm_is_filtering = false;
 				} else {
 					// Paging
 					if (!alm.init) {
+						// Paging container.
+						const pagingContent = alm.listing.querySelector('.alm-paging-content');
+
 						if (pagingContent) {
 							almFadeOut(pagingContent, alm.speed);
 							pagingContent.style.outline = 'none';
@@ -1246,8 +1246,8 @@ let alm_is_filtering = false;
 			if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
 				let currentPage = alm.page + 1; // Add 1 because alm.page starts at 0
 				currentPage = alm.addons.preloaded === 'true' ? currentPage++ : currentPage; // Add 1 for preloaded
-				if (currentPage == alm.destroy_after) {
-					// Disable ALM if page = alm.destroy_after val
+				if (parseInt(currentPage) === parseInt(alm.destroy_after)) {
+					// Disable ALM if page = alm.destroy_after value.
 					alm.AjaxLoadMore.destroyed();
 				}
 			}
@@ -1316,11 +1316,11 @@ let alm_is_filtering = false;
 		 * First run for Paging + Preloaded add-ons.
 		 * Moves preloaded content into ajax container.
 		 *
-		 * @param {data} Results of the Ajax request
+		 * @param {string} data Results of Ajax request.
 		 * @since 2.11.3
 		 */
 		alm.AjaxLoadMore.pagingPreloadedInit = function (data) {
-			data = data == null ? '' : data; // Check for null data object
+			data = data === null ? '' : data; // Check for null data object
 
 			// Add paging containers and content
 			alm.AjaxLoadMore.pagingInit(data, 'alm-reveal');
@@ -1342,7 +1342,7 @@ let alm_is_filtering = false;
 		 * First run for Paging + Next Page add-ons.
 		 * Moves .alm-nextpage content into ajax container.
 		 *
-		 * @param {data} Results of Ajax request
+		 * @param {string} data Results of Ajax request.
 		 * @since 2.14.0
 		 */
 		alm.AjaxLoadMore.pagingNextpageInit = function (data) {
@@ -2183,7 +2183,6 @@ export const filter = function (transition = 'fade', speed = '200', data = '') {
 	if (!transition || !speed || !data) {
 		return false;
 	}
-	console.log(transition, speed, data);
 	alm_is_filtering = true;
 	almFilter(transition, speed, data, 'filter');
 };

@@ -1,9 +1,8 @@
 /**
- * createMasonrySEOPage
- * Create data attributes for SEO paged results
+ * Create data attributes for SEO paged results.
  *
  * @param {Object} alm
- * @param {array} elements
+ * @param {Array}  element
  * @since 5.3.1
  */
 export function createMasonrySEOPage(alm, element) {
@@ -11,8 +10,8 @@ export function createMasonrySEOPage(alm, element) {
 		return element;
 	}
 
-	let querystring = window.location.search;
-	let seo_class = 'alm-seo';
+	const querystring = window.location.search;
+	const seo_class = 'alm-seo';
 	let page = alm.page + 1;
 	page = alm.addons.preloaded === 'true' ? page + 1 : page;
 	element = masonrySEOAtts(alm, element, querystring, seo_class, page);
@@ -21,11 +20,10 @@ export function createMasonrySEOPage(alm, element) {
 }
 
 /**
- * createMasonrySEOPages
- * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load
+ * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
  * @param {Object} alm
- * @param {array} elements
+ * @param {Array}  elements
  * @since 5.3.1
  */
 export function createMasonrySEOPages(alm, elements) {
@@ -34,14 +32,14 @@ export function createMasonrySEOPages(alm, elements) {
 	}
 
 	let pagenum = 1;
-	let page = alm.page;
-	let seo_class = 'alm-seo';
-	let querystring = window.location.search;
+	const page = alm.page;
+	const seo_class = 'alm-seo';
+	const querystring = window.location.search;
 
 	if (alm.start_page > 1) {
 		// Create pages
-		let posts_per_page = parseInt(alm.posts_per_page);
-		let return_data = [];
+		const posts_per_page = parseInt(alm.posts_per_page);
+		const return_data = [];
 
 		// Slice data array into individual pages
 		for (let i = 0; i < elements.length; i += posts_per_page) {
@@ -50,7 +48,7 @@ export function createMasonrySEOPages(alm, elements) {
 
 		// Loop new data array
 		for (let k = 0; k < return_data.length; k++) {
-			let target = k > 0 ? k * posts_per_page : 0;
+			const target = k > 0 ? k * posts_per_page : 0;
 			pagenum = k + 1;
 			if (elements[target]) {
 				elements[target] = masonrySEOAtts(alm, elements[target], querystring, seo_class, pagenum);
@@ -71,8 +69,8 @@ export function createMasonrySEOPages(alm, elements) {
  * @param {Object} element
  * @param {string} querystring
  * @param {string} seo_class
- * @param {int} pagenum
- * @returns
+ * @param {number} pagenum
+ * @return {HTMLElement} Modified HTML element.
  */
 function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 	element.classList.add(seo_class);
@@ -100,12 +98,12 @@ function masonrySEOAtts(alm, element, querystring, seo_class, pagenum) {
 /**
  * Create data attributes for SEO -  used when /page/2/, /page/3/ etc are hit on page load.
  *
- * @param  {object}      alm         The ALM object.
- * @param  {HTLElement}  element     The div element.
- * @param  {string}      querystring The current querystring.
- * @param  {string}      seo_class   The classname to add to element.
- * @param  {Number}      pagenum     The current page number.
- * @return {HTMLElement}             The modified HTML element.
+ * @param {Object}      alm         ALM object.
+ * @param {HTMLElement} element     Div element.
+ * @param {string}      querystring Current querystring.
+ * @param {string}      seo_class   Classname to add to element.
+ * @param {number}      pagenum     Current page number.
+ * @return {HTMLElement}            Modified HTML element.
  * @since 5.3.1
  */
 export function createSEOAttributes(alm, element, querystring, seo_class, pagenum) {
@@ -129,14 +127,13 @@ export function createSEOAttributes(alm, element, querystring, seo_class, pagenu
 /**
  * Get the current page number.
  *
- * @param  {string} seo_offset Is this an SEO offset.
- * @param  {Number} page       The page number,
- * @return {number}            The page number.
+ * @param {string} seo_offset Is this an SEO offset.
+ * @param {number} page       The page number,
+ * @return {number}           The page number.
  */
 export function getSEOPageNum(seo_offset, page) {
 	if (seo_offset === 'true') {
 		return parseInt(page) + 1;
-	} else {
-		return page;
 	}
+	return page;
 }

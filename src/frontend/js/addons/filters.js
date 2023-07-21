@@ -9,7 +9,8 @@ const FILTERS_CLASSNAME = 'alm-filters';
  */
 export function parseQuerystring(path) {
 	// Get querystring
-	let query = window.location.search.substring(1);
+	const query = window.location.search.substring(1);
+
 	let obj = '';
 	let cache_dir = '';
 
@@ -82,8 +83,8 @@ export function buildFilterURL(alm, querystring = '', page = 0) {
 /**
  * Create data attributes for Filters paged results.
  *
- * @param {Object} alm      The ALM object.
- * @param {array}  elements An array of filter elements.
+ * @param {Object} alm     The ALM object.
+ * @param {Array}  element An array of filter elements.
  * @since 5.3.1
  */
 export function createMasonryFiltersPage(alm, element) {
@@ -91,7 +92,7 @@ export function createMasonryFiltersPage(alm, element) {
 		return element;
 	}
 
-	let querystring = window.location.search;
+	const querystring = window.location.search;
 	let page = alm.page + 1;
 	page = alm.addons.preloaded === 'true' ? page + 1 : page;
 	element = masonryFiltersAtts(alm, element, querystring, page);
@@ -102,8 +103,8 @@ export function createMasonryFiltersPage(alm, element) {
 /**
  * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
  *
- * @param {Object} alm     The ALM object.
- * @param {array} elements An array of filter elements.
+ * @param {Object} alm      The ALM object.
+ * @param {Array}  elements An array of filter elements.
  * @since 5.3.1
  */
 export function createMasonryFiltersPages(alm, elements) {
@@ -112,13 +113,13 @@ export function createMasonryFiltersPages(alm, elements) {
 	}
 
 	let pagenum = 1;
-	let page = alm.page;
-	let querystring = window.location.search;
+	const page = alm.page;
+	const querystring = window.location.search;
 
 	if (alm.addons.filters_startpage > 1) {
 		// Create pages
-		let posts_per_page = parseInt(alm.posts_per_page);
-		let return_data = [];
+		const posts_per_page = parseInt(alm.posts_per_page);
+		const return_data = [];
 
 		// Slice data array into individual pages
 		for (let i = 0; i < elements.length; i += posts_per_page) {
@@ -127,7 +128,7 @@ export function createMasonryFiltersPages(alm, elements) {
 
 		// Loop new data array
 		for (let k = 0; k < return_data.length; k++) {
-			let target = k > 0 ? k * posts_per_page : 0;
+			const target = k > 0 ? k * posts_per_page : 0;
 			pagenum = k + 1;
 
 			if (elements[target]) {
@@ -150,8 +151,8 @@ export function createMasonryFiltersPages(alm, elements) {
  * @param {Object}  alm         The ALM object.
  * @param {Element} element     The container element.
  * @param {string}  querystring The current querystring.
- * @param {number}  page        The page number.
- * @returns
+ * @param {number}  pagenum     The page number.
+ * @return {Element}            Modified HTML element.
  */
 function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	element.classList.add(FILTERS_CLASSNAME);
