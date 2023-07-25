@@ -1256,7 +1256,7 @@ disabled look for disabled choices in the results dropdown
     position: sticky;
     top: 32px;
     z-index: 9999;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.025);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
   }
 }
 .ajax-load-more .alm-admin-toolbar--logo {

@@ -21,16 +21,11 @@ Users who were previously using `meta_key` for custom field ordering will need t
 
 
 * NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
-* NEW: Admin interface updates.
+* NEW: Admin interface refresh.
 * FIX: Fixed issue with Canonical URL not being set correctly.
 * FIX: Fixed issue with Nextpage and Paging add-on not working in some instances.
 * UPDATE: Updated ALM build process to use wp-scripts.
 * UPDATE: Code cleanup and organization.
-
-In Progress
-- WP Scripts
-	- CSS output. Need to compile the scss.
-	- CSS override functions.
 
 - Updated hook names.
 	- alm/query/<id>
@@ -38,8 +33,8 @@ In Progress
 
 
 TO DO:
-- Fix ESLint errors.
-- Fix Stylelint errors.
+- Fix ESLint errors. [DONE]
+- Fix Stylelint errors. [DONE]
 - Test github actions deploy script.
 - Update Filters Upgrade screen. [DONE]
 - Update Add-ons and Go Pro admin sreens. They are currently identical.
@@ -581,7 +576,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 			/**
 			 * Single Post Add-on hook
-			 * Hijack $args and and return single post only $args
+			 * Hijack $args and and return single post query args.
 			 *
 			 * @return array
 			 */
@@ -598,10 +593,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			/**
 			 * ALM Core Query Filter Hook.
 			 *
-			 * @return array;
+			 * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_query_args
+			 * @return array
 			 */
 			$args = apply_filters( 'alm_query_args_' . $id, $args, $post_id );
-			$args = apply_filters( 'alm/query/' . $id, $args, $post_id );
 
 			/**
 			 * Custom `alm_query` parameter in the WP_Query
@@ -609,11 +604,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
-			/**
-			 * Custom WP_Query.
-			 *
-			 * @return $alm_query;
-			 */
+			// Dispatch WP_Query.
 			$alm_query = new WP_Query( $args );
 
 			/**
@@ -623,7 +614,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$alm_query = apply_filters( 'alm_query_after_' . $id, $alm_query, $post_id );
 
-			// If preloaded, update our loop count and total posts.
+			// If preloaded, update loop counter and total posts.
 			if ( has_action( 'alm_preload_installed' ) && 'true' === $preloaded ) {
 				$alm_total_posts = $alm_query->found_posts - $offset + $preloaded_amount;
 				if ( $old_offset > 0 ) {
@@ -649,11 +640,9 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				/**
 				 * ALM Core Filter Hook
 				 *
-				 * @return $alm_query/false;
+				 * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
 				 */
 				$debug = apply_filters( 'alm_debug', false ) ? $args : false;
-
-				// Run the loop.
 
 				if ( $alm_query->have_posts() ) {
 
@@ -667,6 +656,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 					ob_start();
 
+					// Run the loop.
 					while ( $alm_query->have_posts() ) :
 						$alm_query->the_post();
 
@@ -691,7 +681,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						}
 
 					endwhile; wp_reset_query(); // phpcs:ignore
-
 					// End Ajax Load More Loop.
 
 					$data = ob_get_clean();
