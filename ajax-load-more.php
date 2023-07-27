@@ -7,71 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.0.2
+ * Version: 6.1.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* UPGRADE NOTICE:
-This ALM update adds a new `sort_key` parameter that is used for ordering results by custom field values.
-Users who were previously using `meta_key` for custom field ordering will need to update their shortcodes as this update is NOT backwards compatible.
-
-
-* NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
-* NEW: Admin interface refresh.
-* FIX: Fixed issue with Canonical URL not being set correctly.
-* FIX: Fixed issue with Nextpage and Paging add-on not working in some instances.
-* UPDATE: Updated ALM build process to use wp-scripts.
-* UPDATE: Code cleanup and organization.
-
-- Updated hook names.
-	- alm/query/<id>
-	- @see https://www.advancedcustomfields.com/resources/acf-load_field/#parameters
-
-
-TO DO:
-- Fix ESLint errors. [DONE]
-- Fix Stylelint errors. [DONE]
-- Test github actions deploy script.
-- Update Filters Upgrade screen. [DONE]
-- Update Add-ons and Go Pro admin sreens. They are currently identical.
-
-Repeater Templates
-- Finish layout list styling on Repeater Templates Screen. [DONE]
-- Improve Custom Repeaters upgrade screen. [DONE]
-
-
-ADD-ONS
-- Cache.
-* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
-* UPDATE: Improved admin notices and warnings.
-* FIX: Fixed issue with Rest API access warning being incorrectly displayed on Cache admin pages.
-
-- Filters.
-* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
-
-- WooCommerce.
-	- Admin Page [DONE]
-
-- Layouts.
-* UPDATE: Updated layout listing design and display.
-* UPDATE: Updated various elements to match new core Ajax Load More admin styling.
-
-- Customer Repeaters.
-* UPDATE: Admin UI updates to match core Ajax Load More 6.1 updates.
-* UPDATE: Code cleanup and organization.
-
-- PRO.
-	- Updated add-ons settings page.
-	- Admin Page [DONE]
-
-*/
-
-define( 'ALM_VERSION', '6.0.2' );
-define( 'ALM_RELEASE', 'June 27, 2023' );
+define( 'ALM_VERSION', '6.1.0' );
+define( 'ALM_RELEASE', 'July 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

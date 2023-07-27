@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.2
-Stable tag: 6.0.2
+Stable tag: 6.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,6 +262,19 @@ How to install Ajax Load More.
 7. Shortcode and implementation examples
 
 == Changelog ==
+
+= 6.1.0 - July 27, 2023 =
+
+UPGRADE NOTICE:
+This ALM update adds a new `sort_key` parameter that is used for ordering results by custom field values.
+Users who were previously using `meta_key` for custom field ordering will need to update their shortcodes as this update is NOT backwards compatible.
+
+* NEW: Added new `sort_key` parameter to make it easier to sort query results by custom field.
+* NEW: Admin interface refresh.
+* FIX: Fixed issue with Canonical URL not being set correctly.
+* FIX: Fixed issue with Nextpage and Paging add-on not working in some instances.
+* UPDATE: Updated ALM build process to use wp-scripts.
+* UPDATE: Code cleanup and organization.
 
 = 6.0.2 - June 27, 2023 =
 * HOTFIX: Fixed issue with Single Posts add-on not receiving correct post ID and caused issues with loading the proper post.
@@ -527,5 +540,8 @@ What's New in 5.1.0
 
 == Upgrade Notice ==
 
-= 6.0 =
+= 6.1.0 =
+Varsion 6.1.0 includes a breaking change for ordering by `meta_key`. Ordering by `meta_key` (Custom Field) is now handled by the new `sort_key` parameter. Please update your shortcodes accordingly.
+
+= 6.0.0 =
 Version 6.0+ of Ajax Load More includes breaking changes with the Cache-addon version 1.x. Please upgrade the add-on to 2.0 or greater if you wish to continue using the Cache add-on.
