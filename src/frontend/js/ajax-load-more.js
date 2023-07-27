@@ -1109,7 +1109,7 @@ let alm_is_filtering = false;
 							// Lazy load images if necessary.
 							lazyImages(alm);
 						})().catch(() => {
-							console.log('There was an error with ALM Masonry'); //eslint-disable-line no-console
+							console.error('There was an error with ALM Masonry'); //eslint-disable-line no-console
 						});
 					}
 
@@ -1946,7 +1946,7 @@ let alm_is_filtering = false;
 				tableOfContents(alm, alm.init, true);
 			}
 
-			// Next Page Add-on
+			// Next Page Add-on.
 			if (alm.addons.nextpage) {
 				// Check that posts remain on load
 				if (alm.listing.querySelector('.alm-nextpage') && !alm.addons.paging) {
@@ -1967,7 +1967,7 @@ let alm_is_filtering = false;
 					resultsText.almInitResultsText(alm, 'nextpage');
 				}
 
-				// Display Table of Contents
+				// Display Table of Contents.
 				tableOfContents(alm, alm.init, true);
 			}
 
@@ -2000,7 +2000,7 @@ let alm_is_filtering = false;
 						await almMasonry(alm, true, false);
 						alm.masonry.init = false;
 					})().catch(() => {
-						console.log('There was an error with ALM Masonry'); // eslint-disable-line no-console
+						console.error('There was an error with ALM Masonry');
 					});
 				}
 
@@ -2016,7 +2016,7 @@ let alm_is_filtering = false;
 
 				// Window Load Callback.
 				if (typeof almOnLoad === 'function') {
-					window.almOnLoad(alm);
+					window.almOnLoad(alm); // eslint-disable-line
 				}
 			});
 		};
@@ -2030,31 +2030,30 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.error = function (error, location = null) {
 			alm.loading = false;
-
 			if (!alm.addons.paging) {
 				alm.button.classList.remove('loading');
 				alm.AjaxLoadMore.resetBtnText();
 			}
-			console.log('Error: ', error); // eslint-disable-line no-console
+			console.warn('Error: ', error);
 
 			if (error.response) {
 				// The request was made and the server responded with a status code
 				// that falls out of the range of 2xx
-				console.log('Error Msg: ', error.message); // eslint-disable-line no-console
+				console.error('Error Msg: ', error.message);
 			} else if (error.request) {
 				// The request was made but no response was received
 				// `error.request` is an instance of XMLHttpRequest in the browser and an instance of ClientRequest in node.js
-				console.log(error.request); // eslint-disable-line no-console
+				console.error(error.request);
 			} else {
 				// Something happened in setting up the request that triggered an Error
-				console.log('Error Msg: ', error.message); // eslint-disable-line no-console
+				console.error('Error Msg: ', error.message);
 			}
 
 			if (location) {
-				console.log('ALM Error started in ' + location); // eslint-disable-line no-console
+				console.error('ALM Error started in ' + location);
 			}
 			if (error.config) {
-				console.log('ALM Error Debug: ', error.config); // eslint-disable-line no-console
+				console.error('ALM Error Debug: ', error.config);
 			}
 		};
 
@@ -2135,7 +2134,7 @@ let alm_is_filtering = false;
 			alm.button.click();
 		};
 
-		// Flag to prevent loading of posts on initial page load.
+		// Delay to prevent immediate loading of posts on initial page load via scroll.
 		setTimeout(function () {
 			alm.proceed = true;
 			alm.AjaxLoadMore.scrollSetup();
