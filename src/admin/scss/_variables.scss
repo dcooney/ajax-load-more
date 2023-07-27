@@ -1,0 +1,53 @@
+$gutter: 25px;
+$padding_sm: 15px;
+$padding: 20px;
+$padding_lg: 30px;
+
+$green: #8ed074;
+$green_hover: #57bda4;
+
+$blue: #3d8ed0;
+$blue_hover: #1465a8;
+$blue_light: #eaf6fb;
+
+$yellow: #fff8d7;
+
+$red: #d63638;
+$alm_red: #c24243;
+
+$grey: #393d41;
+$grey_dark: #252627;
+$paragraph: #6a7178;
+$grey_text: #999;
+$light_grey: #f7f7f7;
+$lighter_grey: #fcfcfc;
+$light_border: #efefef;
+$grey_blue: #f8f9fb;
+$blue_grey: #838d99;
+
+$purple: #bb8dd2;
+$purple_hover: #a272bc;
+
+$callout: #75cab0;
+
+$border: #e7e7e7;
+$border_hover: #ccc;
+
+$shadow: 0 0 4px 1px rgba($blue, 0.15);
+$transition: all 0.15s ease;
+$radius: 3px;
+$radius_lg: 8px;
+
+// Screen sizes.
+$small: 480px;
+$tablet: 640px;
+$wp_mobile: 782px;
+$break: 900px;
+$lg: 1270px;
+$xl: 1600px;
+
+@mixin ellipsis {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

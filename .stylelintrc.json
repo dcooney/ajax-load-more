@@ -1,0 +1,47 @@
+{
+	"extends": [
+		"@wordpress/stylelint-config",
+		"stylelint-config-prettier"
+	],
+	"rules": {
+		"at-rule-empty-line-before": null,
+		"declaration-colon-newline-after": null,
+		"function-parentheses-space-inside": null,
+		"function-url-quotes": null,
+		"no-descending-specificity": null,
+		"rule-empty-line-before": null,
+		"selector-class-pattern": null,
+		"selector-id-pattern": null,
+		"selector-pseudo-class-parentheses-space-inside": null,
+		"declaration-no-important": null,
+		"color-hex-length": null,
+		"no-duplicate-selectors": null,
+		"font-family-no-missing-generic-family-keyword": null,
+		"font-family-name-quotes": null,
+		"string-quotes": null,
+		"at-rule-no-unknown": [
+			true,
+			{
+				"ignoreAtRules": [
+					"mixin",
+					"include",
+					"tailwind",
+					"apply",
+					"layer",
+					"variants",
+					"responsive",
+					"screen"
+				]
+			}
+		]
+	},
+	"overrides": [
+		{
+			"files": [
+				"*.scss",
+				"**/*.scss"
+			],
+			"customSyntax": "postcss-scss"
+		}
+	]
+}

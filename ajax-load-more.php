@@ -7,19 +7,19 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.0.2
+ * Version: 6.1.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '6.0.2' );
-define( 'ALM_RELEASE', 'June 27, 2023' );
+define( 'ALM_VERSION', '6.1.0' );
+define( 'ALM_RELEASE', 'July 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
-require_once plugin_dir_path( __FILE__ ) . 'core/install.php';
+require_once plugin_dir_path( __FILE__ ) . 'core/functions/install.php';
 
 /**
  * Activation hook - Create table & repeater.
@@ -117,6 +117,12 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			define( 'ALM_REST_NAMESPACE', 'ajaxloadmore' );
 			define( 'ALM_SETTINGS', 'alm_settings' );
 
+			// CSS constants.
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			define( 'ALM_CSS_PATH', ALM_PATH . 'build/frontend/ajax-load-more' . $suffix . '.css' );
+			define( 'ALM_CSS_URL', ALM_URL . '/build/frontend/ajax-load-more' . $suffix . '.css' );
+
+			// Add-on constants.
 			if ( ! defined( 'ALM_CACHE_ITEM_NAME' ) ) {
 				define( 'ALM_CACHE_ITEM_NAME', '4878' );
 			}
@@ -334,35 +340,29 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 * @since 2.0.0
 		 */
 		public function alm_enqueue_scripts() {
-
 			// Get ALM Options.
 			$options = get_option( 'alm_settings' );
 
 			// Core ALM JS.
-			$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) ? '' : '.min'; // Use minified libraries if SCRIPT_DEBUG is turned off.
-			wp_register_script( 'ajax-load-more', plugins_url( '/core/dist/js/ajax-load-more' . $suffix . '.js', __FILE__ ), '', ALM_VERSION, true );
+			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+			wp_register_script( 'ajax-load-more', plugins_url( '/build/frontend/ajax-load-more' . $suffix . '.js', __FILE__ ), [], ALM_VERSION, true );
 
 			// LiteSpeed Cache compatability.
 			wp_script_add_data( 'ajax-load-more', 'data-no-optimize', '1' );
 
 			// Progress Bar JS.
-			wp_register_script( 'ajax-load-more-progress', plugins_url( '/core/dist/vendor/js/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
+			wp_register_script( 'ajax-load-more-progress', plugins_url( '/includes/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
 
 			// Masonry JS.
-			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/core/dist/vendor/js/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
+			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/includes/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
 
 			// Callback Helpers.
-			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/core/dist/vendor/js/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
+			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/includes/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
 
 			// Core CSS.
 			if ( ! alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) ) { // Not inline or disabled.
-				$file = plugins_url( '/core/dist/css/' . ALM_SLUG . '.min.css', __FILE__ );
-				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, $file );
+				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, ALM_CSS_URL );
 			}
-
-			// Determine if there is a trailing slash in the permalink structure.
-			$permalink_structure = get_option( 'permalink_structure' );
-			$trailing_slash      = substr( $permalink_structure, -1 ) === '/' ? 'true' : 'false';
 
 			// Localized JS variables.
 			wp_localize_script(
@@ -374,7 +374,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
-					'trailing_slash'  => $trailing_slash,
+					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
 					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),
@@ -520,7 +520,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 			/**
 			 * Single Post Add-on hook
-			 * Hijack $args and and return single post only $args
+			 * Hijack $args and and return single post query args.
 			 *
 			 * @return array
 			 */
@@ -535,9 +535,10 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$args = apply_filters( 'alm_modify_query_args', $args, $slug );
 
 			/**
-			 * ALM Core Query Filter Hook
+			 * ALM Core Query Filter Hook.
 			 *
-			 * @return array;
+			 * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_query_args
+			 * @return array
 			 */
 			$args = apply_filters( 'alm_query_args_' . $id, $args, $post_id );
 
@@ -547,11 +548,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$args['alm_query'] = $single_post ? 'single_posts' : 'alm';
 
-			/**
-			 * Custom WP_Query.
-			 *
-			 * @return $alm_query;
-			 */
+			// Dispatch WP_Query.
 			$alm_query = new WP_Query( $args );
 
 			/**
@@ -561,7 +558,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			 */
 			$alm_query = apply_filters( 'alm_query_after_' . $id, $alm_query, $post_id );
 
-			// If preloaded, update our loop count and total posts.
+			// If preloaded, update loop counter and total posts.
 			if ( has_action( 'alm_preload_installed' ) && 'true' === $preloaded ) {
 				$alm_total_posts = $alm_query->found_posts - $offset + $preloaded_amount;
 				if ( $old_offset > 0 ) {
@@ -587,11 +584,9 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				/**
 				 * ALM Core Filter Hook
 				 *
-				 * @return $alm_query/false;
+				 * @see https://connekthq.com/plugins/ajax-load-more/docs/filter-hooks/#alm_debug
 				 */
 				$debug = apply_filters( 'alm_debug', false ) ? $args : false;
-
-				// Run the loop.
 
 				if ( $alm_query->have_posts() ) {
 
@@ -605,6 +600,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 					ob_start();
 
+					// Run the loop.
 					while ( $alm_query->have_posts() ) :
 						$alm_query->the_post();
 
@@ -629,7 +625,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						}
 
 					endwhile; wp_reset_query(); // phpcs:ignore
-
 					// End Ajax Load More Loop.
 
 					$data = ob_get_clean();

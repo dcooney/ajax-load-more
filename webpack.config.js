@@ -1,84 +1,91 @@
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const defaults = require('@wordpress/scripts/config/webpack.config');
+const ESLintPlugin = require('eslint-webpack-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const dir = 'core/dist';
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
 	entry: {
-		'ajax-load-more': ['babel-regenerator-runtime', './core/src/js/ajax-load-more.js'],
+		'frontend/ajax-load-more': './src/frontend/js/ajax-load-more.js',
+		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
+		'admin/index': './src/admin/js/index.js',
 	},
 	output: {
-		path: path.join(__dirname, dir),
-		filename: 'js/[name].js',
+		path: path.join(__dirname, 'build'),
+		assetModuleFilename: (pathData) => {
+			const filepath = path.dirname(pathData.filename).split('/').slice(1).join('/');
+			return `${filepath}/[name][ext]`;
+		},
 		library: 'ajaxloadmore',
 		libraryTarget: 'var',
 	},
 	module: {
 		rules: [
 			{
-				test: /.jsx?$/,
-				loader: 'babel-loader',
-				exclude: /node_modules/,
+				test: /\.(webp|png|jpe?g|gif)$/,
+				type: 'asset/resource',
 			},
 			{
-				test: /\.js$/,
-				exclude: /node_modules/,
-				loader: ['babel-loader', 'eslint-loader'],
-			},
-			{
-				test: /\.(jpe?g|gif|png|svg)$/,
-				loader: 'file-loader',
-				options: {
-					name: 'img/[name].[ext]',
-					publicPath: '../',
-				},
-			},
-			{
-				test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-				loader: 'file-loader',
-				options: {
-					name: 'fonts/[name].[ext]',
-					publicPath: '../',
-				},
-			},
-			{
-				test: /\.scss$/,
-				use: ExtractTextPlugin.extract({
-					fallback: 'style-loader',
-					use: [
-						{
-							loader: 'css-loader',
-							options: {
-								sourceMap: true,
-							},
+				test: /\.(scss|css)$/,
+				exclude: '/node_modules',
+				use: [
+					'style-loader',
+					{
+						loader: MiniCssExtractPlugin.loader,
+						options: {
+							esModule: false,
 						},
-						{
-							loader: 'postcss-loader',
-							options: {
-								sourceMap: true,
-							},
+					},
+					'css-loader',
+					{
+						loader: 'sass-loader',
+						options: {
+							sourceMap: true,
 						},
-						{
-							loader: 'sass-loader',
-							options: {
-								sourceMap: true,
-								outputStyle: 'expanded',
-							},
-						},
-					],
-				}),
-				exclude: /node_modules/,
+					},
+				],
 			},
 		],
 	},
 	plugins: [
-		new ExtractTextPlugin({ filename: 'css/[name].css' }),
-		new webpack.ProvidePlugin({
-			ajaxloadmore: 'ajaxloadmore',
-		}),
+		...defaults.plugins,
+
+		/**
+		 * Minify CSS files.
+		 *
+		 * @see https://www.npmjs.com/package/mini-css-extract-plugin
+		 */
+		new MiniCssExtractPlugin(),
+
+		/**
+		 * Copy the following files to build directory.
+		 *
+		 * @see https://www.npmjs.com/package/copy-webpack-plugin
+		 */
 		new CopyPlugin({
-			patterns: [{ from: 'core/src/vendor', to: './vendor' }],
+			patterns: [
+				{
+					from: 'src/frontend/img/placeholder.png',
+					to: 'frontend/img/placeholder.png',
+					noErrorOnMissing: true,
+				},
+			],
 		}),
+
+		/**
+		 * Report JS warnings and errors to the command line.
+		 *
+		 * @see https://www.npmjs.com/package/eslint-webpack-plugin
+		 */
+		new ESLintPlugin(),
+
+		/**
+		 * Report css warnings and errors to the command line.
+		 *
+		 * @see https://www.npmjs.com/package/stylelint-webpack-plugin
+		 */
+		new StylelintPlugin(),
 	],
 };

@@ -73,6 +73,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$day   = isset( $a['day'] ) ? $a['day'] : '';
 
 			// Custom Fields.
+			$sort_key   = isset( $a['sort_key'] ) ? $a['sort_key'] : '';
 			$meta_key   = isset( $a['meta_key'] ) ? $a['meta_key'] : '';
 			$meta_value = isset( $a['meta_value'] ) ? $a['meta_value'] : '';
 
@@ -267,12 +268,10 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				}
 			}
 
-			// Meta_key, used for ordering by meta value.
-			if ( ! empty( $meta_key ) ) {
-				if ( strpos( $orderby, 'meta_value' ) !== false ) { // Only order by meta_key, if $orderby is set to meta_value{_num}.
-					$meta_key_single  = explode( ':', $meta_key );
-					$args['meta_key'] = $meta_key_single[0];
-				}
+			// Sort key.
+			if ( ! empty( $sort_key ) && strpos( $orderby, 'meta_value' ) !== false ) {
+				// Only order by sort_key, if `orderby` is set to meta_value{_num}.
+				$args['meta_key'] = $sort_key;
 			}
 
 			// Author.

@@ -126,7 +126,7 @@ function alm_get_addons(){
       array(
          'name' => __(' Filters', 'ajax-load-more' ),
          'intro' => __(' Create custom Ajax Load More filters in seconds.', 'ajax-load-more' ),
-         'desc' => __(' The Filters add-on provides front-end and admin functionality for building and managing Ajax filters.', 'ajax-load-more' ),
+         'desc' => __(' The Filters add-on provides both front-end and admin functionality for building and managing your Ajax filters.', 'ajax-load-more' ),
          'action' => 'alm_filters_installed',
          'key' => 'alm_filters_license_key',
          'status' => 'alm_filters_license_status',
@@ -231,7 +231,7 @@ function alm_get_addons(){
       array(
          'name' => __(' Theme Repeaters', 'ajax-load-more' ),
          'intro' => __(' Manage Repeater Templates within your current theme directory.', 'ajax-load-more' ),
-         'desc' => __(' The Theme Repeater add-on will allow you load, edit and maintain templates from your current theme directory.', 'ajax-load-more' ),
+         'desc' => __(' The Theme Repeater add-on will allow you load, edit and maintain Ajax Load More templates from your theme.', 'ajax-load-more' ),
          'action' => 'alm_theme_repeaters_installed',
          'key' => 'alm_theme_repeaters_license_key',
          'status' => 'alm_theme_repeaters_license_status',
@@ -294,11 +294,10 @@ function alm_get_addon( $slug ) {
 /**
  * Render a CTA to display info about an add-on.
  *
- *
- * @param array  $addon   The details.
- * @param string $ctaText The text for the button.
+ * @param array  $addon The details.
+ * @param string $label The text for the button.
  */
-function alm_display_featured_addon( $addon, $ctaText = 'Upgrade Now' ) {
+function alm_display_featured_addon( $addon, $label = 'Upgrade Now' ) {
 	if ( $addon ) {
 		$name  = $addon['name'];
 		$intro = $addon['intro'];
@@ -307,25 +306,21 @@ function alm_display_featured_addon( $addon, $ctaText = 'Upgrade Now' ) {
 		$url   = $addon['url'];
 		$img   = $addon['img'];
 	?>
-	<div id="alm-add-ons">
-		<div class="flexbox-wrap">
-			<div class="group no-shadow extend">
-				<a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo $name; ?>" target="_blank">
-				<div class="pro-img">
-					<img src="<?php echo ALM_ADMIN_URL; ?><?php echo $img; ?>" alt="">
-				</div>
-				<div class="pro-details">
-					<h2 class="addon-title"><?php echo $name; ?></h2>
-					<p class="addon-intro"><?php echo $intro; ?></p>
-					<p class="pro-desc"><?php echo $desc; ?></p>
-					<?php
-						echo '<span class="cnkt-button">' . $ctaText . '</span>';
-					?>
-				</div>
-				</a>
+	<section class="alm-cta-upgrade">
+		<a href="<?php echo $url; ?>?utm_source=WP%20Admin&utm_medium=ALM%20Add-ons&utm_campaign=<?php echo $name; ?>" target="_blank">
+			<div class="img">
+				<img src="<?php echo ALM_ADMIN_URL; ?><?php echo $img; ?>" alt="">
 			</div>
-		</div>
-	</div>
+			<div class="details">
+				<h2><?php echo $name; ?></h2>
+				<p class="lg"><?php echo $intro; ?></p>
+				<p><?php echo $desc; ?></p>
+				<?php
+					echo '<span class="cnkt-button">' . $label . '</span>';
+				?>
+			</div>
+		</a>
+	</section>
 	<?php
 	}
 }

@@ -1,0 +1,133 @@
+.ajax-load-more .alm-tabbed-wrapper {
+	width: 100%;
+	@media screen and (min-width: $tablet) {
+		display: flex;
+		flex-wrap: nowrap;
+	}
+
+	// Section Titles
+	h2 {
+		padding: $padding 0 0;
+		margin: 0 0 15px;
+		display: block;
+		color: $grey;
+		font-weight: 600;
+	}
+
+	// Navigation.
+	&--nav {
+		border: 1px solid $light_border;
+		margin-bottom: $padding;
+		padding: 10px;
+		background: #fff;
+		@media screen and (min-width: $tablet) {
+			width: 165px;
+			background-color: $light_grey;
+			padding: 0;
+			border: 1px solid $light_border;
+			border-right: none;
+			border-radius: $radius_lg $radius_lg 0 $radius_lg;
+			position: relative;
+			z-index: 1;
+			margin: 0;
+		}
+		ul {
+			margin: 0;
+			padding: 0 0 35px;
+			@media screen and (max-width: $tablet) {
+				padding: 0;
+				border: 1px solid $light_border;
+			}
+			li {
+				width: 100% !important;
+				margin: 0;
+				padding: 0;
+				list-style: none;
+				&:first-of-type {
+					@media screen and (min-width: $tablet) {
+						position: relative;
+						top: -1px;
+						button {
+							border-top: 1px solid $light_border;
+							border-radius: $radius_lg 0 0 0;
+						}
+					}
+				}
+				&:last-of-type {
+					button {
+						@media screen and (max-width: $tablet) {
+							border: none;
+						}
+					}
+				}
+			}
+			&.attached {
+				@media screen and (min-width: $tablet) {
+					position: fixed;
+					width: auto;
+					top: 70px;
+					li:first-of-type button {
+						border-radius: 0;
+					}
+				}
+			}
+		}
+		button {
+			display: block;
+			width: 100%;
+			border: none;
+			background: none;
+			line-height: 1.4;
+			padding: 12px 10px;
+			text-align: left;
+			font-weight: 400;
+			@include ellipsis;
+			background: $light_grey;
+			border-bottom: 1px solid $border;
+			cursor: pointer;
+			color: $grey;
+			&:hover,
+			&:focus {
+				background-color: #efefef;
+			}
+			i {
+				opacity: 0.65;
+				width: 18px;
+				&.fa-handshake-o {
+					position: relative;
+					left: -2px;
+				}
+			}
+			&.active {
+				font-weight: 600;
+				background-color: #fff;
+				color: $red;
+				cursor: default;
+				i {
+					color: $grey;
+				}
+				@media screen and (min-width: $tablet) {
+					width: calc(100% + 1px);
+				}
+			}
+		}
+	}
+
+	// Sections Column
+	&--sections {
+		flex: 1;
+		padding: 0 $padding $padding;
+		display: block;
+		background: #fff;
+		border: 1px solid $light_border;
+		@media screen and (min-width: $tablet) {
+			border-radius: 0 $radius_lg $radius_lg 0;
+		}
+	}
+	&--section {
+		display: none;
+		&.active {
+			display: block;
+		}
+	}
+}

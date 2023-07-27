@@ -1,0 +1,123 @@
+
+.ajax-load-more {
+	// Admin Header.
+	.alm-admin-toolbar{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		padding: $padding;
+		background-color: $alm_red;
+		@media screen and (min-width: $wp_mobile) {
+			position: sticky;
+			top: 32px;
+			z-index: 9999;
+			box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
+		}
+		&--logo{
+			display: flex;
+			align-items: center;
+			font-weight: 700;
+			font-size: 22px;
+			line-height: 1;
+			color: #fff;
+			text-decoration: none;
+			&:hover,
+			&:focus{
+				color: #fff;
+				text-decoration: none;
+			}
+			@media screen and (min-width: 768px) {
+				font-size: 26px;
+			}
+
+			& svg {
+				margin-right: 10px;
+				width: 42px;
+				height: 42px;
+			}
+		}
+
+		a.plugin-link {
+			color: rgba(255, 255, 255, 0.7);
+			font-weight: 400;
+			margin: 0 0 0 10px;
+			vertical-align: top;
+			font-size: 13px;
+			font-weight: 400;
+			background-color: rgba(#000, 0.2);
+			border-radius: $radius;
+			padding: 7px 9px 7px 8px;
+			text-decoration: none;
+			display: flex;
+			align-items: center;
+			transition: all 0.15s ease;
+			& span {
+				line-height: 1;
+				&.dashicons{
+					margin-right: 5px;
+					font-size: 16px;
+					width: 16px;
+					height: 16px;
+				}
+			}
+			&:hover,
+			&:focus{
+				color: rgba(255, 255, 255, 0.9);
+				background-color: rgba(#000, 0.4);
+			}
+		}
+	}
+
+	// Plugin Navigation.
+	.alm-admin-nav{
+		background-color: #fff;
+		border-bottom: 1px solid $border;
+		margin-bottom: $padding_sm;
+		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.025);
+		nav {
+			width: 100%;
+			display: flex;
+			align-items: center;
+			flex-wrap: nowrap;
+			overflow-y: hidden;
+			overflow-x: auto;
+			padding: 8px $padding;
+			a {
+				display: block;
+				white-space: nowrap;
+				padding: 5px $padding_sm;
+				color: $grey;
+				text-decoration: none;
+				position: relative;
+				padding: 9px 15px;
+				border-radius: $radius;
+				margin-right: 5px;
+				transition: all 0.15s ease;
+				&:hover,
+				&:focus,
+				&.current{
+					background-color: $light_grey;
+					color: #2f2e2e;
+				}
+				&.current{
+					font-weight: 500;
+					//box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+				}
+			}
+		}
+	}
+
+	// Hidden H1 for notices.
+	.alm-admin-h1-wrap {
+		padding: 0 $padding;
+		h1 {
+			margin: 5px 0;
+			padding: 0;
+			line-height: 1.25;
+			font-size: 22px;
+			font-weight: 500;
+			display: block !important;
+		}
+	}
+}

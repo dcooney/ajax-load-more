@@ -178,6 +178,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'taxonomy_operator'            => '',
 						'taxonomy_relation'            => '',
 						'taxonomy_include_children'    => '',
+						'sort_key'							 => '',
 						'meta_key'                     => '',
 						'meta_value'                   => '',
 						'meta_compare'                 => '',
@@ -284,8 +285,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Inline Core CSS.
 			$inline_css = '';
 			if ( ! is_admin() && alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) && self::$counter === 1 ) {
-				$file       = ALM_PATH . '/core/dist/css/' . ALM_SLUG . '.min.css'; // Core Ajax Load More.
-				$inline_css = ALM_ENQUEUE::alm_inline_css( ALM_SLUG, $file, ALM_URL );
+				$inline_css = ALM_ENQUEUE::alm_inline_css( ALM_SLUG, ALM_CSS_PATH, ALM_URL );
 			}
 
 			// Legacy Callback - ALM Setting.
@@ -353,20 +353,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// SEO.
 			if ( has_action( 'alm_seo_installed' ) && $seo === 'true' ) {
 				wp_enqueue_script( 'ajax-load-more-seo' );
-			}
-
-			// Tabs.
-			$inline_tabs_css = '';
-			if ( has_action( 'alm_tabs_installed' ) && $tabs === 'true' ) {
-				wp_enqueue_script( 'ajax-load-more-tabs' );
-
-				// Inline tabs CSS.
-				if ( ! is_admin() && alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_tabs_disable_css' ) ) {
-					if ( defined( 'ALM_TABS_PATH' ) && defined( 'ALM_TABS_URL' ) ) {
-						$file            = ALM_TABS_PATH . '/core/css/ajax-load-more-tabs.min.css';
-						$inline_tabs_css = ALM_ENQUEUE::alm_inline_css( 'ajax-load-more-tabs', $file, ALM_TABS_URL );
-					}
-				}
 			}
 
 			// WooCommerce.
@@ -559,7 +545,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$alm_direction = $scroll_direction ? ' alm-' . $scroll_direction : '';
 
 			// Append Inline CSS.
-			$ajaxloadmore .= $inline_css . $inline_layouts_css . $inline_paging_css . $inline_tabs_css . $inline_single_posts_css;
+			$ajaxloadmore .= $inline_css . $inline_layouts_css . $inline_paging_css . $inline_single_posts_css;
 
 			// Horizontal Scroll CSS.
 			if ( $scroll_direction === 'horizontal' && $scroll_container ) {
@@ -612,7 +598,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$woo_orderby_value = ( function_exists( 'wc_clean' ) && isset( $_GET['orderby'] ) ) ? wc_clean( $_GET['orderby'] ) : apply_filters( 'woocommerce_default_catalog_orderby', get_option( 'woocommerce_default_catalog_orderby' ) ); // phpcs:ignore
 
 					switch ( $woo_orderby_value ) {
-
 						case 'popularity':
 							$meta_key = 'total_sales';
 							$orderby  = 'meta_value_num';
@@ -799,6 +784,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				'taxonomy_operator'         => $taxonomy_operator,
 				'taxonomy_include_children' => $taxonomy_include_children,
 				'taxonomy_relation'         => $taxonomy_relation,
+				'sort_key'                  => $sort_key,
 				'meta_key'                  => $meta_key,
 				'meta_value'                => $meta_value,
 				'meta_compare'              => $meta_compare,
@@ -1154,6 +1140,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= $taxonomy_relation ? ' data-taxonomy-relation="' . esc_attr( $taxonomy_relation ) . '"' : '';
 
 			// Meta Query.
+			$ajaxloadmore .= $sort_key ? ' data-sort-key="' . esc_attr( $sort_key ) . '"' : '';
 			$ajaxloadmore .= $meta_key ? ' data-meta-key="' . esc_attr( $meta_key ) . '"' : '';
 			$ajaxloadmore .= $meta_value || $meta_value === '0' ? ' data-meta-value="' . esc_attr( $meta_value ) . '"' : '';
 			$ajaxloadmore .= $meta_compare ? ' data-meta-compare="' . esc_attr( $meta_compare ) . '"' : '';
