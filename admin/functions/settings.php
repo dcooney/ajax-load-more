@@ -234,7 +234,7 @@ function alm_disable_css_callback() {
 
 	$html  = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
 	$html .= '<input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"' . ( ( $options['_alm_disable_css'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="alm_disable_css_input">' . __( 'I want to use my own CSS styles.', 'ajax-load-more' ) . '<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="' . ALM_URL . '/core/dist/css/ajax-load-more.css" target="blank">' . __( 'View Ajax Load More CSS', 'ajax-load-more' ) . '</a></span></label>';
+	$html .= '<label for="alm_disable_css_input">' . __( 'I want to use my own CSS styles.', 'ajax-load-more' ) . '<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="' . ALM_URL . '/build/frontend/ajax-load-more.css" target="blank">' . __( 'View Ajax Load More CSS', 'ajax-load-more' ) . '</a></span></label>';
 
 	echo $html; // phpcs:ignore
 }
