@@ -273,6 +273,7 @@ Users who were previously using `meta_key` for custom field ordering will need t
 * NEW: Admin interface refresh.
 * FIX: Fixed issue with Canonical URL not being set correctly.
 * FIX: Fixed issue with Nextpage and Paging add-on not working in some instances.
+* FIX: Added fix for frontpage canonical URL fetching returning incorrect URL.
 * UPDATE: Updated ALM build process to use wp-scripts.
 * UPDATE: Code cleanup and organization.
 
