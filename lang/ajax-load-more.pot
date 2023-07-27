@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-07-27T13:49:53+00:00\n"
+"POT-Creation-Date: 2023-07-27T18:52:19+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
@@ -570,6 +570,14 @@ msgstr ""
 #. translators: %1$s is the opening <a> tag, %2$s is the closing </a> tag.
 #: admin/includes/cta/extend.php:16
 msgid "Unlock additional templates with the %1$sCustom Repeaters%2$s add-on."
+msgstr ""
+
+#: admin/includes/cta/extensions.php:10
+msgid "About Extensions"
+msgstr ""
+
+#: admin/includes/cta/extensions.php:16
+msgid "View Extensions"
 msgstr ""
 
 #: admin/includes/cta/resources.php:10
@@ -2475,11 +2483,11 @@ msgid "Purchase"
 msgstr ""
 
 #: admin/views/add-ons.php:61
-msgid "All add-ons are installed as stand alone plugins and with a valid license key will receive plugin update notifications directly within the <a href=\"plugins.php\">WordPress plugin dashboard</a>."
+msgid "All add-ons are installed as standalone plugins and with a valid license key will receive plugin update notifications directly within the <a href=\"plugins.php\">WordPress plugin dashboard</a>."
 msgstr ""
 
 #: admin/views/extensions.php:42
-msgid "Extensions are installed as stand alone plugins and receive update notifications in the <a href=\"plugins.php\">plugin dashboard</a>."
+msgid "Extensions are installed as standalone plugins and receive update notifications in the <a href=\"plugins.php\">plugin dashboard</a>."
 msgstr ""
 
 #: admin/views/filters.php:10
