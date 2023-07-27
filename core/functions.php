@@ -375,7 +375,8 @@ function alm_get_repeater_type( $repeater ) {
  */
 function alm_get_canonical_url() {
 
-	$canonical_url = '';
+	$canonical_url   = '';
+	$frontpage_slash = apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : ''; // e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false').
 
 	if ( is_date() ) {
 		// Date Archive.
@@ -396,8 +397,7 @@ function alm_get_canonical_url() {
 		if ( function_exists( 'pll_home_url' ) ) { // Polylang support.
 			$canonical_url = pll_home_url();
 		} else {
-			$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
-			// e.g. add_filter('alm_canonical_frontpage_trailing_slash', '__return_false').
+			$canonical_url = get_home_url() . $frontpage_slash;
 		}
 	} elseif ( is_home() ) {
 		// Home (Blog Default).
@@ -431,7 +431,7 @@ function alm_get_canonical_url() {
 
 	} elseif ( is_search() ) {
 		// Search.
-		$canonical_url = get_home_url() . apply_filters( 'alm_canonical_frontpage_trailing_slash', true ) ? '/' : '';
+		$canonical_url = get_home_url() . $frontpage_slash;
 
 	} else {
 		// Fallback.
