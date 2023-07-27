@@ -58,7 +58,7 @@ $alm_admin_heading = __( 'Add-ons', 'ajax-load-more' );
 			}
 			?>
 			<div class="call-out call-out--centered light no-shadow">
-				<p><?php echo wp_kses_post( __( 'All add-ons are installed as stand alone plugins and with a valid license key will receive plugin update notifications directly within the <a href="plugins.php">WordPress plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
+				<p><?php echo wp_kses_post( __( 'All add-ons are installed as standalone plugins and with a valid license key will receive plugin update notifications directly within the <a href="plugins.php">WordPress plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
 			</div>
 		</div>
 

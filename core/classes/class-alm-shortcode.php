@@ -1443,7 +1443,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 */
 		public static function alm_render_placeholder( $placeholder, $paging ) {
 			if ( isset( $placeholder ) && ! empty( $placeholder ) && $paging !== 'true' ) {
-				$placeholder_url = $placeholder === 'true' ? ALM_URL . '/core/img/placeholder.png' : $placeholder;
+				$placeholder_url = $placeholder === 'true' ? ALM_URL . '/build/frontend/img/placeholder.png' : $placeholder;
 				if ( $placeholder_url ) {
 					$html = '<div class="alm-placeholder"><img src="' . esc_url( $placeholder_url ) . '" alt=""></div>';
 					return wp_kses_post( $html );

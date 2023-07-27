@@ -1666,7 +1666,7 @@ hr.indented {
 		@media screen and (min-width: $tablet) {
 			grid-template-columns: repeat(2, 1fr);
 		}
-		@media screen and (min-width: 1100px) {
+		@media screen and (min-width: 1600px) {
 			grid-template-columns: repeat(3, 1fr);
 		}
 		&::after{

@@ -98,7 +98,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				require_once 'admin/vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
 				if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 					// Only include this EDD helper if other plugins have not.
-					require_once dirname( __FILE__ ) . '/includes/EDD_SL_Plugin_Updater.php';
+					require_once dirname( __FILE__ ) . '/core/libs/EDD_SL_Plugin_Updater.php';
 				}
 			}
 		}
@@ -351,13 +351,13 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			wp_script_add_data( 'ajax-load-more', 'data-no-optimize', '1' );
 
 			// Progress Bar JS.
-			wp_register_script( 'ajax-load-more-progress', plugins_url( '/includes/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
+			wp_register_script( 'ajax-load-more-progress', plugins_url( '/core/libs/pace/pace.min.js', __FILE__ ), 'ajax-load-more', ALM_VERSION, true );
 
 			// Masonry JS.
-			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/includes/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
+			wp_register_script( 'ajax-load-more-masonry', plugins_url( '/core/libs/masonry/masonry.pkgd.min.js', __FILE__ ), 'ajax-load-more', '4.2.1', true );
 
 			// Callback Helpers.
-			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/includes/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
+			wp_register_script( 'ajax-load-more-legacy-callbacks', plugins_url( '/core/libs/alm/legacy-callbacks.js', __FILE__ ), 'jquery', ALM_VERSION, false );
 
 			// Core CSS.
 			if ( ! alm_do_inline_css( '_alm_inline_css' ) && ! alm_css_disabled( '_alm_disable_css' ) ) { // Not inline or disabled.

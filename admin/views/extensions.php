@@ -10,8 +10,8 @@ $alm_admin_heading = __( 'Extensions', 'ajax-load-more' );
 ?>
 <div class="wrap ajax-load-more main-cnkt-wrap" id="alm-extensions">
 	<?php require_once ALM_PATH . 'admin/includes/components/header.php'; ?>
-	<div class="ajax-load-more-inner-wrapper no-flex">
-		<div class="cnkt-main full">
+	<div class="ajax-load-more-inner-wrapper">
+		<div class="cnkt-main">
 			<?php
 			$alm_extension_array = array(
 				array(
@@ -37,9 +37,13 @@ $alm_admin_heading = __( 'Extensions', 'ajax-load-more' );
 				Connekt_Plugin_Installer::init( $alm_extension_array );
 			}
 			?>
+			<div class="spacer lg"></div>
+			<div class="call-out call-out--centered light no-shadow" style="width: 100%;">
+				<p><?php echo wp_kses_post( __( 'Extensions are installed as standalone plugins and receive update notifications in the <a href="plugins.php">plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
+			</div>
 		</div>
-		<div class="call-out call-out--centered light no-shadow" style="width: 100%;">
-			<p><?php echo wp_kses_post( __( 'Extensions are installed as stand alone plugins and receive update notifications in the <a href="plugins.php">plugin dashboard</a>.', 'ajax-load-more' ) ); ?></p>
-		</div>
+		<aside class="cnkt-sidebar" data-sticky>
+			<?php require_once ALM_PATH . 'admin/includes/cta/extensions.php'; ?>
+		</aside>
 	</div>
 </div>
