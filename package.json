@@ -1,6 +1,6 @@
 {
 	"name": "ajax-load-more",
-	"version": "6.0.0",
+	"version": "6.1.0",
 	"description": "Ajax Load More WordPress Plugin",
 	"scripts": {
 		"watch": "npm run dev",

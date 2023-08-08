@@ -174,10 +174,10 @@ export function getAjaxParams(alm, queryType) {
 		data.search = alm.listing.dataset.s;
 	}
 	if (alm.listing.dataset.customArgs) {
-		data.custom_args = escape(alm.listing.dataset.customArgs);
+		data.custom_args = alm.listing.dataset.customArgs;
 	}
 	if (alm.listing.dataset.vars) {
-		data.vars = escape(alm.listing.dataset.vars);
+		data.vars = alm.listing.dataset.vars;
 	}
 
 	// Cache Params
