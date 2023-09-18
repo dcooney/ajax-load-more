@@ -343,9 +343,6 @@ jQuery(document).ready(function ($) {
 				$('#filter-scrollTopOptions').slideUp(250, 'alm_easeInOutQuad');
 			}
 
-			var filters_analytics = $('#alm-filters input[name=filters-analytics]:checked').val().trim();
-			if (filters_analytics !== '' && filters_analytics !== 'true') output += ' filters_analytics="' + filters_analytics + '"';
-
 			var filters_debug = $('#alm-filters input[name=filters-debug]:checked').val().trim();
 			if (filters_debug !== '' && filters_debug !== 'false') output += ' filters_debug="' + filters_debug + '"';
 		} else {
@@ -375,8 +372,8 @@ jQuery(document).ready(function ($) {
 		var nextpage = $('.next-page input[name=next-page]:checked').val();
 		if (nextpage !== 'false' && nextpage !== undefined) {
 			var nextpage_post_id = $('#next-page_post_id').val(),
+				nextpage_type = $('.next-page input[name=next-page-type]:checked').val(),
 				nextpage_url = $('input#next-page-url:checked').val(),
-				nextpage_pageviews = $('input#next-page-pageviews:checked').val(),
 				nextpage_scroll = $('select#next-page-scroll').val(),
 				nextpage_scrolltop = $('input#next-page-scroll-top').val(),
 				nextpage_title_template = $('input#next-page-title-template').val();
@@ -384,19 +381,18 @@ jQuery(document).ready(function ($) {
 			$('.next-page-content').slideDown(250, 'alm_easeInOutQuad');
 
 			output += ' nextpage="' + nextpage + '"';
-			output += ' nextpage_post_id="\'.' + nextpage_post_id + '.\'"';
+			output += nextpage_type !== 'paged' ? ' nextpage_type="' + nextpage_type + '"' : '';
+			output += ' nextpage_post_id="' + nextpage_post_id + '"';
 
 			if (nextpage_url !== 'true') {
 				output += ' nextpage_urls="false"';
 			}
-			if (nextpage_pageviews !== 'true') {
-				output += ' nextpage_pageviews="false"';
-			}
 			if (nextpage_title_template) {
 				output += ' nextpage_title_template="' + nextpage_title_template + '"';
 			}
-
-			output += ' nextpage_scroll="' + nextpage_scroll + ':' + nextpage_scrolltop + '"';
+			if (nextpage_scroll !== 'false' || nextpage_scrolltop !== '30') {
+				output += ' nextpage_scroll="' + nextpage_scroll + ':' + nextpage_scrolltop + '"';
+			}
 		} else {
 			$('.next-page-content').slideUp(250, 'alm_easeInOutQuad');
 		}
@@ -1663,7 +1659,7 @@ jQuery(document).ready(function ($) {
 						if (target) {
 							$('html, body').animate(
 								{
-									scrollTop: target.offset().top - 45,
+									scrollTop: target.offset().top - 120,
 								},
 								350,
 								function () {

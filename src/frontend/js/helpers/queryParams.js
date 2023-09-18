@@ -235,7 +235,6 @@ export function getTypeParams(alm, type) {
 				nextpage: 'true',
 				urls: addons.nextpage_urls,
 				scroll: addons.nextpage_scroll,
-				pageviews: addons.nextpage_pageviews,
 				post_id: addons.nextpage_post_id,
 				startpage: addons.nextpage_startpage,
 				nested: alm.nested,

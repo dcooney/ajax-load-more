@@ -14,6 +14,41 @@
  * @package AjaxLoadMore
  */
 
+/*
+* FIX: Fixed issue with encoding of Canonical URL potentially causing http errors in Ajax request.
+* FIX: Fixed various issues in Shortcode Builder.
+* FIX: Fixed issue with unclosed HTML element when using seo_offset parameter.
+* FIX: Fixed issue with default ALM search parameter being encoded incorrectly.
+* FIX: Fixed issue with seo_offset parameter not displaying results due to JS error.
+* UPDATE: Updated Shortcode builder to accept new plugin parameters for Next Page add-on.
+* UPDATE: Code cleanup and organization.
+
+
+IN PROGRESS
+- Pageviews. Set pageviews, once and have it trickle down to all ALM instances.
+	- Elementor [DONE]
+	- Filters [DONE]
+	- Next Page [DONE]
+	- SEO [DONE]
+	- Single Posts [DONE]
+	- WooCommerce [DONE]
+
+ADD-ONS
+
+Elementor - 1.1.5
+SEO - 1.9.5
+Single Posts - 1.5.6
+WooCommerce - 1.2.4
+NEXT PAGE - 1.7.0
+FILTERS - 2.2.1
+
+PAGING
+- TODO
+- Update animations, make it faster.
+- Scrol user to top of list when using paging.
+
+*/
+
 define( 'ALM_VERSION', '6.1.0.1' );
 define( 'ALM_RELEASE', 'August 8, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -369,6 +404,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				[
+					'pluginurl'       => ALM_URL,
 					'version'         => ALM_VERSION,
 					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
@@ -376,9 +412,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
 					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
-					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),
-					'ga_debug'        => apply_filters( 'alm_ga_debug', 'false' ),
 					'results_text'    => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
 					'no_results_text' => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
 					'alm_debug'       => apply_filters( 'alm_debug', false ),

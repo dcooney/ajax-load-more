@@ -6,10 +6,11 @@
  * @param {Object} alm The Ajax Load More object.
  */
 export function lazyImages(alm) {
-	if (!alm || !alm.lazy_images) {
-		return;
+	if (alm?.lazy_images) {
+		// Set container based on reveal div.
+		const container = !alm.transition_container ? alm.content : alm.el;
+		lazyImagesReplace(container);
 	}
-	lazyImagesReplace(alm.el);
 }
 
 /**

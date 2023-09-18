@@ -577,20 +577,23 @@ function alm_get_page_id( $post ) {
 }
 
 /**
- * Get query param of start page (paged, page).
+ * Get query param of start page (?pg, paged, page).
  *
  * @since 2.14.0
- * @return string
+ * @return int The current page number.
  */
 function alm_get_startpage() {
-	if ( get_query_var( 'paged' ) ) {
-		$start_page = get_query_var( 'paged' );
+	$query_params = filter_input_array( INPUT_GET ); // Get query params from URL.
+	if ( $query_params && isset( $query_params['pg'] ) ) {
+		$page = $query_params['pg']; // Pluck `pg` querystring param.
+	} elseif ( get_query_var( 'paged' ) ) {
+		$page = get_query_var( 'paged' );
 	} elseif ( get_query_var( 'page' ) ) {
-		$start_page = get_query_var( 'page' );
+		$page = get_query_var( 'page' );
 	} else {
-		$start_page = 1;
+		$page = 1;
 	}
-	return $start_page;
+	return $page;
 }
 
 /**
