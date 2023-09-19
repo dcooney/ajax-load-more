@@ -1352,15 +1352,6 @@ let alm_is_filtering = false;
 			// Add div to container.
 			alm.listing.appendChild(reveal);
 
-			// Get/Set height of .alm-listing div.
-			const styles = window.getComputedStyle(alm.listing);
-			const pTop = parseInt(styles.getPropertyValue('padding-top').replace('px', ''));
-			const pBtm = parseInt(styles.getPropertyValue('padding-bottom').replace('px', ''));
-			const h = reveal.offsetHeight;
-
-			// Set initial `.alm-listing` height.
-			alm.listing.style.height = h + pTop + pBtm + 'px';
-
 			// Insert Script.
 			insertScript.init(reveal);
 
@@ -1372,6 +1363,12 @@ let alm_is_filtering = false;
 				if (typeof almFadePageControls === 'function') {
 					window.almFadePageControls(alm.btnWrap);
 				}
+
+				if (typeof almPagingSetHeight === 'function') {
+					window.almPagingSetHeight(reveal);
+				}
+
+				// Deprecated in Paging 5.7.
 				if (typeof almOnWindowResize === 'function') {
 					window.almOnWindowResize(alm);
 				}

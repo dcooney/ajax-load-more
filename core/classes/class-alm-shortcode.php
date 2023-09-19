@@ -491,7 +491,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$paging_transition      = '';
 			if ( $paging === 'true' ) {
 				$paging_container_class = ' alm-paging-wrap';
-				$paging_transition      = 'style="transition: height 0.25s ease;"';
+				$paging_transition      = 'style="transition: height 0.2s linear;"';
 				// If Preloaded & Paging, pause loading by default.
 				if ( $preloaded === 'true' ) {
 					$pause          = 'true';
