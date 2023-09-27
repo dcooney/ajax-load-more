@@ -45,7 +45,7 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Type', 'ajax-load-more'); ?></h4>
    	   		 	<p><?php _e('Select the Next Page loading type.', 'ajax-load-more'); ?></p>
-						<p><small><?php _e('Note: Fullpage will load the entire post content with on initial page load', 'ajax-load-more'); ?></small></p>
+						<p><small><?php _e('Note: Fullpage will load the entire post content on initial page load.', 'ajax-load-more'); ?></small></p>
    	   		 </div>
    	   		 <div class="shortcode-builder--fields">
 					 <div class="inner">
