@@ -12,19 +12,18 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
          <div class="shortcode-builder--fields">
             <div class="inner">
                <ul>
-                   <li>
-                    <input class="alm_element" type="radio" name="next-page" value="true" id="next-page-true" >
-                    <label for="next-page-true"><?php _e('True', 'ajax-load-more'); ?></label>
-                   </li>
-                   <li>
-                    <input class="alm_element" type="radio" name="next-page" value="false" id="next-page-false"  checked="checked">
-                    <label for="next-page-false"><?php _e('False', 'ajax-load-more'); ?></label>
-                   </li>
+						<li>
+							<input class="alm_element" type="radio" name="next-page" value="true" id="next-page-true" >
+							<label for="next-page-true"><?php _e('True', 'ajax-load-more'); ?></label>
+						</li>
+						<li>
+							<input class="alm_element" type="radio" name="next-page" value="false" id="next-page-false"  checked="checked">
+							<label for="next-page-false"><?php _e('False', 'ajax-load-more'); ?></label>
+						</li>
                </ul>
             </div>
       	</div>
       </section>
-
 
       <div class="next-page-content nested-component" style="display: none;">
 	      <div class="nested-component--inner">
@@ -33,11 +32,34 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Post ID', 'ajax-load-more'); ?></h4>
    	   		 	<p><?php _e('The ID of the current page/post.', 'ajax-load-more'); ?></p>
+						<p><small><?php _e('Note: %post_id% will be converted to the current Post ID automatically.', 'ajax-load-more'); ?></small></p>
    	   		 </div>
    	         <div class="shortcode-builder--fields">
    	            <div class="inner">
-   	               <input type="text" value="get_the_ID()" id="next-page_post_id"  class="alm_element disabled-input" disabled="disabled">
+   	               <input type="text" value="%post_id%" id="next-page_post_id"  class="alm_element disabled-input" disabled="disabled">
    	            </div>
+   	         </div>
+            </section>
+
+				<section>
+   	         <div class="shortcode-builder--label">
+   	            <h4><?php _e('Type', 'ajax-load-more'); ?></h4>
+   	   		 	<p><?php _e('Select the Next Page loading type.', 'ajax-load-more'); ?></p>
+						<p><small><?php _e('Note: Fullpage will load the entire post content with on initial page load', 'ajax-load-more'); ?></small></p>
+   	   		 </div>
+   	   		 <div class="shortcode-builder--fields">
+					 <div class="inner">
+						<ul>
+							<li>
+								<input class="alm_element" type="radio" name="next-page-type" value="paged" id="next-page-paged" checked="checked">
+								<label for="next-page-paged"><?php _e('Paged', 'ajax-load-more'); ?></label>
+							</li>
+							<li>
+								<input class="alm_element" type="radio" name="next-page-type" value="fullpage" id="next-page-fullpage">
+								<label for="next-page-fullpage"><?php _e('Fullpage', 'ajax-load-more'); ?></label>
+							</li>
+						</ul>
+					</div>
    	         </div>
             </section>
 
@@ -84,31 +106,11 @@ if ( has_action( 'alm_nextpage_installed' ) ) { ?>
    	         </div>
             </section>
 
-            <section>
-   	         <div class="shortcode-builder--label">
-   	            <h4>
-   	               <?php _e('Google Analytics', 'ajax-load-more'); ?>
-   	               <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e('You must have a reference to your Google Analytics tracking code already on the page.','ajax-load-more'); ?>"></a>
-   	            </h4>
-   	   		 	<p><?php _e('Each time a page is loaded it will count as a pageview.', 'ajax-load-more'); ?></p>
-   	   		 </div>
-   	   		 <div class="shortcode-builder--fields">
-   	            <div class="inner">
-   	               <ul>
-   	                   <li style="width:100%;">
-   	                      <input class="alm_element" type="checkbox" name="next-page-pageviews" id="next-page-pageviews" value="true" checked="checked">
-   	                      <label for="next-page-pageviews"><?php _e('Yes, send pageviews to Google Analytics.', 'ajax-load-more'); ?></label>
-   	                   </li>
-   	               </ul>
-   	            </div>
-   	         </div>
-            </section>
-
 	         <section>
    	         <div class="shortcode-builder--label">
    	            <h4><?php _e('Scroll to Page', 'ajax-load-more'); ?></h4>
    	   		 	<p>
-   	      		 	<?php _e('Scroll users automatically to the next page on \'Load More\' action.', 'ajax-load-more'); ?>
+   	      		 	<?php _e('Automatically slide users to the next page when the \'Load More\' action completes.', 'ajax-load-more'); ?>
    	   		 	</p>
    	   		 </div>
    	         <div class="shortcode-builder--fields">

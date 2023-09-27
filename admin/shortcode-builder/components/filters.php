@@ -154,27 +154,6 @@ if ( has_action( 'alm_filters_installed' ) ) { ?>
 
 				<section>
 					<div class="shortcode-builder--label">
-						<h4><?php esc_attr_e( 'Analytics', 'ajax-load-more' ); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php esc_attr_e( 'Each time the filter is updated a pageview will be sent to Google Analytics.', 'ajax-load-more' ); ?>"></a></h4>
-						<p><?php esc_attr_e( 'Send pageviews to Google Analytics.', 'ajax-load-more' ); ?></p>
-					</div>
-					<div class="shortcode-builder--fields">
-						<div class="inner">
-							<ul>
-								<li>
-									<input class="alm_element" type="radio" name="filters-analytics" value="true" id="filters-analytics-true" checked="checked">
-									<label for="filters-analytics-true"><?php esc_attr_e( 'True', 'ajax-load-more' ); ?></label>
-								</li>
-								<li>
-									<input class="alm_element" type="radio" name="filters-analytics" value="false" id="filters-analytics-false">
-									<label for="filters-analytics-false"><?php esc_attr_e( 'False', 'ajax-load-more' ); ?></label>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</section>
-
-				<section>
-					<div class="shortcode-builder--label">
 						<h4><?php esc_attr_e( 'Debug Mode', 'ajax-load-more' ); ?></h4>
 						<p><?php esc_attr_e( 'Enable debugging of the Ajax Load More filter object in the browser console.', 'ajax-load-more' ); ?></p>
 					</div>

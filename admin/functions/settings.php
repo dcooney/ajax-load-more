@@ -240,24 +240,6 @@ function alm_disable_css_callback() {
 }
 
 /**
- * Disbale the ALM shortcode button in the WordPress content editor.
- *
- * @since 2.2.1
- * @deprecated 5.4.2
- */
-function alm_hide_btn_callback() {
-	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_hide_btn'] ) ) {
-		$options['_alm_hide_btn'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_hide_btn]" value="0" /><input type="checkbox" id="alm_hide_btn" name="alm_settings[_alm_hide_btn]" value="1"' . ( ( $options['_alm_hide_btn'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="alm_hide_btn">' . __( 'Hide shortcode button in WYSIWYG editor.', 'ajax-load-more' ) . '</label>';
-
-	echo $html; // phpcs:ignore
-}
-
-/**
  * Display admin error notices in browser console.
  *
  * @since 2.7.2
@@ -325,8 +307,7 @@ function alm_container_type_callback() {
  */
 function alm_class_callback() {
 	$options = get_option( 'alm_settings' );
-
-	$class = isset( $options ) && isset( $options['_alm_classname'] ) ? $options['_alm_classname'] : '';
+	$class   = isset( $options ) && isset( $options['_alm_classname'] ) ? $options['_alm_classname'] : '';
 
 	$html  = '<label for="alm_settings[_alm_classname]">' . __( 'Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more' ) . '</label><br/>';
 	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="' . $class . '" placeholder="posts listing etc..." /> ';

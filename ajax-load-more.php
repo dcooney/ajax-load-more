@@ -7,15 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.1.0.1
+ * Version: 6.2.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '6.1.0.1' );
-define( 'ALM_RELEASE', 'August 8, 2023' );
+define( 'ALM_VERSION', '6.2.0' );
+define( 'ALM_RELEASE', 'September 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -369,6 +369,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				[
+					'pluginurl'       => ALM_URL,
 					'version'         => ALM_VERSION,
 					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
@@ -376,9 +377,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
 					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
-					'pluginurl'       => ALM_URL,
 					'speed'           => apply_filters( 'alm_speed', 200 ),
-					'ga_debug'        => apply_filters( 'alm_ga_debug', 'false' ),
 					'results_text'    => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
 					'no_results_text' => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
 					'alm_debug'       => apply_filters( 'alm_debug', false ),

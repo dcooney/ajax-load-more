@@ -101,7 +101,7 @@ export function woocommerce(content, alm) {
 				await loadItems(container, wooProducts, alm, waitForImages);
 				resolve(true);
 			})().catch((e) => {
-				console.log(e, 'There was an error with WooCommerce'); // eslint-disable-line no-console
+				console.warn(e, 'There was an error with WooCommerce'); // eslint-disable-line no-console
 			});
 
 			// Trigger almWooCommerceLoaded callback.

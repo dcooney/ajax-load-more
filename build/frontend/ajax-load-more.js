@@ -4588,6 +4588,7 @@ __webpack_require__.r(__webpack_exports__);
 // EXPORTS
 __webpack_require__.d(__webpack_exports__, {
   almScroll: function() { return /* binding */ almScroll; },
+  analytics: function() { return /* binding */ analytics; },
   click: function() { return /* binding */ click; },
   filter: function() { return /* binding */ filter; },
   getOffset: function() { return /* binding */ getOffset; },
@@ -4595,8 +4596,7 @@ __webpack_require__.d(__webpack_exports__, {
   getTotalPosts: function() { return /* binding */ getTotalPosts; },
   getTotalRemaining: function() { return /* binding */ getTotalRemaining; },
   reset: function() { return /* binding */ ajax_load_more_reset; },
-  start: function() { return /* binding */ start; },
-  tracking: function() { return /* binding */ tracking; }
+  start: function() { return /* binding */ start; }
 });
 
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/bind.js
@@ -5151,8 +5151,9 @@ const reduceDescriptors = (obj, reducer) => {
   const reducedDescriptors = {};
 
   forEach(descriptors, (descriptor, name) => {
-    if (reducer(descriptor, name, obj) !== false) {
-      reducedDescriptors[name] = descriptor;
+    let ret;
+    if ((ret = reducer(descriptor, name, obj)) !== false) {
+      reducedDescriptors[name] = ret || descriptor;
     }
   });
 
@@ -6073,10 +6074,6 @@ function formDataToJSON(formData) {
 
 
 
-const DEFAULT_CONTENT_TYPE = {
-  'Content-Type': undefined
-};
-
 /**
  * It takes a string, tries to parse it, and if it fails, it returns the stringified version
  * of the input
@@ -6106,7 +6103,7 @@ const defaults = {
 
   transitional: defaults_transitional,
 
-  adapter: ['xhr', 'http'],
+  adapter: browser.isNode ? 'http' : 'xhr',
 
   transformRequest: [function transformRequest(data, headers) {
     const contentType = headers.getContentType() || '';
@@ -6215,17 +6212,14 @@ const defaults = {
 
   headers: {
     common: {
-      'Accept': 'application/json, text/plain, */*'
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': undefined
     }
   }
 };
 
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+utils.forEach(['delete', 'get', 'head', 'post', 'put', 'patch'], (method) => {
   defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
 });
 
 /* harmony default export */ var lib_defaults = (defaults);
@@ -6572,7 +6566,17 @@ class AxiosHeaders {
 
 AxiosHeaders.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent', 'Authorization']);
 
-utils.freezeMethods(AxiosHeaders.prototype);
+// reserved names hotfix
+utils.reduceDescriptors(AxiosHeaders.prototype, ({value}, key) => {
+  let mapped = key[0].toUpperCase() + key.slice(1); // map `set` => `Set`
+  return {
+    get: () => value,
+    set(headerValue) {
+      this[mapped] = headerValue;
+    }
+  }
+});
+
 utils.freezeMethods(AxiosHeaders);
 
 /* harmony default export */ var core_AxiosHeaders = (AxiosHeaders);
@@ -7422,7 +7426,7 @@ function mergeConfig(config1, config2) {
 }
 
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/env/data.js
-const VERSION = "1.4.0";
+const VERSION = "1.5.0";
 ;// CONCATENATED MODULE: ./node_modules/axios/lib/helpers/validator.js
 
 
@@ -7592,15 +7596,13 @@ class Axios {
     // Set config.method
     config.method = (config.method || this.defaults.method || 'get').toLowerCase();
 
-    let contextHeaders;
-
     // Flatten headers
-    contextHeaders = headers && utils.merge(
+    let contextHeaders = headers && utils.merge(
       headers.common,
       headers[config.method]
     );
 
-    contextHeaders && utils.forEach(
+    headers && utils.forEach(
       ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
       (method) => {
         delete headers[method];
@@ -7983,6 +7985,7 @@ Object.entries(HttpStatusCode).forEach(([key, value]) => {
 
 
 
+
 /**
  * Create an instance of Axios
  *
@@ -8043,6 +8046,8 @@ axios.mergeConfig = mergeConfig;
 axios.AxiosHeaders = core_AxiosHeaders;
 
 axios.formToJSON = thing => helpers_formDataToJSON(utils.isHTMLForm(thing) ? new FormData(thing) : thing);
+
+axios.getAdapter = adapters.getAdapter;
 
 axios.HttpStatusCode = helpers_HttpStatusCode;
 
@@ -8201,10 +8206,11 @@ function setButtonAtts(button, page, url) {
  * @param {Object} alm The Ajax Load More object.
  */
 function lazyImages(alm) {
-	if (!alm || !alm.lazy_images) {
-		return;
+	if (alm?.lazy_images) {
+		// Set container based on reveal div.
+		const container = !alm.transition_container ? alm.content : alm.el;
+		lazyImagesReplace(container);
 	}
-	lazyImagesReplace(alm.el);
 }
 
 /**
@@ -9472,7 +9478,7 @@ function woocommerce(content, alm) {
 				await loadItems(container, wooProducts, alm, waitForImages);
 				resolve(true);
 			})().catch((e) => {
-				console.log(e, 'There was an error with WooCommerce'); // eslint-disable-line no-console
+				console.warn(e, 'There was an error with WooCommerce'); // eslint-disable-line no-console
 			});
 
 			// Trigger almWooCommerceLoaded callback.
@@ -9880,7 +9886,7 @@ function getAjaxParams(alm, queryType) {
 		id: alm.id,
 		post_id: parseInt(alm.post_id),
 		slug: alm.slug,
-		canonical_url: alm.canonical_url,
+		canonical_url: encodeURIComponent(alm.canonical_url),
 		posts_per_page: parseInt(alm.posts_per_page),
 		page: parseInt(alm.page),
 		offset: parseInt(alm.offset),
@@ -10097,7 +10103,6 @@ function getTypeParams(alm, type) {
 				nextpage: 'true',
 				urls: addons.nextpage_urls,
 				scroll: addons.nextpage_scroll,
-				pageviews: addons.nextpage_pageviews,
 				post_id: addons.nextpage_post_id,
 				startpage: addons.nextpage_startpage,
 				nested: alm.nested,
@@ -10146,7 +10151,7 @@ function getRestAPIParams(alm) {
 		page: alm.page,
 		offset: alm.offset,
 		slug: alm.slug,
-		canonical_url: alm.canonical_url,
+		canonical_url: encodeURIComponent(alm.canonical_url),
 		post_type: alm.post_type,
 		post_format: alm.listing.dataset.postFormat,
 		category: alm.listing.dataset.category,
@@ -11335,10 +11340,10 @@ let alm_is_filtering = false;
 
 		// Instance Params
 		alm.canonical_url = el.dataset.canonicalUrl;
-		alm.nested = el.dataset.nested ? el.dataset.nested : null;
-		alm.is_search = el.dataset.search;
+		alm.nested = el.dataset.nested ? el.dataset.nested : false;
+		alm.is_search = el?.dataset?.search === 'true' ? 'true' : false;
 		alm.slug = el.dataset.slug;
-		alm.post_id = el.dataset.postId;
+		alm.post_id = parseInt(el.dataset.postId);
 		alm.id = el.dataset.id ? el.dataset.id : '';
 
 		// No results template
@@ -11358,33 +11363,34 @@ let alm_is_filtering = false;
 		alm.trigger = alm.btnWrap[alm.btnWrap.length - 1];
 		alm.button = alm.trigger.querySelector('button.alm-load-more-btn');
 
-		alm.button_label = alm.listing.dataset.buttonLabel;
-		alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel;
-		alm.button_done_label = alm.listing.dataset.buttonDoneLabel;
+		alm.button_label = alm.listing.dataset.buttonLabel || 'Load More';
+		alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel || false;
+		alm.button_done_label = alm.listing.dataset.buttonDoneLabel || false;
 
-		alm.placeholder = alm.main.querySelector('.alm-placeholder');
+		alm.placeholder = alm.main.querySelector('.alm-placeholder') || false;
 
-		alm.scroll_distance = alm.listing.dataset.scrollDistance;
-		alm.scroll_distance = alm.scroll_distance ? alm.scroll_distance : 100;
-		alm.scroll_container = alm.listing.dataset.scrollContainer;
-		alm.scroll_direction = alm.listing.dataset.scrollDirection;
+		alm.scroll_distance = alm.listing.dataset.scrollDistance || 100;
+		alm.scroll_container = alm.listing.dataset.scrollContainer || '';
+		alm.scroll_direction = alm.listing.dataset.scrollDirection || 'vertical';
 		alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
 		alm.pause_override = alm.listing.dataset.pauseOverride ? alm.listing.dataset.pauseOverride : false; // true | false
 		alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
-		alm.transition = alm.listing.dataset.transition; // Transition
-		alm.transition_container = alm.listing.dataset.transitionContainer; // Transition Container
-		alm.tcc = alm.listing.dataset.transitionContainerClasses; // Transition Container Classes
-		alm.speed = alm_localize.speed ? parseInt(alm_localize.speed) : 150;
+		alm.transition = alm.listing.dataset.transition || 'fade'; // Transition
+		alm.transition_container = alm?.listing?.dataset?.transitionContainer === 'false' ? false : true; // Transition Container
+		alm.tcc = alm.listing.dataset.transitionContainerClasses || ''; // Transition Container Classes
+		alm.speed = alm.localize.speed ? parseInt(alm.localize.speed) : 150;
 		alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
 		alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
+		alm.lazy_images = alm?.listing.dataset?.lazyImages === 'true' ? true : false;
+		alm.integration.woocommerce = alm?.listing?.dataset?.woocommerce === 'true' ? true : false;
+
+		alm.scroll = alm?.listing?.dataset?.scroll === 'false' ? false : true;
 		alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
-		alm.posts_per_page = alm.listing.dataset.postsPerPage;
-		alm.offset = alm.listing.dataset.offset ? parseInt(alm.listing.dataset.offset) : 0;
-		alm.lazy_images = alm.listing.dataset.lazyImages ? alm.listing.dataset.lazyImages : false;
-		alm.integration.woocommerce = alm.listing.dataset.woocommerce ? alm.listing.dataset.woocommerce : false;
-		alm.integration.woocommerce = alm.integration.woocommerce === 'true' ? true : false;
-		alm.is_search = alm.is_search === undefined ? false : alm.is_search;
-		alm.search_value = alm.is_search === 'true' ? alm.slug : ''; // Convert to value of slug for appending to seo url
+		alm.posts_per_page = parseInt(alm.listing.dataset.postsPerPage);
+		alm.offset = alm?.listing?.dataset?.offset ? parseInt(alm.listing.dataset.offset) : 0;
+
+		// Convert to value of slug for appending to seo url.
+		alm.search_value = alm.is_search === 'true' ? alm.slug : '';
 
 		// Add-on Shortcode Params
 
@@ -11423,7 +11429,6 @@ let alm_is_filtering = false;
 		if (alm.addons.nextpage === 'true') {
 			alm.addons.nextpage_urls = alm.listing.dataset.nextpageUrls;
 			alm.addons.nextpage_scroll = alm.listing.dataset.nextpageScroll;
-			alm.addons.nextpage_pageviews = alm.listing.dataset.nextpagePageviews;
 			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
 			alm.addons.nextpage_startpage = parseInt(alm.listing.dataset.nextpageStartpage);
 			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
@@ -11467,7 +11472,7 @@ let alm_is_filtering = false;
 
 		alm.addons.filters = alm.listing.dataset.filters;
 		alm.addons.seo = alm.listing.dataset.seo;
-		alm.addons.seo_offset = alm.listing.dataset.seoOffset;
+		alm.addons.seo_offset = alm.listing.dataset.seoOffset || 0;
 
 		// Preloaded
 		alm.addons.preloaded = alm.listing.dataset.preloaded; // Preloaded add-on
@@ -11548,7 +11553,6 @@ let alm_is_filtering = false;
 			alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
 			alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
 			alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
-			alm.addons.filters_analtyics = alm.listing.dataset.filtersAnalytics;
 			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
 			alm.addons.filters_startpage = 0;
 			alm.facets = alm.listing.dataset.facets === 'true' ? true : false;
@@ -11636,9 +11640,6 @@ let alm_is_filtering = false;
 			if (alm.addons.nextpage_scroll === undefined) {
 				alm.addons.nextpage_scroll = 'false:30';
 			}
-			if (alm.addons.nextpage_pageviews === undefined) {
-				alm.addons.nextpage_pageviews = 'true';
-			}
 			if (alm.addons.nextpage_post_id === undefined) {
 				alm.addons.nextpage = false;
 				alm.addons.nextpage_post_id = null;
@@ -11716,39 +11717,10 @@ let alm_is_filtering = false;
 			alm.scroll_distance = getScrollPercentage(alm);
 		}
 
-		/* Scroll Container */
-		alm.scroll_container = alm.scroll_container === undefined ? '' : alm.scroll_container;
-
-		/* Scroll Direction */
-		alm.scroll_direction = alm.scroll_direction === undefined ? 'vertical' : alm.scroll_direction;
-
-		/* Transition */
-		alm.transition = alm.transition === undefined ? 'fade' : alm.transition;
-
-		/* Transition Container Class */
-		alm.tcc = alm.tcc === undefined ? '' : alm.tcc;
-
 		/* Masonry */
 		if (alm.transition === 'masonry') {
 			alm = almMasonryConfig(alm);
 		}
-
-		/* Scroll */
-		if (alm.listing.dataset.scroll === undefined) {
-			alm.scroll = true;
-		} else if (alm.listing.dataset.scroll === 'false') {
-			alm.scroll = false;
-		} else {
-			alm.scroll = true;
-		}
-
-		/* Transition Container */
-		alm.transition_container = alm.transition_container === undefined || alm.transition_container === 'true' ? true : false;
-
-		/* Button Labels */
-		alm.button_label = alm.button_label === undefined ? 'Load More' : alm.button_label;
-		alm.button_loading_label = alm.button_loading_label === undefined ? false : alm.button_loading_label;
-		alm.button_done_label = alm.button_done_label === undefined ? false : alm.button_done_label;
 
 		/* Paging */
 		if (alm.addons.paging) {
@@ -12600,15 +12572,6 @@ let alm_is_filtering = false;
 			// Add div to container.
 			alm.listing.appendChild(reveal);
 
-			// Get/Set height of .alm-listing div.
-			const styles = window.getComputedStyle(alm.listing);
-			const pTop = parseInt(styles.getPropertyValue('padding-top').replace('px', ''));
-			const pBtm = parseInt(styles.getPropertyValue('padding-bottom').replace('px', ''));
-			const h = reveal.offsetHeight;
-
-			// Set initial `.alm-listing` height.
-			alm.listing.style.height = h + pTop + pBtm + 'px';
-
 			// Insert Script.
 			modules_insertScript.init(reveal);
 
@@ -12620,6 +12583,12 @@ let alm_is_filtering = false;
 				if (typeof almFadePageControls === 'function') {
 					window.almFadePageControls(alm.btnWrap);
 				}
+
+				if (typeof almPagingSetHeight === 'function') {
+					window.almPagingSetHeight(reveal);
+				}
+
+				// Deprecated in Paging 5.7.
 				if (typeof almOnWindowResize === 'function') {
 					window.almOnWindowResize(alm);
 				}
@@ -12715,7 +12684,7 @@ let alm_is_filtering = false;
 		}
 
 		/**
-		 * Triggers various add-on functions (if available) after load complete.
+		 * Triggers various add-on functions after load complete.
 		 *
 		 * @param {Object} alm The ALM object.
 		 * @since 2.14.0
@@ -13471,51 +13440,29 @@ const getTotalRemaining = function (id = '') {
 };
 
 /**
- * Track Page Views in Google Analytics.
+ * Track Page Views and Analytics
  *
  * @since 5.0
- * @param {string} path The URL path.
+ * @param {string} type The add-on type that is triggering the analytics.
  */
-const tracking = function (path) {
-	setTimeout(function () {
-		// Delay to allow for state change.
-		path = path.replace(/\/\//g, '/'); // Replace instance of a double backslash.
+const analytics = function (type = '') {
+	const { pathname = '', search = '' } = window.location;
 
-		if (typeof gtag === 'function') {
-			// Gtag GA Tracking
-			gtag('event', 'page_view', {
-				page_title: document.title,
-				page_location: window.location.href,
-				page_path: window.location.pathname,
-			});
-			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (gtag)'); //eslint-disable-line no-console
-			}
-		}
+	/**
+	 * ALM Callback Function (URL Change)
+	 *
+	 * @see https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/#url-update
+	 */
+	if (typeof almUrlUpdate === 'function') {
+		window.almUrlUpdate(pathname + search, type);
+	}
 
-		if (typeof ga === 'function') {
-			// Deprecated GA Tracking
-			ga('set', 'page', path);
-			ga('send', 'pageview');
-			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (ga)'); //eslint-disable-line no-console
-			}
-		}
-
-		if (typeof __gaTracker === 'function') {
-			// Monster Insights
-			__gaTracker('set', 'page', path);
-			__gaTracker('send', 'pageview');
-			if (alm_localize.ga_debug) {
-				console.log('Pageview sent to Google Analytics (__gaTracker)'); //eslint-disable-line no-console
-			}
-		}
-
-		// Dispatch global Analytics callback
-		if (typeof almAnalytics === 'function') {
-			window.almAnalytics(path);
-		}
-	}, 200);
+	/**
+	 * ALM Callback Function
+	 */
+	if (typeof almAnalytics === 'function') {
+		window.almAnalytics(pathname + search, type);
+	}
 };
 
 /**
