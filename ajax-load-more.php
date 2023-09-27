@@ -7,50 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.1.0.1
+ * Version: 6.2.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* FIX: Fixed issue with encoding of Canonical URL potentially causing http errors in Ajax request.
-* FIX: Fixed various issues in Shortcode Builder.
-* FIX: Fixed issue with unclosed HTML element when using seo_offset parameter.
-* FIX: Fixed issue with default ALM search parameter being encoded incorrectly.
-* FIX: Fixed issue with seo_offset parameter not displaying results due to JS error.
-* UPDATE: Updated Shortcode builder to accept new plugin parameters for Next Page add-on.
-* UPDATE: Code cleanup and organization.
-
-
-IN PROGRESS
-- Pageviews. Set pageviews, once and have it trickle down to all ALM instances.
-	- Elementor [DONE]
-	- Filters [DONE]
-	- Next Page [DONE]
-	- SEO [DONE]
-	- Single Posts [DONE]
-	- WooCommerce [DONE]
-
-ADD-ONS
-
-Elementor - 1.1.5
-SEO - 1.9.5
-Single Posts - 1.5.6
-WooCommerce - 1.2.4
-NEXT PAGE - 1.7.0
-FILTERS - 2.2.1
-
-PAGING
-- TODO
-- Update animations, make it faster.
-- Scrol user to top of list when using paging.
-
-*/
-
-define( 'ALM_VERSION', '6.1.0.1' );
-define( 'ALM_RELEASE', 'August 8, 2023' );
+define( 'ALM_VERSION', '6.2.0' );
+define( 'ALM_RELEASE', 'September 27, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

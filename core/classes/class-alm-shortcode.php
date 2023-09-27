@@ -26,6 +26,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		public static $counter = 0;
 
 		/**
+		 * Default container type.
+		 *
+		 * @var string
+		 */
+		public static $default_container_type = 'ul';
+
+		/**
 		 * Parse & render ALM shortcode.
 		 *
 		 * @param array $atts Shortcode attributes.
@@ -400,7 +407,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Get container elements (ul | div).
-			$container_element = 'ul';
+			$container_element = self::$default_container_type;
 			if ( isset( $options ) && ( isset( $options['_alm_container_type'] ) && '2' === $options['_alm_container_type'] || $single_post ) ) {
 				$container_element = 'div';
 			}
@@ -817,6 +824,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Set class for when ALM has a transition container.
 			$has_transition_class = $transition_container === 'true' ? ' alm-has-transition' : ' alm-no-transition';
+
+			// Confirm container element type is valid.
+			$container_element_array = [ 'ul', 'ol', 'div', 'article', 'table', 'section', 'dl' ];
+			$container_element       = in_array( $container_element, $container_element_array, true ) ? $container_element : 'ul';
 
 			// Open #ajax-load-more.
 			$ajaxloadmore .= '<' . esc_attr( $container_element ) . ' aria-live="polite" aria-atomic="true"';

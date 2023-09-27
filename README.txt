@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 4.4
 Requires PHP: 5.6
 Tested up to: 6.3
-Stable tag: 6.1.0.1
+Stable tag: 6.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,18 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 6.2.0 - September 27, 2023 =
+* UPDATE: Added support for GA4 integration across various add-ons.
+* UPDATE: Updated Shortcode builder to accept new plugin parameters for Next Page add-on.
+* UPDATE: Code cleanup and organization.
+* FIX: Fixed issue with encoding of Canonical URL potentially causing http errors in Ajax request.
+* FIX: Fixed various issues in Shortcode Builder.
+* FIX: Fixed issue with unclosed HTML element when using seo_offset parameter.
+* FIX: Fixed issue with default ALM search parameter being encoded incorrectly.
+* FIX: Fixed issue with seo_offset parameter not displaying results due to JS error.
+* FIX: Various security fixes and patches.
+
 
 = 6.1.0.1 - August 8, 2023 =
 * HOTFIX: Fixed issue with querying data using `custom_args` parameter.
