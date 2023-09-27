@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 6.1.0.1\n"
+"Project-Id-Version: Ajax Load More 6.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-18T15:16:14+00:00\n"
+"POT-Creation-Date: 2023-09-27T12:15:50+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:340
+#: ajax-load-more.php:305
 msgid "Settings"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 #: admin/functions/settings.php:437
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: core/classes/class-alm-shortcode.php:219
+#: core/classes/class-alm-shortcode.php:226
 msgid "Load More"
 msgstr ""
 
@@ -2738,15 +2738,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:317
+#: ajax-load-more.php:282
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:416
+#: ajax-load-more.php:381
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:417
+#: ajax-load-more.php:382
 msgid "No results found."
 msgstr ""
 
