@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 6.2.0\n"
+"Project-Id-Version: Ajax Load More 6.2.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-09-27T12:15:50+00:00\n"
+"POT-Creation-Date: 2023-10-20T19:25:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.5.0\n"
 "X-Domain: ajax-load-more\n"
@@ -1149,7 +1149,7 @@ msgid "Select the Next Page loading type."
 msgstr ""
 
 #: admin/shortcode-builder/components/nextpage.php:48
-msgid "Note: Fullpage will load the entire post content with on initial page load"
+msgid "Note: Fullpage will load the entire post content on initial page load."
 msgstr ""
 
 #: admin/shortcode-builder/components/nextpage.php:55
