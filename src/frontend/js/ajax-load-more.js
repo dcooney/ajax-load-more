@@ -158,7 +158,7 @@ let alm_is_filtering = false;
 		alm.transition = alm.listing.dataset.transition || 'fade'; // Transition
 		alm.transition_container = alm?.listing?.dataset?.transitionContainer === 'false' ? false : true; // Transition Container
 		alm.tcc = alm.listing.dataset.transitionContainerClasses || ''; // Transition Container Classes
-		alm.speed = alm.localize.speed ? parseInt(alm.localize.speed) : 150;
+		alm.speed = alm?.localize?.speed ? parseInt(alm.localize.speed) : 150;
 		alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
 		alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
 		alm.lazy_images = alm?.listing.dataset?.lazyImages === 'true' ? true : false;
@@ -367,7 +367,7 @@ let alm_is_filtering = false;
 		if (alm.addons.preloaded === 'true') {
 			// Preloaded Amount
 			alm.addons.preloaded_amount = alm.addons.preloaded_amount === undefined ? alm.posts_per_page : alm.addons.preloaded_amount;
-			if (alm.localize && alm.localize.total_posts !== null) {
+			if (alm?.localize?.total_posts !== null) {
 				// Disable ALM if total_posts is equal to or less than preloaded_amount.
 				if (parseInt(alm.localize.total_posts) <= parseInt(alm.addons.preloaded_amount)) {
 					alm.addons.preloaded_total_posts = alm.localize.total_posts;
@@ -1818,7 +1818,7 @@ let alm_is_filtering = false;
 		 * @since 4.1
 		 */
 		alm.AjaxLoadMore.setLocalizedVar = function (name = '', value = '') {
-			if (alm.localize && name !== '' && value !== '') {
+			if (alm?.localize && name !== '' && value !== '') {
 				alm.localize[name] = value; // Set ALM localize var.
 				window[alm.master_id + '_vars'][name] = value; // Update vars.
 			}
@@ -1917,7 +1917,7 @@ let alm_is_filtering = false;
 					const nextpage_pages = alm.listing.querySelectorAll('.alm-nextpage'); // All Next Page Items.
 					if (nextpage_pages) {
 						const nextpage_first = nextpage_pages[0];
-						const nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm.localize.total_posts;
+						const nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm?.localize?.total_posts;
 
 						// Disable if last page loaded
 						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
@@ -1971,7 +1971,7 @@ let alm_is_filtering = false;
 				//  Filters, Facets & Preloaded Facets
 				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
 					if (typeof almFiltersFacets === 'function') {
-						const facets = alm.localize && alm.localize.facets;
+						const facets = alm?.localize?.facets;
 						if (facets) {
 							window.almFiltersFacets(facets);
 						}
