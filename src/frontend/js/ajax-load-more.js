@@ -181,7 +181,7 @@ let alm_is_filtering = false;
 		}
 
 		// WooCommerce add-on
-		alm.addons.woocommerce = alm.listing.dataset.woo && alm.listing.dataset.woo === 'true' ? true : false;
+		alm.addons.woocommerce = alm?.listing?.dataset?.woo === 'true' ? true : false;
 		if (alm.addons.woocommerce && alm.listing.dataset.wooSettings) {
 			alm.addons.woocommerce_settings = JSON.parse(alm.listing.dataset.wooSettings);
 			alm.addons.woocommerce_settings.results_text = document.querySelectorAll(alm.addons.woocommerce_settings.results); // Add Results Text
@@ -189,7 +189,7 @@ let alm_is_filtering = false;
 		}
 
 		// Cache add-on
-		alm.addons.cache = alm.listing.dataset.cache && alm.listing.dataset.cache === 'true' ? true : false;
+		alm.addons.cache = alm?.listing?.dataset?.cache === 'true' ? true : false;
 		if (alm.addons.cache) {
 			alm.addons.cache_id = alm.listing.dataset.cacheId;
 			alm.addons.cache_path = alm.listing.dataset.cachePath;
@@ -197,7 +197,7 @@ let alm_is_filtering = false;
 		}
 
 		// CTA add-on
-		alm.addons.cta = alm.listing.dataset.cta && alm.listing.dataset.cta === 'true' ? true : false;
+		alm.addons.cta = alm?.listing?.dataset?.cta === 'true' ? true : false;
 		if (alm.addons.cta) {
 			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
 			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
@@ -595,22 +595,23 @@ let alm_is_filtering = false;
 		/**
 		 * The core Ajax Load More Ajax function.
 		 *
-		 * @param {string} queryType The type of Ajax request (standard/totalposts).
+		 * @param {string} type The type of Ajax request [standard|totalposts|totalpages].
 		 * @since 2.6.0
 		 */
-		alm.AjaxLoadMore.ajax = async function (queryType = 'standard') {
+		alm.AjaxLoadMore.ajax = async function (type = 'standard') {
 			// Dispatch Ajax request.
 			if (alm.extensions.restapi) {
 				// Rest API.
 				alm.AjaxLoadMore.restapi(alm);
 			} else {
 				// Standard ALM.
-				const params = getAjaxParams(alm, queryType);
+				const params = getAjaxParams(alm, type);
 				const cache = await getCache(alm, Object.assign({}, params));
-				if (cache) {
+				if (cache && !['totalposts', 'totalpages'].includes(type)) {
+					// Get cache if available and not a totalposts or totalpages request.
 					alm.AjaxLoadMore.render(cache);
 				} else {
-					alm.AjaxLoadMore.adminajax(params, queryType);
+					alm.AjaxLoadMore.adminajax(params, type);
 				}
 			}
 		};
@@ -618,11 +619,11 @@ let alm_is_filtering = false;
 		/**
 		 * Send request to the admin-ajax.php
 		 *
-		 * @param {Object} params    Query params.
-		 * @param {string} queryType The type of Ajax request (standard/totalposts).
+		 * @param {Object} params Query params.
+		 * @param {string} type   The type of Ajax request [standard|totalposts|totalpages].
 		 * @since 5.0.0
 		 */
-		alm.AjaxLoadMore.adminajax = async function (params, queryType) {
+		alm.AjaxLoadMore.adminajax = async function (params, type) {
 			let { ajaxurl } = alm_localize; // Get Ajax URL
 			const { cache_slug = '' } = params; // Deconstruct query params.
 
@@ -664,7 +665,7 @@ let alm_is_filtering = false;
 					alm.AjaxLoadMore.error(error, 'adminajax');
 				});
 
-			switch (queryType) {
+			switch (type) {
 				case 'standard':
 					alm.AjaxLoadMore.render(data);
 					break;
@@ -690,8 +691,9 @@ let alm_is_filtering = false;
 		 * @since 5.0.0
 		 */
 		alm.AjaxLoadMore.restapi = function (alm) {
+			const { rest_api_url } = alm_localize; // Get Rest API URL
 			const alm_rest_template = wp.template(alm.extensions.restapi_template_id);
-			const alm_rest_url = `${alm.extensions.restapi_base_url}/${alm.extensions.restapi_namespace}/${alm.extensions.restapi_endpoint}`;
+			const alm_rest_url = `${rest_api_url}${alm.extensions.restapi_base_url}/${alm.extensions.restapi_namespace}/${alm.extensions.restapi_endpoint}`;
 			const params = getRestAPIParams(alm); // [./helpers/queryParams.js]
 
 			axios
@@ -730,12 +732,12 @@ let alm_is_filtering = false;
 				});
 		};
 
-		// If pagination enabled, run totalposts query
+		// If pagination enabled, run query to get total posts or pages.
 		if (alm.addons.paging) {
 			if (alm.addons.nextpage) {
-				alm.AjaxLoadMore.ajax('totalpages'); // Create paging menu and query for total pages
+				alm.AjaxLoadMore.ajax('totalpages');
 			} else {
-				alm.AjaxLoadMore.ajax('totalposts'); // Create paging menu and query for total posts
+				alm.AjaxLoadMore.ajax('totalposts');
 			}
 		}
 

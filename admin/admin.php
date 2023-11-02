@@ -527,7 +527,7 @@ function alm_enqueue_admin_scripts() {
 
 	// CodeMirror Syntax Highlighting if on Repater Template page.
 	$screen = get_current_screen();
-	if ( in_array( $screen->id, array( 'ajax-load-more_page_ajax-load-more-repeaters' ), true ) ) {
+	if ( in_array( $screen->id, [ 'ajax-load-more_page_ajax-load-more-repeaters' ], true ) ) {
 		// CodeMirror CSS.
 		wp_enqueue_style( 'alm-codemirror-css', ALM_ADMIN_URL . 'codemirror/lib/codemirror.css', '', ALM_VERSION );
 
@@ -599,12 +599,13 @@ function alm_get_tax_terms() {
 	$taxonomy = isset( $form_data['taxonomy'] ) ? esc_attr( $form_data['taxonomy'] ) : '';
 	$index    = isset( $form_data['index'] ) ? esc_attr( $form_data['index'] ) : '1';
 	$tax_args = [
+		'taxonomy'   => $taxonomy,
 		'orderby'    => 'name',
 		'order'      => 'ASC',
 		'hide_empty' => false,
 	];
 
-	$terms = get_terms( $taxonomy, $tax_args );
+	$terms = get_terms( $tax_args );
 	$value = '';
 	if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 		$value .= '<ul>';
@@ -644,10 +645,9 @@ function alm_admin_menu_icon_svg( $base64 = true ) {
 /**
  * Filter the WP Admin footer text only on ALM pages
  *
- * @param string $text The existing footer text.
  * @since 2.12.0
  */
-function alm_filter_admin_footer_text( $text ) {
+function alm_filter_admin_footer_text() {
 	$screen = alm_is_admin_screen();
 
 	if ( ! $screen ) {

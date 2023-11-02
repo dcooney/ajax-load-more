@@ -29,7 +29,7 @@ function alm_is_admin_screen() {
  */
 function alm_has_addon_shortcodes() {
 	$installed = false;
-	$actions   = array(
+	$actions   = [
 		'alm_cache_installed',
 		'alm_cta_installed',
 		'alm_filters_installed',
@@ -41,7 +41,7 @@ function alm_has_addon_shortcodes() {
 		'alm_seo_installed',
 		'alm_single_post_installed',
 		'alm_users_installed',
-	);
+	];
 
 	// Loop actions to determine if add-on/extension is installed.
 	foreach ( $actions as $action ) {
@@ -65,11 +65,11 @@ function alm_has_addon_shortcodes() {
  */
 function alm_has_extension_shortcodes() {
 	$installed = false;
-	$actions   = array(
+	$actions   = [
 		'alm_acf_installed',
 		'alm_rest_api_installed',
 		'alm_terms_installed',
-	);
+	];
 
 	// Loop actions to determine if add-on/extension is installed.
 	foreach ( $actions as $action ) {

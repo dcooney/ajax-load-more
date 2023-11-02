@@ -40,6 +40,7 @@ function alm_create_table() {
 	// Create table, if it doesn't already exist.
 	// phpcs:ignore
 	if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) !== $table_name ) {
+		// phpcs:ignore
 		$sql = "CREATE TABLE $table_name (
 			id mediumint(9) NOT NULL AUTO_INCREMENT,
 			name text NOT NULL,
@@ -51,6 +52,7 @@ function alm_create_table() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		dbDelta( $sql );
 		// Insert the default data in created table.
+		// phpcs:ignore
 		$wpdb->insert(
 			$table_name,
 			[

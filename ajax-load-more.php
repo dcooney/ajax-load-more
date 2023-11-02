@@ -14,6 +14,17 @@
  * @package AjaxLoadMore
  */
 
+/*
+* FIX: Fixed issue with paging URLs when using Elementor add-on with WooCommerce products and WP archive templates.
+* FIX: Fixed issue with Cache and Paging add-ons throwing an error on initial page load and causing posts not to load..
+* NEW: Added `alm_restapi_url` hook to update the URL base REST API calls.
+```
+add_filter( 'alm_restapi_url', function(){
+	return 'https://google.com';
+});
+```
+*/
+
 define( 'ALM_VERSION', '6.2.0.1' );
 define( 'ALM_RELEASE', 'October 20, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -32,7 +43,7 @@ function alm_install( $network_wide ) {
 	add_option( 'alm_version', ALM_VERSION ); // Add setting to options table.
 	if ( is_multisite() && $network_wide ) {
 		// Get all blogs in the network and activate plugin on each one.
-		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" );
+		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ); // phpcs:ignore
 		foreach ( $blog_ids as $blog_id ) {
 			switch_to_blog( $blog_id );
 			alm_create_table();
@@ -98,7 +109,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				require_once 'admin/vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
 				if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
 					// Only include this EDD helper if other plugins have not.
-					require_once dirname( __FILE__ ) . '/core/libs/EDD_SL_Plugin_Updater.php';
+					require_once __DIR__ . '/core/libs/EDD_SL_Plugin_Updater.php';
 				}
 			}
 		}
@@ -373,6 +384,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'version'         => ALM_VERSION,
 					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
+					'rest_api_url'    => apply_filters( 'alm_restapi_url', '' ),
 					'rest_api'        => esc_url_raw( rest_url() ),
 					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
 					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
@@ -424,7 +436,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$id            = isset( $params['id'] ) ? $params['id'] : '';
 			$post_id       = isset( $params['post_id'] ) ? $params['post_id'] : '';
 			$slug          = isset( $params['slug'] ) ? $params['slug'] : '';
-			$canonical_url = isset( $params['canonical_url'] ) ? esc_url( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] );
+			$canonical_url = isset( $params['canonical_url'] ) ? esc_url( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore
 
 			// Ajax Query Type.
 			$query_type = isset( $params['query_type'] ) ? $params['query_type'] : 'standard'; // 'standard' or 'totalposts' - totalposts returns $alm_found_posts.
@@ -603,8 +615,8 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					while ( $alm_query->have_posts() ) :
 						$alm_query->the_post();
 
-						$alm_loop_count++;
-						$alm_current++; // Current item in loop.
+						++$alm_loop_count;
+						++$alm_current; // Current item in loop.
 						$alm_page = $alm_page_count; // Get page number.
 						$alm_item = ( $alm_page_count * $posts_per_page ) - $posts_per_page + $alm_loop_count;
 

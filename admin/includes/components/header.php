@@ -9,7 +9,7 @@ $alm_menu_items   = $GLOBALS['alm_menu_items'];
 $alm_current_page = filter_input( INPUT_GET, 'page', @FILTER_SANITIZE_STRING );
 ?>
 <header class="alm-admin-toolbar">
-	<a class="alm-admin-toolbar--logo" href="<?php get_admin_url( null, 'admin.php?page=ajax-load-more' ); ?>">
+	<a class="alm-admin-toolbar--logo" href="<?php get_admin_url(); ?>admin.php?page=ajax-load-more">
 		<?php require_once ALM_PATH . 'admin/includes/components/logo.php'; ?>
 		<?php echo esc_attr( ALM_TITLE ); ?>
 	</a>

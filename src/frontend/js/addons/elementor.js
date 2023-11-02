@@ -75,18 +75,27 @@ export function elementorGetContent(alm, url, response, cache_slug) {
 
 	// Successful response.
 	if (response.status === 200 && response.data) {
-		const { addons } = alm;
+		const { addons, page, button } = alm;
 
 		// Create temp div to hold response data.
-		const div = document.createElement('div');
-		div.innerHTML = response.data;
+		const content = document.createElement('div');
+		content.innerHTML = response.data;
+
+		// Set button URL.
+		const nextURL = elementorGetNextUrl(alm, content);
+		if (nextURL) {
+			setButtonAtts(button, page + 1, nextURL);
+		} else {
+			// Disable button if no next page.
+			alm.AjaxLoadMore.triggerDone();
+		}
 
 		// Get Page Title
-		const title = div.querySelector('title').innerHTML;
+		const title = content.querySelector('title').innerHTML;
 		data.pageTitle = title;
 
 		// Get Elementor Items container.
-		const container = div.querySelector(`${addons.elementor_target} .${addons.elementor_container_class}`);
+		const container = content.querySelector(`${addons.elementor_target} .${addons.elementor_container_class}`);
 		if (!container) {
 			console.warn(`Ajax Load More Elementor: Unable to find Elementor container element.`);
 			return data;
@@ -153,7 +162,7 @@ export function elementor(content, alm) {
 
 				resolve(true);
 			})().catch((e) => {
-				console.log(e, 'There was an error with Elementor'); // eslint-disable-line no-console
+				console.warn(e, 'There was an error with Elementor'); // eslint-disable-line no-console
 			});
 		} else {
 			resolve(false);
@@ -168,18 +177,10 @@ export function elementor(content, alm) {
  * @since 5.5.0
  */
 export function elementorLoaded(alm) {
-	const { trailing_slash, is_front_page } = alm_localize;
-	const { page, button, canonical_url, AjaxLoadMore, addons } = alm;
+	const { page, AjaxLoadMore, addons } = alm;
 	const nextPage = page + 1;
 
-	const sep = is_front_page === 'true' ? 'page/' : trailing_slash === 'true' ? '' : '/'; // eslint-disable-line no-nested-ternary
-	const slash = trailing_slash === 'true' ? '/' : '';
-	const url = `${canonical_url + sep}${nextPage + 1}${slash}`;
-
 	const max_pages = addons.elementor_max_pages;
-
-	// Set button data attributes.
-	setButtonAtts(button, nextPage, url);
 
 	// Lazy load images if necessary.
 	lazyImages(alm);
@@ -220,17 +221,12 @@ export function elementorCreateParams(alm) {
 	alm = setElementorClasses(alm, alm.addons.elementor_widget);
 
 	// Pagination Element
-	alm.addons.elementor_pagination =
-		alm.addons.elementor_element.querySelector(alm.addons.elementor_pagination_class) ||
-		alm.addons.elementor_element.querySelector(`.${alm.addons.elementor_settings.pagination_class}`);
-	alm.addons.elementor_pagination = alm.addons.elementor_pagination ? alm.addons.elementor_pagination : false;
-
 	alm.addons.elementor_controls = alm.addons.elementor_settings.controls;
 	alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
 	alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
 
 	// Get next page URL.
-	alm.addons.elementor_next_page = elementorGetNextUrl(alm.addons.elementor_pagination);
+	alm.addons.elementor_next_page = elementorGetNextUrl(alm, alm.addons.elementor_element);
 
 	// Get the max pages.
 	alm.addons.elementor_max_pages = alm.addons.elementor_element.querySelector('.e-load-more-anchor');
@@ -245,7 +241,7 @@ export function elementorCreateParams(alm) {
 	if (!alm.addons.elementor_element) {
 		console.warn("Ajax Load More: Unable to locate Elementor Widget. Are you sure you've set up your target parameter correctly?");
 	}
-	if (!alm.addons.elementor_pagination) {
+	if (!alm.addons.elementor_next_page) {
 		console.warn(
 			'Ajax Load More: Unable to locate Elementor pagination. There are either no results or Ajax Load More is unable to locate the pagination widget?'
 		);
@@ -379,26 +375,21 @@ function elementorGetWidgetType(target) {
 }
 
 /**
- * Get the upcoming URL from the a.next link from the HTML
+ * Get the pagination container for the Elementor pagination.
  *
- * @param {HTMLElement} element   The target element
- * @param {string}      classname The classname.
- * @return {HTMLElement}          The next page element.
+ * @param {Object}  alm     The alm object.
+ * @param {Element} content The HTML content to search.
+ * @return {HTMLElement}    The pagination element.
  */
-export function elementorGetNextPage(element, classname) {
-	const pagination = element.querySelector(classname);
-	return pagination ? elementorGetNextUrl(pagination) : '';
-}
+export function elementorGetNextUrl(alm, content) {
+	const { addons = {} } = alm;
 
-/**
- * Get the URL of the next page to load from the a.next href
- *
- * @param {HTMLElement} element The target element
- * @return {HTMLElement}        The next page element.
- */
-function elementorGetNextUrl(element) {
-	if (!element) {
-		return '';
-	}
-	return element.querySelector('a.next') ? element.querySelector('a.next').href : '';
+	// Locate the pagination container.
+	const element = content?.querySelector(addons?.elementor_pagination_class) || content?.querySelector(`.${addons?.elementor_settings?.pagination_class}`);
+
+	// Get the next page URL from the pagination element.
+	const nextpage = element?.querySelector('a.next')?.href;
+
+	// Return the next page URL.
+	return nextpage ? nextpage : false;
 }
