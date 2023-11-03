@@ -2,31 +2,20 @@
 /**
  * Plugin Name: Ajax Load More
  * Plugin URI: https://connekthq.com/plugins/ajax-load-more
- * Description: The ultimate solution to add infinite scroll functionality to your website.
+ * Description: The ultimate solution to add infinite scroll and load more functionality to your website.
  * Text Domain: ajax-load-more
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.2.0.1
+ * Version: 6.2.0.2
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* FIX: Fixed issue with paging URLs when using Elementor add-on with WooCommerce products and WP archive templates.
-* FIX: Fixed issue with Cache and Paging add-ons throwing an error on initial page load and causing posts not to load..
-* NEW: Added `alm_restapi_url` hook to update the URL base REST API calls.
-```
-add_filter( 'alm_restapi_url', function(){
-	return 'https://google.com';
-});
-```
-*/
-
-define( 'ALM_VERSION', '6.2.0.1' );
-define( 'ALM_RELEASE', 'October 20, 2023' );
+define( 'ALM_VERSION', '6.2.0.2' );
+define( 'ALM_RELEASE', 'Novemver 3, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.

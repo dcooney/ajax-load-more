@@ -2,16 +2,16 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 6.2.0.1\n"
+"Project-Id-Version: Ajax Load More 6.2.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-10-30T16:58:50+00:00\n"
+"POT-Creation-Date: 2023-11-03T12:33:11+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.5.0\n"
+"X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
 
 #. Plugin Name of the plugin
@@ -25,7 +25,7 @@ msgid "https://connekthq.com/plugins/ajax-load-more"
 msgstr ""
 
 #. Description of the plugin
-msgid "The ultimate solution to add infinite scroll functionality to your website."
+msgid "The ultimate solution to add infinite scroll and load more functionality to your website."
 msgstr ""
 
 #. Author of the plugin
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:309
+#: ajax-load-more.php:305
 msgid "Settings"
 msgstr ""
 
@@ -2738,15 +2738,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:286
+#: ajax-load-more.php:282
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:385
+#: ajax-load-more.php:382
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:386
+#: ajax-load-more.php:383
 msgid "No results found."
 msgstr ""
 
@@ -2955,8 +2955,8 @@ msgid "Shortcode"
 msgstr ""
 
 #: core/integration/elementor/module/widget.php:97
-#: core/integration/elementor/module/widget.php:122
-#: core/integration/elementor/module/widget.php:143
+#: core/integration/elementor/module/widget.php:123
+#: core/integration/elementor/module/widget.php:144
 msgid "Ajax Load More Shortcode"
 msgstr ""
 
@@ -2964,10 +2964,12 @@ msgstr ""
 msgid "[ajax_load_more]"
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:100
+#. translators: 1: Shortcode Builder link tag. 2: Shortcode Builder closing link tag.
+#: core/integration/elementor/module/widget.php:101
 msgid "The shortcode will not render while Elementor is in live edit mode, you must preview the page to view Ajax Load More functionality."
 msgstr ""
 
-#: core/integration/elementor/module/widget.php:100
-msgid "%sBuild Shortcode%s"
+#. translators: 1: Shortcode Builder link tag. 2: Shortcode Builder closing link tag.
+#: core/integration/elementor/module/widget.php:101
+msgid "%1Build Shortcode%2"
 msgstr ""
