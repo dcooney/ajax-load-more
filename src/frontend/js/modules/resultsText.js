@@ -92,9 +92,6 @@ export function almInitResultsText(alm, type = 'standard') {
 		case 'woocommerce': // WooCommerce
 			// Don't do anything
 			break;
-
-		default:
-			console.log('No results to set.'); // eslint-disable-line no-console
 	}
 }
 

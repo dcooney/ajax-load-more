@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-03T12:33:11+00:00\n"
+"POT-Creation-Date: 2023-11-03T12:44:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -685,8 +685,8 @@ msgstr ""
 #: admin/shortcode-builder/components/paging.php:64
 #: admin/shortcode-builder/components/paging.php:90
 #: admin/shortcode-builder/components/preloaded.php:15
-#: admin/shortcode-builder/components/rest-api.php:30
-#: admin/shortcode-builder/components/rest-api.php:105
+#: admin/shortcode-builder/components/rest-api.php:37
+#: admin/shortcode-builder/components/rest-api.php:111
 #: admin/shortcode-builder/components/seo.php:15
 #: admin/shortcode-builder/components/single-post.php:19
 #: admin/shortcode-builder/components/single-post.php:162
@@ -723,8 +723,8 @@ msgstr ""
 #: admin/shortcode-builder/components/paging.php:65
 #: admin/shortcode-builder/components/paging.php:94
 #: admin/shortcode-builder/components/preloaded.php:19
-#: admin/shortcode-builder/components/rest-api.php:34
-#: admin/shortcode-builder/components/rest-api.php:109
+#: admin/shortcode-builder/components/rest-api.php:41
+#: admin/shortcode-builder/components/rest-api.php:115
 #: admin/shortcode-builder/components/seo.php:19
 #: admin/shortcode-builder/components/single-post.php:23
 #: admin/shortcode-builder/components/single-post.php:166
@@ -1078,7 +1078,7 @@ msgid "Scroll Top Value"
 msgstr ""
 
 #: admin/shortcode-builder/components/filters.php:157
-#: admin/shortcode-builder/components/rest-api.php:97
+#: admin/shortcode-builder/components/rest-api.php:103
 msgid "Debug Mode"
 msgstr ""
 
@@ -1319,63 +1319,63 @@ msgstr ""
 msgid "Enter the number of posts to preload."
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:18
+#: admin/shortcode-builder/components/rest-api.php:25
 msgid "REST API"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:23
+#: admin/shortcode-builder/components/rest-api.php:30
 msgid "Enable the WordPress REST API."
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:46
+#: admin/shortcode-builder/components/rest-api.php:52
 msgid "Base URL"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:47
+#: admin/shortcode-builder/components/rest-api.php:53
 msgid "Set a default Base URL in the Ajax Load More settings panel"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:48
+#: admin/shortcode-builder/components/rest-api.php:54
 msgid "Enter the base URL to your installation of the REST API."
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:59
+#: admin/shortcode-builder/components/rest-api.php:65
 msgid "Namespace"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:60
+#: admin/shortcode-builder/components/rest-api.php:66
 msgid "Set a default Namespace in the Ajax Load More settings panel"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:61
+#: admin/shortcode-builder/components/rest-api.php:67
 msgid "Enter the custom namespace for this Ajax Load More query."
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:72
+#: admin/shortcode-builder/components/rest-api.php:78
 msgid "Endpoint"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:73
+#: admin/shortcode-builder/components/rest-api.php:79
 msgid "Set a default Endpoint in the Ajax Load More settings panel"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:74
+#: admin/shortcode-builder/components/rest-api.php:80
 msgid "Enter your custom endpoint for this Ajax Load More query."
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:85
+#: admin/shortcode-builder/components/rest-api.php:91
 msgid "Template ID"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:85
+#: admin/shortcode-builder/components/rest-api.php:91
 msgid "Ajax Load More references this ID while looping and displaying your data. You must still select a repeater template for this instance of Ajax Load More"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:86
+#: admin/shortcode-builder/components/rest-api.php:92
 msgid "Enter the ID of your javascript template.<br/><br/>e.g. <em>tmpl-alm-template</em> = <em>alm-template</em>"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:86
+#: admin/shortcode-builder/components/rest-api.php:92
 #: admin/shortcode-builder/components/single-post.php:155
 #: admin/shortcode-builder/components/single-post.php:204
 #: admin/shortcode-builder/shortcode-builder.php:249
@@ -1391,11 +1391,11 @@ msgstr ""
 msgid "View Example"
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:98
+#: admin/shortcode-builder/components/rest-api.php:104
 msgid "Enable debugging (console.log) of REST API responses in the browser console. "
 msgstr ""
 
-#: admin/shortcode-builder/components/rest-api.php:117
+#: admin/shortcode-builder/components/rest-api.php:122
 msgid "Visit <a href=\"http://v2.wp-api.org/\" target=\"_blank\">http://v2.wp-api.org</a> for documentation on creating custom <a href=\"http://v2.wp-api.org/extending/adding/\" target=\"_blank\">Endpoints</a> for use with Ajax Load More."
 msgstr ""
 

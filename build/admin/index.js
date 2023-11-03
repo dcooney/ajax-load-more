@@ -492,7 +492,7 @@ jQuery(document).ready(function ($) {
 				}
 			},
 			error: function (status) {
-				console.log(status);
+				console.warn(status);
 				$('.restapi-access').fadeIn();
 			},
 		});
@@ -657,7 +657,6 @@ jQuery(document).ready(function ($) {
 					settingsTarget.classList.add('--saved');
 					settingsTarget.innerHTML = alm_admin_localize.settings_saved;
 					settingsForm.classList.remove('--saving');
-					//console.log(alm_admin_localize.ajax_load_more +' - '+ alm_admin_localize.settings_saved);
 					savingSettings = false;
 
 					setTimeout(function () {
@@ -674,7 +673,7 @@ jQuery(document).ready(function ($) {
 					settingsTarget.classList.add('--error');
 					settingsTarget.innerHTML = alm_admin_localize.settings_error;
 					settingsForm.classList.remove('--saving');
-					console.log(alm_admin_localize.ajax_load_more + ' - ' + alm_admin_localize.settings_error);
+					console.warn(alm_admin_localize.ajax_load_more + ' - ' + alm_admin_localize.settings_error);
 					savingSettings = false;
 
 					setTimeout(function () {
@@ -928,7 +927,7 @@ jQuery(document).ready(function ($) {
 				},
 
 				error: function (status, error) {
-					console.log(status, error);
+					console.warn(status, error);
 					$('.loading', parent).delay(250).fadeOut(300);
 					almActivating = false;
 				},
@@ -990,7 +989,7 @@ jQuery(document).ready(function ($) {
 					}, 400);
 				},
 				error: function (status) {
-					console.log(status);
+					console.warn(status);
 					textarea.removeClass('loading');
 				},
 			});
@@ -1023,7 +1022,7 @@ jQuery(document).ready(function ($) {
 				container.fadeOut();
 			},
 			error: function (xhr, status, error) {
-				console.log(status);
+				console.warn(status);
 			},
 		});
 	});

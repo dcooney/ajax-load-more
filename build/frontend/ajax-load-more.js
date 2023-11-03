@@ -11042,9 +11042,6 @@ function almInitResultsText(alm, type = 'standard') {
 		case 'woocommerce': // WooCommerce
 			// Don't do anything
 			break;
-
-		default:
-			console.log('No results to set.'); // eslint-disable-line no-console
 	}
 }
 
@@ -11921,7 +11918,6 @@ let alm_is_filtering = false;
 					for (let i = 0; i < html.length; i++) {
 						const result = html[i];
 						if (alm.restapi_debug === 'true') {
-							// If debug
 							console.log(result); // eslint-disable-line no-console
 						}
 						data += alm_rest_template(result);
