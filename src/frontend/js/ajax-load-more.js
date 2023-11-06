@@ -606,10 +606,15 @@ let alm_is_filtering = false;
 			} else {
 				// Standard ALM.
 				const params = getAjaxParams(alm, type);
-				const cache = await getCache(alm, Object.assign({}, params));
-				if (cache && !['totalposts', 'totalpages'].includes(type)) {
+				// Cache.
+				if (alm?.addons?.cache && !['totalposts', 'totalpages'].includes(type)) {
 					// Get cache if available and not a totalposts or totalpages request.
-					alm.AjaxLoadMore.render(cache);
+					const cache = await getCache(alm, Object.assign({}, params));
+					if (cache) {
+						alm.AjaxLoadMore.render(cache);
+					} else {
+						alm.AjaxLoadMore.adminajax(params, type);
+					}
 				} else {
 					alm.AjaxLoadMore.adminajax(params, type);
 				}

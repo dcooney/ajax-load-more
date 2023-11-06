@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 6.2.0.2
+Stable tag: 6.2.0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,11 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 6.2.0.3 - November 6, 2023 =
+*HOTFIX: Fixed issue with fatal i18n error in core Ajax Load More Elementor widget causing issues with loading posts on edit screen.
+*UPDATE: Improved Cache add-on checker function for increased reliablility while fetching cache.
+
 
 = 6.2.0.2 - November 3, 2023 =
 * FIX: Fixed issue with paging URLs when using Elementor add-on with WooCommerce products and WP archive templates.

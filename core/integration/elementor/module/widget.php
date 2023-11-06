@@ -98,7 +98,7 @@ class ALMElementor extends Widget_Base {
 				'type' => Controls_Manager::TEXTAREA,
 				'default' => __( '[ajax_load_more]', 'ajax-load-more' ),
 				/* translators: 1: Shortcode Builder link tag. 2: Shortcode Builder closing link tag. */
-				'description' => __( 'The shortcode will not render while Elementor is in live edit mode, you must preview the page to view Ajax Load More functionality.', 'ajax-load-more' ) .'<br/><br/>&raquo; '. sprintf(__('%1Build Shortcode%2', 'ajax-load-more' ), '<a href="admin.php?page=ajax-load-more-shortcode-builder" target="_blank">', '</a>'),
+				'description' => __( 'The shortcode will not render while Elementor is in live edit mode, you must preview the page to view Ajax Load More functionality.', 'ajax-load-more' ) .'<br/><br/>&raquo; '. sprintf(__('%1$sBuild Shortcode%2$s', 'ajax-load-more' ), '<a href="admin.php?page=ajax-load-more-shortcode-builder" target="_blank">', '</a>'),
 				'placeholder' => '[ajax_load_more]',
 			]
 		);
