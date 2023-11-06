@@ -262,8 +262,8 @@ How to install Ajax Load More.
 == Changelog ==
 
 = 6.2.0.3 - November 6, 2023 =
-*HOTFIX: Fixed issue with fatal i18n error in core Ajax Load More Elementor widget causing issues with loading posts on edit screen.
-*UPDATE: Improved Cache add-on checker function for increased reliablility while fetching cache.
+*HOTFIX: Fixed issue with fatal i18n error in core Ajax Load More Elementor widget causing issues with loading posts on edit screens.
+*UPDATE: Improved Cache add-on checker function for increased reliability while fetching cache.
 
 
 = 6.2.0.2 - November 3, 2023 =
