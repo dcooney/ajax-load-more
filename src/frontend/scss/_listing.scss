@@ -1,20 +1,17 @@
 // Generic alm-listing Styles
 .alm-listing {
-	.alm-reveal {
-		outline: none;
-		&::after {
-			display: table;
-			clear: both;
-			height: 0;
-			content: '';
-		}
+	outline: none;
+	&::after {
+		display: table;
+		clear: both;
+		height: 0;
+		content: '';
 	}
 }
 
 .alm-listing {
 	margin: 0;
 	padding: 0;
-	.alm-reveal > li,
 	.alm-paging-content > li,
 	> li {
 		position: relative;
@@ -73,7 +70,6 @@
 		}
 	}
 	&.stylefree {
-		.alm-reveal > li,
 		.alm-paging-content > li,
 		> li {
 			padding: inherit;
@@ -90,7 +86,6 @@
 
 // Right to left (rtl)
 .alm-listing.rtl {
-	.alm-reveal > li,
 	.alm-paging-content > li {
 		padding: 0 170px 0 0;
 		text-align: right;
@@ -126,8 +121,7 @@
 		display: flex;
 		flex-wrap: nowrap;
 		width: 100%;
-		.alm-listing,
-		.alm-listing .alm-reveal {
+		.alm-listing {
 			display: flex;
 			flex-wrap: nowrap;
 			flex-direction: row;
@@ -149,7 +143,7 @@
 				}
 			}
 		}
-		.alm-listing .alm-reveal::after {
+		.alm-listing::after {
 			display: none;
 		}
 	}

@@ -1,5 +1,5 @@
 import loadImage from './loadImage';
-import setFocus from './setFocus';
+import setFocus from '../functions/setFocus';
 
 /**
  * Load all items after Ajax request.

@@ -2,6 +2,30 @@ import getQueryVariable from '../helpers/getQueryVariable';
 const FILTERS_CLASSNAME = 'alm-filters';
 
 /**
+ * Create the data attributes for a Filters item.
+ *
+ * @param {Object} alm     The ALM object.
+ * @param {Object} element The element HTML node.
+ * @param {number} pagenum The current page number.
+ * @return {HTMLElement}   Modified HTML element.
+ */
+export function addFiltersAttributes(alm, element, pagenum) {
+	const { canonical_url } = alm;
+	const querystring = window.location.search;
+
+	element.classList.add('alm-filters');
+	element.dataset.page = pagenum;
+
+	if (pagenum > 1) {
+		element.dataset.url = canonical_url + buildFilterURL(alm, querystring, pagenum);
+	} else {
+		element.dataset.url = canonical_url + buildFilterURL(alm, querystring, 0);
+	}
+
+	return element;
+}
+
+/**
  * Parse a filter querystring for returning caches directories.
  *
  * @param {string} path The URL path.
@@ -162,7 +186,6 @@ function masonryFiltersAtts(alm, element, querystring, pagenum) {
 	} else {
 		let updatedQS = querystring.replace(/(pg=)[^\&]+/, ''); // Remove `pg` from querysting
 		updatedQS = updatedQS === '?' ? '' : updatedQS; // Remove empty querysting
-
 		element.dataset.url = alm.canonical_url + updatedQS;
 	}
 

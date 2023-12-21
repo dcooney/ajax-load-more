@@ -42,7 +42,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			global $post; // Global $post obj.
 
 			// Initial variables.
-			self::$counter++; // ALM counter.
+			++self::$counter; // ALM counter.
 			$slug              = apply_filters( 'alm_page_slug', alm_get_page_slug( $post ) ); // Define page slug.
 			$post_id           = apply_filters( 'alm_page_id', alm_get_page_id( $post ) ); // Define post ID.
 			$wp_posts_per_page = get_option( 'posts_per_page' ); // Global Posts Per Page.
@@ -214,8 +214,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'destroy_after'                => '',
 						'transition'                   => 'fade',
 						'transition_speed'             => '250',
-						'transition_container'         => 'true',
-						'transition_container_classes' => '',
 						'masonry_selector'             => '',
 						'masonry_columnwidth'          => '',
 						'masonry_animation'            => '',
@@ -392,13 +390,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			$single_post = $single_post === 'true' ? true : false;
-
-			// Transition Container.
-			// Note: Required for SEO, Filters and Single Posts.
-			$transition_container = $seo === 'true' || $single_post || $filters ? 'true' : $transition_container;
-
-			// Transition Container Classes.
-			$transition_container_classes = ! empty( $transition_container_classes ) ? ' ' . esc_attr( $transition_container_classes ) : '';
 
 			// REST API.
 			if ( $restapi === 'true' ) {
@@ -822,16 +813,13 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Set `alm-listing` classname.
 			$listing_class = $comments === 'true' ? 'commentlist alm-comments' : 'alm-listing'; // If Comments.
 
-			// Set class for when ALM has a transition container.
-			$has_transition_class = $transition_container === 'true' ? ' alm-has-transition' : ' alm-no-transition';
-
 			// Confirm container element type is valid.
 			$container_element_array = [ 'ul', 'ol', 'div', 'article', 'table', 'section', 'dl' ];
 			$container_element       = in_array( $container_element, $container_element_array, true ) ? $container_element : 'ul';
 
 			// Open #ajax-load-more.
 			$ajaxloadmore .= '<' . esc_attr( $container_element ) . ' aria-live="polite" aria-atomic="true"';
-			$ajaxloadmore .= ' class="' . esc_attr( $listing_class ) . ' alm-ajax' . esc_attr( $has_transition_class ) . esc_attr( $paging_container_class ) . esc_attr( $classname ) . esc_attr( $css_classes ) . '"';
+			$ajaxloadmore .= ' class="' . esc_attr( $listing_class ) . ' alm-ajax' . esc_attr( $paging_container_class ) . esc_attr( $classname ) . esc_attr( $css_classes ) . '"';
 			$ajaxloadmore .= $paging_transition;
 
 			// Build container data atts.
@@ -961,9 +949,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				);
 				$ajaxloadmore .= wp_kses_post( $tabs_return );
 
-				// Set the transition container.
-				$transition_container = 'true';
-
 				// Set `pause` true for tabs and preloaded.
 				if ( $preloaded === 'true' ) {
 					$pause = 'true';
@@ -988,10 +973,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					}
 				}
 
-				// Set `is-preloaded` attribute to add `.alm-preloaded` class to first `.alm-reveal` div.
+				// Set `is-preloaded` attribute to add `.alm-preloaded` .
 				$ajaxloadmore .= $seo === 'true' && $query_args['paged'] > 1 ? ' data-is-preloaded="true"' : '';
-
-				// Add `preloaded` atts.
 				$ajaxloadmore .= ' data-preloaded="' . esc_attr( $preloaded ) . '"';
 				$ajaxloadmore .= ' data-preloaded-amount="' . esc_attr( $preloaded_amount ) . '"';
 			}
@@ -1216,8 +1199,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Transition.
 			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . esc_attr( $transition ) . '"' : '';
-			$ajaxloadmore .= $transition_container === 'false' ? ' data-transition-container="' . esc_attr( $transition_container ) . '"' : '';
-			$ajaxloadmore .= $transition_container_classes ? ' data-transition-container-classes="' . esc_attr( $transition_container_classes ) . '"' : '';
 
 			// Masonry.
 			if ( 'masonry' === $transition ) {
@@ -1242,11 +1223,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= '>';
 			// End .alm-listing data.
 
-			// SEO Offset.
-			if ( $seo_offset === 'true' ) {
-				$ajaxloadmore .= '<div class="alm-reveal alm-seo' . esc_attr( $transition_container_classes ) . '" data-page="1" data-url="' . esc_attr( $canonical_url ) . '"></div>';
-			}
-
 			// Preloaded.
 			$noscript_pagingnav = '';
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
@@ -1264,7 +1240,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$single_post_permanlink = $_SERVER['QUERY_STRING'] ? get_permalink( $single_post_id ) . '?' . esc_attr( $_SERVER['QUERY_STRING'] ) : get_permalink( $single_post_id );
 
 				// Get previous post include, build output from the next post filter.
-				$single_post_output = '<div class="alm-reveal alm-single-post post-' . $single_post_id . '" data-url="' . $single_post_permanlink . '" data-title="' . wp_strip_all_tags( get_the_title( $single_post_id ) ) . '" data-id="' . $single_post_id . '" data-page="0">';
+				$single_post_output = '<div class="alm-single-post post-' . $single_post_id . '" data-url="' . $single_post_permanlink . '" data-title="' . wp_strip_all_tags( get_the_title( $single_post_id ) ) . '" data-id="' . $single_post_id . '" data-page="0">';
 
 				/**
 				 * Single Post Add-on hook
@@ -1310,7 +1286,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 */
 			if ( ( $seo === 'true' || $filters ) && $preloaded !== 'true' && ! $restapi ) {
 				if ( ! apply_filters( 'alm_disable_noscript_' . $id, false ) ) {
-					$ajaxloadmore .= apply_filters( 'alm_noscript', $query_args, $container_element, $css_classes, $transition_container_classes, $canonical_url );
+					$ajaxloadmore .= apply_filters( 'alm_noscript', $query_args, $container_element, $css_classes, $canonical_url );
 				}
 			}
 
@@ -1406,7 +1382,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 */
 			add_action(
 				'wp_footer',
-				function() use ( $localized_data, $localize_id ) {
+				function () use ( $localized_data, $localize_id ) {
 					// phpcs:ignore
 					printf( '<script type="text/javascript" id="' . $localized_data[ $localize_id ]['script'] . '">var ' . $localized_data[ $localize_id ]['script'] . ' = %s</script>', json_encode( $localized_data[ $localize_id ] ) );
 				}
@@ -1414,7 +1390,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// End $ajaxloadmore element.
 			return $ajaxloadmore;
-
 		}
 
 		/**
@@ -1459,7 +1434,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				}
 			}
 		}
-
 	}
 
 endif;

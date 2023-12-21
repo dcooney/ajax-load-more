@@ -5,27 +5,11 @@
 	<!-- WordPress Core currently supports PHP 8.0+. -->
 	<config name="testVersion" value="8.0"/>
 
-	<!-- Only sniff PHP files. -->
-	<arg name="extensions" value="php" />
-	<arg name="colors" />
+
+	<arg name="extensions" value="php" /> <!-- Only sniff PHP files. -->
+	<arg name="colors" /><!-- Use colors -->
 	<arg value="s" /><!-- Show sniff codes in all reports. -->
 	<arg value="p" /><!-- Show progress. -->
-
-	<rule ref="WordPress">
-		<exclude name="Generic.Arrays.DisallowShortArraySyntax" />
-		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
-		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
-		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page"/>
-		<exclude name="WordPress.Security.NonceVerification.Recommended" />
-		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
-		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
-		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed" />
-		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
-	</rule>
-
-	<rule ref="WordPress-Docs" />
-	<rule ref="PHPCompatibilityWP" />
-	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
 
 	<!-- Prefix globals -->
 	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
@@ -43,17 +27,33 @@
 		</properties>
 	</rule>
 
+	<rule ref="WordPress-Docs" />
+	<rule ref="PHPCompatibilityWP" />
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+
+	<rule ref="WordPress">
+		<exclude name="Generic.Arrays.DisallowShortArraySyntax" />
+		<exclude name="WordPress.NamingConventions.PrefixAllGlobals.ShortPrefixPassed"/>
+		<exclude name="WordPress.PHP.YodaConditions.NotYoda"/>
+		<exclude name="WordPress.WP.PostsPerPage.posts_per_page_posts_per_page"/>
+		<exclude name="WordPress.Security.NonceVerification.Recommended" />
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
+		<exclude name="WordPress.NamingConventions.ValidHookName.UseUnderscores" />
+		<exclude name="Universal.Files.SeparateFunctionsFromOO.Mixed" />
+		<exclude name="Universal.Arrays.DisallowShortArraySyntax.Found" />
+	</rule>
+
+	<!-- Exclude these files and folders -->
+	<exclude-pattern>/*.asset.php</exclude-pattern>
+	<exclude-pattern>/build/*</exclude-pattern>
+	<exclude-pattern>/node_modules/*</exclude-pattern>
+	<exclude-pattern>/vendor/*</exclude-pattern>
+	<exclude-pattern>/lang/*</exclude-pattern>
+
 	<!-- Allow . in hook names. -->
 	<rule ref="WordPress.NamingConventions.ValidHookName">
 		<properties>
 			<property name="additionalWordDelimiters" value="." />
 		</properties>
 	</rule>
-
-	<!-- Other files and folders -->
-	<exclude-pattern>/*.asset.php</exclude-pattern>
-	<exclude-pattern>/build/*</exclude-pattern>
-	<exclude-pattern>/node_modules/*</exclude-pattern>
-	<exclude-pattern>/vendor/*</exclude-pattern>
-	<exclude-pattern>/lang/*</exclude-pattern>
 </ruleset>

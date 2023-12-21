@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-11-06T13:07:12+00:00\n"
+"POT-Creation-Date: 2023-12-21T02:03:45+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:305
+#: ajax-load-more.php:352
 msgid "Settings"
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 #: admin/functions/settings.php:437
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: core/classes/class-alm-shortcode.php:226
+#: core/classes/class-alm-shortcode.php:224
 msgid "Load More"
 msgstr ""
 
@@ -702,8 +702,8 @@ msgstr ""
 #: admin/shortcode-builder/shortcode-builder.php:493
 #: admin/shortcode-builder/shortcode-builder.php:516
 #: admin/shortcode-builder/shortcode-builder.php:691
-#: admin/shortcode-builder/shortcode-builder.php:767
-#: admin/shortcode-builder/shortcode-builder.php:1456
+#: admin/shortcode-builder/shortcode-builder.php:728
+#: admin/shortcode-builder/shortcode-builder.php:1417
 msgid "True"
 msgstr ""
 
@@ -740,8 +740,8 @@ msgstr ""
 #: admin/shortcode-builder/shortcode-builder.php:497
 #: admin/shortcode-builder/shortcode-builder.php:520
 #: admin/shortcode-builder/shortcode-builder.php:695
-#: admin/shortcode-builder/shortcode-builder.php:771
-#: admin/shortcode-builder/shortcode-builder.php:1460
+#: admin/shortcode-builder/shortcode-builder.php:732
+#: admin/shortcode-builder/shortcode-builder.php:1421
 msgid "False"
 msgstr ""
 
@@ -941,7 +941,7 @@ msgstr ""
 #: admin/shortcode-builder/components/single-post.php:63
 #: admin/shortcode-builder/components/single-post.php:326
 #: admin/shortcode-builder/shortcode-builder.php:704
-#: admin/shortcode-builder/shortcode-builder.php:1449
+#: admin/shortcode-builder/shortcode-builder.php:1410
 msgid "View Docs"
 msgstr ""
 
@@ -1381,13 +1381,13 @@ msgstr ""
 #: admin/shortcode-builder/shortcode-builder.php:249
 #: admin/shortcode-builder/shortcode-builder.php:263
 #: admin/shortcode-builder/shortcode-builder.php:286
-#: admin/shortcode-builder/shortcode-builder.php:760
-#: admin/shortcode-builder/shortcode-builder.php:959
-#: admin/shortcode-builder/shortcode-builder.php:1054
-#: admin/shortcode-builder/shortcode-builder.php:1196
-#: admin/shortcode-builder/shortcode-builder.php:1238
-#: admin/shortcode-builder/shortcode-builder.php:1267
-#: admin/shortcode-builder/shortcode-builder.php:1298
+#: admin/shortcode-builder/shortcode-builder.php:721
+#: admin/shortcode-builder/shortcode-builder.php:920
+#: admin/shortcode-builder/shortcode-builder.php:1015
+#: admin/shortcode-builder/shortcode-builder.php:1157
+#: admin/shortcode-builder/shortcode-builder.php:1199
+#: admin/shortcode-builder/shortcode-builder.php:1228
+#: admin/shortcode-builder/shortcode-builder.php:1259
 msgid "View Example"
 msgstr ""
 
@@ -1482,7 +1482,7 @@ msgstr ""
 
 #: admin/shortcode-builder/components/single-post.php:110
 #: admin/shortcode-builder/components/term-query.php:39
-#: admin/shortcode-builder/shortcode-builder.php:1138
+#: admin/shortcode-builder/shortcode-builder.php:1099
 msgid "Taxonomy"
 msgstr ""
 
@@ -1503,13 +1503,13 @@ msgstr ""
 
 #: admin/shortcode-builder/components/single-post.php:125
 #: admin/shortcode-builder/components/term-query.php:45
-#: admin/shortcode-builder/shortcode-builder.php:952
+#: admin/shortcode-builder/shortcode-builder.php:913
 msgid "Category"
 msgstr ""
 
 #: admin/shortcode-builder/components/single-post.php:126
 #: admin/shortcode-builder/components/term-query.php:46
-#: admin/shortcode-builder/shortcode-builder.php:1046
+#: admin/shortcode-builder/shortcode-builder.php:1007
 msgid "Tag"
 msgstr ""
 
@@ -1587,7 +1587,7 @@ msgid "Enter the hex color values of the reading progress bar"
 msgstr ""
 
 #: admin/shortcode-builder/components/single-post.php:265
-#: admin/shortcode-builder/shortcode-builder.php:786
+#: admin/shortcode-builder/shortcode-builder.php:747
 msgid "Default:"
 msgstr ""
 
@@ -1672,9 +1672,9 @@ msgid "All Roles"
 msgstr ""
 
 #: admin/shortcode-builder/components/users.php:56
-#: admin/shortcode-builder/shortcode-builder.php:956
-#: admin/shortcode-builder/shortcode-builder.php:1050
-#: admin/shortcode-builder/shortcode-builder.php:1285
+#: admin/shortcode-builder/shortcode-builder.php:917
+#: admin/shortcode-builder/shortcode-builder.php:1011
+#: admin/shortcode-builder/shortcode-builder.php:1246
 msgid "Include"
 msgstr ""
 
@@ -1683,9 +1683,9 @@ msgid "A comma separated list of users to be included by ID"
 msgstr ""
 
 #: admin/shortcode-builder/components/users.php:70
-#: admin/shortcode-builder/shortcode-builder.php:1003
-#: admin/shortcode-builder/shortcode-builder.php:1099
-#: admin/shortcode-builder/shortcode-builder.php:1296
+#: admin/shortcode-builder/shortcode-builder.php:964
+#: admin/shortcode-builder/shortcode-builder.php:1060
+#: admin/shortcode-builder/shortcode-builder.php:1257
 msgid "Exclude"
 msgstr ""
 
@@ -1702,7 +1702,7 @@ msgid "The number of users to show."
 msgstr ""
 
 #: admin/shortcode-builder/components/users.php:96
-#: admin/shortcode-builder/shortcode-builder.php:1350
+#: admin/shortcode-builder/shortcode-builder.php:1311
 msgid "Orderby"
 msgstr ""
 
@@ -1711,7 +1711,7 @@ msgid "Sort users by Order and Orderby parameters"
 msgstr ""
 
 #: admin/shortcode-builder/components/users.php:102
-#: admin/shortcode-builder/shortcode-builder.php:1336
+#: admin/shortcode-builder/shortcode-builder.php:1297
 msgid "Order"
 msgstr ""
 
@@ -1766,7 +1766,7 @@ msgid "Taxonomy Operator:"
 msgstr ""
 
 #: admin/shortcode-builder/includes/tax-query-options.php:44
-#: admin/shortcode-builder/shortcode-builder.php:1172
+#: admin/shortcode-builder/shortcode-builder.php:1133
 msgid "Relation:"
 msgstr ""
 
@@ -1780,12 +1780,12 @@ msgid "Display Settings"
 msgstr ""
 
 #: admin/shortcode-builder/shortcode-builder.php:31
-#: admin/shortcode-builder/shortcode-builder.php:814
+#: admin/shortcode-builder/shortcode-builder.php:775
 msgid "Query Parameters"
 msgstr ""
 
 #: admin/shortcode-builder/shortcode-builder.php:32
-#: admin/shortcode-builder/shortcode-builder.php:1434
+#: admin/shortcode-builder/shortcode-builder.php:1395
 msgid "Integrations"
 msgstr ""
 
@@ -2161,303 +2161,275 @@ msgstr ""
 msgid "Don't see your favorite Masonry option listed? You can always add your own!"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:718
-msgid "Transition Container Classes"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:718
-msgid "This setting is not available with the Single Post or Next Page add-ons"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:719
-msgid "Add custom classes to the <span>.alm-reveal</span> loading container"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:731
-msgid "Transition Container"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:731
-msgid "Removing the transition container may have undesired results and is not recommended"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:732
-msgid "Remove the <span>.alm-reveal</span> loading container from Ajax Load More"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:739
-msgid "Remove Container"
-msgstr ""
-
-#: admin/shortcode-builder/shortcode-builder.php:755
+#: admin/shortcode-builder/shortcode-builder.php:716
 msgid "Progress Bar"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:759
+#: admin/shortcode-builder/shortcode-builder.php:720
 msgid "Display progress bar indicator at the top of the window while loading Ajax content."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:784
+#: admin/shortcode-builder/shortcode-builder.php:745
 msgid "Color"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:785
+#: admin/shortcode-builder/shortcode-builder.php:746
 msgid "Enter the hex color of the progress bar"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:815
+#: admin/shortcode-builder/shortcode-builder.php:776
 msgid "When using Ajax Load More add-ons or extensions not all Query Parameters will be available in the query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:818
+#: admin/shortcode-builder/shortcode-builder.php:779
 msgid "Query Parameters allow you build a custom <b>WP_Query</b> based on Ajax Load More shortcode values."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:825
+#: admin/shortcode-builder/shortcode-builder.php:786
 msgid "Posts Per Page"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:829
+#: admin/shortcode-builder/shortcode-builder.php:790
 msgid "Select the number of posts to load with each Ajax request."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:850
+#: admin/shortcode-builder/shortcode-builder.php:811
 msgid "Post Type"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:855
+#: admin/shortcode-builder/shortcode-builder.php:816
 msgid "Select the Post Types to include in this Ajax Load More query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:873
+#: admin/shortcode-builder/shortcode-builder.php:834
 msgid "Any"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:884
+#: admin/shortcode-builder/shortcode-builder.php:845
 msgid "Sticky Posts"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:884
+#: admin/shortcode-builder/shortcode-builder.php:845
 msgid "Sticky posts are only available for Posts"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:885
+#: admin/shortcode-builder/shortcode-builder.php:846
 msgid "Preserve the ordering of sticky posts by having them appear first in the Ajax listing."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:892
+#: admin/shortcode-builder/shortcode-builder.php:853
 msgid "Enable Sticky Posts"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:916
+#: admin/shortcode-builder/shortcode-builder.php:877
 msgid "Post Format"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:920
+#: admin/shortcode-builder/shortcode-builder.php:881
 msgid "Select a Post Format to query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:923
+#: admin/shortcode-builder/shortcode-builder.php:884
 msgid "Select Post Format"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:924
+#: admin/shortcode-builder/shortcode-builder.php:885
 msgid "Standard"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:956
+#: admin/shortcode-builder/shortcode-builder.php:917
 msgid "Get posts by category using a category_name or category__and query"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:957
+#: admin/shortcode-builder/shortcode-builder.php:918
 msgid "Comma separated list of categories to include by"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:957
-#: admin/shortcode-builder/shortcode-builder.php:1051
+#: admin/shortcode-builder/shortcode-builder.php:918
+#: admin/shortcode-builder/shortcode-builder.php:1012
 msgid "slug"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:993
-#: admin/shortcode-builder/shortcode-builder.php:1089
+#: admin/shortcode-builder/shortcode-builder.php:954
+#: admin/shortcode-builder/shortcode-builder.php:1050
 msgid "What's this"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1005
+#: admin/shortcode-builder/shortcode-builder.php:966
 msgid "Comma separated list of categories to exclude by ID."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1050
+#: admin/shortcode-builder/shortcode-builder.php:1011
 msgid "Get posts by tags using a tag or tag__and query"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1051
+#: admin/shortcode-builder/shortcode-builder.php:1012
 msgid "Comma separated list of tags to include by"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1101
+#: admin/shortcode-builder/shortcode-builder.php:1062
 msgid "Comma separated list of tags to exclude by ID"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1142
+#: admin/shortcode-builder/shortcode-builder.php:1103
 msgid "Select a taxonomy to query and then select the terms and operator."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1147
-#: admin/shortcode-builder/shortcode-builder.php:1181
+#: admin/shortcode-builder/shortcode-builder.php:1108
+#: admin/shortcode-builder/shortcode-builder.php:1142
 msgid "Add Another"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1158
+#: admin/shortcode-builder/shortcode-builder.php:1119
 msgid "Custom Fields (Meta_Query)"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1162
+#: admin/shortcode-builder/shortcode-builder.php:1123
 msgid "Query for <a href=\"https://developer.wordpress.org/reference/classes/wp_query/#custom-field-post-meta-parameters\" target=\"_blank\">custom fields</a> by entering a key, value and operator."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1172
+#: admin/shortcode-builder/shortcode-builder.php:1133
 msgid "The logical relationship between each custom field when there is more than one"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1191
+#: admin/shortcode-builder/shortcode-builder.php:1152
 msgid "Date"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1195
+#: admin/shortcode-builder/shortcode-builder.php:1156
 msgid "Enter a year, month(number) and day to query by date archive."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1202
+#: admin/shortcode-builder/shortcode-builder.php:1163
 msgid "Year:"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1206
+#: admin/shortcode-builder/shortcode-builder.php:1167
 msgid "Month:"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1210
+#: admin/shortcode-builder/shortcode-builder.php:1171
 msgid "Day:"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1232
+#: admin/shortcode-builder/shortcode-builder.php:1193
 msgid "Author"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1236
+#: admin/shortcode-builder/shortcode-builder.php:1197
 msgid "Select an Author to query(by ID)."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1261
+#: admin/shortcode-builder/shortcode-builder.php:1222
 #: admin/views/filters.php:35
 msgid "Search"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1265
+#: admin/shortcode-builder/shortcode-builder.php:1226
 msgid "Enter a search term to query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1266
+#: admin/shortcode-builder/shortcode-builder.php:1227
 msgid "Search uses the default WordPress search, however Ajax Load More does offer integrations with SearchWP and Relevanssi."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1271
+#: admin/shortcode-builder/shortcode-builder.php:1232
 msgid "Enter search term"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1281
+#: admin/shortcode-builder/shortcode-builder.php:1242
 msgid "Post Parameters"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1286
+#: admin/shortcode-builder/shortcode-builder.php:1247
 msgid "A comma separated list of post ID's to query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1290
+#: admin/shortcode-builder/shortcode-builder.php:1251
 msgid "225, 340, 818, etc..."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1297
+#: admin/shortcode-builder/shortcode-builder.php:1258
 msgid "A comma separated list of post ID's to exclude from query."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1308
+#: admin/shortcode-builder/shortcode-builder.php:1269
 msgid "Post Status"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1308
+#: admin/shortcode-builder/shortcode-builder.php:1269
 msgid "Post Status parameters are only available for logged in (admin) users. Non logged in users will only have access to view content in a 'publish' or 'inherit' state."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1309
+#: admin/shortcode-builder/shortcode-builder.php:1270
 msgid "Select status of the post."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1314
+#: admin/shortcode-builder/shortcode-builder.php:1275
 msgid "Published"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1332
+#: admin/shortcode-builder/shortcode-builder.php:1293
 msgid "Ordering"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1337
+#: admin/shortcode-builder/shortcode-builder.php:1298
 msgid "Return results by ascending or descending order."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1351
+#: admin/shortcode-builder/shortcode-builder.php:1312
 msgid "Sort results by specific ordering parameter."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1374
+#: admin/shortcode-builder/shortcode-builder.php:1335
 msgid "Sort Key"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1375
+#: admin/shortcode-builder/shortcode-builder.php:1336
 msgid "The custom field key for sorting results by custom field value."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1390
+#: admin/shortcode-builder/shortcode-builder.php:1351
 msgid "Offset"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1394
+#: admin/shortcode-builder/shortcode-builder.php:1355
 msgid "Offset the initial query by <em>'x'</em> number of posts"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1408
+#: admin/shortcode-builder/shortcode-builder.php:1369
 msgid "Custom Arguments"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1412
+#: admin/shortcode-builder/shortcode-builder.php:1373
 msgid "A semicolon separated list of custom value:pair arguments."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1412
+#: admin/shortcode-builder/shortcode-builder.php:1373
 msgid "Custom Arguments can be used to query by parameters not available in the Shortcode Builder"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1416
+#: admin/shortcode-builder/shortcode-builder.php:1377
 msgid "event_display:upcoming"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1436
+#: admin/shortcode-builder/shortcode-builder.php:1397
 msgid "Ajax Load More provides integrations for popular plugins and core WP functionality - when selecting an integration, Ajax Load More will automatically set various parameters on the server side to provide the best experience for users based on the selected integration."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1443
+#: admin/shortcode-builder/shortcode-builder.php:1404
 msgid "Archives"
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1447
+#: admin/shortcode-builder/shortcode-builder.php:1408
 msgid "Ajax Load More will automatically create an archive query while viewing site archives."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1448
+#: admin/shortcode-builder/shortcode-builder.php:1409
 msgid "Taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported."
 msgstr ""
 
-#: admin/shortcode-builder/shortcode-builder.php:1466
+#: admin/shortcode-builder/shortcode-builder.php:1427
 msgid "<b>Note</b>: Do not select Query Parameters other than <b>Posts Per Page</b> and/or <b>Post Type</b> when using the Archives integration. Ajax Load More will automatically create the perfect shortcode for you based on the current archive page."
 msgstr ""
 
@@ -2738,19 +2710,19 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:282
+#: ajax-load-more.php:329
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:382
+#: ajax-load-more.php:432
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:383
+#: ajax-load-more.php:433
 msgid "No results found."
 msgstr ""
 
-#: core/classes/class-alm-noscript.php:143
+#: core/classes/class-alm-noscript.php:142
 msgid "Pages: "
 msgstr ""
 

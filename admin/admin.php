@@ -645,18 +645,18 @@ function alm_admin_menu_icon_svg( $base64 = true ) {
 /**
  * Filter the WP Admin footer text only on ALM pages
  *
+ * @param string $text The footer display text.
  * @since 2.12.0
  */
-function alm_filter_admin_footer_text() {
-	$screen = alm_is_admin_screen();
-
-	if ( ! $screen ) {
-		return;
+function alm_filter_admin_footer_text( $text ) {
+	if ( ! alm_is_admin_screen() ) {
+		return $text;
 	}
 
-	echo '<strong>Ajax Load More</strong> is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://wordpress.org/support/plugin/ajax-load-more/reviews/" target="_blank" style="font-weight: 500;">Leave a Review</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
+	$text = '<strong>Ajax Load More</strong> is made with <span style="color: #e25555;">♥</span> by <a href="https://connekthq.com" target="_blank" style="font-weight: 500;">Connekt</a> | <a href="https://wordpress.org/support/plugin/ajax-load-more/reviews/" target="_blank" style="font-weight: 500;">Leave a Review</a> | <a href="https://connekthq.com/plugins/ajax-load-more/support/" target="_blank" style="font-weight: 500;">Get Support</a>';
 	if ( ! has_action( 'alm_pro_installed' ) ) {
-		echo ' | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" style="font-weight: 500;">Go Pro</a>';
+		$text .= ' | <a href="https://connekthq.com/plugins/ajax-load-more/pro/" target="_blank" style="font-weight: 500;">Go Pro</a>';
 	}
+	return wp_kses_post( $text );
 }
 add_filter( 'admin_footer_text', 'alm_filter_admin_footer_text' ); // Admin menu text.

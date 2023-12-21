@@ -1,11 +1,4 @@
 import { almFadeIn } from './fade';
-import almAppendChildren from '../helpers/almAppendChildren';
-import almDomParser from '../helpers/almDomParser';
-import srcsetPolyfill from '../helpers/srcsetPolyfill';
-import stripEmptyNodes from '../helpers/stripEmptyNodes';
-import { createMasonryFiltersPages, createMasonryFiltersPage } from '../addons/filters';
-import { createMasonrySEOPages, createMasonrySEOPage } from '../addons/seo';
-import setFocus from './setFocus';
 const imagesLoaded = require('imagesloaded');
 
 /**
@@ -20,16 +13,14 @@ export function almMasonry(alm, init, filtering) {
 	if (!alm.masonry) {
 		console.warn('Ajax Load More: Unable to locate Masonry settings.');
 	}
+	const { listing: container, last_loaded, speed } = alm;
 
 	return new Promise((resolve) => {
-		const container = alm.listing;
-		const html = alm.html;
 		const selector = alm.masonry.selector;
-		let columnWidth = alm.masonry.columnwidth;
 		const animation = alm.masonry.animation;
-		let horizontalOrder = alm.masonry.horizontalorder;
-		const speed = alm.speed;
+		const horizontalOrder = alm?.masonry?.horizontalorder === 'true' ? true : false;
 		const masonry_init = alm.masonry.init;
+		let columnWidth = alm.masonry.columnwidth;
 
 		const duration = (speed + 100) / 1000 + 's'; // Add 100 for some delay
 		let hidden = 'scale(0.5)';
@@ -64,15 +55,9 @@ export function almMasonry(alm, init, filtering) {
 			columnWidth = selector; // No columnWidth, use the selector
 		}
 
-		// horizontalOrder
-		horizontalOrder = horizontalOrder === 'true' ? true : false;
-
 		if (!filtering) {
 			// First Run.
 			if (masonry_init && init) {
-				// Run srcSet polyfill.
-				srcsetPolyfill(container, alm.ua);
-
 				imagesLoaded(container, function () {
 					const defaults = {
 						itemSelector: selector,
@@ -90,7 +75,7 @@ export function almMasonry(alm, init, filtering) {
 					};
 
 					// Get custom Masonry options (https://masonry.desandro.com/options.html).
-					const alm_masonry_vars = window.alm_masonry_vars;
+					const alm_masonry_vars = window?.alm_masonry_vars;
 					if (alm_masonry_vars) {
 						Object.keys(alm_masonry_vars).forEach(function (key) {
 							// Loop object	to create key:prop
@@ -98,62 +83,26 @@ export function almMasonry(alm, init, filtering) {
 						});
 					}
 
-					const data = container.querySelectorAll(selector);
-
-					// Create Filters URL, if required.
-					if (alm.addons.filters) {
-						createMasonryFiltersPages(alm, Array.prototype.slice.call(data));
-					}
-
-					// Create SEO URL, if required.
-					if (alm.addons.seo) {
-						createMasonrySEOPages(alm, Array.prototype.slice.call(data));
-					}
-
 					// Init Masonry, delay to allow time for items to be added to the page.
 					setTimeout(function () {
 						alm.msnry = new Masonry(container, defaults);
-						almFadeIn(container.parentNode, 125); // Fade In
+						almFadeIn(container.parentNode, 25);
 						resolve(true);
-					}, 1);
+					}, 50);
 				});
-			}
-
-			// Standard / Append content.
-			else {
-				// Loop all items and create array of node elements
-				const data = stripEmptyNodes(almDomParser(html, 'text/html'));
-
-				if (data) {
-					// Append elements listing.
-					almAppendChildren(alm.listing, data, 'masonry');
-
-					// Run srcSet polyfill.
-					srcsetPolyfill(container, alm.ua);
-
-					// imagesLoaded & append.
+			} else {
+				// Standard / Append content.
+				// eslint-disable-next-line no-lonely-if
+				if (last_loaded) {
+					// ImagesLoaded & appended.
 					imagesLoaded(container, function () {
-						alm.msnry.appended(data);
-
-						// Set Focus.
-						setFocus(alm, data, data.length, false);
-
-						// Create Filters URL, if required.
-						if (alm.addons.filters) {
-							createMasonryFiltersPage(alm, data[0]);
-						}
-
-						// Create SEO URL, if required.
-						if (alm.addons.seo) {
-							createMasonrySEOPage(alm, data[0]);
-						}
-
+						alm.msnry.appended(last_loaded);
 						resolve(true);
 					});
 				}
 			}
 		} else {
-			// Reset
+			// Reset instance.
 			container.parentNode.style.opacity = 0;
 			almMasonry(alm, true, false);
 			resolve(true);
@@ -182,8 +131,7 @@ export function almMasonryConfig(alm) {
 		alm.masonry.columnwidth = masonry_config.columnwidth;
 		alm.masonry.animation = masonry_config.animation === '' ? 'standard' : masonry_config.animation;
 		alm.masonry.horizontalorder = masonry_config.horizontalorder === '' ? 'true' : masonry_config.horizontalorder;
-		alm.transition_container = false;
-		alm.images_loaded = false;
+		alm.images_loaded = 'true';
 	} else {
 		console.warn('Ajax Load More: Unable to locate Masonry configuration settings.');
 	}

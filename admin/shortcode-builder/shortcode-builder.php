@@ -703,48 +703,9 @@ $show_max                = 100; // Max number of items to show.
 									<?php _e( 'Don\'t see your favorite Masonry option listed? You can always add your own!', 'ajax-load-more' ); ?>
 									<a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/masonry/" target="_blank"><?php _e( 'View Docs', 'ajax-load-more' ); ?></a>
 								</p>
-
 							</div>
 
 						</div>
-
-						<!-- Hide transition_container if Masonry is selected -->
-						<div class="masonry-options-hide">
-
-							<div class="transition-container-classes-wrap">
-
-								<section>
-									<div class="shortcode-builder--label">
-										<h4><?php _e( 'Transition Container Classes', 'ajax-load-more' ); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e( 'This setting is not available with the Single Post or Next Page add-ons', 'ajax-load-more' ); ?>."></a></h4>
-										<p><?php _e( 'Add custom classes to the <span>.alm-reveal</span> loading container', 'ajax-load-more' ); ?>.</p>
-									</div>
-									<div class="shortcode-builder--fields">
-										<div class="inner">
-											<input type="text" class="alm_element" name="transition-container-classes" id="transition-container-classes" placeholder="row large-12 etc">
-										</div>
-									</div>
-								</div>
-							</section>
-
-							<section>
-								<div class="shortcode-builder--label">
-									<h4><?php _e( 'Transition Container', 'ajax-load-more' ); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e( 'Removing the transition container may have undesired results and is not recommended', 'ajax-load-more' ); ?>."></a></h4>
-									<p><?php _e( 'Remove the <span>.alm-reveal</span> loading container from Ajax Load More', 'ajax-load-more' ); ?>.</p>
-								</div>
-								<div class="shortcode-builder--fields">
-									<div class="inner">
-										<ul>
-											<li style="width:100%;">
-												<input class="alm_element" type="checkbox" name="remove_container" id="remove_container" value="f">
-												<label for="remove_container"><?php _e( 'Remove Container', 'ajax-load-more' ); ?></label>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</section>
-
-						</div>
-						<!-- End Hide transition_container if Masonry is selected -->
 
 					</div>
 				</div>

@@ -19,7 +19,7 @@ export function singlePostHTML(alm, response, cache_slug) {
 	};
 
 	// Get target element.
-	const { single_post_target } = alm.addons;
+	const { single_post_target, single_post_id } = alm.addons;
 
 	if (response.status === 200 && response.data && single_post_target) {
 		// Create temp div to hold response data.
@@ -35,9 +35,15 @@ export function singlePostHTML(alm, response, cache_slug) {
 		}
 
 		// Get any custom target elements.
-		const customElements = window && window.almSinglePostsCustomElements;
-		if (customElements) {
-			html.appendChild(singlePostsGetCustomElements(div, customElements));
+		if (window?.almSinglePostsCustomElements) {
+			const customElements = singlePostsGetCustomElements(div, window?.almSinglePostsCustomElements, single_post_id);
+			if (customElements) {
+				// Get first element in HTML.
+				const target = html.querySelector('article, section, div');
+				if (target) {
+					target.appendChild(customElements);
+				}
+			}
 		}
 
 		data.html = html.innerHTML;
@@ -63,17 +69,18 @@ export default singlePostHTML;
  *
  * @param {HTMLElement} content        The HTML element.
  * @param {Array}       customElements The elements to search for in content.
+ * @param {string}		id             The Post ID.
  * @return {HTMLElement}               The HTML elements.
  */
-function singlePostsGetCustomElements(content = '', customElements = []) {
-	// Create container element to hold elements.
+function singlePostsGetCustomElements(content = '', customElements = [], id) {
+	if (!content || !customElements) {
+		return container; // Exit if empty.
+	}
+
+	// Create container element if if doesn't exist.
 	const container = document.createElement('div');
 	container.classList.add('alm-custom-elements');
-
-	// Exit if empty.
-	if (!content || !customElements) {
-		return container;
-	}
+	container.dataset.id = id;
 
 	// Convert customElements to an Array.
 	customElements = !Array.isArray(customElements) ? [customElements] : customElements;
@@ -82,6 +89,7 @@ function singlePostsGetCustomElements(content = '', customElements = []) {
 	for (let i = 0; i < customElements.length; i++) {
 		const element = content.querySelector(customElements[i]);
 		if (element) {
+			element.classList.add('alm-custom-element');
 			container.appendChild(element);
 		}
 	}

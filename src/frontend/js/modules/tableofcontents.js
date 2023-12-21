@@ -1,8 +1,8 @@
 import { almScroll, getOffset } from '../ajax-load-more';
-import setFocus from './setFocus';
+import setFocus from '../functions/setFocus';
 
 /**
- * Create a numbered table of contents navigation
+ * Create a numbered table of contents navigation.
  *
  * @param {Object}  alm            The alm object.
  * @param {boolean} init           Init boolean.
@@ -18,7 +18,7 @@ export function tableOfContents(alm, init = false, from_preloaded = false) {
 		return false;
 	}
 
-	if (alm && alm.tableofcontents && alm.transition_container && alm.transition !== 'masonry') {
+	if (alm && alm.tableofcontents && alm.transition !== 'masonry') {
 		const offset = alm.tableofcontents.dataset.offset ? parseInt(alm.tableofcontents.dataset.offset) : 30;
 		const startPage = alm.start_page ? parseInt(alm.start_page) : 0;
 		const filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
@@ -31,8 +31,7 @@ export function tableOfContents(alm, init = false, from_preloaded = false) {
 			return false;
 		}
 
-		// Init
-
+		// Init.
 		if (init) {
 			setTimeout(function () {
 				// Paged results
@@ -100,34 +99,50 @@ function createTOCButton(alm, page, offset) {
 	if (!alm.tableofcontents) {
 		return false;
 	}
+	page = parseInt(page);
+	const posts_per_page = parseInt(alm.posts_per_page);
 
+	// Create button.
 	const button = document.createElement('button');
 	button.type = 'button';
+	button.innerHTML = getTOCLabel(alm, page + 1);
+	button.dataset.page = alm.addons.single_post_target && alm.init ? page - 1 : page + 1;
 
-	page = parseInt(page) + 1;
-	button.innerHTML = getTOCLabel(alm, page);
-	button.dataset.page = alm.addons.single_post_target && alm.init ? page - 1 : page;
+	button.dataset.target = (page + 1) * posts_per_page - posts_per_page + 1;
+
+	// Add button to TOC.
 	alm.tableofcontents.appendChild(button);
 
+	// Click event listener.
 	button.addEventListener('click', function () {
-		const thePage = this.dataset.page;
-		let target = document.querySelector(`.alm-reveal:nth-child(${thePage})`) || document.querySelector(`.alm-nextpage:nth-child(${thePage})`);
+		const current = this.dataset.page;
+		const target = this.dataset.target;
 
-		// Single Posts
+		// Get all listing children.
+		const children = alm.listing.children;
+
+		// Find element.
+		let element = children[target - 1];
+
+		// Next Page.
+		if (alm.addons.nextpage) {
+			element = document.querySelector(`.alm-nextpage[data-page="${current}"]`);
+		}
+		// Single Posts.
 		if (alm.addons.single_post_target) {
-			target = document.querySelector(`.alm-reveal.alm-single-post[data-page="${thePage}"]`);
+			element = document.querySelector(`.alm-single-post[data-page="${current}"]`);
 		}
 
-		if (!target) {
-			return false;
+		if (!element) {
+			return; // Exit if no target.
 		}
-		const top = typeof getOffset === 'function' ? getOffset(target).top : target.offsetTop;
+
+		const top = typeof getOffset === 'function' ? getOffset(element).top : element.offsetTop;
 		almScroll(top - offset);
 
-		// Set Focus for A11y
 		setTimeout(function () {
-			setFocus(alm, target, thePage, false);
-		}, 1000);
+			setFocus(alm, element, target, false);
+		}, 500);
 	});
 }
 
@@ -135,8 +150,8 @@ function createTOCButton(alm, page, offset) {
  * Get Button Label.
  *
  * @param {Object} alm  The alm object.
- * @param {string} page Current page.
- * @return {string} Label.
+ * @param {string} page The current page.
+ * @return {string}     The Label.
  */
 function getTOCLabel(alm, page) {
 	let label = page;
@@ -152,17 +167,17 @@ function getTOCLabel(alm, page) {
 			} else {
 				thePage = thePage + 1;
 			}
-			const posts = document.querySelectorAll(`.alm-reveal.alm-single-post`);
+			const posts = document.querySelectorAll(`.alm-single-post`);
 			if (posts) {
 				element = posts[thePage];
 			}
 		} else {
-			element = document.querySelector(`.alm-reveal.alm-single-post[data-page=${page - 1}]`);
+			element = document.querySelector(`.alm-single-post[data-page=${page - 1}]`);
 		}
 		label = element ? element.dataset.title : label;
 	}
 
-	// Dynamic function name
+	// Dynamic function name.
 	const funcName = `almTOCLabel_${alm.id}`;
 	if (typeof window[funcName] === 'function') {
 		label = window[funcName](page, label);

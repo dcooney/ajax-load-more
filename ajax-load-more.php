@@ -14,6 +14,60 @@
  * @package AjaxLoadMore
  */
 
+/*
+* NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
+* FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
+* UPDATE: Updated plugin installer class.
+
+
+* Removed alm-reveal from all result pages.
+
+TODO:
+- Add shortcode setting for stagger load animation.
+- Add fade transition [DONE]
+
+- Paging (Filters, SEO, NextPage). [DONE]
+- Cache
+- Filters.
+	- https://wpdev.local/filter-add-on-movie-listing/?movie_type=comedy&pg=2
+- Single Posts.
+- Next Page. [DONE]
+- Layouts. [DONE]
+	- Fix grid display. [DONE]
+- Preloaded [DONE]
+	- Remove alm-reveal divs. [DONE]
+- SEO [DONE]
+
+- Nested [DONE]
+- ImagesLoaded. [DONE]
+- SetFocus Not Working. [DONE]
+- Remove Transition Container settings. [DONE]
+- Table of Contents [DONE]
+- Lazy Load Images [DONE]
+	- WooCommerce. [DONE]
+	- Elementor. [DONE]
+- Table Container Type [DONE]
+	- Table layouts. [DONE]
+
+
+ADD-ON CHANGES
+
+Cache
+* FIX: Fixed issue with display of cache URL on the Cache admin page.
+
+Paging
+* FIX: Fixed issue where first page link in paging naviagtion could result in a JS error.
+* UPDATE: Adding required changes for Ajax Load More 7.0 and removal of `alm-reveal` wrapper.
+* UPDATE: Code cleanup and organization.
+
+Preloaded
+* UPDATE: Remove all references and output of `alm-reveal` divs.
+
+Layouts
+* UPDATE: Updated layouts CSS to remove references to `alm-reveal` divs.
+
+*/
+
 define( 'ALM_VERSION', '6.2.0.3' );
 define( 'ALM_RELEASE', 'Novemver 6, 2023' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -369,22 +423,25 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				[
-					'pluginurl'       => ALM_URL,
-					'version'         => ALM_VERSION,
-					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
-					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
-					'rest_api_url'    => apply_filters( 'alm_restapi_url', '' ),
-					'rest_api'        => esc_url_raw( rest_url() ),
-					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
-					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
-					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
-					'speed'           => apply_filters( 'alm_speed', 200 ),
-					'results_text'    => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
-					'no_results_text' => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
-					'alm_debug'       => apply_filters( 'alm_debug', false ),
-					'a11y_focus'      => apply_filters( 'alm_a11y_focus', true ),
-					'site_title'      => get_bloginfo( 'name' ),
-					'site_tagline'    => get_bloginfo( 'description' ),
+					'pluginurl'          => ALM_URL,
+					'version'            => ALM_VERSION,
+					'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
+					'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
+					'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),
+					'rest_api'           => esc_url_raw( rest_url() ),
+					'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
+					'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
+					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
+					'transition_css'     => apply_filters( 'alm_transition_css', 'all 0.25s ease' ),
+					'transition_delay'   => apply_filters( 'alm_transition_delay', 50 ),
+					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
+					'speed'              => apply_filters( 'alm_speed', 200 ),
+					'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
+					'no_results_text'    => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
+					'alm_debug'          => apply_filters( 'alm_debug', false ),
+					'a11y_focus'         => apply_filters( 'alm_a11y_focus', true ),
+					'site_title'         => get_bloginfo( 'name' ),
+					'site_tagline'       => get_bloginfo( 'description' ),
 				]
 			);
 		}

@@ -45,14 +45,16 @@
 
 		/* Loading */
 		&.loading {
+			pointer-events: none;
 			cursor: wait;
 			outline: none;
 			padding-left: 44px;
 		}
 
 		/* Loaded / Done */
-		&.done {
-			cursor: default;
+		&.done,
+		&:disabled {
+			pointer-events: none;
 			opacity: 0.15;
 			background-color: #ed7070;
 			outline: none !important;
@@ -61,7 +63,8 @@
 
 		/* Loading Icon */
 		&::before,
-		&.done::before {
+		&.done::before,
+		&:disabled::before {
 			background: none;
 			width: 0;
 		}

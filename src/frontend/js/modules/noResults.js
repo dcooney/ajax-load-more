@@ -1,20 +1,15 @@
 /**
  * Set the results text if required.
  *
- * @param {HTMLElement} target The target HTML element
- * @param {string}      html   The HTML.
+ * @param {Element} target The target HTML element
+ * @param {string}  html   The HTML.
  * @since 5.1
  */
-const almNoResults = (target, html = '') => {
-	if (html === '') {
-		return false; // exit if empty
+export default function almNoResults(target, html = '') {
+	if (!html) {
+		return; // exit if empty.
 	}
 
-	// Remove empty <p/> tags
-	html = html.replace(/(<p><\/p>)+/g, '');
-
-	// Append to DOM
-	target.innerHTML = html;
-};
-
-export default almNoResults;
+	// Remove empty <p/> tags and append to DOM.
+	target.innerHTML = html.replace(/(<p><\/p>)+/g, '');
+}

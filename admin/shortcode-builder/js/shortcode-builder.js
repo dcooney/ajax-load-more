@@ -185,7 +185,7 @@ jQuery(document).ready(function ($) {
 			output += ' css_classes="' + container_classes + '"';
 
 		// ---------------------------
-		// - Advacned Custom Fields
+		// - Advanced Custom Fields
 		// ---------------------------
 
 		var acf = $('#alm-acf input[name=acf]:checked').val();
@@ -1266,21 +1266,6 @@ jQuery(document).ready(function ($) {
 		} else {
 			$('.masonry-options').slideUp(250, 'alm_easeInOutQuad');
 			$('.masonry-options-hide').slideDown(250, 'alm_easeInOutQuad');
-
-			// Hide transition_container if masonry is selected
-			var transition_container = $('.transition input[name=remove_container]:checked').val();
-			var transition_container_classes = $('.transition input#transition-container-classes').val();
-			if (transition_container === 'f' && seo !== 'true' && previous !== 'true') {
-				output += ' transition_container="false"';
-				$('.transition-container-classes-wrap').slideUp(250, 'alm_easeInOutQuad');
-			} else {
-				$('.transition-container-classes-wrap').slideDown(250, 'alm_easeInOutQuad');
-			}
-
-			// Hide transition_container_classes if Previous Post or Next Page is true.
-			if (transition_container_classes !== '' && transition_container !== 'f' && previous !== 'true' && nextpage !== 'true') {
-				output += ' transition_container_classes="' + transition_container_classes + '"';
-			}
 		}
 
 		// ---------------------------

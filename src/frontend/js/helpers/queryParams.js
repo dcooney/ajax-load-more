@@ -75,8 +75,7 @@ export function getAjaxParams(alm, queryType) {
 		data.action = 'alm_users';
 	}
 
-	// Query Data Params
-
+	// Query data params from ALM HTML element.
 	if (alm.listing.dataset.lang) {
 		data.lang = alm.listing.dataset.lang;
 	}

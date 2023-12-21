@@ -85,7 +85,7 @@ export function almInitResultsText(alm, type = 'standard') {
 			break;
 
 		case 'preloaded': // Preloaded
-			page = alm.addons.paging && alm.addons.seo ? parseInt(alm.start_page) + 1 : parseInt(alm.page) + 1;
+			page = alm.addons.paging && alm.addons.seo ? alm.start_page + 1 : parseInt(alm.page) + 1;
 			almRenderResultsText(alm.resultsText, page, pages, post_count, total_posts, alm.posts_per_page);
 			break;
 

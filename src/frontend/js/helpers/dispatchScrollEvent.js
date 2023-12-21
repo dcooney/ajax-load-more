@@ -4,7 +4,7 @@
  * @param {boolean} delay Should this be delayed.
  * @since 5.5
  */
-const dispatchScrollEvent = function (delay = true) {
+export default function dispatchScrollEvent(delay = true) {
 	if (typeof Event === 'function') {
 		setTimeout(
 			function () {
@@ -13,5 +13,4 @@ const dispatchScrollEvent = function (delay = true) {
 			delay ? 150 : 1
 		);
 	}
-};
-export default dispatchScrollEvent;
+}
