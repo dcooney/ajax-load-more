@@ -75,11 +75,11 @@ export function parseQuerystring(path) {
  * @param {Object} alm         The ALM object.
  * @param {string} querystring The current querystring.
  * @param {number} page        The page number.
+ * @return {string}            The querystring.
  * @since 5.3.5
  */
 export function buildFilterURL(alm, querystring = '', page = 0) {
 	let qs = querystring;
-
 	if (alm.addons.filters_paging) {
 		if (page > 1) {
 			// Paged
@@ -100,94 +100,5 @@ export function buildFilterURL(alm, querystring = '', page = 0) {
 			qs = qs[qs.length - 1] === '&' ? qs.slice(0, -1) : qs; // Remove trailing `&` symbols
 		}
 	}
-
 	return qs;
-}
-
-/**
- * Create data attributes for Filters paged results.
- *
- * @param {Object} alm     The ALM object.
- * @param {Array}  element An array of filter elements.
- * @since 5.3.1
- */
-export function createMasonryFiltersPage(alm, element) {
-	if (!alm.addons.filters) {
-		return element;
-	}
-
-	const querystring = window.location.search;
-	let page = alm.page + 1;
-	page = alm.addons.preloaded === 'true' ? page + 1 : page;
-	element = masonryFiltersAtts(alm, element, querystring, page);
-
-	return element;
-}
-
-/**
- * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
- *
- * @param {Object} alm      The ALM object.
- * @param {Array}  elements An array of filter elements.
- * @since 5.3.1
- */
-export function createMasonryFiltersPages(alm, elements) {
-	if (!alm.addons.filters) {
-		return elements;
-	}
-
-	let pagenum = 1;
-	const page = alm.page;
-	const querystring = window.location.search;
-
-	if (alm.addons.filters_startpage > 1) {
-		// Create pages
-		const posts_per_page = parseInt(alm.posts_per_page);
-		const return_data = [];
-
-		// Slice data array into individual pages
-		for (let i = 0; i < elements.length; i += posts_per_page) {
-			return_data.push(elements.slice(i, posts_per_page + i));
-		}
-
-		// Loop new data array
-		for (let k = 0; k < return_data.length; k++) {
-			const target = k > 0 ? k * posts_per_page : 0;
-			pagenum = k + 1;
-
-			if (elements[target]) {
-				elements[target] = masonryFiltersAtts(alm, elements[target], querystring, pagenum);
-			}
-		}
-	} else {
-		pagenum = page;
-		if (elements && elements[0]) {
-			elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
-		}
-	}
-
-	return elements;
-}
-
-/**
- * Create the attributes (page, url, classes)  for the masonry items.
- *
- * @param {Object}  alm         The ALM object.
- * @param {Element} element     The container element.
- * @param {string}  querystring The current querystring.
- * @param {number}  pagenum     The page number.
- * @return {Element}            Modified HTML element.
- */
-function masonryFiltersAtts(alm, element, querystring, pagenum) {
-	element.classList.add(FILTERS_CLASSNAME);
-	element.dataset.page = pagenum;
-	if (pagenum > 1) {
-		element.dataset.url = alm.canonical_url + buildFilterURL(alm, querystring, pagenum);
-	} else {
-		let updatedQS = querystring.replace(/(pg=)[^\&]+/, ''); // Remove `pg` from querysting
-		updatedQS = updatedQS === '?' ? '' : updatedQS; // Remove empty querysting
-		element.dataset.url = alm.canonical_url + updatedQS;
-	}
-
-	return element;
 }

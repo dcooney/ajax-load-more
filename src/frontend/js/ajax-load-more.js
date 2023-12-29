@@ -249,7 +249,6 @@ let alm_is_filtering = false;
 
 		alm.addons.filters = alm.listing.dataset.filters;
 		alm.addons.seo = alm.listing.dataset.seo;
-		alm.addons.seo_offset = alm.listing.dataset.seoOffset || 0;
 
 		// Preloaded
 		alm.addons.preloaded = alm.listing.dataset.preloaded; // Preloaded add-on
@@ -378,6 +377,7 @@ let alm_is_filtering = false;
 		/* SEO */
 		alm.addons.seo = alm?.addons?.seo === 'true' ? true : false;
 		if (alm.addons.seo) {
+			alm.addons.seo_offset = alm.listing.dataset.seoOffset || 0;
 			alm.addons.seo_permalink = alm.listing.dataset.seoPermalink;
 			alm.addons.seo_pageview = alm.listing.dataset.seoPageview;
 			alm.addons.seo_trailing_slash = alm.listing.dataset.seoTrailingSlash === 'false' ? '' : '/';

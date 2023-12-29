@@ -21,8 +21,8 @@ export default function formatHTML(alm, elements) {
 	let current = parseInt(page) + 1;
 	current = addons?.preloaded === 'true' ? current + 1 : current;
 
-	// If init and start_page, set pagenum to 1.
-	if (init && parseInt(start_page) > 1) {
+	// If init and SEO or Filter start_page, set pagenum to 1.
+	if (init && (parseInt(start_page) > 1 || addons?.filters_startpage > 1)) {
 		current = 1;
 	}
 

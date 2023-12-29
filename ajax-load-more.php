@@ -38,6 +38,10 @@ TODO:
 	- Remove alm-reveal divs. [DONE]
 - SEO [DONE]
 
+- SEO Offset
+	- Fix issue with 1st page URL.
+	- Inject element before ALM to reset the page number.
+	- https://wpdev.local/seo-offset/page/2
 - Nested [DONE]
 - ImagesLoaded. [DONE]
 - SetFocus Not Working. [DONE]

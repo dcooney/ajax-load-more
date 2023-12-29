@@ -11,6 +11,8 @@ export function addSEOAttributes(alm, element, pagenum) {
 	const { retain_querystring = true } = alm_localize;
 	const querystring = retain_querystring ? window.location.search : '';
 
+	pagenum = getSEOPageNum(addons?.seo_offset, pagenum);
+
 	element.classList.add('alm-seo');
 	element.dataset.page = pagenum;
 
@@ -41,8 +43,5 @@ export function addSEOAttributes(alm, element, pagenum) {
  * @return {number}           The page number.
  */
 export function getSEOPageNum(seo_offset, page) {
-	if (seo_offset === 'true') {
-		return parseInt(page) + 1;
-	}
-	return parseInt(page);
+	return seo_offset === 'true' ? parseInt(page) + 1 : parseInt(page);
 }

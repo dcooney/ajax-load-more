@@ -1,3 +1,4 @@
+import { addFiltersAttributes } from './filters';
 import { addSEOAttributes } from './seo';
 
 /**
@@ -12,6 +13,9 @@ export function setPreloadedParams(alm) {
 	if (firstElement) {
 		if (addons?.seo) {
 			addSEOAttributes(alm, firstElement, 1);
+		}
+		if (addons?.filters) {
+			addFiltersAttributes(alm, firstElement, 1);
 		}
 	}
 }
