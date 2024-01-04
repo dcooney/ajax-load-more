@@ -153,9 +153,8 @@ let alm_is_filtering = false;
 		alm.pause_override = alm.listing.dataset.pauseOverride ? alm.listing.dataset.pauseOverride : false; // true | false
 		alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
 		alm.transition = alm.listing.dataset.transition || 'fade'; // Transition
-		alm.transition_css = alm_localize?.transition_css || 'all 0.25s ease';
 		alm.transition_delay = alm_localize?.transition_delay || 50;
-		alm.speed = alm?.localize?.speed ? parseInt(alm.localize.speed) : 150;
+		alm.speed = alm?.localize?.speed ? parseInt(alm.localize.speed) : 200;
 		alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
 		alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
 		alm.lazy_images = alm?.listing.dataset?.lazyImages === 'true' ? true : false;
@@ -457,15 +456,15 @@ let alm_is_filtering = false;
 
 		/* Pause */
 		if (alm.pause === undefined || (alm.addons.seo && alm.start_page > 1)) {
-			// SEO only
+			// SEO only.
 			alm.pause = false;
 		}
 		if (alm.addons.preloaded === 'true' && alm.addons.seo && alm.start_page > 0) {
-			// SEO + Preloaded
+			// SEO + Preloaded.
 			alm.pause = false;
 		}
 		if (alm.addons.filters && alm.addons.filters_startpage > 0) {
-			// Filters
+			// Filters.
 			alm.pause = false;
 		}
 		if (alm.addons.preloaded === 'true' && alm.addons.paging) {
@@ -523,7 +522,10 @@ let alm_is_filtering = false;
 			alm.button.style.display = '';
 		}
 
-		// Results Text: Render "Showing x of y results" text.
+		/**
+		 * Results Text.
+		 * Render "Showing x of y results" text.
+		 */
 		if (alm.integration.woocommerce) {
 			// If woocommerce, get the default woocommerce results block
 			alm.resultsText = document.querySelectorAll('.woocommerce-result-count');
@@ -875,26 +877,7 @@ let alm_is_filtering = false;
 				}
 
 				if (!alm.addons.paging) {
-					// Single Posts.
-					if (alm.addons.single_post) {
-						// reveal.setAttribute('class', `alm-reveal alm-single-post post-${alm.addons.single_post_id}`);
-						// reveal.dataset.url = alm.addons.single_post_permalink;
-						// if (alm.addons.single_post_target) {
-						// 	reveal.dataset.page = parseInt(alm.page) + 1;
-						// } else {
-						// 	reveal.dataset.page = alm.page;
-						// }
-						// reveal.dataset.id = alm.addons.single_post_id;
-						// reveal.dataset.title = alm.addons.single_post_title;
-						// reveal.innerHTML = alm.html;
-						// // Single Post Preview
-						// if (alm.addons.single_post_preview && alm.addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
-						// 	const singlePreview = window.almSinglePostCreatePreview(reveal, alm.addons.single_post_id, alm.addons.single_post_preview_data);
-						// 	reveal.replaceChildren(singlePreview ? singlePreview : reveal);
-						// }
-					} else {
-						nodes = formatHTML(alm, nodes);
-					}
+					nodes = formatHTML(alm, nodes);
 
 					/**
 					 * Transition Display.

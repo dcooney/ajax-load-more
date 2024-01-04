@@ -56,6 +56,9 @@ TODO:
 
 ADD-ON CHANGES
 
+FILTERS
+* UPDATE: Remove all references and output of `alm-reveal` divs.
+
 Cache
 * FIX: Fixed issue with display of cache URL on the Cache admin page.
 
@@ -68,7 +71,8 @@ Preloaded
 * UPDATE: Remove all references and output of `alm-reveal` divs.
 
 Layouts
-* UPDATE: Updated layouts CSS to remove references to `alm-reveal` divs.
+* UPDATE: Updated layouts CSS and HTML to remove all references to `alm-reveal` divs.
+
 
 */
 
@@ -436,7 +440,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
 					'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
-					'transition_css'     => apply_filters( 'alm_transition_css', 'all 0.25s ease' ),
 					'transition_delay'   => apply_filters( 'alm_transition_delay', 50 ),
 					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
 					'speed'              => apply_filters( 'alm_speed', 200 ),

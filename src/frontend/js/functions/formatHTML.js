@@ -1,5 +1,6 @@
 import { addFiltersAttributes } from '../addons/filters';
 import { addSEOAttributes } from '../addons/seo';
+import { addSinglePostsAttributes } from '../addons/singleposts';
 import stripEmptyNodes from '../helpers/stripEmptyNodes';
 
 /**
@@ -13,8 +14,14 @@ import stripEmptyNodes from '../helpers/stripEmptyNodes';
 export default function formatHTML(alm, elements) {
 	const { addons, page, posts_per_page, init, start_page, container_type } = alm;
 
+	// Single Posts only.
+	if (addons?.single_post) {
+		elements = addSinglePostsAttributes(alm, elements);
+		return elements;
+	}
+
+	// Exit if not SEO or Filters.
 	if (!addons?.seo && !addons?.filters) {
-		// Exit if not SEO or Filters.
 		return elements;
 	}
 

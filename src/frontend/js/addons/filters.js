@@ -1,13 +1,12 @@
 import getQueryVariable from '../helpers/getQueryVariable';
-const FILTERS_CLASSNAME = 'alm-filters';
 
 /**
- * Create the data attributes for a Filters item.
+ * Create data attributes for a Filters item.
  *
- * @param {Object} alm     The ALM object.
- * @param {Object} element The element HTML node.
- * @param {number} pagenum The current page number.
- * @return {HTMLElement}   Modified HTML element.
+ * @param {Object}      alm     The ALM object.
+ * @param {HTMLElement} element The element HTML node.
+ * @param {number}      pagenum The current page number.
+ * @return {HTMLElement}        Modified HTML element.
  */
 export function addFiltersAttributes(alm, element, pagenum) {
 	const { canonical_url } = alm;

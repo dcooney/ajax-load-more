@@ -10,7 +10,7 @@ const imagesLoaded = require('imagesloaded');
  * @param {Array}  nodes The HTML nodes to append.
  */
 export default function appendResults(alm, nodes) {
-	const { listing: container, transition, transition_css, images_loaded } = alm;
+	const { listing: container, transition, speed, images_loaded } = alm;
 	if (container && nodes) {
 		const useTransition = transition === 'fade' ? true : false;
 
@@ -21,7 +21,7 @@ export default function appendResults(alm, nodes) {
 			if (useTransition || images_loaded === 'true') {
 				node.style.opacity = 0;
 				if (useTransition) {
-					node.style.transition = transition_css;
+					node.style.transition = `all ${speed}ms ease`;
 				}
 			}
 

@@ -1,10 +1,10 @@
 /**
- * Create the data attributes for an SEO item.
+ * Create data attributes for an SEO item.
  *
- * @param {Object} alm     The ALM object.
- * @param {Object} element The element HTML node.
- * @param {number} pagenum The current page number.
- * @return {HTMLElement}   Modified HTML element.
+ * @param {Object}      alm     The ALM object.
+ * @param {HTMLElement} element The element HTML node.
+ * @param {number}      pagenum The current page number.
+ * @return {HTMLElement}        Modified HTML element.
  */
 export function addSEOAttributes(alm, element, pagenum) {
 	const { addons, canonical_url } = alm;
@@ -19,16 +19,16 @@ export function addSEOAttributes(alm, element, pagenum) {
 	if (addons.seo_permalink === 'default') {
 		// Default Permalinks
 		if (pagenum > 1) {
-			element.dataset.url = canonical_url + querystring + '&paged=' + pagenum;
+			element.dataset.url = `${canonical_url}${querystring}&paged=${pagenum}`;
 		} else {
-			element.dataset.url = canonical_url + querystring;
+			element.dataset.url = `${canonical_url}${querystring}`;
 		}
 	} else {
 		// Pretty Permalinks
 		if (pagenum > 1) {
-			element.dataset.url = canonical_url + addons.seo_leading_slash + 'page/' + pagenum + addons.seo_trailing_slash + querystring;
+			element.dataset.url = `${canonical_url}${addons.seo_leading_slash}page/${pagenum}${addons.seo_trailing_slash}${querystring}`;
 		} else {
-			element.dataset.url = canonical_url + querystring;
+			element.dataset.url = `${canonical_url}${querystring}`;
 		}
 	}
 

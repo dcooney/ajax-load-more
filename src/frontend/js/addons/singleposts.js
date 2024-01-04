@@ -96,3 +96,26 @@ function singlePostsGetCustomElements(content = '', customElements = [], id) {
 
 	return container;
 }
+
+/**
+ * Create data attributes for a Single Post item.
+ *
+ * @param {Object} alm     The ALM object.
+ * @param {Array} elements The elements HTML nodes as an array.
+ * @return {Array}         Modified HTML element.
+ */
+export function addSinglePostsAttributes(alm, elements) {
+	// Get first element in NodeList.
+	const element = elements?.length ? elements[0] : false;
+	if (!element) {
+		return elements;
+	}
+
+	const { page, addons } = alm;
+	element.setAttribute('class', `alm-single-post post-${addons.single_post_id}`);
+	element.dataset.id = addons.single_post_id;
+	element.dataset.url = addons.single_post_permalink;
+	element.dataset.page = addons.single_post_target ? parseInt(page) + 1 : page;
+	element.dataset.title = addons.single_post_title;
+	return elements;
+}
