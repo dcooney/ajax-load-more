@@ -1,4 +1,4 @@
-import { EXCLUDED_NODES } from '../functions/constants';
+import { EXCLUDED_NODES } from './constants';
 
 /**
  * Remove empty HTML nodes from array of nodes.

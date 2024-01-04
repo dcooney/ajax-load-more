@@ -1,11 +1,11 @@
-import stripEmptyNodes from '../helpers/stripEmptyNodes';
+import stripEmptyNodes from '../functions/stripEmptyNodes';
 
 /**
  * Convert a plain text string into an array of HTML nodes.
  *
  * @param {string} html The HTML string
  * @param {string} type The element type.
- * @return {Array}      The HTML nodes as an array.
+ * @return {any}        The HTML nodes as an array.
  * @since 5.0
  */
 export function almDomParser(html = '', type = 'text/html') {
@@ -23,7 +23,7 @@ export function almDomParser(html = '', type = 'text/html') {
  * Convert retun table data into an array of HTML elements.
  *
  * @param {string} html Plain text HTML.
- * @return {Array}      Array of HTML elements.
+ * @return {any}        Array of HTML elements.
  * @since 5.0
  */
 export function tableParser(html = null) {

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import dispatchScrollEvent from '../helpers/dispatchScrollEvent';
-import { setButtonAtts } from '../helpers/getButtonURL';
+import dispatchScrollEvent from '../functions/dispatchScrollEvent';
+import { setButtonAtts } from '../functions/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 import { createLoadPreviousButton } from '../modules/loadPrevious';

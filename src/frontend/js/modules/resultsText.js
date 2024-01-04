@@ -1,4 +1,4 @@
-import getTotals from '../helpers/getTotals';
+import getTotals from '../functions/getTotals';
 
 /**
  * Set the results text if required.

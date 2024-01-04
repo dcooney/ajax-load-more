@@ -1,4 +1,4 @@
-# Copyright (C) 2023 Darren Cooney
+# Copyright (C) 2024 Darren Cooney
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-12-21T02:03:45+00:00\n"
+"POT-Creation-Date: 2024-01-04T20:18:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:352
+#: ajax-load-more.php:367
 msgid "Settings"
 msgstr ""
 
@@ -2710,15 +2710,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:329
+#: ajax-load-more.php:344
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:432
+#: ajax-load-more.php:446
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:433
+#: ajax-load-more.php:447
 msgid "No results found."
 msgstr ""
 

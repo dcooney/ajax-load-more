@@ -1,4 +1,4 @@
-import { setButtonAtts } from '../helpers/getButtonURL';
+import { setButtonAtts } from '../functions/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 import { createCache } from './cache';

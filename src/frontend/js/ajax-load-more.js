@@ -2,19 +2,19 @@
 import axios from 'axios';
 import { getCache } from './addons/cache';
 import { elementor, elementorCreateParams, elementorGetContent, elementorInit, elementorLoaded } from './addons/elementor';
-import appendResults from './functions/appendResults';
-import formatHTML from './functions/formatHTML';
 import { setPreloadedParams } from './addons/preloaded';
 import { singlePostHTML } from './addons/singleposts';
 import { wooGetContent, wooInit, wooReset, woocommerce, woocommerceLoaded } from './addons/woocommerce';
+import appendResults from './functions/appendResults';
+import formatHTML from './functions/formatHTML';
+import { getButtonURL } from './functions/getButtonURL';
+import getParameterByName from './functions/getParameterByName';
+import getScrollPercentage from './functions/getScrollPercentage';
+import getTotals from './functions/getTotals';
 import { almDomParser, tableParser } from './functions/parsers';
-import { getButtonURL } from './helpers/getButtonURL';
-import getParameterByName from './helpers/getParameterByName';
-import getScrollPercentage from './helpers/getScrollPercentage';
-import getTotals from './helpers/getTotals';
-import './helpers/helpers';
-import { getAjaxParams, getRestAPIParams } from './helpers/queryParams';
-import triggerWindowResize from './helpers/windowResize';
+import { getAjaxParams, getRestAPIParams } from './functions/queryParams';
+import setFocus from './functions/setFocus';
+import triggerWindowResize from './functions/windowResize';
 import almDebug from './modules/almDebug';
 import { almFadeIn, almFadeOut } from './modules/fade';
 import almFilter from './modules/filtering';
@@ -23,7 +23,6 @@ import { almMasonry, almMasonryConfig } from './modules/masonry';
 import almNoResults from './modules/noResults';
 import { hidePlaceholder, showPlaceholder } from './modules/placeholder';
 import * as resultsText from './modules/resultsText';
-import setFocus from './functions/setFocus';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
 
@@ -48,9 +47,8 @@ axios.interceptors.request.use((config) => {
 	return config;
 });
 
-// Polyfills
+// Focus Polyfill.
 require('focus-options-polyfill');
-require('./helpers/polyfills.js');
 
 // Global filtering state.
 let alm_is_filtering = false;

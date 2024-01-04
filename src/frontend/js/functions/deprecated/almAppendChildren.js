@@ -7,6 +7,7 @@ const nodeNameArray = ['#text', '#comment'];
  * @param {Element} array      An array of elements
  * @param {string}  transition The transiton
  * @since 5.0
+ * @deprecated 7.0.0
  */
 export default function almAppendChildren(target = null, array = null, transition = 'fade') {
 	if (!target || !array) {
@@ -25,6 +26,7 @@ export default function almAppendChildren(target = null, array = null, transitio
  * @param {Element} element    The element to append
  * @param {string}  transition The transiton
  * @since 5.0
+ * @deprecated 7.0.0
  */
 export function almAppendChild(target = null, element = null, transition = 'fade') {
 	if (!target || !element) {

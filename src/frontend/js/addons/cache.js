@@ -1,5 +1,5 @@
 import MD5 from 'crypto-js/md5';
-import { api } from '../helpers/api';
+import { api } from '../functions/api';
 
 /**
  * Create unique cache slug from query params.

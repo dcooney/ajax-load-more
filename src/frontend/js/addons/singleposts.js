@@ -61,16 +61,15 @@ export default singlePostHTML;
 
 /**
  * Collect custom target elements and append them to the returned HTML.
- *
  * This function is useful to get elements from outside the ALM target and bring them into the returned HTML.
  * Useful for when CSS or JS may be loaded in the <head/> and we need it brought into the HTML for Single Posts.
  *
  * e.g. window.almSinglePostsCustomElements = ['#woocommerce-inline-inline-css', '#wc-block-style-css'];
  *
- * @param {HTMLElement} content        The HTML element.
- * @param {Array}       customElements The elements to search for in content.
- * @param {string}		id             The Post ID.
- * @return {HTMLElement}               The HTML elements.
+ * @param {HTMLElement}   content        The HTML element.
+ * @param {Array}         customElements The elements to search for in content.
+ * @param {string|number} id             The Post ID.
+ * @return {HTMLElement}                 The HTML elements.
  */
 function singlePostsGetCustomElements(content = '', customElements = [], id) {
 	if (!content || !customElements) {
@@ -100,9 +99,9 @@ function singlePostsGetCustomElements(content = '', customElements = [], id) {
 /**
  * Create data attributes for a Single Post item.
  *
- * @param {Object} alm     The ALM object.
- * @param {Array} elements The elements HTML nodes as an array.
- * @return {Array}         Modified HTML element.
+ * @param {Object} alm      The ALM object.
+ * @param {Array}  elements The elements HTML nodes as an array.
+ * @return {Array}          Modified HTML element.
  */
 export function addSinglePostsAttributes(alm, elements) {
 	// Get first element in NodeList.

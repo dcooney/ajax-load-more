@@ -1,4 +1,4 @@
-import getTotals from './getTotals';
+import getTotals from '../functions/getTotals';
 
 /**
  * Set the button label.
@@ -7,7 +7,7 @@ import getTotals from './getTotals';
  * @param {string} id    Unique ALM ID.
  * @return {string} 		 The modified button label.
  * @since 5.6.0.2
- * @deprecated
+ * @deprecated 6.0.0
  */
 export default function setButtonLabel(label = '', id = '') {
 	label = label.replace('{remaining}', getTotals('remaining', id)); // Replace {remaining} with the total remaining posts.

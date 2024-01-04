@@ -1,4 +1,4 @@
-import srcsetPolyfill from '../helpers/srcsetPolyfill';
+import srcsetPolyfill from './srcsetPolyfill';
 import { lazyImages } from '../modules/lazyImages';
 import { EXCLUDED_NODES } from './constants';
 const imagesLoaded = require('imagesloaded');

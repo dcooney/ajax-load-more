@@ -1,4 +1,4 @@
-import getQueryVariable from '../helpers/getQueryVariable';
+import getQueryVariable from '../functions/getQueryVariable';
 
 /**
  * Create data attributes for a Filters item.

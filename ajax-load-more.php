@@ -15,12 +15,13 @@
  */
 
 /*
+* NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
 * NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
 * FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
+* UPDATE: Removed lagacy polyfills and helper functions to lower compiled JS size.
 * UPDATE: Updated plugin installer class.
 
 
-* Removed alm-reveal from all result pages.
 
 TODO:
 - Add shortcode setting for stagger load animation.

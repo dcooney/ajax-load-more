@@ -1,7 +1,7 @@
 import { addFiltersAttributes } from '../addons/filters';
 import { addSEOAttributes } from '../addons/seo';
 import { addSinglePostsAttributes } from '../addons/singleposts';
-import stripEmptyNodes from '../helpers/stripEmptyNodes';
+import stripEmptyNodes from '../functions/stripEmptyNodes';
 
 /**
  * Create data attributes for SEO and Filter paged results.
@@ -72,8 +72,8 @@ export default function formatHTML(alm, elements) {
 /**
  * Format return table data.
  *
- * @param {Array}  elements The element HTML nodes.
- * @return {Array}          The modified elements.
+ * @param {Array} elements The element HTML nodes.
+ * @return {Array}         The modified elements.
  */
 function formatTable(elements = []) {
 	if (!elements) {
