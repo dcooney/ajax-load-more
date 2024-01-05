@@ -25,11 +25,11 @@ export default function setLocalizedVars(alm) {
 			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(alm.page) + 1);
 		} else {
 			// Standard ALM.
-			const page = addons.preloaded === 'true' ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
+			const page = addons.preloaded ? parseInt(alm.page) + 2 : parseInt(alm.page) + 1;
 			alm.AjaxLoadMore.setLocalizedVar('page', parseInt(page));
 
 			let pages = Math.ceil(alm.totalposts / alm.orginal_posts_per_page);
-			pages = addons.preloaded === 'true' ? pages + 1 : pages;
+			pages = addons.preloaded ? pages + 1 : pages;
 			alm.AjaxLoadMore.setLocalizedVar('pages', parseInt(pages));
 		}
 

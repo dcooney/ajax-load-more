@@ -4,6 +4,61 @@ import loadItems from '../modules/loadItems';
 import { createCache } from './cache';
 
 /**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function elementorCreateParams(alm) {
+	const { listing } = alm;
+
+	alm.addons.elementor = listing.dataset.elementor === 'posts' && listing.dataset.elementorSettings;
+	if (alm.addons.elementor) {
+		// Get Settings
+		alm.addons.elementor_type = 'posts';
+		alm.addons.elementor_settings = JSON.parse(alm.listing.dataset.elementorSettings);
+
+		// Parse Container Settings
+		alm.addons.elementor_target = alm.addons.elementor_settings.target;
+		alm.addons.elementor_element = alm.addons.elementor_settings.target
+			? document.querySelector(`.elementor-element ${alm.addons.elementor_settings.target}`)
+			: '';
+		alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
+
+		// Masonry
+		alm = setElementorClasses(alm, alm.addons.elementor_widget);
+
+		// Pagination Element
+		alm.addons.elementor_controls = alm.addons.elementor_settings.controls;
+		alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
+		alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
+
+		// Get next page URL.
+		alm.addons.elementor_next_page = elementorGetNextUrl(alm, alm.addons.elementor_element);
+
+		// Get the max pages.
+		alm.addons.elementor_max_pages = alm.addons.elementor_element.querySelector('.e-load-more-anchor');
+		alm.addons.elementor_max_pages = alm.addons.elementor_max_pages ? parseInt(alm.addons.elementor_max_pages.dataset.maxPage) : 999;
+
+		alm.addons.elementor_paged = alm.addons.elementor_settings.paged ? parseInt(alm.addons.elementor_settings.paged) : 1;
+		alm.page = parseInt(alm.page) + alm.addons.elementor_paged;
+
+		// Masonry
+		alm = parseMasonryConfig(alm);
+
+		if (!alm.addons.elementor_element) {
+			console.warn("Ajax Load More: Unable to locate Elementor Widget. Are you sure you've set up your target parameter correctly?");
+		}
+		if (!alm.addons.elementor_next_page) {
+			console.warn(
+				'Ajax Load More: Unable to locate Elementor pagination. There are either no results or Ajax Load More is unable to locate the pagination widget?'
+			);
+		}
+	}
+	return alm;
+}
+
+/**
  * Set up the instance on Elementor
  *
  * @param {Object} alm
@@ -197,56 +252,6 @@ export function elementorLoaded(alm) {
 	if (nextPage >= max_pages) {
 		AjaxLoadMore.triggerDone();
 	}
-}
-
-/**
- * Create Elementor params for ALM.
- *
- * @param {Object} alm The alm object.
- * @return {Object}    The modified object.
- */
-export function elementorCreateParams(alm) {
-	// Get Settings
-	alm.addons.elementor_type = 'posts';
-	alm.addons.elementor_settings = JSON.parse(alm.listing.dataset.elementorSettings);
-
-	// Parse Container Settings
-	alm.addons.elementor_target = alm.addons.elementor_settings.target;
-	alm.addons.elementor_element = alm.addons.elementor_settings.target
-		? document.querySelector(`.elementor-element ${alm.addons.elementor_settings.target}`)
-		: '';
-	alm.addons.elementor_widget = elementorGetWidgetType(alm.addons.elementor_element);
-
-	// Masonry
-	alm = setElementorClasses(alm, alm.addons.elementor_widget);
-
-	// Pagination Element
-	alm.addons.elementor_controls = alm.addons.elementor_settings.controls;
-	alm.addons.elementor_controls = alm.addons.elementor_controls === 'true' ? true : false;
-	alm.addons.elementor_scrolltop = parseInt(alm.addons.elementor_settings.scrolltop);
-
-	// Get next page URL.
-	alm.addons.elementor_next_page = elementorGetNextUrl(alm, alm.addons.elementor_element);
-
-	// Get the max pages.
-	alm.addons.elementor_max_pages = alm.addons.elementor_element.querySelector('.e-load-more-anchor');
-	alm.addons.elementor_max_pages = alm.addons.elementor_max_pages ? parseInt(alm.addons.elementor_max_pages.dataset.maxPage) : 999;
-
-	alm.addons.elementor_paged = alm.addons.elementor_settings.paged ? parseInt(alm.addons.elementor_settings.paged) : 1;
-	alm.page = parseInt(alm.page) + alm.addons.elementor_paged;
-
-	// Masonry
-	alm = parseMasonryConfig(alm);
-
-	if (!alm.addons.elementor_element) {
-		console.warn("Ajax Load More: Unable to locate Elementor Widget. Are you sure you've set up your target parameter correctly?");
-	}
-	if (!alm.addons.elementor_next_page) {
-		console.warn(
-			'Ajax Load More: Unable to locate Elementor pagination. There are either no results or Ajax Load More is unable to locate the pagination widget?'
-		);
-	}
-	return alm;
 }
 
 /**

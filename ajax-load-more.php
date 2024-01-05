@@ -20,18 +20,17 @@
 * FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
 * UPDATE: Removed lagacy polyfills and helper functions to lower compiled JS size.
 * UPDATE: Updated plugin installer class.
-
+* FIX: Fixed issue with Single Posts add-on not displaying correctly when using preview functionaity.
 
 
 TODO:
 - Add shortcode setting for stagger load animation.
 - Add fade transition [DONE]
-
 - Paging (Filters, SEO, NextPage). [DONE]
-- Cache
-- Filters.
+- Cache [DONE]
+- Filters. [DONE]
 	- https://wpdev.local/filter-add-on-movie-listing/?movie_type=comedy&pg=2
-- Single Posts.
+- Single Posts. [DONE]
 - Next Page. [DONE]
 - Layouts. [DONE]
 	- Fix grid display. [DONE]
@@ -40,9 +39,13 @@ TODO:
 - SEO [DONE]
 
 - SEO Offset
-	- Fix issue with 1st page URL.
-	- Inject element before ALM to reset the page number.
+	- Fix issue with 1st page URL. Inject element before ALM to reset the page number.
 	- https://wpdev.local/seo-offset/page/2
+
+- Preloaded: Update all if(addons.preloaded === 'true') parameters in add-ons to if(addons.preloaded) [DONE]
+- ACF: ACF Blocks not working when passing block ID to shortcode.
+- Single Post: Fix issue with Single Post Preview not working.
+
 - Nested [DONE]
 - ImagesLoaded. [DONE]
 - SetFocus Not Working. [DONE]
@@ -59,6 +62,7 @@ ADD-ON CHANGES
 
 FILTERS
 * UPDATE: Remove all references and output of `alm-reveal` divs.
+* UPDATE: Updated JS parameters to match updates in ALM 7.0.
 
 Cache
 * FIX: Fixed issue with display of cache URL on the Cache admin page.
@@ -73,7 +77,11 @@ Preloaded
 
 Layouts
 * UPDATE: Updated layouts CSS and HTML to remove all references to `alm-reveal` divs.
+* UPDATE: Code cleanup and oragnization.
 
+SEO
+* UPDATE: Updated JS parameters to match updates in ALM 7.0.
+* UPDATE: Code cleanup and oragnization.
 
 */
 
@@ -443,7 +451,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
 					'transition_delay'   => apply_filters( 'alm_transition_delay', 50 ),
 					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
-					'speed'              => apply_filters( 'alm_speed', 200 ),
+					'speed'              => apply_filters( 'alm_speed', 250 ),
 					'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
 					'no_results_text'    => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
 					'alm_debug'          => apply_filters( 'alm_debug', false ),

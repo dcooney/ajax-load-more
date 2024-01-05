@@ -5,12 +5,12 @@ import stripEmptyNodes from '../functions/stripEmptyNodes';
  *
  * @param {string} html The HTML string
  * @param {string} type The element type.
- * @return {any}        The HTML nodes as an array.
+ * @return {Array}      The HTML nodes as an array.
  * @since 5.0
  */
-export function almDomParser(html = '', type = 'text/html') {
+export function domParser(html = '', type = 'text/html') {
 	if (!html) {
-		return;
+		return [];
 	}
 	const parser = new DOMParser();
 	const data = parser.parseFromString(html, type);
@@ -23,12 +23,12 @@ export function almDomParser(html = '', type = 'text/html') {
  * Convert retun table data into an array of HTML elements.
  *
  * @param {string} html Plain text HTML.
- * @return {any}        Array of HTML elements.
+ * @return {Array}      Array of HTML elements.
  * @since 5.0
  */
 export function tableParser(html = null) {
 	if (!html) {
-		return;
+		return [];
 	}
 	// Create table element and add results to table body.
 	const tbody = document.createElement('tbody');

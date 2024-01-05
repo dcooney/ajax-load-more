@@ -1,4 +1,44 @@
+import getParameterByName from '../functions/getParameterByName';
 import getQueryVariable from '../functions/getQueryVariable';
+
+/**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function filtersCreateParams(alm) {
+	const { listing } = alm;
+	alm.addons.filters = alm?.listing?.dataset?.filters === 'true';
+	if (alm.addons.filters) {
+		alm.addons.filters_url = listing.dataset.filtersUrl === 'true';
+		alm.addons.filters_target = listing.dataset.filtersTarget ? listing.dataset.filtersTarget : false;
+		alm.addons.filters_paging = listing.dataset.filtersPaging === 'true';
+		alm.addons.filters_scroll = listing.dataset.filtersScroll === 'true';
+		alm.addons.filters_scrolltop = listing.dataset.filtersScrolltop ? listing.dataset.filtersScrolltop : '30';
+		alm.addons.filters_debug = listing.dataset.filtersDebug;
+		alm.addons.filters_startpage = 0;
+		alm.facets = listing.dataset.facets === 'true';
+
+		// Display warning when `filters_target` parameter is missing.
+		if (!alm.addons.filters_target) {
+			console.warn(
+				'Ajax Load More: Unable to locate a target for Filters. Make sure you set a target parameter in the core Ajax Load More shortcode - e.g. [ajax_load_more filters="true" target="filters"]'
+			);
+		}
+
+		// Parse Paged Querystring Val
+		const page = getParameterByName('pg');
+		alm.addons.filters_startpage = page !== null ? parseInt(page) : 0;
+
+		// If not Paging add-on
+		if (!alm.addons.paging && alm.addons.filters_startpage > 0) {
+			alm.posts_per_page = alm.posts_per_page * alm.addons.filters_startpage;
+			alm.isPaged = alm.addons.filters_startpage > 0;
+		}
+	}
+	return alm;
+}
 
 /**
  * Create data attributes for a Filters item.

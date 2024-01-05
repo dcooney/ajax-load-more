@@ -24,7 +24,7 @@ export function tableOfContents(alm, init = false, from_preloaded = false) {
 		const filterStartPage = alm.addons.filters_startpage ? parseInt(alm.addons.filters_startpage) : 0;
 		const nextpageStartPage = alm.addons.nextpage_startpage ? parseInt(alm.addons.nextpage_startpage) : 0;
 		let page = parseInt(alm.page);
-		const preloaded = alm.addons.preloaded === 'true' ? true : false;
+		const preloaded = alm.addons.preloaded ? true : false;
 
 		// Exit if Paging or Next Page
 		if (alm.addons.paging || alm.addons.nextpage) {

@@ -4,12 +4,12 @@ import { EXCLUDED_NODES } from './constants';
 const imagesLoaded = require('imagesloaded');
 
 /**
- * Append Ajax results to the ALM container.
+ * Append and display Ajax results to the ALM container.
  *
  * @param {Object} alm   The ALM object.
  * @param {Array}  nodes The HTML nodes to append.
  */
-export default function appendResults(alm, nodes) {
+export default function displayResults(alm, nodes) {
 	const { listing: container, transition, speed, images_loaded } = alm;
 	if (container && nodes) {
 		const useTransition = transition === 'fade' ? true : false;

@@ -1,17 +1,22 @@
 // ALM Modules
 import axios from 'axios';
-import { getCache } from './addons/cache';
+import { cacheCreateParams, getCache } from './addons/cache';
+import { ctaCreateParams } from './addons/call-to-actions';
+import { commentsCreateParams } from './addons/comments';
 import { elementor, elementorCreateParams, elementorGetContent, elementorInit, elementorLoaded } from './addons/elementor';
-import { setPreloadedParams } from './addons/preloaded';
-import { singlePostHTML } from './addons/singleposts';
-import { wooGetContent, wooInit, wooReset, woocommerce, woocommerceLoaded } from './addons/woocommerce';
-import appendResults from './functions/appendResults';
+import { filtersCreateParams } from './addons/filters';
+import { nextpageCreateParams } from './addons/next-page';
+import { pagingCreateParams } from './addons/paging';
+import { seoCreateParams } from './addons/seo';
+import { setPreloadedParams, preloadedCreateParams } from './addons/preloaded';
+import { singlepostsCreateParams, singlepostsHTML } from './addons/singleposts';
+import { wooCreateParams, wooGetContent, wooInit, wooReset, woocommerce, woocommerceLoaded } from './addons/woocommerce';
+import displayResults from './functions/displayResults';
 import formatHTML from './functions/formatHTML';
 import { getButtonURL } from './functions/getButtonURL';
-import getParameterByName from './functions/getParameterByName';
 import getScrollPercentage from './functions/getScrollPercentage';
 import getTotals from './functions/getTotals';
-import { almDomParser, tableParser } from './functions/parsers';
+import { domParser, tableParser } from './functions/parsers';
 import { getAjaxParams, getRestAPIParams } from './functions/queryParams';
 import setFocus from './functions/setFocus';
 import triggerWindowResize from './functions/windowResize';
@@ -108,7 +113,6 @@ let alm_is_filtering = false;
 		alm.main = el; // Top level DOM element
 		alm.listing = el.querySelector('.alm-listing') || el.querySelector('.alm-comments');
 		alm.content = alm.listing;
-		alm.el = alm.content;
 		alm.ajax = el.querySelector('.alm-ajax');
 		alm.container_type = alm.listing.dataset.containerType;
 		alm.loading_style = alm.listing.dataset.loadingStyle;
@@ -121,40 +125,37 @@ let alm_is_filtering = false;
 		alm.post_id = parseInt(el.dataset.postId);
 		alm.id = el.dataset.id ? el.dataset.id : '';
 
-		// No results template
-		const alm_no_results = el.querySelector('.alm-no-results');
-		alm.no_results = alm_no_results ? alm_no_results.innerHTML : '';
-
 		// Shortcode Params
-		alm.repeater = alm.listing.dataset.repeater; // Repeaters
-		alm.theme_repeater = alm.listing.dataset.themeRepeater;
 
-		alm.post_type = alm.listing.dataset.postType ? alm.listing.dataset.postType : 'post';
-		alm.sticky_posts = alm.listing.dataset.stickyPosts ? alm.listing.dataset.stickyPosts : null;
+		alm.repeater = alm?.listing?.dataset?.repeater || 'default';
+		alm.theme_repeater = alm?.listing?.dataset?.themeRepeater || false;
+
+		alm.post_type = alm?.listing?.dataset?.postType || 'post';
+		alm.sticky_posts = alm?.listing?.dataset?.stickyPosts || null;
 
 		alm.btnWrap = el.querySelectorAll('.alm-btn-wrap'); // Get all `.alm-button-wrap` divs
 		alm.btnWrap = [...alm.btnWrap]; // Convert NodeList to array
 		alm.btnWrap[alm.btnWrap.length - 1].style.visibility = 'visible'; // Get last element (used for nesting)
 		alm.trigger = alm.btnWrap[alm.btnWrap.length - 1];
-		alm.button = alm.trigger.querySelector('button.alm-load-more-btn');
+		alm.button = alm?.trigger?.querySelector('button.alm-load-more-btn');
 
-		alm.button_label = alm.listing.dataset.buttonLabel || 'Load More';
-		alm.button_loading_label = alm.listing.dataset.buttonLoadingLabel || false;
-		alm.button_done_label = alm.listing.dataset.buttonDoneLabel || false;
+		alm.button_label = alm?.listing?.dataset?.buttonLabel || 'Load More';
+		alm.button_loading_label = alm?.listing?.dataset?.buttonLoadingLabel || false;
+		alm.button_done_label = alm?.listing?.dataset?.buttonDoneLabel || false;
 
 		alm.placeholder = alm.main.querySelector('.alm-placeholder') || false;
 
-		alm.scroll_distance = alm.listing.dataset.scrollDistance || 100;
-		alm.scroll_container = alm.listing.dataset.scrollContainer || '';
-		alm.scroll_direction = alm.listing.dataset.scrollDirection || 'vertical';
-		alm.max_pages = alm.listing.dataset.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
-		alm.pause_override = alm.listing.dataset.pauseOverride ? alm.listing.dataset.pauseOverride : false; // true | false
-		alm.pause = alm.listing.dataset.pause ? alm.listing.dataset.pause : false; // true | false
-		alm.transition = alm.listing.dataset.transition || 'fade'; // Transition
+		alm.scroll_distance = alm?.listing?.dataset.scrollDistance || 100;
+		alm.scroll_container = alm?.listing?.dataset.scrollContainer || '';
+		alm.scroll_direction = alm?.listing?.dataset?.scrollDirection || 'vertical';
+		alm.max_pages = alm?.listing?.dataset?.maxPages ? parseInt(alm.listing.dataset.maxPages) : 0;
+		alm.pause_override = alm?.listing?.dataset?.pauseOverride || false; // true | false
+		alm.pause = alm?.listing?.dataset?.pause || false; // true | false
+		alm.transition = alm?.listing?.dataset?.transition || 'fade'; // Transition
 		alm.transition_delay = alm_localize?.transition_delay || 50;
-		alm.speed = alm?.localize?.speed ? parseInt(alm.localize.speed) : 200;
-		alm.images_loaded = alm.listing.dataset.imagesLoaded ? alm.listing.dataset.imagesLoaded : false;
-		alm.destroy_after = alm.listing.dataset.destroyAfter ? alm.listing.dataset.destroyAfter : '';
+		alm.speed = alm_localize?.speed ? parseInt(alm_localize.speed) : 250;
+		alm.images_loaded = alm?.listing?.dataset?.imagesLoaded || false;
+		alm.destroy_after = alm?.listing?.dataset?.destroyAfter || '';
 		alm.lazy_images = alm?.listing.dataset?.lazyImages === 'true' ? true : false;
 		alm.integration.woocommerce = alm?.listing?.dataset?.woocommerce === 'true' ? true : false;
 
@@ -168,107 +169,39 @@ let alm_is_filtering = false;
 
 		// Add-on Shortcode Params
 
-		// Elementor add-on
-		alm.addons.elementor = alm.listing.dataset.elementor === 'posts' && alm.listing.dataset.elementorSettings ? true : false;
-		if (alm.addons.elementor) {
-			alm = elementorCreateParams(alm);
-		}
+		alm = elementorCreateParams(alm); // Elementor add-on
+		alm = wooCreateParams(alm); // WooCommerce add-on
+		alm = cacheCreateParams(alm); // Cache add-on
+		alm = ctaCreateParams(alm); // CTA add-on
+		alm = nextpageCreateParams(alm); // Nextpage add-on
+		alm = singlepostsCreateParams(alm); // Single Posts add-on
+		alm = commentsCreateParams(alm); // Comments add-on
+		alm = preloadedCreateParams(alm); // Preloaded add-on.
+		alm = pagingCreateParams(alm); // Paging add-on.
+		alm = filtersCreateParams(alm); // Filters add-on.
+		alm = seoCreateParams(alm); // SEO add-on.
 
-		// WooCommerce add-on
-		alm.addons.woocommerce = alm?.listing?.dataset?.woo === 'true' ? true : false;
-		if (alm.addons.woocommerce && alm.listing.dataset.wooSettings) {
-			alm.addons.woocommerce_settings = JSON.parse(alm.listing.dataset.wooSettings);
-			alm.addons.woocommerce_settings.results_text = document.querySelectorAll(alm.addons.woocommerce_settings.results); // Add Results Text
-			alm.page = parseInt(alm.page) + parseInt(alm.addons.woocommerce_settings.paged);
-		}
-
-		// Cache add-on
-		alm.addons.cache = alm?.listing?.dataset?.cache === 'true' ? true : false;
-		if (alm.addons.cache) {
-			alm.addons.cache_id = alm.listing.dataset.cacheId;
-			alm.addons.cache_path = alm.listing.dataset.cachePath;
-			alm.addons.cache_logged_in = alm.listing.dataset.cacheLoggedIn ? alm.listing.dataset.cacheLoggedIn : false;
-		}
-
-		// CTA add-on
-		alm.addons.cta = alm?.listing?.dataset?.cta === 'true' ? true : false;
-		if (alm.addons.cta) {
-			alm.addons.cta_position = alm.listing.dataset.ctaPosition;
-			alm.addons.cta_repeater = alm.listing.dataset.ctaRepeater;
-			alm.addons.cta_theme_repeater = alm.listing.dataset.ctaThemeRepeater;
-		}
-
-		// Nextpage add-on
-		alm.addons.nextpage = alm.listing.dataset.nextpage;
-		if (alm.addons.nextpage === 'true') {
-			alm.addons.nextpage_urls = alm.listing.dataset.nextpageUrls;
-			alm.addons.nextpage_scroll = alm.listing.dataset.nextpageScroll;
-			alm.addons.nextpage_post_id = alm.listing.dataset.nextpagePostId;
-			alm.addons.nextpage_startpage = parseInt(alm.listing.dataset.nextpageStartpage);
-			alm.addons.nextpage_title_template = alm.listing.dataset.nextpageTitleTemplate;
-		}
-
-		// Single Posts add-on
-		alm.addons.single_post = alm.listing.dataset.singlePost;
-		if (alm.addons.single_post === 'true') {
-			alm.addons.single_post_id = alm.listing.dataset.singlePostId;
-			alm.addons.single_post_query = alm.listing.dataset.singlePostQuery;
-			alm.addons.single_post_order = alm.listing.dataset.singlePostOrder === undefined ? 'previous' : alm.listing.dataset.singlePostOrder;
-			alm.addons.single_post_init_id = alm.listing.dataset.singlePostId;
-			alm.addons.single_post_taxonomy = alm.listing.dataset.singlePostTaxonomy === undefined ? '' : alm.listing.dataset.singlePostTaxonomy;
-			alm.addons.single_post_excluded_terms = alm.listing.dataset.singlePostExcludedTerms === undefined ? '' : alm.listing.dataset.singlePostExcludedTerms;
-			alm.addons.single_post_progress_bar = alm.listing.dataset.singlePostProgressBar === undefined ? '' : alm.listing.dataset.singlePostProgressBar;
-			alm.addons.single_post_target = alm.listing.dataset.singlePostTarget === undefined ? '' : alm.listing.dataset.singlePostTarget;
-			alm.addons.single_post_preview = alm.listing.dataset.singlePostPreview === undefined ? false : true;
-
-			if (alm.addons.single_post_preview) {
-				const singlePostPreviewData = alm.listing.dataset.singlePostPreview.split(':');
-				alm.addons.single_post_preview_data = {
-					button_label: singlePostPreviewData[0] ? singlePostPreviewData[0] : 'Continue Reading',
-					height: singlePostPreviewData[1] ? singlePostPreviewData[1] : 500,
-					element: singlePostPreviewData[2] ? singlePostPreviewData[2] : 'default',
-					className: 'alm-single-post--preview',
-				};
-			}
-		}
-
-		// Comments add-on
-		alm.addons.comments = alm.listing.dataset.comments ? alm.listing.dataset.comments : false;
-		if (alm.addons.comments === 'true') {
-			alm.addons.comments_post_id = alm.listing.dataset.comments_post_id; // current post id
-			alm.addons.comments_per_page = alm.listing.dataset.comments_per_page;
-			alm.addons.comments_per_page = alm.addons.comments_per_page === undefined ? '5' : alm.addons.comments_per_page;
-			alm.addons.comments_type = alm.listing.dataset.comments_type;
-			alm.addons.comments_style = alm.listing.dataset.comments_style;
-			alm.addons.comments_template = alm.listing.dataset.comments_template;
-			alm.addons.comments_callback = alm.listing.dataset.comments_callback;
-		}
-
-		alm.addons.filters = alm.listing.dataset.filters;
-		alm.addons.seo = alm.listing.dataset.seo;
-
-		// Preloaded
-		alm.addons.preloaded = alm.listing.dataset.preloaded; // Preloaded add-on
-		alm.addons.preloaded_amount = alm.listing.dataset.preloadedAmount ? alm.listing.dataset.preloadedAmount : 0;
+		// Extension Shortcode Params
 
 		// Users
-		alm.addons.users = alm.listing.dataset.users === 'true' ? true : false; // Users add-on
-		if (alm.addons.users) {
+		alm.extensions.users = alm.listing.dataset.users === 'true';
+		if (alm.extensions.users) {
 			// Override paging params for users
 			alm.orginal_posts_per_page = alm.listing.dataset.usersPerPage;
 			alm.posts_per_page = alm.listing.dataset.usersPerPage;
 		}
 
-		// Extension Shortcode Params
-
 		// REST API.
-		alm.extensions.restapi = alm.listing.dataset.restapi === 'true' ? true : false;
+		alm.extensions.restapi = alm.listing.dataset.restapi === 'true';
 		if (alm.extensions.restapi) {
 			alm.extensions.restapi_base_url = alm.listing.dataset.restapiBaseUrl;
 			alm.extensions.restapi_namespace = alm.listing.dataset.restapiNamespace;
 			alm.extensions.restapi_endpoint = alm.listing.dataset.restapiEndpoint;
 			alm.extensions.restapi_template_id = alm.listing.dataset.restapiTemplateId;
 			alm.extensions.restapi_debug = alm.listing.dataset.restapiDebug;
+			if (alm.extensions.restapi_template_id === '') {
+				alm.extensions.restapi = false;
+			}
 		}
 
 		// ACF.
@@ -286,178 +219,19 @@ let alm_is_filtering = false;
 		}
 
 		// Term Query.
-		alm.extensions.term_query = alm.listing.dataset.termQuery === 'true' ? true : false;
+		alm.extensions.term_query = alm.listing.dataset.termQuery === 'true';
 		if (alm.extensions.term_query) {
 			alm.extensions.term_query_taxonomy = alm.listing.dataset.termQueryTaxonomy;
 			alm.extensions.term_query_hide_empty = alm.listing.dataset.termQueryHideEmpty;
 			alm.extensions.term_query_number = alm.listing.dataset.termQueryNumber;
 		}
 
-		// Paging.
-		alm.addons.paging = alm.listing.dataset.paging;
-		if (alm.addons.paging === 'true') {
-			alm.addons.paging = true;
-			alm.addons.paging_init = true;
-			alm.addons.paging_controls = alm.listing.dataset.pagingControls === 'true' ? true : false;
-			alm.addons.paging_show_at_most = alm.listing.dataset.pagingShowAtMost;
-			alm.addons.paging_classes = alm.listing.dataset.pagingClasses;
-			alm.addons.paging_show_at_most = alm.addons.paging_show_at_most === undefined ? 7 : alm.addons.paging_show_at_most;
-
-			alm.addons.paging_first_label = alm.listing.dataset.pagingFirstLabel;
-			alm.addons.paging_previous_label = alm.listing.dataset.pagingPreviousLabel;
-			alm.addons.paging_next_label = alm.listing.dataset.pagingNextLabel;
-			alm.addons.paging_last_label = alm.listing.dataset.pagingLastLabel;
-
-			alm.addons.paging_scroll = alm.listing.dataset.pagingScroll ? alm.listing.dataset.pagingScroll : false;
-			alm.addons.paging_scrolltop = alm.listing.dataset.pagingScrolltop ? parseInt(alm.listing.dataset.pagingScrolltop) : 100;
-
-			// If preloaded, pause ALM
-			alm.pause = alm.addons.preloaded === 'true' ? true : alm.pause;
-		} else {
-			alm.addons.paging = false;
-		}
-
-		// Filters
-		if (alm.addons.filters === 'true') {
-			alm.addons.filters = true;
-			alm.addons.filters_url = alm.listing.dataset.filtersUrl === 'true' ? true : false;
-			alm.addons.filters_target = alm.listing.dataset.filtersTarget ? alm.listing.dataset.filtersTarget : false;
-			alm.addons.filters_paging = alm.listing.dataset.filtersPaging === 'true' ? true : false;
-			alm.addons.filters_scroll = alm.listing.dataset.filtersScroll === 'true' ? true : false;
-			alm.addons.filters_scrolltop = alm.listing.dataset.filtersScrolltop ? alm.listing.dataset.filtersScrolltop : '30';
-			alm.addons.filters_debug = alm.listing.dataset.filtersDebug;
-			alm.addons.filters_startpage = 0;
-			alm.facets = alm.listing.dataset.facets === 'true' ? true : false;
-
-			// Display warning when `filters_target` parameter is missing.
-			if (!alm.addons.filters_target) {
-				console.warn(
-					'Ajax Load More: Unable to locate a target for Filters. Make sure you set a target parameter in the core Ajax Load More shortcode - e.g. [ajax_load_more filters="true" target="filters"]'
-				);
-			}
-
-			// Get Paged Querystring Val
-			const page = getParameterByName('pg');
-			alm.addons.filters_startpage = page !== null ? parseInt(page) : 0;
-
-			// If not Paging add-on
-			if (!alm.addons.paging && alm.addons.filters_startpage > 0) {
-				alm.posts_per_page = alm.posts_per_page * alm.addons.filters_startpage;
-				alm.isPaged = alm.addons.filters_startpage > 0 ? true : false;
-			}
-		} else {
-			alm.addons.filters = false;
-		}
-
-		/* REST API */
-		if (alm.extensions.restapi) {
-			alm.extensions.restapi_debug = alm.extensions.restapi_debug === undefined ? false : alm.extensions.restapi_debug;
-			alm.extensions.restapi = alm.extensions.restapi_template_id === '' ? false : alm.extensions.restapi;
-		}
-
-		/* Preloaded */
-		if (alm.addons.preloaded === 'true') {
-			// Preloaded Amount
-			alm.addons.preloaded_amount = alm.addons.preloaded_amount === undefined ? alm.posts_per_page : alm.addons.preloaded_amount;
-			if (alm?.localize?.total_posts !== null) {
-				// Disable ALM if total_posts is equal to or less than preloaded_amount.
-				if (parseInt(alm.localize.total_posts) <= parseInt(alm.addons.preloaded_amount)) {
-					alm.addons.preloaded_total_posts = alm.localize.total_posts;
-					alm.disable_ajax = true;
-				}
-			}
-		} else {
-			alm.addons.preloaded = 'false';
-		}
-		/* End Preloaded  */
-
-		/* SEO */
-		alm.addons.seo = alm?.addons?.seo === 'true' ? true : false;
-		if (alm.addons.seo) {
-			alm.addons.seo_offset = alm.listing.dataset.seoOffset || 0;
-			alm.addons.seo_permalink = alm.listing.dataset.seoPermalink;
-			alm.addons.seo_pageview = alm.listing.dataset.seoPageview;
-			alm.addons.seo_trailing_slash = alm.listing.dataset.seoTrailingSlash === 'false' ? '' : '/';
-			alm.addons.seo_leading_slash = alm.listing.dataset.seoLeadingSlash === 'true' ? '/' : '';
-		}
-		alm.start_page = alm.listing.dataset.seoStartPage ? alm.listing.dataset.seoStartPage : '';
-
-		if (alm.start_page) {
-			alm.start_page = parseInt(alm.start_page);
-			alm.addons.seo_scroll = alm.listing.dataset.seoScroll;
-			alm.addons.seo_scrolltop = alm.listing.dataset.seoScrolltop;
-			alm.addons.seo_controls = alm.listing.dataset.seoControls;
-			alm.isPaged = false;
-			if (alm.start_page > 1) {
-				alm.isPaged = true; // Is this a paged page > 1 ?
-				alm.posts_per_page = alm.start_page * alm.posts_per_page;
-			}
-			if (alm.addons.paging) {
-				// If paging, reset posts_per_page
-				alm.posts_per_page = alm.orginal_posts_per_page;
-			}
-		} else {
-			alm.start_page = 1;
-		}
-		/* End SEO  */
-
-		/* Nextpage */
-		if (alm.addons.nextpage === 'true') {
-			alm.addons.nextpage = true;
-			alm.posts_per_page = 1;
-
-			if (alm.addons.nextpage_urls === undefined) {
-				alm.addons.nextpage_urls = 'true';
-			}
-			if (alm.addons.nextpage_scroll === undefined) {
-				alm.addons.nextpage_scroll = 'false:30';
-			}
-			if (alm.addons.nextpage_post_id === undefined) {
-				alm.addons.nextpage = false;
-				alm.addons.nextpage_post_id = null;
-			}
-			if (alm.addons.nextpage_startpage === undefined) {
-				alm.addons.nextpage_startpage = 1;
-			}
-			if (alm.addons.nextpage_startpage > 1) {
-				alm.isPaged = true;
-			}
-			alm.addons.nextpage_postTitle = alm.listing.dataset.nextpagePostTitle;
-		} else {
-			alm.addons.nextpage = false;
-		}
-		/* End Nextpage  */
-
-		/* Single Post */
-		if (alm.addons.single_post === 'true') {
-			alm.addons.single_post = true;
-			alm.addons.single_post_permalink = '';
-			alm.addons.single_post_title = '';
-			alm.addons.single_post_slug = '';
-			alm.addons.single_post_cache = false;
-			alm.addons.single_post_title_template = alm.listing.dataset.singlePostTitleTemplate;
-			alm.addons.single_post_siteTitle = alm.listing.dataset.singlePostSiteTitle;
-			alm.addons.single_post_siteTagline = alm.listing.dataset.singlePostSiteTagline;
-			alm.addons.single_post_pageview = alm.listing.dataset.singlePostPageview;
-			alm.addons.single_post_scroll = alm.listing.dataset.singlePostScroll;
-			alm.addons.single_post_scroll_speed = alm.listing.dataset.singlePostScrollSpeed;
-			alm.addons.single_post_scroll_top = alm.listing.dataset.singlePostScrolltop;
-			alm.addons.single_post_controls = alm.listing.dataset.singlePostControls;
-		} else {
-			alm.addons.single_post = false;
-		}
-		if (alm.addons.single_post && alm.addons.single_post_id === undefined) {
-			alm.addons.single_post_id = '';
-			alm.addons.single_post_init_id = '';
-		}
-		/* End Single Post */
-
 		/* Pause */
 		if (alm.pause === undefined || (alm.addons.seo && alm.start_page > 1)) {
 			// SEO only.
 			alm.pause = false;
 		}
-		if (alm.addons.preloaded === 'true' && alm.addons.seo && alm.start_page > 0) {
+		if (alm.addons.preloaded && alm.addons.seo && alm.start_page > 0) {
 			// SEO + Preloaded.
 			alm.pause = false;
 		}
@@ -465,13 +239,9 @@ let alm_is_filtering = false;
 			// Filters.
 			alm.pause = false;
 		}
-		if (alm.addons.preloaded === 'true' && alm.addons.paging) {
+		if (alm.addons.preloaded && alm.addons.paging) {
 			alm.pause = true;
 		}
-
-		/* Repeater and Theme Repeater */
-		alm.repeater = alm.repeater === undefined ? 'default' : alm.repeater;
-		alm.theme_repeater = alm.theme_repeater === undefined ? false : alm.theme_repeater;
 
 		/* Max Pages */
 		alm.max_pages = alm.max_pages === undefined || alm.max_pages === 0 ? 9999 : alm.max_pages;
@@ -519,6 +289,13 @@ let alm_is_filtering = false;
 			alm.button.disabled = false;
 			alm.button.style.display = '';
 		}
+
+		/**
+		 * No Results.
+		 * Set template for showing no results HTML.
+		 */
+		const alm_no_results = el.querySelector('.alm-no-results');
+		alm.no_results = alm_no_results ? alm_no_results.innerHTML : '';
 
 		/**
 		 * Results Text.
@@ -647,7 +424,7 @@ let alm_is_filtering = false;
 				.then(function (response) {
 					if (alm.addons.single_post && alm.addons.single_post_target) {
 						// Single Posts
-						return singlePostHTML(alm, response, cache_slug);
+						return singlepostsHTML(alm, response, cache_slug);
 					} else if (alm.addons.woocommerce) {
 						// WooCommerce.
 						return wooGetContent(alm, ajaxurl, response, cache_slug);
@@ -710,10 +487,12 @@ let alm_is_filtering = false;
 					let data = '';
 					for (let i = 0; i < html.length; i++) {
 						const result = html[i];
-						if (alm.restapi_debug === 'true') {
-							console.log(result); // eslint-disable-line no-console
-						}
 						data += alm_rest_template(result);
+					}
+
+					// Rest API debug.
+					if (alm.extensions.restapi_debug === 'true') {
+						console.log(html); // eslint-disable-line no-console
 					}
 
 					// Create results object.
@@ -758,7 +537,7 @@ let alm_is_filtering = false;
 
 			// Get current post counts.
 			const totalposts = typeof meta !== 'undefined' ? meta.totalposts : alm.posts_per_page * 5;
-			alm.totalposts = alm.addons.preloaded === 'true' ? totalposts - alm.addons.preloaded_amount : totalposts;
+			alm.totalposts = alm.addons.preloaded ? totalposts - alm.addons.preloaded_amount : totalposts;
 			alm.postcount = alm.addons.paging ? total : alm.postcount + total;
 
 			if (!meta) {
@@ -803,9 +582,9 @@ let alm_is_filtering = false;
 
 				// isPaged
 				if (alm.isPaged) {
-					// Reset the posts_per_page parameter
-					alm.posts_per_page = alm.addons.users ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage; // Users
-					alm.posts_per_page = alm.addons.nextpage ? 1 : alm.posts_per_page; // NextPage
+					// Reset the posts_per_page parameter.
+					alm.posts_per_page = alm.extensions.users ? alm.listing.dataset.usersPerPage : alm.listing.dataset.postsPerPage; // Users.
+					alm.posts_per_page = alm.addons.nextpage ? 1 : alm.posts_per_page; // NextPage.
 
 					// SEO add-on
 					alm.page = alm.start_page ? alm.start_page - 1 : alm.page; // Set new page #
@@ -840,7 +619,7 @@ let alm_is_filtering = false;
 			})();
 
 			// Get all returned data as an array of DOM nodes.
-			let nodes = alm.container_type === 'table' ? tableParser(alm.html) : almDomParser(alm.html);
+			let nodes = alm.container_type === 'table' ? tableParser(alm.html) : domParser(alm.html);
 			alm.last_loaded = nodes;
 
 			// Render results.
@@ -882,14 +661,15 @@ let alm_is_filtering = false;
 					 */
 					switch (alm.transition) {
 						case 'masonry':
-							appendResults(alm, nodes);
-							alm.el = alm.listing;
+							displayResults(alm, nodes);
 
 							// Wrap almMasonry in anonymous async/await function
 							(async function () {
 								await almMasonry(alm, alm.init, alm_is_filtering);
 								alm.masonry.init = false;
 								triggerWindowResize();
+
+								// Callback: ALM Complete
 								if (typeof almComplete === 'function') {
 									window.almComplete(alm);
 								}
@@ -899,7 +679,7 @@ let alm_is_filtering = false;
 							break;
 
 						default:
-							appendResults(alm, nodes);
+							displayResults(alm, nodes);
 							break;
 					}
 				} else {
@@ -925,9 +705,7 @@ let alm_is_filtering = false;
 									// Remove opacity on element to fix CSS transition
 									setTimeout(function () {
 										pagingContent.style.opacity = '';
-
-										// Insert Script
-										insertScript.init(pagingContent);
+										insertScript.init(pagingContent); // Insert Script
 									}, parseInt(alm.speed) + 10);
 
 									// Paging addon
@@ -954,12 +732,12 @@ let alm_is_filtering = false;
 					// Trigger all inline <script /> tags in templates.
 					insertScript.init(alm.listing);
 
-					// Trigger almComplete
+					// Callback: ALM Complete
 					if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
 						window.almComplete(alm);
 					}
 
-					// Filters Add-on Complete
+					// Callback: Filters Add-on Complete
 					if (alm_is_filtering && alm.addons.filters) {
 						if (typeof almFiltersAddonComplete === 'function') {
 							almFiltersAddonComplete(el);
@@ -1000,7 +778,7 @@ let alm_is_filtering = false;
 			// Destroy After
 			if (alm.destroy_after !== undefined && alm.destroy_after !== '') {
 				let currentPage = alm.page + 1; // Add 1 because alm.page starts at 0
-				currentPage = alm.addons.preloaded === 'true' ? currentPage++ : currentPage; // Add 1 for preloaded
+				currentPage = alm.addons.preloaded ? currentPage++ : currentPage; // Add 1 for preloaded
 				if (parseInt(currentPage) === parseInt(alm.destroy_after)) {
 					// Disable ALM if page = alm.destroy_after value.
 					alm.AjaxLoadMore.destroyed();
@@ -1047,7 +825,7 @@ let alm_is_filtering = false;
 				alm.AjaxLoadMore.resetBtnText();
 			}
 
-			// Trigger almComplete
+			// Callback: ALM Complete
 			if (typeof almComplete === 'function' && alm.transition !== 'masonry') {
 				window.almComplete(alm);
 			}
@@ -1594,7 +1372,7 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.init = async function () {
 			// Preloaded and destroy_after is 1.
-			if (alm.addons.preloaded === 'true' && alm.destroy_after === 1) {
+			if (alm.addons.preloaded && alm.destroy_after === 1) {
 				alm.AjaxLoadMore.destroyed();
 			}
 
@@ -1635,7 +1413,7 @@ let alm_is_filtering = false;
 			}
 
 			// Preloaded + SEO && !Paging.
-			if (alm.addons.preloaded === 'true' && alm.addons.seo && !alm.addons.paging) {
+			if (alm.addons.preloaded && alm.addons.seo && !alm.addons.paging) {
 				// Add delay for setup and scripts to load.
 				setTimeout(function () {
 					if (typeof almSEO === 'function' && alm.start_page < 1) {
@@ -1645,7 +1423,7 @@ let alm_is_filtering = false;
 			}
 
 			// Preloaded && !Paging.
-			if (alm.addons.preloaded === 'true' && !alm.addons.paging) {
+			if (alm.addons.preloaded && !alm.addons.paging) {
 				// Add delay for setup and scripts to load.
 				setTimeout(function () {
 					if (alm.addons.preloaded_total_posts <= parseInt(alm.addons.preloaded_amount)) {
@@ -1664,7 +1442,7 @@ let alm_is_filtering = false;
 			}
 
 			// Preloaded Add-on ONLY.
-			if (alm.addons.preloaded === 'true') {
+			if (alm.addons.preloaded) {
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'preloaded');
 				}
@@ -1712,7 +1490,7 @@ let alm_is_filtering = false;
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
 				elementorInit(alm);
 
-				// Trigger `Done` if `elementor_next_page` is empty
+				// Trigger `Done` if `elementor_next_page` is empty.
 				if (alm.addons.elementor_next_page === '') {
 					alm.AjaxLoadMore.triggerDone();
 				}
@@ -1721,7 +1499,7 @@ let alm_is_filtering = false;
 			// Window Load.
 			alm.window.addEventListener('load', function () {
 				// Masonry & Preloaded.
-				if (alm.transition === 'masonry' && alm.addons.preloaded === 'true') {
+				if (alm.transition === 'masonry' && alm.addons.preloaded) {
 					// Wrap almMasonry in anonymous async/await function
 					(async function () {
 						await almMasonry(alm, true, false);
@@ -1732,7 +1510,7 @@ let alm_is_filtering = false;
 				}
 
 				//  Filters, Facets & Preloaded Facets
-				if (alm.addons.preloaded === 'true' && alm.addons.filters && alm.facets) {
+				if (alm.addons.preloaded && alm.addons.filters && alm.facets) {
 					if (typeof almFiltersFacets === 'function') {
 						const facets = alm?.localize?.facets;
 						if (facets) {
@@ -1801,7 +1579,7 @@ let alm_is_filtering = false;
 			const target = alm.listing;
 			const data = target?.innerHTML; // Get content
 
-			if (alm.addons.paging_init && alm.addons.preloaded === 'true') {
+			if (alm.addons.paging_init && alm.addons.preloaded) {
 				// Paging + Preloaded Firstrun.
 				if (target) {
 					target.innerHTML = ''; // Remove initial data.

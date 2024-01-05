@@ -12,11 +12,24 @@ import stripEmptyNodes from '../functions/stripEmptyNodes';
  * @since 7.0.0
  */
 export default function formatHTML(alm, elements) {
+	if (!elements?.length) {
+		return [];
+	}
+
 	const { addons, page, posts_per_page, init, start_page, container_type } = alm;
 
-	// Single Posts only.
+	// Single Posts.
 	if (addons?.single_post) {
+		// Single Posts only.
 		elements = addSinglePostsAttributes(alm, elements);
+
+		// Single Post Preview.
+		if (addons.single_post_preview && addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
+			const singlePreview = almSinglePostCreatePreview(elements[0], addons.single_post_id, addons.single_post_preview_data);
+			if (singlePreview) {
+				elements[0].replaceChildren(singlePreview);
+			}
+		}
 		return elements;
 	}
 
@@ -26,7 +39,7 @@ export default function formatHTML(alm, elements) {
 	}
 
 	let current = parseInt(page) + 1;
-	current = addons?.preloaded === 'true' ? current + 1 : current;
+	current = addons?.preloaded ? current + 1 : current;
 
 	// If init and SEO or Filter start_page, set pagenum to 1.
 	if (init && (parseInt(start_page) > 1 || addons?.filters_startpage > 1)) {
@@ -84,6 +97,5 @@ function formatTable(elements = []) {
 	if (tableChildren) {
 		elements = stripEmptyNodes([...tableChildren]);
 	}
-
 	return elements;
 }

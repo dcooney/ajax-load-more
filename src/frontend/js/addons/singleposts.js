@@ -1,6 +1,58 @@
 import { createCache } from './cache';
 
 /**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function singlepostsCreateParams(alm) {
+	const { listing } = alm;
+	alm.addons.single_post = listing?.dataset?.singlePost === 'true';
+	if (alm.addons.single_post) {
+		alm.addons.single_post_id = listing.dataset.singlePostId;
+		alm.addons.single_post_query = listing.dataset.singlePostQuery;
+		alm.addons.single_post_order = listing.dataset.singlePostOrder === undefined ? 'previous' : listing.dataset.singlePostOrder;
+		alm.addons.single_post_init_id = listing.dataset.singlePostId;
+		alm.addons.single_post_taxonomy = listing.dataset.singlePostTaxonomy === undefined ? '' : listing.dataset.singlePostTaxonomy;
+		alm.addons.single_post_excluded_terms = listing.dataset.singlePostExcludedTerms === undefined ? '' : listing.dataset.singlePostExcludedTerms;
+		alm.addons.single_post_progress_bar = listing.dataset.singlePostProgressBar === undefined ? '' : listing.dataset.singlePostProgressBar;
+		alm.addons.single_post_target = listing.dataset.singlePostTarget === undefined ? '' : listing.dataset.singlePostTarget;
+		alm.addons.single_post_preview = listing.dataset.singlePostPreview === undefined ? false : true;
+
+		// Post Preview. Does this even work?
+		if (alm.addons.single_post_preview) {
+			const singlePostPreviewData = listing.dataset.singlePostPreview.split(':');
+			alm.addons.single_post_preview_data = {
+				button_label: singlePostPreviewData[0] ? singlePostPreviewData[0] : 'Continue Reading',
+				height: singlePostPreviewData[1] ? singlePostPreviewData[1] : 500,
+				element: singlePostPreviewData[2] ? singlePostPreviewData[2] : 'default',
+				className: 'alm-single-post--preview',
+			};
+		}
+
+		if (alm.addons.single_post_id === undefined) {
+			alm.addons.single_post_id = '';
+			alm.addons.single_post_init_id = '';
+		}
+
+		// Set default fallbacks.
+		alm.addons.single_post_permalink = '';
+		alm.addons.single_post_title = '';
+		alm.addons.single_post_slug = '';
+		alm.addons.single_post_cache = false;
+		alm.addons.single_post_title_template = listing.dataset.singlePostTitleTemplate;
+		alm.addons.single_post_siteTitle = listing.dataset.singlePostSiteTitle;
+		alm.addons.single_post_siteTagline = listing.dataset.singlePostSiteTagline;
+		alm.addons.single_post_scroll = listing.dataset.singlePostScroll;
+		alm.addons.single_post_scroll_speed = listing.dataset.singlePostScrollSpeed;
+		alm.addons.single_post_scroll_top = listing.dataset.singlePostScrolltop;
+		alm.addons.single_post_controls = listing.dataset.singlePostControls;
+	}
+	return alm;
+}
+
+/**
  * Create the HTML for loading Single Posts.
  *
  * @param {Object} alm        The alm object.
@@ -9,7 +61,7 @@ import { createCache } from './cache';
  * @return {Object}           Results data.
  * @since 5.1.8.1
  */
-export function singlePostHTML(alm, response, cache_slug) {
+export function singlepostsHTML(alm, response, cache_slug) {
 	const data = {
 		html: '',
 		meta: {
@@ -36,7 +88,7 @@ export function singlePostHTML(alm, response, cache_slug) {
 
 		// Get any custom target elements.
 		if (window?.almSinglePostsCustomElements) {
-			const customElements = singlePostsGetCustomElements(div, window?.almSinglePostsCustomElements, single_post_id);
+			const customElements = singlepostsGetCustomElements(div, window?.almSinglePostsCustomElements, single_post_id);
 			if (customElements) {
 				// Get first element in HTML.
 				const target = html.querySelector('article, section, div');
@@ -57,7 +109,7 @@ export function singlePostHTML(alm, response, cache_slug) {
 	}
 	return data;
 }
-export default singlePostHTML;
+export default singlepostsHTML;
 
 /**
  * Collect custom target elements and append them to the returned HTML.
@@ -71,7 +123,7 @@ export default singlePostHTML;
  * @param {string|number} id             The Post ID.
  * @return {HTMLElement}                 The HTML elements.
  */
-function singlePostsGetCustomElements(content = '', customElements = [], id) {
+function singlepostsGetCustomElements(content = '', customElements = [], id) {
 	if (!content || !customElements) {
 		return container; // Exit if empty.
 	}

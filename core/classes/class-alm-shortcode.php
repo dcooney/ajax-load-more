@@ -379,7 +379,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// End Enqueue Scripts.
 
 			// Filters - Set initial shortcode state.
-			$filters = $filters === 'true' && class_exists( 'ALMFilters' ) ? true : false;
+			$filters = $filters === 'true' && class_exists( 'ALMFilters' );
 			if ( $filters ) {
 				$single_post = false;
 				$seo         = false;
@@ -389,7 +389,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				}
 			}
 
-			$single_post = $single_post === 'true' ? true : false;
+			$single_post = $single_post === 'true';
 
 			// REST API.
 			if ( $restapi === 'true' ) {
