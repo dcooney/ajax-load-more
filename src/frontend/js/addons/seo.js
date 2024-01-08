@@ -39,17 +39,18 @@ export function seoCreateParams(alm) {
 /**
  * Create data attributes for an SEO item.
  *
- * @param {Object}      alm     The ALM object.
- * @param {HTMLElement} element The element HTML node.
- * @param {number}      pagenum The current page number.
- * @return {HTMLElement}        Modified HTML element.
+ * @param {Object}      alm        The ALM object.
+ * @param {HTMLElement} element    The element HTML node.
+ * @param {number}      pagenum    The current page number.
+ * @param {boolean}     skipOffset Skip the SEO offset check.
+ * @return {HTMLElement}           Modified HTML element.
  */
-export function addSEOAttributes(alm, element, pagenum) {
+export function addSEOAttributes(alm, element, pagenum, skipOffset = false) {
 	const { addons, canonical_url } = alm;
 	const { retain_querystring = true } = alm_localize;
 	const querystring = retain_querystring ? window.location.search : '';
 
-	pagenum = getSEOPageNum(addons?.seo_offset, pagenum);
+	pagenum = !skipOffset ? getSEOPageNum(addons?.seo_offset, pagenum) : pagenum;
 
 	element.classList.add('alm-seo');
 	element.dataset.page = pagenum;
@@ -82,4 +83,18 @@ export function addSEOAttributes(alm, element, pagenum) {
  */
 export function getSEOPageNum(seo_offset, page) {
 	return seo_offset === 'true' ? parseInt(page) + 1 : parseInt(page);
+}
+
+/**
+ * Create div to hold offset values for SEO.
+ *
+ * @param {Object} alm The ALM object.
+ */
+export function createSEOOffset(alm) {
+	let offsetDiv = document.createElement('div');
+	// Add data attributes.
+	offsetDiv = addSEOAttributes(alm, offsetDiv, 1, true);
+
+	// Insert into ALM container.
+	alm.main.insertBefore(offsetDiv, alm.listing);
 }

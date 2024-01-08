@@ -213,7 +213,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'pause'                        => 'false',
 						'destroy_after'                => '',
 						'transition'                   => 'fade',
-						'transition_speed'             => '250',
+						'transition_delay'           => "50",
+						'transition_container_classes' => '',
 						'masonry_selector'             => '',
 						'masonry_columnwidth'          => '',
 						'masonry_animation'            => '',
@@ -403,10 +404,15 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$container_element = 'div';
 			}
 
+			// Transition Container Classes.
+			$transition_container_classes = ! empty( $transition_container_classes ) ? $transition_container_classes : '';
+
 			// CSS Classes.
 			$css_classes = ! empty( $css_classes ) ? ' ' . $css_classes : '';
+			$css_classes = ! empty( $transition_container_classes ) ? $css_classes . ' ' . $transition_container_classes : $css_classes; // Append transition container classes.
+			// Add Layouts add-on classes.
 			if ( $layouts === 'true' && has_filter( 'alm_get_layout_classes' ) ) {
-				// Add Layouts add-on classes.
+
 				$css_classes = apply_filters( 'alm_get_layout_classes', $layouts_cols, $layouts_gap, $css_classes );
 			}
 
@@ -1199,6 +1205,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Transition.
 			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . esc_attr( $transition ) . '"' : '';
+			$ajaxloadmore .= $transition_delay !== '50' && $transition === 'fade' ? ' data-transition-delay="' . esc_attr( $transition_delay ) . '"' : '';
 
 			// Masonry.
 			if ( 'masonry' === $transition ) {

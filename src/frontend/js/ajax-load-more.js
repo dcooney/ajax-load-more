@@ -7,8 +7,8 @@ import { elementor, elementorCreateParams, elementorGetContent, elementorInit, e
 import { filtersCreateParams } from './addons/filters';
 import { nextpageCreateParams } from './addons/next-page';
 import { pagingCreateParams } from './addons/paging';
-import { seoCreateParams } from './addons/seo';
-import { setPreloadedParams, preloadedCreateParams } from './addons/preloaded';
+import { preloadedCreateParams, setPreloadedParams } from './addons/preloaded';
+import { createSEOOffset, seoCreateParams } from './addons/seo';
 import { singlepostsCreateParams, singlepostsHTML } from './addons/singleposts';
 import { wooCreateParams, wooGetContent, wooInit, wooReset, woocommerce, woocommerceLoaded } from './addons/woocommerce';
 import displayResults from './functions/displayResults';
@@ -121,6 +121,7 @@ let alm_is_filtering = false;
 		alm.canonical_url = el.dataset.canonicalUrl;
 		alm.nested = el.dataset.nested ? el.dataset.nested : false;
 		alm.is_search = el?.dataset?.search === 'true' ? 'true' : false;
+		alm.search_value = alm.is_search === 'true' ? alm.slug : ''; // Convert to value of slug for appending to seo url.
 		alm.slug = el.dataset.slug;
 		alm.post_id = parseInt(el.dataset.postId);
 		alm.id = el.dataset.id ? el.dataset.id : '';
@@ -152,7 +153,7 @@ let alm_is_filtering = false;
 		alm.pause_override = alm?.listing?.dataset?.pauseOverride || false; // true | false
 		alm.pause = alm?.listing?.dataset?.pause || false; // true | false
 		alm.transition = alm?.listing?.dataset?.transition || 'fade'; // Transition
-		alm.transition_delay = alm_localize?.transition_delay || 50;
+		alm.transition_delay = alm?.listing?.dataset?.transitionDelay || 0;
 		alm.speed = alm_localize?.speed ? parseInt(alm_localize.speed) : 250;
 		alm.images_loaded = alm?.listing?.dataset?.imagesLoaded || false;
 		alm.destroy_after = alm?.listing?.dataset?.destroyAfter || '';
@@ -163,9 +164,6 @@ let alm_is_filtering = false;
 		alm.orginal_posts_per_page = parseInt(alm.listing.dataset.postsPerPage); // Used for paging add-on
 		alm.posts_per_page = parseInt(alm.listing.dataset.postsPerPage);
 		alm.offset = alm?.listing?.dataset?.offset ? parseInt(alm.listing.dataset.offset) : 0;
-
-		// Convert to value of slug for appending to seo url.
-		alm.search_value = alm.is_search === 'true' ? alm.slug : '';
 
 		// Add-on Shortcode Params
 
@@ -561,6 +559,11 @@ let alm_is_filtering = false;
 				if (alm.addons.paging && total > 0) {
 					// Add paging containers and content
 					alm.AjaxLoadMore.pagingInit(html);
+				}
+
+				// SEO
+				if (alm.addons.seo && alm.addons.seo_offset) {
+					createSEOOffset(alm);
 				}
 
 				// ALM Empty

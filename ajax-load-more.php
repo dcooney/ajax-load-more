@@ -18,7 +18,8 @@
 * NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
 * NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
 * FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
-* UPDATE: Removed lagacy polyfills and helper functions to lower compiled JS size.
+* UPDATE: Removed `transition_container_classes` parameter.
+* UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
 * UPDATE: Updated plugin installer class.
 * FIX: Fixed issue with Single Posts add-on not displaying correctly when using preview functionaity.
 
@@ -37,8 +38,8 @@ TODO:
 - Preloaded [DONE]
 	- Remove alm-reveal divs. [DONE]
 - SEO [DONE]
-
-- SEO Offset
+x
+- SEO Offset [DONE]
 	- Fix issue with 1st page URL. Inject element before ALM to reset the page number.
 	- https://wpdev.local/seo-offset/page/2
 
@@ -74,6 +75,7 @@ Paging
 
 Preloaded
 * UPDATE: Remove all references and output of `alm-reveal` divs.
+* UPDATE: Code cleanup and oragnization.
 
 Layouts
 * UPDATE: Updated layouts CSS and HTML to remove all references to `alm-reveal` divs.
@@ -82,6 +84,7 @@ Layouts
 SEO
 * UPDATE: Updated JS parameters to match updates in ALM 7.0.
 * UPDATE: Code cleanup and oragnization.
+* FIX: Fixed issue with SEO Offset not working to update URL params.
 
 */
 
@@ -449,7 +452,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
 					'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
 					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
-					'transition_delay'   => apply_filters( 'alm_transition_delay', 50 ),
 					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
 					'speed'              => apply_filters( 'alm_speed', 250 ),
 					'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),

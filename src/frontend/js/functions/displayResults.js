@@ -43,22 +43,22 @@ export default function displayResults(alm, nodes) {
 		// Display the results.
 		if (alm.images_loaded === 'true') {
 			imagesLoaded(alm.listing, function () {
-				displayResults(alm, nodes, useTransition);
+				display(alm, nodes, useTransition);
 			});
 		} else {
-			displayResults(alm, nodes, useTransition);
+			display(alm, nodes, useTransition);
 		}
 	}
 }
 
 /**
- * Display the loaded results.
+ * Display the loaded results via CSS transition.
  *
  * @param {Object}  alm           The ALM object.
  * @param {Array}   nodes         The HTML nodes to append.
- * @param {boolean} useTransition Use a CSS transition.
+ * @param {boolean} useTransition Use CSS transition.
  */
-function displayResults(alm, nodes, useTransition = true) {
+function display(alm, nodes, useTransition = true) {
 	const { transition_delay: delay, images_loaded } = alm;
 	const offset = useTransition ? parseInt(delay) : 0; // Delay offset timing.
 
@@ -72,6 +72,6 @@ function displayResults(alm, nodes, useTransition = true) {
 				});
 			}
 			alm.AjaxLoadMore.transitionEnd();
-		}, 25);
+		}, 75);
 	}
 }
