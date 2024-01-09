@@ -91,9 +91,10 @@ function almCompleteFilterTransition(speed, data, type, element) {
 
 	// Loop over all .alm-listing divs and clear HTML.
 	[...listing].forEach(function (element) {
-		const pagingContent = element.querySelector('.alm-paging-content');
-		if (pagingContent) {
-			pagingContent.innerHTML = '';
+		// Is this a paging instance.
+		const paging = element.querySelector('.alm-paging-content');
+		if (paging) {
+			paging.innerHTML = '';
 		} else {
 			element.innerHTML = '';
 		}

@@ -25,7 +25,7 @@ import { almFadeIn, almFadeOut } from './modules/fade';
 import almFilter from './modules/filtering';
 import insertScript from './modules/insertScript';
 import { almMasonry, almMasonryConfig } from './modules/masonry';
-import almNoResults from './modules/noResults';
+import noResults from './modules/noResults';
 import { hidePlaceholder, showPlaceholder } from './modules/placeholder';
 import * as resultsText from './modules/resultsText';
 import setLocalizedVars from './modules/setLocalizedVars';
@@ -576,9 +576,7 @@ let alm_is_filtering = false;
 					}
 
 					if (alm.no_results) {
-						setTimeout(function () {
-							almNoResults(alm.content, alm.no_results);
-						}, alm.speed);
+						noResults(alm.content, alm.no_results);
 					}
 				}
 
@@ -821,10 +819,8 @@ let alm_is_filtering = false;
 		alm.AjaxLoadMore.noresults = function () {
 			if (!alm.addons.paging) {
 				// Add .done class, reset btn text
-				setTimeout(function () {
-					alm.button.classList.remove('loading');
-					alm.button.classList.add('done');
-				}, alm.speed);
+				alm?.button?.classList?.remove('loading');
+				alm?.button?.classList?.add('done');
 				alm.AjaxLoadMore.resetBtnText();
 			}
 
@@ -868,7 +864,7 @@ let alm_is_filtering = false;
 					window.almEmpty(alm);
 				}
 				if (alm.no_results) {
-					almNoResults(alm.content, alm.no_results);
+					noResults(alm.content, alm.no_results);
 				}
 			}
 		};
@@ -1081,7 +1077,7 @@ let alm_is_filtering = false;
 		 * @since 2.8.4
 		 */
 		alm.AjaxLoadMore.resetBtnText = function () {
-			if (alm.button_loading_label !== false && !alm.addons.paging) {
+			if (!alm.addons.paging && alm.button_loading_label !== false) {
 				alm.button.innerHTML = alm.button_label;
 			}
 		};
@@ -1426,7 +1422,7 @@ let alm_is_filtering = false;
 							window.almEmpty(alm);
 						}
 						if (alm.no_results) {
-							almNoResults(alm.content, alm.no_results);
+							noResults(alm.content, alm.no_results);
 						}
 					}
 				}, alm.speed);
