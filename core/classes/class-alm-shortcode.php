@@ -84,8 +84,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'nested'                       => false,
 						'woo'                          => false,
 						'woo_template'                 => '',
-						'tabs'                         => false,
-						'tab_template'                 => '',
 						'layouts'                      => false,
 						'layouts_cols'                 => '3',
 						'layouts_gap'                  => 'default',
@@ -213,7 +211,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'pause'                        => 'false',
 						'destroy_after'                => '',
 						'transition'                   => 'fade',
-						'transition_delay'           => "50",
+						'transition_delay'             => "0",
 						'transition_container_classes' => '',
 						'masonry_selector'             => '',
 						'masonry_columnwidth'          => '',
@@ -452,9 +450,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Layouts Class.
 			$alm_layouts = has_action( 'alm_layouts_installed' ) ? ' alm-layouts' : '';
 
-			// Tabs Class.
-			$alm_tabs = has_action( 'alm_tabs_installed' ) && $tabs === 'true' ? ' alm-tabs' : '';
-
 			// Get btn classnames.
 			$button_classname = isset( $options['_alm_btn_classname'] ) ? ' ' . $options['_alm_btn_classname'] : '';
 
@@ -557,7 +552,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Start $ajaxloadmore element.
-			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_tabs ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . wp_kses_post( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" data-alm-object="' . alm_convert_dashes_to_underscore( $localize_id ) . '">';
+			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . wp_kses_post( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" data-alm-object="' . alm_convert_dashes_to_underscore( $localize_id ) . '">';
 
 			// Masonry Hook (Before).
 			$ajaxloadmore .= apply_filters( 'alm_masonry_before', $transition );
@@ -945,22 +940,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$ajaxloadmore .= wp_kses_post( $paging_return );
 			}
 
-			// Tabs Add-on.
-			if ( has_action( 'alm_tabs_installed' ) && $tabs === 'true' ) {
-				$tabs_return   = apply_filters(
-					'alm_tabs_shortcode',
-					$tabs,
-					$tab_template,
-					$options
-				);
-				$ajaxloadmore .= wp_kses_post( $tabs_return );
-
-				// Set `pause` true for tabs and preloaded.
-				if ( $preloaded === 'true' ) {
-					$pause = 'true';
-				}
-			}
-
 			// Preloaded Add-on.
 			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
 				$preloaded = $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ? 'true' : esc_attr( $preloaded ); // SEO page 1.
@@ -1205,7 +1184,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Transition.
 			$ajaxloadmore .= $transition !== 'fade' ? ' data-transition="' . esc_attr( $transition ) . '"' : '';
-			$ajaxloadmore .= $transition_delay !== '50' && $transition === 'fade' ? ' data-transition-delay="' . esc_attr( $transition_delay ) . '"' : '';
+			$ajaxloadmore .= $transition_delay !== '0' && $transition === 'fade' ? ' data-transition-delay="' . esc_attr( $transition_delay ) . '"' : '';
 
 			// Masonry.
 			if ( 'masonry' === $transition ) {
@@ -1229,6 +1208,11 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			$ajaxloadmore .= '>';
 			// End .alm-listing data.
+
+			// Paging before.
+			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
+				$ajaxloadmore .= apply_filters( 'alm_paging_after', '<div class="alm-paging-content">' );
+			}
 
 			// Preloaded.
 			$noscript_pagingnav = '';
@@ -1274,6 +1258,12 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				 * @return html;
 				 */
 				$ajaxloadmore .= apply_filters( 'alm_init_nextpage', $nextpage_post_id, $nextpage_start, $nextpage_is_paged, $paging, $div_id, $id, $nested, $nextpage_type );
+			}
+
+			// Paging after.
+			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
+				$ajaxloadmore .= apply_filters( 'alm_paging_after', '</div>' );
+				$ajaxloadmore .= apply_filters( 'alm_paging_loader', '<div class="alm-paging-loading"></div>' );
 			}
 
 			// Masonry Hook (After).

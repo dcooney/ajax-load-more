@@ -85,13 +85,18 @@ function almCompleteFilterTransition(speed, data, type, element) {
 	const listing = element.querySelectorAll('.alm-listing'); // Get `.alm-listing` element
 
 	if (!listing || !btnWrap) {
-		// Bail early if elements doesn't exist.
+		// Exit if elements doesn't exist.
 		return false;
 	}
 
 	// Loop over all .alm-listing divs and clear HTML.
-	[...listing].forEach(function (e) {
-		e.innerHTML = '';
+	[...listing].forEach(function (element) {
+		const pagingContent = element.querySelector('.alm-paging-content');
+		if (pagingContent) {
+			pagingContent.innerHTML = '';
+		} else {
+			element.innerHTML = '';
+		}
 	});
 
 	// Get Load More button
@@ -175,14 +180,6 @@ function almSetFilters(speed, data, type, element) {
 			if (typeof almFilterComplete === 'function') {
 				// Standard Filtering
 				almFilterComplete();
-			}
-			break;
-
-		case 'tab':
-			// Tabs Complete
-			if (typeof almTabsComplete === 'function') {
-				// Standard Filtering
-				almTabsComplete();
 			}
 			break;
 	}

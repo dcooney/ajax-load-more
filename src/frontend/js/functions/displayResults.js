@@ -72,6 +72,6 @@ function display(alm, nodes, useTransition = true) {
 				});
 			}
 			alm.AjaxLoadMore.transitionEnd();
-		}, 75);
+		}, 50);
 	}
 }

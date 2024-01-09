@@ -33,6 +33,12 @@ export function preloadedCreateParams(alm) {
  */
 export function setPreloadedParams(alm) {
 	const { addons, listing } = alm;
+
+	if (addons.paging) {
+		// Exit if paging.
+		return;
+	}
+
 	// Parse preloaded data into array of HTML elements.
 	const data = stripEmptyNodes([...listing?.childNodes]);
 

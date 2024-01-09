@@ -445,12 +445,12 @@ $show_max                = 100; // Max number of items to show.
 								<section>
 									<div class="shortcode-builder--label">
 										<h4><?php _e( 'Delay', 'ajax-load-more' ); ?></h4>
-										<p><?php _e( 'Stagger the display of each returned post incrementally in the Ajax listing. ', 'ajax-load-more' ); ?><br/>
+										<p><?php _e( 'Stagger the transition display of each post incrementally.', 'ajax-load-more' ); ?><br/>
 										<small><?php _e( 'Delay in milliseconds.', 'ajax-load-more' ); ?></small></p>
 									</div>
 									<div class="shortcode-builder--fields">
 										<div class="inner">
-											<input type="number" class="alm_element numbers-only" name="transition_delay" id="transition_delay" placeholder="50" value="0" step="25">
+											<input type="number" class="alm_element numbers-only" name="transition_delay" id="transition_delay" placeholder="50" value="0" step="25" min="0" max="500">
 										</div>
 									</div>
 								</section>
@@ -483,7 +483,6 @@ $show_max                = 100; // Max number of items to show.
 									</div>
 								</section>
 
-
 								<section>
 									<div class="shortcode-builder--label">
 										<h4><?php _e( 'Column Width', 'ajax-load-more' ); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e( 'If columnWidth is not set, Masonry will use the outer width of the first Item Selector.', 'ajax-load-more' ); ?>"></a></h4>
@@ -501,7 +500,7 @@ $show_max                = 100; // Max number of items to show.
 								<section>
 									<div class="shortcode-builder--label">
 										<h4><?php _e( 'Animation Type', 'ajax-load-more' ); ?> <a href="javascript:void(0)" class="fa fa-question-circle tooltip" title="<?php _e( 'All Masonry animations include a fade-in effect as items are loaded.', 'ajax-load-more' ); ?>"></a></h4>
-										<p><?php _e( 'Select a loading transition for Masonry items.', 'ajax-load-more' ); ?></p>
+										<p><?php _e( 'Select a loading animation for Masonry items.', 'ajax-load-more' ); ?></p>
 									</div>
 									<div class="shortcode-builder--fields">
 										<div class="inner">

@@ -509,15 +509,6 @@ let alm_is_filtering = false;
 				});
 		};
 
-		// If pagination enabled, run query to get total posts or pages.
-		if (alm.addons.paging) {
-			if (alm.addons.nextpage) {
-				alm.AjaxLoadMore.ajax('totalpages');
-			} else {
-				alm.AjaxLoadMore.ajax('totalposts');
-			}
-		}
-
 		/**
 		 * Display/render results function.
 		 *
@@ -526,7 +517,7 @@ let alm_is_filtering = false;
 		 */
 		alm.AjaxLoadMore.render = function (data) {
 			if (alm.addons.single_post) {
-				alm.AjaxLoadMore.getSinglePost(); // Get single post data for next post.
+				alm.AjaxLoadMore.getSinglePost(); // Fetch  single post data for next post.
 			}
 
 			// Parse incoming data.
@@ -548,38 +539,46 @@ let alm_is_filtering = false;
 			// Set alm.html as plain text return
 			alm.html = alm.container_type === 'table' ? html : html;
 
-			// First Run Only
+			// ALM Init: First run only.
 			if (alm.init) {
-				// Set Meta
 				if (meta) {
 					alm.main.dataset.totalPosts = meta.totalposts ? meta.totalposts : 0;
 				}
 
-				// Paging
-				if (alm.addons.paging && total > 0) {
-					// Add paging containers and content
-					alm.AjaxLoadMore.pagingInit(html);
+				// Paging Add-on.
+				if (alm.addons.paging) {
+					// Dispatch call to build pagination.
+					if (typeof almBuildPagination === 'function') {
+						window.almBuildPagination(totalposts, alm, false);
+					}
+					if (total > 0) {
+						// Inject content.
+						alm.addons.paging_content.innerHTML = alm.html;
+
+						// Start paging functionaity.
+						alm.AjaxLoadMore.pagingInit();
+					}
 				}
 
-				// SEO
-				if (alm.addons.seo && alm.addons.seo_offset) {
+				// SEO Offset.
+				if (alm.addons.seo && alm.addons.seo_offset && !alm.addons.paging) {
 					createSEOOffset(alm);
 				}
 
 				// ALM Empty
 				if (total === 0) {
-					if (alm.addons.paging) {
-						if (typeof almPagingEmpty === 'function') {
-							window.almPagingEmpty(alm);
-						}
+					if (alm.addons.paging && typeof almPagingEmpty === 'function') {
+						window.almPagingEmpty(alm);
 					}
+
 					if (typeof almEmpty === 'function') {
 						window.almEmpty(alm);
 					}
+
 					if (alm.no_results) {
 						setTimeout(function () {
 							almNoResults(alm.content, alm.no_results);
-						}, alm.speed + 10);
+						}, alm.speed);
 					}
 				}
 
@@ -689,7 +688,7 @@ let alm_is_filtering = false;
 					// Paging
 					if (!alm.init) {
 						// Paging container.
-						const pagingContent = alm.listing.querySelector('.alm-paging-content');
+						const pagingContent = alm.addons.paging_content;
 
 						if (pagingContent) {
 							almFadeOut(pagingContent, alm.speed);
@@ -776,6 +775,7 @@ let alm_is_filtering = false;
 				 * No results from Ajax
 				 */
 				alm.AjaxLoadMore.noresults();
+				alm.AjaxLoadMore.transitionEnd();
 			}
 
 			// Destroy After
@@ -851,19 +851,16 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * First run for Paging + Preloaded add-ons.
-		 * Moves preloaded content into ajax container.
+		 * Init Paging + Preloaded add-ons.
 		 *
-		 * @param {string} data Results of Ajax request.
+		 * @param {string} html Results of Ajax request.
 		 * @since 2.11.3
 		 */
-		alm.AjaxLoadMore.pagingPreloadedInit = function (data) {
-			data = data === null ? '' : data; // Check for null data object
-
+		alm.AjaxLoadMore.pagingPreloadedInit = function (html = null) {
 			// Add paging containers and content
-			alm.AjaxLoadMore.pagingInit(data);
+			alm.AjaxLoadMore.pagingInit();
 
-			if (!data) {
+			if (!html) {
 				if (typeof almPagingEmpty === 'function') {
 					window.almPagingEmpty(alm);
 				}
@@ -877,18 +874,13 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * First run for Paging + Next Page add-ons.
-		 * Moves .alm-nextpage content into ajax container.
+		 * Init Paging + Next Page add-ons.
 		 *
-		 * @param {string} data Results of Ajax request.
 		 * @since 2.14.0
 		 */
-		alm.AjaxLoadMore.pagingNextpageInit = function (data) {
-			// Check for null data object
-			data = data === null ? '' : data;
-
+		alm.AjaxLoadMore.pagingNextpageInit = function () {
 			// Add paging containers and content.
-			alm.AjaxLoadMore.pagingInit(data);
+			alm.AjaxLoadMore.pagingInit();
 
 			if (typeof almSetNextPageVars === 'function') {
 				// Set up Nextpage Vars.
@@ -897,48 +889,30 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * First run for Paging to create required containers.
+		 * Paging add-on first to create required containers.
 		 *
-		 * @param {string} data The Ajax response data/html.
 		 * @since 5.0
 		 */
-		alm.AjaxLoadMore.pagingInit = function (data) {
-			data = data === null ? '' : data; // Check for null data object.
-
-			// Create `alm-paging-loading` container.
-			const content = document.createElement('div');
-			content.setAttribute('class', 'alm-paging-content');
-			content.innerHTML = data;
-
-			// Create `alm-paging-content` container.
-			const loader = document.createElement('div');
-			loader.setAttribute('class', 'alm-paging-loading');
-
-			// Add divs to container.
-			alm.listing.appendChild(content);
-			alm.listing.appendChild(loader);
-
-			// Insert Script.
-			insertScript.init(content);
+		alm.AjaxLoadMore.pagingInit = function () {
+			// Get content container.
+			const container = alm.addons.paging_content;
 
 			// Reset button text.
 			alm.AjaxLoadMore.resetBtnText();
 
 			// Delay reveal of paging to avoid positioning issues.
 			setTimeout(function () {
+				// Show paging controls.
 				if (typeof almFadePageControls === 'function') {
 					window.almFadePageControls(alm.btnWrap);
 				}
 
-				if (typeof almPagingSetHeight === 'function') {
-					window.almPagingSetHeight(content);
+				// Set container height.
+				if (container && typeof almPagingSetHeight === 'function') {
+					window.almPagingSetHeight(container);
 				}
 
-				// Deprecated in Paging 5.7.
-				if (typeof almOnWindowResize === 'function') {
-					window.almOnWindowResize(alm);
-				}
-				// Remove loading class from main container.
+				// Remove loading class from main ALM container.
 				alm.main.classList.remove('loading');
 			}, alm.speed);
 		};
@@ -967,8 +941,7 @@ let alm_is_filtering = false;
 				return;
 			}
 
-			// Set loading flag.
-			alm.fetchingPreviousPost = true;
+			alm.fetchingPreviousPost = true; // Set loading flag.
 
 			// Create data params.
 			const params = {
@@ -1330,7 +1303,7 @@ let alm_is_filtering = false;
 		};
 
 		/**
-		 * Set variables after loading transiton completes.
+		 * Set variables after loading transition completes.
 		 *
 		 * @since 3.5
 		 */
@@ -1338,19 +1311,23 @@ let alm_is_filtering = false;
 			setTimeout(function () {
 				alm.AjaxLoadMore.resetBtnText();
 				alm.main.classList.remove('alm-loading');
-				// Loading button
+
+				// Loading buttons.
 				if (alm.rel === 'prev') {
-					alm.buttonPrev.classList.remove('loading');
+					alm?.buttonPrev?.classList?.remove('loading');
 				} else {
-					alm.button.classList.remove('loading');
+					alm?.button?.classList?.remove('loading');
 				}
 				alm.AjaxLoadMore.triggerAddons(alm);
+
 				if (!alm.addons.paging) {
 					setTimeout(function () {
 						alm.loading = false; // Delay to prevent loading to fast
-					}, alm.speed * 3);
+					}, alm.speed * 2);
 				}
-			}, 50);
+			}, 25);
+
+			// Hide the loading placeholder.
 			hidePlaceholder(alm);
 		};
 
@@ -1374,11 +1351,26 @@ let alm_is_filtering = false;
 		 * @since 2.0
 		 */
 		alm.AjaxLoadMore.init = async function () {
-			// Preloaded and destroy_after is 1.
+			// Preloaded and Destroy After is 1.
 			if (alm.addons.preloaded && alm.destroy_after === 1) {
 				alm.AjaxLoadMore.destroyed();
 			}
 
+			// Paging Add-on.
+			if (alm.addons.paging) {
+				if (alm.addons.preloaded) {
+					// Preloaded.
+					alm.AjaxLoadMore.ajax('totalposts');
+				} else if (alm.addons.nextpage) {
+					// Next Page.
+					alm.AjaxLoadMore.ajax('totalpages');
+				} else {
+					// Standard.
+					alm.AjaxLoadMore.loadPosts();
+				}
+			}
+
+			// Not Paging & not Single Post.
 			if (!alm.addons.paging && !alm.addons.single_post) {
 				if (alm.disable_ajax) {
 					alm.finished = true;
@@ -1387,7 +1379,7 @@ let alm_is_filtering = false;
 					// Set button label.
 					alm.button.innerHTML = alm.button_label;
 
-					// If Pause.
+					// Check pause.
 					if (alm.pause === 'true') {
 						alm.loading = false;
 					} else {
@@ -1406,13 +1398,9 @@ let alm_is_filtering = false;
 					if (alm.addons.single_post_query && alm.addons.single_post_order === '') {
 						alm.AjaxLoadMore.triggerDone();
 					}
-
-					// Set loading flag to false.
 					alm.loading = false;
-
-					// Display Table of Contents
 					tableOfContents(alm, true, true);
-				}, 200);
+				}, 250);
 			}
 
 			// Preloaded + SEO && !Paging.
@@ -1449,8 +1437,6 @@ let alm_is_filtering = false;
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'preloaded');
 				}
-
-				// Display Table of Contents.
 				tableOfContents(alm, alm.init, true);
 			}
 
@@ -1469,13 +1455,9 @@ let alm_is_filtering = false;
 						}
 					}
 				}
-
-				// Results Text.
 				if (alm.resultsText) {
 					resultsText.almInitResultsText(alm, 'nextpage');
 				}
-
-				// Display Table of Contents.
 				tableOfContents(alm, alm.init, true);
 			}
 
@@ -1584,19 +1566,15 @@ let alm_is_filtering = false;
 
 			if (alm.addons.paging_init && alm.addons.preloaded) {
 				// Paging + Preloaded Firstrun.
-				if (target) {
-					target.innerHTML = ''; // Remove initial data.
-					alm.addons.preloaded_amount = 0; // Reset preloaded_amount param.
-					alm.AjaxLoadMore.pagingPreloadedInit(data);
-				}
+				alm.addons.preloaded_amount = 0; // Reset preloaded_amount param.
+				alm.AjaxLoadMore.pagingPreloadedInit(data);
+
 				alm.addons.paging_init = false;
 				alm.init = false;
 			} else if (alm.addons.paging_init && alm.addons.nextpage) {
 				// Paging + Next Page on firstrun.
-				if (target) {
-					target.innerHTML = ''; // Remove initial data.
-					alm.AjaxLoadMore.pagingNextpageInit(data);
-				}
+				alm.AjaxLoadMore.pagingNextpageInit();
+
 				alm.addons.paging_init = false;
 				alm.init = false;
 			} else {

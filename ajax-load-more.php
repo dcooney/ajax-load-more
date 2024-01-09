@@ -68,10 +68,12 @@ FILTERS
 Cache
 * FIX: Fixed issue with display of cache URL on the Cache admin page.
 
-Paging
-* FIX: Fixed issue where first page link in paging naviagtion could result in a JS error.
+Paging [2.0]
+* UPDATE: Reduced Ajax requests on initial page load. Previously Paging add-on dispatched 2 requests and we have reduced this to a single request.
+* UPDATE: Pagination container is now created on the server side and not with Javascript on page load. This reduces the CLS (Cumulative Layout Shift) of the functionality.
 * UPDATE: Adding required changes for Ajax Load More 7.0 and removal of `alm-reveal` wrapper.
 * UPDATE: Code cleanup and organization.
+* FIX: Fixed issue where first page link in paging naviagtion could result in a JS error.
 
 Preloaded
 * UPDATE: Remove all references and output of `alm-reveal` divs.
