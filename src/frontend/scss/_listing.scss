@@ -1,5 +1,6 @@
 // Generic alm-listing Styles
-.alm-listing {
+.alm-listing,
+.alm-paging-content {
 	outline: none;
 	&::after {
 		display: table;

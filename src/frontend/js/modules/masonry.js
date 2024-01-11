@@ -131,7 +131,7 @@ export function almMasonryConfig(alm) {
 		alm.masonry.columnwidth = masonry_config.columnwidth;
 		alm.masonry.animation = masonry_config.animation === '' ? 'standard' : masonry_config.animation;
 		alm.masonry.horizontalorder = masonry_config.horizontalorder === '' ? 'true' : masonry_config.horizontalorder;
-		alm.images_loaded = 'true';
+		alm.images_loaded = true;
 	} else {
 		console.warn('Ajax Load More: Unable to locate Masonry configuration settings.');
 	}

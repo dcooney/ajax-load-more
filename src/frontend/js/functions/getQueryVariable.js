@@ -4,7 +4,7 @@
  * @param {string} variable
  * @since 5.3.4
  */
-const getQueryVariable = function (variable) {
+export default function getQueryVariable(variable) {
 	const query = window.location.search.substring(1);
 	const vars = query.split('&');
 	for (let i = 0; i < vars.length; i++) {
@@ -14,5 +14,4 @@ const getQueryVariable = function (variable) {
 		}
 	}
 	return false;
-};
-export default getQueryVariable;
+}

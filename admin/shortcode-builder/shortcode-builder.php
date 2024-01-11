@@ -445,8 +445,8 @@ $show_max                = 100; // Max number of items to show.
 								<section>
 									<div class="shortcode-builder--label">
 										<h4><?php _e( 'Delay', 'ajax-load-more' ); ?></h4>
-										<p><?php _e( 'Stagger the transition display of each post incrementally.', 'ajax-load-more' ); ?><br/>
-										<small><?php _e( 'Delay in milliseconds.', 'ajax-load-more' ); ?></small></p>
+										<p><?php _e( 'Stagger the display of each post incrementally.', 'ajax-load-more' ); ?><br/>
+										<small><?php _e( 'Note: Delay in milliseconds.', 'ajax-load-more' ); ?></small></p>
 									</div>
 									<div class="shortcode-builder--fields">
 										<div class="inner">

@@ -38,7 +38,14 @@ TODO:
 - Preloaded [DONE]
 	- Remove alm-reveal divs. [DONE]
 - SEO [DONE]
-x
+
+- Results Text no longer working.
+	- Preloaded - working
+	- SEO - working
+	- Filters - working
+	- Paging: Issues with paging and the offsets.
+	- Next Page
+
 - SEO Offset [DONE]
 	- Fix issue with 1st page URL. Inject element before ALM to reset the page number.
 	- https://wpdev.local/seo-offset/page/2
@@ -72,7 +79,8 @@ Paging [2.0]
 * UPDATE: Reduced Ajax requests on initial page load. Previously Paging add-on dispatched 2 requests and we have reduced this to a single request.
 * UPDATE: Pagination container is now created on the server side and not with Javascript on page load. This reduces the CLS (Cumulative Layout Shift) of the functionality.
 * UPDATE: Adding required changes for Ajax Load More 7.0 and removal of `alm-reveal` wrapper.
-* UPDATE: Code cleanup and organization.
+* UPDATE: Improved loading animation and timing of pagination display.
+* UPDATE: Code cleanup, CSS updates and organization.
 * FIX: Fixed issue where first page link in paging naviagtion could result in a JS error.
 
 Preloaded
@@ -462,8 +470,18 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					'a11y_focus'         => apply_filters( 'alm_a11y_focus', true ),
 					'site_title'         => get_bloginfo( 'name' ),
 					'site_tagline'       => get_bloginfo( 'description' ),
+					'button_label'       => $this->alm_default_button_label(),
 				]
 			);
+		}
+
+		/**
+		 * Get default button label.
+		 *
+		 * @since 7.0.0
+		 */
+		public static function alm_default_button_label() {
+			return apply_filters( 'alm_button_label', __( 'Load More', 'ajax-load-more' ) );
 		}
 
 		/**

@@ -10,9 +10,8 @@ export function pagingCreateParams(alm) {
 	if (alm.addons.paging) {
 		alm.addons.paging_init = true;
 		alm.addons.paging_controls = listing.dataset.pagingControls === 'true';
-		alm.addons.paging_show_at_most = listing.dataset.pagingShowAtMost;
+		alm.addons.paging_show_at_most = listing.dataset.pagingShowAtMost ? parseInt(listing.dataset.pagingShowAtMost) : 6;
 		alm.addons.paging_classes = listing.dataset.pagingClasses;
-		alm.addons.paging_show_at_most = alm.addons.paging_show_at_most === undefined ? 7 : alm.addons.paging_show_at_most;
 
 		alm.addons.paging_first_label = listing.dataset.pagingFirstLabel;
 		alm.addons.paging_previous_label = listing.dataset.pagingPreviousLabel;

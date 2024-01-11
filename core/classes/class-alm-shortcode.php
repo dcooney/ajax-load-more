@@ -220,7 +220,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'progress_bar'                 => 'false',
 						'progress_bar_color'           => 'ed7070',
 						'images_loaded'                => 'false',
-						'button_label'                 => apply_filters( 'alm_button_label', __( 'Load More', 'ajax-load-more' ) ),
+						'button_label'                 => AjaxLoadMore::alm_default_button_label(),
 						'button_loading_label'         => '',
 						'button_done_label'            => '',
 						'container_type'               => '',
@@ -267,11 +267,11 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// WooCommerce.
-			$woo         = 'true' === $woo ? true : false; // Add-on.
-			$woocommerce = 'true' === $woocommerce ? true : false; // Standard ALM.
+			$woo         = $woo === 'true'; // Add-on.
+			$woocommerce = $woocommerce === 'true'; // Standard ALM.
 
 			// Archives.
-			$archive = $archive === 'true' ? true : false;
+			$archive = $archive === 'true';
 
 			// Backwards compat.
 			// If $previous_post_ is true, set the $single_post_{value} params.
@@ -377,6 +377,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// End Enqueue Scripts.
 
+			if ( $seo === 'true' && has_action( 'alm_seo_installed' ) ) {
+				$filters = false;
+			}
+
 			// Filters - Set initial shortcode state.
 			$filters = $filters === 'true' && class_exists( 'ALMFilters' );
 			if ( $filters ) {
@@ -425,10 +429,10 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Users.
-			$users = $users === 'true' ? true : false;
+			$users = $users === 'true';
 
 			// Terms Query.
-			$term_query = $term_query === 'true' ? true : false;
+			$term_query = $term_query === 'true';
 
 			// Comments.
 			$container_element = $comments === 'true' ? $comments_style : $container_element;
@@ -731,7 +735,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// If SEO, Filters or Paging - set preloaded_amount to posts_per_page.
-			if ( 'true' === $seo || $filters ) {
+			if ( $seo === 'true' || $filters ) {
 				$preloaded_amount = $posts_per_page;
 			}
 
@@ -841,7 +845,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Cache Add-on.
-			$alm_auto_cache = isset( $_GET['alm_auto_cache'] ) ? true : false;
+			$alm_auto_cache = isset( $_GET['alm_auto_cache'] );
 			if ( has_action( 'alm_cache_installed' ) && $cache === 'true' ) {
 				// Confirm cache version is 2.0 or greater.
 				$cache_version_check = defined( 'ALM_CACHE_VERSION' ) && version_compare( ALM_CACHE_VERSION, '2.0', '>=' );
@@ -899,7 +903,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 					$options
 				);
 				$ajaxloadmore  .= wp_kses_post( $filters_return );
-				$facets         = function_exists( 'alm_filters_has_facets' ) && alm_filters_has_facets( $target ) ? true : false;
+				$facets         = function_exists( 'alm_filters_has_facets' ) && alm_filters_has_facets( $target );
 			}
 
 			// Nextpage Post Add-on.
@@ -941,25 +945,26 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Preloaded Add-on.
-			if ( has_action( 'alm_preload_installed' ) && $preloaded === 'true' ) {
-				$preloaded = $seo === 'true' && (int) $query_args['paged'] < 1 && $paging !== 'true' ? 'true' : esc_attr( $preloaded ); // SEO page 1.
-
-				// SEO > page 1.
-				$preloaded = $seo === 'true' && $query_args['paged'] > 1 && $paging !== 'true' ? false : esc_attr( $preloaded ); // SEO page > 1.
-
-				// Filters.
-				if ( $filters && $_SERVER['QUERY_STRING'] ) {
-					$querystring = esc_attr( $_SERVER['QUERY_STRING'] );
-
-					if ( isset( $_GET['pg'] ) ) {
-						$pg            = $_GET['pg'];
-						$preloaded     = $pg > 1 ? false : esc_attr( $preloaded );
-						$ajaxloadmore .= ' data-is-preloaded="true"';
-					}
+			if ( $preloaded === 'true' && has_action( 'alm_preload_installed' ) ) {
+				// Set preloaded to false if SEO, not Paging and page is greaten than 1.
+				if ( $seo === 'true' && $paging !== 'true' && (int) $query_args['paged'] > 1 ) {
+					$preloaded     = false;
+					$ajaxloadmore .= ' data-is-preloaded="true"';
 				}
 
-				// Set `is-preloaded` attribute to add `.alm-preloaded` .
-				$ajaxloadmore .= $seo === 'true' && $query_args['paged'] > 1 ? ' data-is-preloaded="true"' : '';
+				// Filters.
+				if ( $filters && $_SERVER['QUERY_STRING'] ) {  // phpcs:ignore
+					$filters_paged = isset( $_GET['pg'] ) ? (int) $_GET['pg'] : 1;
+					if ( $filters_paged > 1 ) {
+						// Set global $paged to querystring pg.
+						$query_args['paged'] = $filters_paged;
+
+						if ( $paging !== 'true' ) {
+							$preloaded     = false;
+							$ajaxloadmore .= ' data-is-preloaded="true"';
+						}
+					}
+				}
 				$ajaxloadmore .= ' data-preloaded="' . esc_attr( $preloaded ) . '"';
 				$ajaxloadmore .= ' data-preloaded-amount="' . esc_attr( $preloaded_amount ) . '"';
 			}
@@ -1250,7 +1255,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Next Page Add-on.
 			if ( has_action( 'alm_nextpage_installed' ) && $nextpage ) {
 				$nextpage_start    = alm_get_startpage(); // Located in `core/functions.php`.
-				$nextpage_is_paged = apply_filters( 'alm_nextpage_paged', $nextpage_start > 1 ? true : false );
+				$nextpage_is_paged = apply_filters( 'alm_nextpage_paged', $nextpage_start > 1 );
 
 				/**
 				 * Next Page Add-on hook.

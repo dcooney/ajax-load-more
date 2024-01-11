@@ -17,7 +17,6 @@ export function filtersCreateParams(alm) {
 		alm.addons.filters_scroll = listing.dataset.filtersScroll === 'true';
 		alm.addons.filters_scrolltop = listing.dataset.filtersScrolltop ? listing.dataset.filtersScrolltop : '30';
 		alm.addons.filters_debug = listing.dataset.filtersDebug;
-		alm.addons.filters_startpage = 0;
 		alm.facets = listing.dataset.facets === 'true';
 
 		// Display warning when `filters_target` parameter is missing.
@@ -27,14 +26,20 @@ export function filtersCreateParams(alm) {
 			);
 		}
 
-		// Parse Paged Querystring Val
+		// Parse querystring value for pg.
 		const page = getParameterByName('pg');
 		alm.addons.filters_startpage = page !== null ? parseInt(page) : 0;
 
-		// If not Paging add-on
-		if (!alm.addons.paging && alm.addons.filters_startpage > 0) {
-			alm.posts_per_page = alm.posts_per_page * alm.addons.filters_startpage;
-			alm.isPaged = alm.addons.filters_startpage > 0;
+		// Handle a paged URL with filters.
+		if (alm.addons.filters_startpage > 0) {
+			if (alm.addons.paging) {
+				// Paging add-on: Set current page value.
+				alm.page = alm.addons.filters_startpage - 1;
+			} else {
+				// Set posts_per_page value to load all required posts.
+				alm.posts_per_page = alm.posts_per_page * alm.addons.filters_startpage;
+				alm.paged = true;
+			}
 		}
 	}
 	return alm;

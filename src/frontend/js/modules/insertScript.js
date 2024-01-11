@@ -5,7 +5,26 @@
  * @since 5.0
  */
 const insertScript = {
-	init(node) {
+	/**
+	 * Initiate the script insertion.
+	 *
+	 * @param {Array} nodes The HTML nodes.
+	 */
+	init(nodes) {
+		if (!nodes?.length) {
+			return false;
+		}
+		nodes.forEach((node) => {
+			this.check(node);
+		});
+	},
+	/**
+	 * Parse HTML node from script.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The modified HTML node.
+	 */
+	check(node) {
 		if (this.isScript(node) === true) {
 			node.parentNode.replaceChild(this.clone(node), node);
 		} else {
@@ -26,6 +45,12 @@ const insertScript = {
 		return node;
 	},
 
+	/**
+	 * Replace the script tag with a clone.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The modified node.
+	 */
 	replace(node) {
 		if (this.isScript(node) === true) {
 			node.parentNode.replaceChild(this.clone(node), node);
@@ -39,10 +64,12 @@ const insertScript = {
 		return node;
 	},
 
-	isScript(node) {
-		return node.tagName === 'SCRIPT';
-	},
-
+	/**
+	 * Clone the tag.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The cloned node.
+	 */
 	clone(node) {
 		const script = document.createElement('script');
 		script.text = node.innerHTML;
@@ -50,6 +77,15 @@ const insertScript = {
 			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
 		}
 		return script;
+	},
+
+	/**
+	 * Is the node a script tag.
+	 *
+	 * @param {HTMLElement} node The html node.
+	 */
+	isScript(node) {
+		return node.tagName === 'SCRIPT';
 	},
 };
 export default insertScript;

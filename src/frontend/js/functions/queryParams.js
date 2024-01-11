@@ -67,12 +67,12 @@ export function getAjaxParams(alm, queryType) {
 		data.term_query = getTypeParams(alm, 'term_query');
 		data.action = 'alm_get_terms';
 	}
-	if (alm.theme_repeater) {
-		data.theme_repeater = alm.theme_repeater;
-	}
 	if (alm.extensions.users) {
 		data.users = getTypeParams(alm, 'users');
 		data.action = 'alm_users';
+	}
+	if (alm.theme_repeater) {
+		data.theme_repeater = alm.theme_repeater;
 	}
 
 	// Query data params from ALM HTML element.

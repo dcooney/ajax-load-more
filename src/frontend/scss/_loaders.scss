@@ -1,8 +1,8 @@
 .alm-btn-wrap {
 	display: block;
 	text-align: center;
-	padding: 10px 0;
-	margin: 0 0 15px;
+	padding: 10px 0 0;
+	margin: 0 0 25px;
 	position: relative;
 	&::after {
 		display: table;
@@ -268,7 +268,7 @@
 	}
 }
 
-/// Horizontal
+// Horizontal.
 .ajax-load-more-wrap.alm-horizontal {
 	.alm-btn-wrap {
 		display: flex;

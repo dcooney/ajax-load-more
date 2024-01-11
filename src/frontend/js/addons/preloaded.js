@@ -11,13 +11,16 @@ import { addSEOAttributes } from './seo';
 export function preloadedCreateParams(alm) {
 	const { listing } = alm;
 	alm.addons.preloaded = listing.dataset.preloaded === 'true';
-	alm.addons.preloaded_amount = listing?.dataset?.preloadedAmount || 0;
+	alm.addons.preloaded_amount = listing?.dataset?.preloadedAmount ? parseInt(listing.dataset.preloadedAmount) : alm.posts_per_page;
+	if (!alm.addons.preloaded) {
+		alm.addons.preloaded_amount = 0;
+	}
+
 	if (alm.addons.preloaded) {
-		alm.addons.preloaded_amount = alm.addons.preloaded_amount === undefined ? alm.posts_per_page : alm.addons.preloaded_amount;
-		if (alm?.localize?.total_posts !== null) {
+		if (alm?.localize?.total_posts) {
 			// Disable ALM if total_posts is equal to or less than preloaded_amount.
-			if (parseInt(alm.localize.total_posts) <= parseInt(alm.addons.preloaded_amount)) {
-				alm.addons.preloaded_total_posts = alm.localize.total_posts;
+			if (parseInt(alm.localize.total_posts) <= alm.addons.preloaded_amount) {
+				alm.addons.preloaded_total_posts = parseInt(alm.localize.total_posts);
 				alm.disable_ajax = true;
 			}
 		}

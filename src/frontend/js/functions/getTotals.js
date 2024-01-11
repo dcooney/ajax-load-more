@@ -13,14 +13,13 @@ export default function getTotals(type, id = '') {
 
 	// Get the localized value from the window object.
 	const localized = window[localize_var];
-	const total_posts = localized.total_posts;
-	const post_count = localized.post_count;
-	const page = localized.page;
-	const pages = localized.pages;
 
 	if (!localized) {
 		return null;
 	}
+
+	// Deconstruct the object.
+	const { total_posts, post_count, page, pages } = localized;
 
 	switch (type) {
 		case 'total_posts':
