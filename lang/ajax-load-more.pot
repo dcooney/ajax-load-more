@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-11T16:17:29+00:00\n"
+"POT-Creation-Date: 2024-01-11T18:27:35+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -389,8 +389,7 @@ msgstr ""
 #: admin/functions/settings.php:430
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: core/classes/class-alm-shortcode.php:223
-#: src/frontend/js/ajax-load-more.js:143
+#: ajax-load-more.php:484
 msgid "Load More"
 msgstr ""
 
@@ -1252,7 +1251,7 @@ msgid "Show at Most"
 msgstr ""
 
 #: admin/shortcode-builder/components/paging.php:44
-msgid "The maximum amount of page menu items to show at a time. <br/.>0 = no maximum"
+msgid "The maximum amount of page button to show at a time. <br/>0 = no maximum"
 msgstr ""
 
 #: admin/shortcode-builder/components/paging.php:57
