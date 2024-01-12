@@ -51,13 +51,6 @@ function almFilterTransition(transition, speed, data, type, element) {
 				element.classList.add('alm-is-filtering');
 				almFadeOut(element, speed);
 				break;
-
-			case 'tab':
-				element.classList.add('alm-loading');
-				const new_element = element.querySelector('.alm-listing');
-				element.style.height = new_element.offsetHeight + 'px';
-				almFadeOut(new_element, speed);
-				break;
 		}
 
 		// Move to next function
@@ -148,14 +141,6 @@ function almSetFilters(speed, data, type, element) {
 			}
 			// Fade ALM back (Filters only)
 			almFadeIn(element, speed);
-			break;
-
-		case 'tab':
-			// Update `data-tab-template` attribute
-			listing.setAttribute('data-preloaded', 'false');
-			listing.setAttribute('data-pause', 'false');
-			listing.setAttribute('data-tab-template', data.tabTemplate);
-
 			break;
 	}
 

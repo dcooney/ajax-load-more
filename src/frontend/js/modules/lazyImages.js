@@ -8,7 +8,6 @@
 export function lazyImages(alm) {
 	const { lazy_images, last_loaded } = alm;
 	if (lazy_images && last_loaded?.length) {
-		// Set container based on reveal div.
 		last_loaded.forEach((item) => {
 			lazyImagesReplace(item);
 		});
@@ -24,7 +23,7 @@ export function lazyImagesReplace(container) {
 	const images = container.querySelectorAll('img');
 	if (images) {
 		// Loop all images.
-		Array.prototype.forEach.call(images, (image) => {
+		[...images].forEach((image) => {
 			if (image) {
 				replaceSrc(image);
 			}

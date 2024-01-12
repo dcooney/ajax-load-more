@@ -11,20 +11,19 @@ const imagesLoaded = require('imagesloaded');
  * @return {Promise}     The Promise object.
  */
 export default function displayResults(alm, nodes) {
-	const { listing: container, transition, speed, images_loaded, addons } = alm;
+	const { listing: container, transition, speed, images_loaded } = alm;
 	return new Promise((resolve) => {
 		if (!container || !nodes) {
 			resolve(true);
 			return;
 		}
 
-		const useTransition = !addons.paging && transition === 'fade' ? true : false;
+		const useTransition = transition === 'fade' ? true : false;
 
 		// Add each node to the alm listing container.
 		nodes.forEach((node) => {
 			const nodeName = node.nodeName.toLowerCase();
-
-			if (useTransition || images_loaded === 'true') {
+			if (useTransition || images_loaded) {
 				node.style.opacity = 0;
 				if (useTransition) {
 					node.style.transition = `all ${speed}ms ease`;
@@ -47,8 +46,8 @@ export default function displayResults(alm, nodes) {
 		lazyImages(alm);
 
 		// Display the results.
-		if (alm.images_loaded) {
-			imagesLoaded(alm.listing, function () {
+		if (images_loaded) {
+			imagesLoaded(container, function () {
 				display(alm, nodes, useTransition);
 			});
 		} else {
@@ -68,7 +67,7 @@ export default function displayResults(alm, nodes) {
  */
 export function displayPagingResults(alm, nodes) {
 	const { addons } = alm;
-	const { paging_content: container } = addons;
+	const { paging_container: container } = addons;
 
 	return new Promise((resolve) => {
 		if (!container || !nodes) {
@@ -115,7 +114,7 @@ function display(alm, nodes, useTransition = true) {
 
 	if (nodes) {
 		setTimeout(function () {
-			if (useTransition || images_loaded === 'true') {
+			if (useTransition || images_loaded) {
 				nodes.forEach((node, index) => {
 					setTimeout(function () {
 						node.style.opacity = 1;

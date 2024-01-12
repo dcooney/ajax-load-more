@@ -13,6 +13,7 @@ export function almMasonry(alm, init, filtering) {
 	if (!alm.masonry) {
 		console.warn('Ajax Load More: Unable to locate Masonry settings.');
 	}
+
 	const { listing: container, last_loaded, speed } = alm;
 
 	return new Promise((resolve) => {
@@ -84,11 +85,11 @@ export function almMasonry(alm, init, filtering) {
 					}
 
 					// Init Masonry, delay to allow time for items to be added to the page.
-					setTimeout(function () {
+					setTimeout(async function () {
 						alm.msnry = new Masonry(container, defaults);
-						almFadeIn(container.parentNode, 25);
+						await almFadeIn(container.parentNode, 175);
 						resolve(true);
-					}, 50);
+					}, 25);
 				});
 			} else {
 				// Standard / Append content.
@@ -96,8 +97,10 @@ export function almMasonry(alm, init, filtering) {
 				if (last_loaded) {
 					// ImagesLoaded & appended.
 					imagesLoaded(container, function () {
-						alm.msnry.appended(last_loaded);
-						resolve(true);
+						setTimeout(async function () {
+							alm.msnry.appended(last_loaded);
+							resolve(true);
+						}, 25);
 					});
 				}
 			}
@@ -132,6 +135,7 @@ export function almMasonryConfig(alm) {
 		alm.masonry.animation = masonry_config.animation === '' ? 'standard' : masonry_config.animation;
 		alm.masonry.horizontalorder = masonry_config.horizontalorder === '' ? 'true' : masonry_config.horizontalorder;
 		alm.images_loaded = true;
+		alm.transition_delay = 0;
 	} else {
 		console.warn('Ajax Load More: Unable to locate Masonry configuration settings.');
 	}

@@ -17,15 +17,19 @@
 /*
 * NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
 * NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
-* FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
+* NEW: Added `transition_delay` parameter that allows for staggering the display of each post incrementally as content is loaded.
+* UPDATE: Improved JavaScript code quality and readability which is key for long term maintenance and sustainability of ALM.
+* UPDATE: Improved content loading for infinite scroll and when using Paging add-on.
+* UPDATE: Improved Masonry loading and transition timing.
 * UPDATE: Removed `transition_container_classes` parameter.
 * UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
 * UPDATE: Updated plugin installer class.
-* FIX: Fixed issue with Single Posts add-on not displaying correctly when using preview functionaity.
+* FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
+* FIX: Fixed issue with Single Posts add-on preview function. This was no longer working but it functional again.
 
 
 TODO:
-- Add shortcode setting for stagger load animation.
+- Add shortcode setting for stagger load animation. [DONE]
 - Add fade transition [DONE]
 - Paging (Filters, SEO, NextPage). [DONE]
 - Cache [DONE]
@@ -39,12 +43,15 @@ TODO:
 	- Remove alm-reveal divs. [DONE]
 - SEO [DONE]
 
-- Results Text no longer working.
+- Improve order of operation in render() function.
+	- Use async/await to complete tasks in order that they are called.
+
+- Results Text no longer working. [DONE]
 	- Preloaded - working
 	- SEO - working
 	- Filters - working
-	- Paging: Issues with paging and the offsets.
-	- Next Page
+	- Paging: - working
+	- Next Page - working
 
 - SEO Offset [DONE]
 	- Fix issue with 1st page URL. Inject element before ALM to reset the page number.
@@ -95,6 +102,9 @@ SEO
 * UPDATE: Updated JS parameters to match updates in ALM 7.0.
 * UPDATE: Code cleanup and oragnization.
 * FIX: Fixed issue with SEO Offset not working to update URL params.
+
+Next Page
+* FIX: Fixed issue with the Auto implementation method attempting to run in the_excerpt() requests. This issue resulted from a core WP bug with excerpt display in Ajax requests.
 
 */
 

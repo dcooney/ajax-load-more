@@ -1,9 +1,9 @@
 <?php
 /**
- * Class that generates a wp_query for injection into <noscript />.
+ * Class that generates a WP_Query for injection into <noscript />.
  *
- * @package  AjaxLoadMore
- * @since    3.7
+ * @package AjaxLoadMore
+ * @since   3.7
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -41,7 +41,6 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 			if ( $params['users'] ) {
 				// Users.
 				if ( has_action( 'alm_users_preloaded' ) && $params['users'] ) {
-
 					// Encrypt User Role.
 					if ( ! empty( $params['users_role'] ) && function_exists( 'alm_role_encrypt' ) ) {
 						$params['users_role'] = alm_role_encrypt( $params['users_role'] );
@@ -68,10 +67,9 @@ if ( ! class_exists( 'ALM_NOSCRIPT' ) ) :
 				// Build the $args array to use with this WP_Query.
 				$query_args = ALM_QUERY_ARGS::alm_build_queryargs( $params, false );
 
-				$filters = $params['filters'] && $params['filters'];
+				$filters = $params['filters'];
 				if ( $filters ) {
-					// Set page number when using filters.
-					$paged = $_GET && isset( $_GET['pg'] ) ? $_GET['pg'] : 1;
+					$paged = $_GET && isset( $_GET['pg'] ) ? $_GET['pg'] : 1; // Set page number when using filters.
 				}
 
 				/**

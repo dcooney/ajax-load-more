@@ -1,8 +1,8 @@
 /**
  * A srcset polyfill to get Masonry and ImagesLoaded working with Safari and Firefox.
  *
- * @param {Element} container Container HTML element.
- * @param {string}  ua        The user-agent string.
+ * @param {HTMLElement} container Container HTML element.
+ * @param {string}      ua        The user-agent string.
  * @since 5.0.2
  */
 export default function srcsetPolyfill(container = null, ua = '') {

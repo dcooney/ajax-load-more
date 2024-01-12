@@ -20,7 +20,7 @@ export function pagingCreateParams(alm) {
 
 		alm.addons.paging_scroll = listing.dataset.pagingScroll ? listing.dataset.pagingScroll : false;
 		alm.addons.paging_scrolltop = listing.dataset.pagingScrolltop ? parseInt(listing.dataset.pagingScrolltop) : 100;
-		alm.addons.paging_content = listing.querySelector('.alm-paging-content');
+		alm.addons.paging_container = listing.querySelector('.alm-paging-content');
 
 		alm.pause = alm.addons.preloaded ? true : alm.pause; // If preloaded, pause ALM.
 	}
