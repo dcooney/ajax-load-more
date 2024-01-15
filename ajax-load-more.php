@@ -7,15 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.2.0.3
+ * Version: 7.0.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '6.2.0.3' );
-define( 'ALM_RELEASE', 'Novemver 6, 2023' );
+define( 'ALM_VERSION', '7.0.0' );
+define( 'ALM_RELEASE', 'January 16, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -369,24 +369,35 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				'ajax-load-more',
 				'alm_localize',
 				[
-					'pluginurl'       => ALM_URL,
-					'version'         => ALM_VERSION,
-					'ajaxurl'         => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
-					'alm_nonce'       => wp_create_nonce( 'ajax_load_more_nonce' ),
-					'rest_api_url'    => apply_filters( 'alm_restapi_url', '' ),
-					'rest_api'        => esc_url_raw( rest_url() ),
-					'rest_nonce'      => wp_create_nonce( 'wp_rest' ),
-					'trailing_slash'  => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
-					'is_front_page'   => is_home() || is_front_page() ? 'true' : 'false',
-					'speed'           => apply_filters( 'alm_speed', 200 ),
-					'results_text'    => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
-					'no_results_text' => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
-					'alm_debug'       => apply_filters( 'alm_debug', false ),
-					'a11y_focus'      => apply_filters( 'alm_a11y_focus', true ),
-					'site_title'      => get_bloginfo( 'name' ),
-					'site_tagline'    => get_bloginfo( 'description' ),
+					'pluginurl'          => ALM_URL,
+					'version'            => ALM_VERSION,
+					'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
+					'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
+					'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),
+					'rest_api'           => esc_url_raw( rest_url() ),
+					'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
+					'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
+					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
+					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
+					'speed'              => apply_filters( 'alm_speed', 250 ),
+					'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
+					'no_results_text'    => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
+					'alm_debug'          => apply_filters( 'alm_debug', false ),
+					'a11y_focus'         => apply_filters( 'alm_a11y_focus', true ),
+					'site_title'         => get_bloginfo( 'name' ),
+					'site_tagline'       => get_bloginfo( 'description' ),
+					'button_label'       => $this->alm_default_button_label(),
 				]
 			);
+		}
+
+		/**
+		 * Get default button label.
+		 *
+		 * @since 7.0.0
+		 */
+		public static function alm_default_button_label() {
+			return apply_filters( 'alm_button_label', __( 'Load More', 'ajax-load-more' ) );
 		}
 
 		/**
@@ -425,7 +436,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$id            = isset( $params['id'] ) ? $params['id'] : '';
 			$post_id       = isset( $params['post_id'] ) ? $params['post_id'] : '';
 			$slug          = isset( $params['slug'] ) ? $params['slug'] : '';
-			$canonical_url = isset( $params['canonical_url'] ) ? esc_url( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore
+			$canonical_url = isset( $params['canonical_url'] ) ? esc_attr( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore
 
 			// Ajax Query Type.
 			$query_type = isset( $params['query_type'] ) ? $params['query_type'] : 'standard'; // 'standard' or 'totalposts' - totalposts returns $alm_found_posts.

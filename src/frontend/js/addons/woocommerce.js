@@ -1,10 +1,27 @@
 import axios from 'axios';
-import dispatchScrollEvent from '../helpers/dispatchScrollEvent';
-import { setButtonAtts } from '../helpers/getButtonURL';
+import dispatchScrollEvent from '../functions/dispatchScrollEvent';
+import { setButtonAtts } from '../functions/getButtonURL';
 import { lazyImages } from '../modules/lazyImages';
 import loadItems from '../modules/loadItems';
 import { createLoadPreviousButton } from '../modules/loadPrevious';
 import { createCache } from './cache';
+
+/**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function wooCreateParams(alm) {
+	const { listing, addons } = alm;
+	alm.addons.woocommerce = listing?.dataset?.woo === 'true';
+	if (alm.addons.woocommerce && listing.dataset.wooSettings) {
+		alm.addons.woocommerce_settings = JSON.parse(listing.dataset.wooSettings);
+		alm.addons.woocommerce_settings.results_text = document.querySelectorAll(addons?.woocommerce_settings?.results); // Add Results Text
+		alm.page = parseInt(alm.page) + parseInt(addons.woocommerce_settings.paged);
+	}
+	return alm;
+}
 
 /**
  * Set up instance of ALM WooCommerce

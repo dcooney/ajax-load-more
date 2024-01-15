@@ -180,16 +180,10 @@ function alm_admin_init() {
 		do_action( 'alm_prev_post_settings' );
 	}
 
-	// TABS.
-	if ( has_action( 'alm_tabs_settings' ) ) {
-		do_action( 'alm_tabs_settings' );
-	}
-
 	// THEME REPEATERS.
 	if ( has_action( 'alm_theme_repeaters_settings' ) ) {
 		do_action( 'alm_theme_repeaters_settings' );
 	}
-
 }
 add_action( 'admin_init', 'alm_admin_init' );
 
@@ -297,7 +291,6 @@ function alm_container_type_callback() {
 	$html .= '<label style="cursor: default !important"><span style="display:block">' . __( 'You can modify the container type when building a shortcode.', 'ajax-load-more' ) . '</span></label>';
 
 	echo $html; // phpcs:ignore
-
 }
 
 /**

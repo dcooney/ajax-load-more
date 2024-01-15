@@ -203,23 +203,23 @@ function alm_get_post_format( $post_format ) {
 		if ( 'post-format-standard' === $format ) {
 			$post_formats = get_theme_support( 'post-formats' );
 			if ( $post_formats && is_array( $post_formats[0] ) && count( $post_formats[0] ) ) {
-				$terms = array();
+				$terms = [];
 				foreach ( $post_formats[0] as $format ) {
 					$terms[] = 'post-format-' . $format;
 				}
 			}
-			$return = array(
+			$return = [
 				'taxonomy' => 'post_format',
 				'terms'    => $terms,
 				'field'    => 'slug',
 				'operator' => 'NOT IN',
-			);
+			];
 		} else {
-			$return = array(
+			$return = [
 				'taxonomy' => 'post_format',
 				'field'    => 'slug',
-				'terms'    => array( $format ),
-			);
+				'terms'    => [ $format ],
+			];
 		}
 		return $return;
 	}
@@ -273,21 +273,21 @@ function alm_parse_tax_terms( $terms ) {
  * Query by custom field values.
  *
  * @since 2.5.0
- * @param  array $array The array of meta query parameters.
- * @return array        The WP_Query args.
+ * @param  array $params The array of meta query parameters.
+ * @return array         The WP_Query args.
  */
-function alm_get_meta_query( $array ) {
-	$meta_key     = esc_sql( $array['key'] );
-	$meta_value   = esc_sql( $array['value'] );
-	$meta_compare = esc_sql( $array['compare'] );
-	$meta_type    = esc_sql( $array['type'] );
+function alm_get_meta_query( $params ) {
+	$meta_key     = esc_sql( $params['key'] );
+	$meta_value   = esc_sql( $params['value'] );
+	$meta_compare = esc_sql( $params['compare'] );
+	$meta_type    = esc_sql( $params['type'] );
 
 	if ( ! empty( $meta_key ) ) {
 		// do_shortcode fix (shortcode was rendering as HTML when using < OR  <==).
 		$meta_compare = 'lessthan' === $meta_compare ? '<' : $meta_compare;
 		$meta_compare = 'lessthanequalto' === $meta_compare ? '<=' : $meta_compare;
 		$meta_compare = 'greaterthan' === $meta_compare ? '>' : $meta_compare;
-		$meta_compare = 'greatthanequalto' === $meta_compare ? '>=' : $meta_compare;
+		$meta_compare = 'greaterthanequalto' === $meta_compare ? '>=' : $meta_compare;
 
 		// Get optimized `meta_value` parameter.
 		$meta_values = alm_parse_meta_value( $meta_value, $meta_compare );
@@ -341,7 +341,7 @@ function alm_create_meta_clause( $key ) {
  */
 function alm_parse_meta_value( $meta_value, $meta_compare ) {
 	// Meta Query Docs (http://codex.wordpress.org/Class_Reference/WP_Meta_Query).
-	$meta_array = array( 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' );
+	$meta_array = [ 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN' ];
 
 	if ( in_array( $meta_compare, $meta_array, true ) ) {
 		// Remove all whitespace for meta_value because it needs to be an exact match.
@@ -459,55 +459,51 @@ function alm_get_page_slug( $post ) {
 		// If not archive, set the post slug.
 		if ( is_front_page() || is_home() || is_404() ) {
 			$slug = 'home';
-		} else {
-			if ( is_search() ) {
+		} elseif ( is_search() ) {
 				// Search.
 				$search_query = get_search_query();
-				if ( $search_query ) {
-					$slug = "?s=$search_query";
-				} else {
-					$slug = '?s=';
-				}
+			if ( $search_query ) {
+				$slug = "?s=$search_query";
 			} else {
-				$slug = $post->post_name;
+				$slug = '?s=';
 			}
+		} else {
+			$slug = $post->post_name;
 		}
-	} else {
-		if ( is_tax() ) {
+	} elseif ( is_tax() ) {
 			// Tax.
 			$queried_object = get_queried_object();
 			$slug           = $queried_object->slug;
-		} elseif ( is_category() ) {
-			// Category.
-			$cat      = get_query_var( 'cat' );
-			$category = get_category( $cat );
-			$slug     = $category->slug;
-		} elseif ( is_tag() ) {
-			// Tag.
-			$slug = get_query_var( 'tag' );
-		} elseif ( is_author() ) {
-			// Author.
-			$slug = get_the_author_meta( 'ID' );
-		} elseif ( is_post_type_archive() ) {
-			// Post Type Archive.
-			$slug = get_post_type();
-		} elseif ( is_date() ) {
-			// Date Archive.
-			$archive_year  = get_the_date( 'Y' );
-			$archive_month = get_the_date( 'm' );
-			$archive_day   = get_the_date( 'd' );
-			if ( is_year() ) {
-				$slug = $archive_year;
-			}
-			if ( is_month() ) {
-				$slug = $archive_year . '-' . $archive_month;
-			}
-			if ( is_day() ) {
-				$slug = $archive_year . '-' . $archive_month . '-' . $archive_day;
-			}
-		} else {
-			$slug = '';
+	} elseif ( is_category() ) {
+		// Category.
+		$cat      = get_query_var( 'cat' );
+		$category = get_category( $cat );
+		$slug     = $category->slug;
+	} elseif ( is_tag() ) {
+		// Tag.
+		$slug = get_query_var( 'tag' );
+	} elseif ( is_author() ) {
+		// Author.
+		$slug = get_the_author_meta( 'ID' );
+	} elseif ( is_post_type_archive() ) {
+		// Post Type Archive.
+		$slug = get_post_type();
+	} elseif ( is_date() ) {
+		// Date Archive.
+		$archive_year  = get_the_date( 'Y' );
+		$archive_month = get_the_date( 'm' );
+		$archive_day   = get_the_date( 'd' );
+		if ( is_year() ) {
+			$slug = $archive_year;
 		}
+		if ( is_month() ) {
+			$slug = $archive_year . '-' . $archive_month;
+		}
+		if ( is_day() ) {
+			$slug = $archive_year . '-' . $archive_month . '-' . $archive_day;
+		}
+	} else {
+		$slug = '';
 	}
 
 	return $slug;
@@ -534,7 +530,7 @@ function alm_get_page_id( $post ) {
 		// If not an archive page, set the post slug.
 		if ( is_front_page() || is_home() || is_404() ) {
 			$post_id = '0';
-		} else {
+		} else { // phpcs:ignore Universal.ControlStructures.DisallowLonelyIf.Found
 			// Search.
 			if ( is_search() ) {
 				$search_query = get_search_query();
@@ -545,31 +541,29 @@ function alm_get_page_id( $post ) {
 				$post_id = $post->ID;
 			}
 		}
-	} else {
-		if ( is_tax() || is_tag() || is_category() ) {
+	} elseif ( is_tax() || is_tag() || is_category() ) {
 			// Tax.
 			$queried_object = get_queried_object();
 			$post_id        = $queried_object->term_id;
-		} elseif ( is_author() ) {
-			// Author.
-			$post_id = get_the_author_meta( 'ID' );
-		} elseif ( is_post_type_archive() ) {
-			// Post Type Archive.
-			$post_id = get_post_type();
-		} elseif ( is_date() ) {
-			// Date Archive.
-			$archive_year  = get_the_date( 'Y' );
-			$archive_month = get_the_date( 'm' );
-			$archive_day   = get_the_date( 'd' );
-			if ( is_year() ) {
-				$post_id = $archive_year;
-			}
-			if ( is_month() ) {
-				$post_id = $archive_year . '-' . $archive_month;
-			}
-			if ( is_day() ) {
-				$post_id = $archive_year . '-' . $archive_month . '-' . $archive_day;
-			}
+	} elseif ( is_author() ) {
+		// Author.
+		$post_id = get_the_author_meta( 'ID' );
+	} elseif ( is_post_type_archive() ) {
+		// Post Type Archive.
+		$post_id = get_post_type();
+	} elseif ( is_date() ) {
+		// Date Archive.
+		$archive_year  = get_the_date( 'Y' );
+		$archive_month = get_the_date( 'm' );
+		$archive_day   = get_the_date( 'd' );
+		if ( is_year() ) {
+			$post_id = $archive_year;
+		}
+		if ( is_month() ) {
+			$post_id = $archive_year . '-' . $archive_month;
+		}
+		if ( is_day() ) {
+			$post_id = $archive_year . '-' . $archive_month . '-' . $archive_day;
 		}
 	}
 
@@ -627,12 +621,12 @@ function alm_print( $query = '', $title = '' ) {
 /**
  * Convert dashes to underscores.
  *
- * @param string $string String to convert.
- * @return string The converted string without dashes.
+ * @param string $data The string to convert.
+ * @return string      The converted string without dashes.
  * @since 3.7
  */
-function alm_convert_dashes_to_underscore( $string = '' ) {
-	return str_replace( '-', '_', $string );
+function alm_convert_dashes_to_underscore( $data = '' ) {
+	return str_replace( '-', '_', $data );
 }
 
 /**
@@ -645,7 +639,7 @@ function alm_convert_dashes_to_underscore( $string = '' ) {
  */
 function alm_sticky_post__not_in( $ids = '', $not_in = '' ) {
 	if ( ! empty( $not_in ) ) {
-		$new_array = array();
+		$new_array = [];
 		foreach ( $ids as $id ) {
 			if ( ! in_array( $id, $not_in, true ) ) {
 				array_push( $new_array, $id );

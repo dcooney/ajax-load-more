@@ -1,3 +1,9 @@
+/**
+ * Various Helper Functions.
+ *
+ * @deprecated 7.0.0
+ */
+
 // Object.entries
 if (!Object.entries) {
 	Object.entries = function (obj) {

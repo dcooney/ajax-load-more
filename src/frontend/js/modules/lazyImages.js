@@ -6,10 +6,11 @@
  * @param {Object} alm The Ajax Load More object.
  */
 export function lazyImages(alm) {
-	if (alm?.lazy_images) {
-		// Set container based on reveal div.
-		const container = !alm.transition_container ? alm.content : alm.el;
-		lazyImagesReplace(container);
+	const { lazy_images, last_loaded } = alm;
+	if (lazy_images && last_loaded?.length) {
+		last_loaded.forEach((item) => {
+			lazyImagesReplace(item);
+		});
 	}
 }
 
@@ -19,12 +20,12 @@ export function lazyImages(alm) {
  * @param {HTMLElement} container The element HTML.
  */
 export function lazyImagesReplace(container) {
-	const images = container.getElementsByTagName('img');
+	const images = container.querySelectorAll('img');
 	if (images) {
 		// Loop all images.
-		Array.prototype.forEach.call(images, (img) => {
-			if (img) {
-				replaceSrc(img);
+		[...images].forEach((image) => {
+			if (image) {
+				replaceSrc(image);
 			}
 		});
 	}
@@ -36,20 +37,21 @@ export function lazyImagesReplace(container) {
  * @param {HTMLElement} img The HTML image element.
  */
 function replaceSrc(img) {
-	if (img) {
-		if (img.dataset.src) {
-			img.src = img.dataset.src;
-		}
-		if (img.dataset.srcset) {
-			img.srcset = img.dataset.srcset;
-		}
-		// Blocksy Pro.
-		// @see https://creativethemes.com/blocksy
-		if (img.dataset.ctLazy) {
-			img.src = img.dataset.ctLazy;
-		}
-		if (img.dataset.ctLazySet) {
-			img.srcset = img.dataset.ctLazySet;
-		}
+	if (!img) {
+		return;
+	}
+	if (img?.dataset?.src) {
+		img.src = img.dataset.src;
+	}
+	if (img?.dataset?.srcset) {
+		img.srcset = img.dataset.srcset;
+	}
+	// Blocksy Pro.
+	// @see https://creativethemes.com/blocksy
+	if (img?.dataset?.ctLazy) {
+		img.src = img.dataset.ctLazy;
+	}
+	if (img?.dataset?.ctLazySet) {
+		img.srcset = img.dataset.ctLazySet;
 	}
 }

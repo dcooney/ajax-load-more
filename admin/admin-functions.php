@@ -90,7 +90,7 @@ function alm_has_extension_shortcodes() {
  * @depreacted 3.3.0
  */
 function alm_has_addon() {
-	if ( has_action( 'alm_cta_installed' ) || has_action( 'alm_comments_installed' ) || has_action( 'alm_unlimited_installed' ) || has_action( 'alm_layouts_installed' ) || has_action( 'alm_nextpage_installed' ) || has_action( 'alm_preload_installed' ) || has_action( 'alm_paging_installed' ) || has_action( 'alm_prev_post_installed' ) || has_action( 'alm_single_post_installed' ) || has_action( 'alm_rest_api_installed' ) || has_action( 'alm_seo_installed' ) || has_action( 'alm_tabs_installed' ) || has_action( 'alm_theme_repeaters_installed' ) || has_action( 'alm_users_installed' ) ) {
+	if ( has_action( 'alm_cta_installed' ) || has_action( 'alm_comments_installed' ) || has_action( 'alm_unlimited_installed' ) || has_action( 'alm_layouts_installed' ) || has_action( 'alm_nextpage_installed' ) || has_action( 'alm_preload_installed' ) || has_action( 'alm_paging_installed' ) || has_action( 'alm_prev_post_installed' ) || has_action( 'alm_single_post_installed' ) || has_action( 'alm_rest_api_installed' ) || has_action( 'alm_seo_installed' ) || has_action( 'alm_theme_repeaters_installed' ) || has_action( 'alm_users_installed' ) ) {
 		return true;
 	} else {
 		return false;

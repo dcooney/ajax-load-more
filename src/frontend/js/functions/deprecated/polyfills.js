@@ -1,4 +1,10 @@
 /**
+ * Various Polyfills Functions.
+ *
+ * @deprecated 7.0.0
+ */
+
+/**
  * Add dataset support to elements
  * No globals, no overriding prototype with non-standard methods,
  *   handles CamelCase properly, attempts to use standard
@@ -152,7 +158,6 @@ if (!Function.prototype.bind) {
 })();
 
 // Begin dataset code
-
 if (
 	!document.documentElement.dataset &&
 	// FF is empty while IE gives empty object

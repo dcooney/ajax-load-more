@@ -35,7 +35,7 @@ export function getAjaxParams(alm, queryType) {
 			data.action = 'alm_acf';
 		}
 	}
-	if (addons.comments === 'true') {
+	if (addons.comments) {
 		data.comments = getTypeParams(alm, 'comments');
 		data.posts_per_page = addons.comments_per_page;
 		data.action = 'alm_comments';
@@ -56,7 +56,7 @@ export function getAjaxParams(alm, queryType) {
 	if (addons.paging) {
 		data.paging = addons.paging;
 	}
-	if (addons.preloaded === 'true') {
+	if (addons.preloaded) {
 		data.preloaded = addons.preloaded;
 		data.preloaded_amount = parseInt(addons.preloaded_amount);
 	}
@@ -67,16 +67,15 @@ export function getAjaxParams(alm, queryType) {
 		data.term_query = getTypeParams(alm, 'term_query');
 		data.action = 'alm_get_terms';
 	}
-	if (alm.theme_repeater) {
-		data.theme_repeater = alm.theme_repeater;
-	}
-	if (alm.addons.users) {
+	if (alm.extensions.users) {
 		data.users = getTypeParams(alm, 'users');
 		data.action = 'alm_users';
 	}
+	if (alm.theme_repeater) {
+		data.theme_repeater = alm.theme_repeater;
+	}
 
-	// Query Data Params
-
+	// Query data params from ALM HTML element.
 	if (alm.listing.dataset.lang) {
 		data.lang = alm.listing.dataset.lang;
 	}

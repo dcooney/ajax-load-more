@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 6.2.0.3
+Stable tag: 7.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -260,6 +260,25 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 7.0.0 - January 16, 2024 =
+UPGRADE NOTICE:
+This Ajax Load More update may introduce breaking changes for add-on functionality.
+Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the .alm-reveal div used to hold the Ajax loaded content.
+If you are using the Filters, SEO or Paging add-ons please be sure to update these add-ons after updating the core Ajax Load More plugin.
+
+* NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
+* NEW: Added `transition_delay` parameter that allows for staggering the display of each post incrementally as content is loaded.
+* NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
+* UPDATE: Improved JavaScript code quality and readability which is key for long term maintenance and sustainability of ALM.
+* UPDATE: Improved content loading for infinite scroll and when using Paging add-on.
+* UPDATE: Improved Masonry loading and transition timing.
+* UPDATE: Removed `transition_container_classes` parameter.
+* UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
+* UPDATE: Updated plugin installer class.
+* FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
+* FIX: Fixed issue with Single Posts add-on preview function. This was no longer working but it functional again.
+
 
 = 6.2.0.3 - November 6, 2023 =
 *HOTFIX: Fixed issue with fatal i18n error in core Ajax Load More Elementor widget causing issues with loading posts on edit screens.

@@ -1,5 +1,73 @@
-import getQueryVariable from '../helpers/getQueryVariable';
-const FILTERS_CLASSNAME = 'alm-filters';
+import getParameterByName from '../functions/getParameterByName';
+import getQueryVariable from '../functions/getQueryVariable';
+
+/**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function filtersCreateParams(alm) {
+	const { listing } = alm;
+	alm.addons.filters = alm?.listing?.dataset?.filters === 'true';
+	if (alm.addons.filters) {
+		alm.addons.filters_url = listing.dataset.filtersUrl === 'true';
+		alm.addons.filters_target = listing.dataset.filtersTarget ? listing.dataset.filtersTarget : false;
+		alm.addons.filters_paging = listing.dataset.filtersPaging === 'true';
+		alm.addons.filters_scroll = listing.dataset.filtersScroll === 'true';
+		alm.addons.filters_scrolltop = listing.dataset.filtersScrolltop ? listing.dataset.filtersScrolltop : '30';
+		alm.addons.filters_debug = listing.dataset.filtersDebug;
+		alm.facets = listing.dataset.facets === 'true';
+
+		// Display warning when `filters_target` parameter is missing.
+		if (!alm.addons.filters_target) {
+			console.warn(
+				'Ajax Load More: Unable to locate a target for Filters. Make sure you set a target parameter in the core Ajax Load More shortcode - e.g. [ajax_load_more filters="true" target="filters"]'
+			);
+		}
+
+		// Parse querystring value for pg.
+		const page = getParameterByName('pg');
+		alm.addons.filters_startpage = page !== null ? parseInt(page) : 0;
+
+		// Handle a paged URL with filters.
+		if (alm.addons.filters_startpage > 0) {
+			if (alm.addons.paging) {
+				// Paging add-on: Set current page value.
+				alm.page = alm.addons.filters_startpage - 1;
+			} else {
+				// Set posts_per_page value to load all required posts.
+				alm.posts_per_page = alm.posts_per_page * alm.addons.filters_startpage;
+				alm.paged = true;
+			}
+		}
+	}
+	return alm;
+}
+
+/**
+ * Create data attributes for a Filters item.
+ *
+ * @param {Object}      alm     The ALM object.
+ * @param {HTMLElement} element The element HTML node.
+ * @param {number}      pagenum The current page number.
+ * @return {HTMLElement}        Modified HTML element.
+ */
+export function addFiltersAttributes(alm, element, pagenum) {
+	const { canonical_url } = alm;
+	const querystring = window.location.search;
+
+	element.classList.add('alm-filters');
+	element.dataset.page = pagenum;
+
+	if (pagenum > 1) {
+		element.dataset.url = canonical_url + buildFilterURL(alm, querystring, pagenum);
+	} else {
+		element.dataset.url = canonical_url + buildFilterURL(alm, querystring, 0);
+	}
+
+	return element;
+}
 
 /**
  * Parse a filter querystring for returning caches directories.
@@ -51,11 +119,11 @@ export function parseQuerystring(path) {
  * @param {Object} alm         The ALM object.
  * @param {string} querystring The current querystring.
  * @param {number} page        The page number.
+ * @return {string}            The querystring.
  * @since 5.3.5
  */
 export function buildFilterURL(alm, querystring = '', page = 0) {
 	let qs = querystring;
-
 	if (alm.addons.filters_paging) {
 		if (page > 1) {
 			// Paged
@@ -76,95 +144,5 @@ export function buildFilterURL(alm, querystring = '', page = 0) {
 			qs = qs[qs.length - 1] === '&' ? qs.slice(0, -1) : qs; // Remove trailing `&` symbols
 		}
 	}
-
 	return qs;
-}
-
-/**
- * Create data attributes for Filters paged results.
- *
- * @param {Object} alm     The ALM object.
- * @param {Array}  element An array of filter elements.
- * @since 5.3.1
- */
-export function createMasonryFiltersPage(alm, element) {
-	if (!alm.addons.filters) {
-		return element;
-	}
-
-	const querystring = window.location.search;
-	let page = alm.page + 1;
-	page = alm.addons.preloaded === 'true' ? page + 1 : page;
-	element = masonryFiltersAtts(alm, element, querystring, page);
-
-	return element;
-}
-
-/**
- * Create data attributes for Filters - used when ?pg=2, ?pg=3 etc are hit on page load
- *
- * @param {Object} alm      The ALM object.
- * @param {Array}  elements An array of filter elements.
- * @since 5.3.1
- */
-export function createMasonryFiltersPages(alm, elements) {
-	if (!alm.addons.filters) {
-		return elements;
-	}
-
-	let pagenum = 1;
-	const page = alm.page;
-	const querystring = window.location.search;
-
-	if (alm.addons.filters_startpage > 1) {
-		// Create pages
-		const posts_per_page = parseInt(alm.posts_per_page);
-		const return_data = [];
-
-		// Slice data array into individual pages
-		for (let i = 0; i < elements.length; i += posts_per_page) {
-			return_data.push(elements.slice(i, posts_per_page + i));
-		}
-
-		// Loop new data array
-		for (let k = 0; k < return_data.length; k++) {
-			const target = k > 0 ? k * posts_per_page : 0;
-			pagenum = k + 1;
-
-			if (elements[target]) {
-				elements[target] = masonryFiltersAtts(alm, elements[target], querystring, pagenum);
-			}
-		}
-	} else {
-		pagenum = page;
-		if (elements && elements[0]) {
-			elements[0] = masonryFiltersAtts(alm, elements[0], querystring, pagenum);
-		}
-	}
-
-	return elements;
-}
-
-/**
- * Create the attributes (page, url, classes)  for the masonry items.
- *
- * @param {Object}  alm         The ALM object.
- * @param {Element} element     The container element.
- * @param {string}  querystring The current querystring.
- * @param {number}  pagenum     The page number.
- * @return {Element}            Modified HTML element.
- */
-function masonryFiltersAtts(alm, element, querystring, pagenum) {
-	element.classList.add(FILTERS_CLASSNAME);
-	element.dataset.page = pagenum;
-	if (pagenum > 1) {
-		element.dataset.url = alm.canonical_url + buildFilterURL(alm, querystring, pagenum);
-	} else {
-		let updatedQS = querystring.replace(/(pg=)[^\&]+/, ''); // Remove `pg` from querysting
-		updatedQS = updatedQS === '?' ? '' : updatedQS; // Remove empty querysting
-
-		element.dataset.url = alm.canonical_url + updatedQS;
-	}
-
-	return element;
 }

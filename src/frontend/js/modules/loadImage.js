@@ -1,4 +1,4 @@
-import srcsetPolyfill from '../helpers/srcsetPolyfill';
+import srcsetPolyfill from '../functions/srcsetPolyfill';
 import { lazyImagesReplace } from './lazyImages';
 const imagesLoaded = require('imagesloaded');
 

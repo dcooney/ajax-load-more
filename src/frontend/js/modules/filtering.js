@@ -51,13 +51,6 @@ function almFilterTransition(transition, speed, data, type, element) {
 				element.classList.add('alm-is-filtering');
 				almFadeOut(element, speed);
 				break;
-
-			case 'tab':
-				element.classList.add('alm-loading');
-				const new_element = element.querySelector('.alm-listing');
-				element.style.height = new_element.offsetHeight + 'px';
-				almFadeOut(new_element, speed);
-				break;
 		}
 
 		// Move to next function
@@ -85,13 +78,19 @@ function almCompleteFilterTransition(speed, data, type, element) {
 	const listing = element.querySelectorAll('.alm-listing'); // Get `.alm-listing` element
 
 	if (!listing || !btnWrap) {
-		// Bail early if elements doesn't exist.
+		// Exit if elements doesn't exist.
 		return false;
 	}
 
 	// Loop over all .alm-listing divs and clear HTML.
-	[...listing].forEach(function (e) {
-		e.innerHTML = '';
+	[...listing].forEach(function (element) {
+		// Is this a paging instance.
+		const paging = element.querySelector('.alm-paging-content');
+		if (paging) {
+			paging.innerHTML = '';
+		} else {
+			element.innerHTML = '';
+		}
 	});
 
 	// Get Load More button
@@ -143,14 +142,6 @@ function almSetFilters(speed, data, type, element) {
 			// Fade ALM back (Filters only)
 			almFadeIn(element, speed);
 			break;
-
-		case 'tab':
-			// Update `data-tab-template` attribute
-			listing.setAttribute('data-preloaded', 'false');
-			listing.setAttribute('data-pause', 'false');
-			listing.setAttribute('data-tab-template', data.tabTemplate);
-
-			break;
 	}
 
 	// Re-initiate Ajax Load More.
@@ -175,14 +166,6 @@ function almSetFilters(speed, data, type, element) {
 			if (typeof almFilterComplete === 'function') {
 				// Standard Filtering
 				almFilterComplete();
-			}
-			break;
-
-		case 'tab':
-			// Tabs Complete
-			if (typeof almTabsComplete === 'function') {
-				// Standard Filtering
-				almTabsComplete();
 			}
 			break;
 	}

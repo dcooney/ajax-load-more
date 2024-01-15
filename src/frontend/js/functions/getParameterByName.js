@@ -5,7 +5,7 @@
  * @param {string} url  The URL.
  * @return {string}     The query param value.
  */
-const getParameterByName = function (name, url) {
+export default function getParameterByName(name, url) {
 	if (!url) url = window.location.href;
 	name = name.replace(/[\[\]]/g, '\\$&');
 	const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
@@ -17,5 +17,4 @@ const getParameterByName = function (name, url) {
 		return '';
 	}
 	return decodeURIComponent(results[2].replace(/\+/g, ' '));
-};
-export default getParameterByName;
+}

@@ -185,7 +185,7 @@ jQuery(document).ready(function ($) {
 			output += ' css_classes="' + container_classes + '"';
 
 		// ---------------------------
-		// - Advacned Custom Fields
+		// - Advanced Custom Fields
 		// ---------------------------
 
 		var acf = $('#alm-acf input[name=acf]:checked').val();
@@ -756,7 +756,9 @@ jQuery(document).ready(function ($) {
 		// ---------------------------
 
 		var posts_per_page = $('.posts_per_page input').val();
-		if (posts_per_page > 0 && posts_per_page !== 5) output += ' posts_per_page="' + posts_per_page + '"';
+		if (posts_per_page !== '5') {
+			output += ' posts_per_page="' + posts_per_page + '"';
+		}
 
 		// ---------------------------
 		// - Post Format
@@ -1244,6 +1246,14 @@ jQuery(document).ready(function ($) {
 		var transition = $('.transition select[name=transition]').val();
 		if (transition !== 'fade') output += ' transition="' + transition + '"';
 
+		if (transition === 'masonry' || transition === 'none') {
+			$('.transition-options').slideUp(250, 'alm_easeInOutQuad');
+		} else {
+			var transition_delay = $('.transition input[name=transition_delay]').val();
+			output += transition_delay !== '0' ? ' transition_delay="' + transition_delay + '"' : '';
+			$('.transition-options').slideDown(250, 'alm_easeInOutQuad');
+		}
+
 		if (transition === 'masonry') {
 			$('.masonry-options').slideDown(250, 'alm_easeInOutQuad');
 			$('.masonry-options-hide').slideUp(250, 'alm_easeInOutQuad');
@@ -1266,21 +1276,6 @@ jQuery(document).ready(function ($) {
 		} else {
 			$('.masonry-options').slideUp(250, 'alm_easeInOutQuad');
 			$('.masonry-options-hide').slideDown(250, 'alm_easeInOutQuad');
-
-			// Hide transition_container if masonry is selected
-			var transition_container = $('.transition input[name=remove_container]:checked').val();
-			var transition_container_classes = $('.transition input#transition-container-classes').val();
-			if (transition_container === 'f' && seo !== 'true' && previous !== 'true') {
-				output += ' transition_container="false"';
-				$('.transition-container-classes-wrap').slideUp(250, 'alm_easeInOutQuad');
-			} else {
-				$('.transition-container-classes-wrap').slideDown(250, 'alm_easeInOutQuad');
-			}
-
-			// Hide transition_container_classes if Previous Post or Next Page is true.
-			if (transition_container_classes !== '' && transition_container !== 'f' && previous !== 'true' && nextpage !== 'true') {
-				output += ' transition_container_classes="' + transition_container_classes + '"';
-			}
 		}
 
 		// ---------------------------
@@ -1371,6 +1366,7 @@ jQuery(document).ready(function ($) {
 
 	//Select 'post' by default
 	$('.post_types input[type=checkbox]#chk-post').prop('checked', true).addClass('changed');
+
 	//Select SEO 'false' by default
 	$('.seo input[type=radio]#seo-false').prop('checked', true).addClass('changed');
 
@@ -1608,7 +1604,7 @@ jQuery(document).ready(function ($) {
 	// Generate Unique Cache ID.
 	_alm.generateUniqueID = function (length, el) {
 		var id = Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1));
-		$(el).val(id);
+		$(el).val('alm_' + id);
 	};
 
 	// Option toggle click events.

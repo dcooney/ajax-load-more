@@ -1,23 +1,29 @@
 import { almFadeIn, almFadeOut } from './fade';
 
-export function showPlaceholder(alm) {
-	if (!alm || !alm.main || alm.addons.paging || alm.rel === 'prev') {
+/**
+ * Show placeholder div.
+ *
+ * @param {string} type The direction.
+ * @param {Object} alm  The ALM object.
+ */
+export default async function placeholder(type = 'show', alm) {
+	const { placeholder, addons, rel } = alm;
+	if (!placeholder || addons.paging || rel === 'prev') {
 		return false;
 	}
-	if (alm.placeholder) {
-		alm.placeholder.style.display = 'block';
-		almFadeIn(alm.placeholder, 150);
-	}
-}
 
-export function hidePlaceholder(alm) {
-	if (!alm || !alm.main || alm.addons.paging) {
-		return false;
-	}
-	if (alm.placeholder) {
-		almFadeOut(alm.placeholder, 150);
-		setTimeout(function () {
-			alm.placeholder.style.display = 'none';
-		}, 75);
+	switch (type) {
+		case 'hide':
+			await almFadeOut(placeholder, 175);
+			setTimeout(function () {
+				placeholder.style.display = 'none';
+			}, 75);
+
+			break;
+		default:
+			placeholder.style.display = 'block';
+			almFadeIn(placeholder, 175);
+
+			break;
 	}
 }

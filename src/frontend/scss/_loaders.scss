@@ -1,8 +1,8 @@
 .alm-btn-wrap {
 	display: block;
 	text-align: center;
-	padding: 10px 0;
-	margin: 0 0 15px;
+	padding: 10px 0 0;
+	margin: 0 0 25px;
 	position: relative;
 	&::after {
 		display: table;
@@ -45,14 +45,16 @@
 
 		/* Loading */
 		&.loading {
+			pointer-events: none;
 			cursor: wait;
 			outline: none;
 			padding-left: 44px;
 		}
 
 		/* Loaded / Done */
-		&.done {
-			cursor: default;
+		&.done,
+		&:disabled {
+			pointer-events: none;
 			opacity: 0.15;
 			background-color: #ed7070;
 			outline: none !important;
@@ -61,7 +63,8 @@
 
 		/* Loading Icon */
 		&::before,
-		&.done::before {
+		&.done::before,
+		&:disabled::before {
 			background: none;
 			width: 0;
 		}
@@ -265,7 +268,7 @@
 	}
 }
 
-/// Horizontal
+// Horizontal.
 .ajax-load-more-wrap.alm-horizontal {
 	.alm-btn-wrap {
 		display: flex;

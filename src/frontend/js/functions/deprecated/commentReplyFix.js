@@ -1,10 +1,10 @@
 /**
- * commentReplyFix
  * Hotfix for Reply links not working in WordPress 5.1+
  *
- * @param comments  string
- * @param listing  object
+ * @param {string|Boolean} comments
+ * @param {HTMLElement} listing
  * @since 5.1
+ * @deprecated 7.0.0
  */
 const commentReplyFix = function (comments = false, listing = null) {
 	if (comments !== 'true') {

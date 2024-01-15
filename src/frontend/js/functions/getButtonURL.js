@@ -14,8 +14,7 @@ export function getButtonURL(alm, rel = 'next') {
 		button = document.querySelector('.alm-load-more-btn--prev');
 	}
 
-	const url = button ? button.dataset.url : '';
-	return url ? url : '';
+	return button?.dataset?.url || '';
 }
 
 /**
@@ -34,6 +33,7 @@ export function setButtonAtts(button, page, url) {
 		button.href = url;
 	}
 
-	button.dataset.page = page; // Set Page.
-	button.dataset.url = url ? url : ''; // Set URL.
+	// Set page & URL attributes.
+	button.dataset.page = page;
+	button.dataset.url = url ? url : '';
 }

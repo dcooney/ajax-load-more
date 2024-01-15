@@ -1,5 +1,22 @@
 import MD5 from 'crypto-js/md5';
-import { api } from '../helpers/api';
+import { api } from '../functions/api';
+
+/**
+ * Create add-on params for ALM.
+ *
+ * @param {Object} alm The alm object.
+ * @return {Object}    The modified object.
+ */
+export function cacheCreateParams(alm) {
+	const { listing } = alm;
+	alm.addons.cache = listing?.dataset?.cache === 'true';
+	if (alm.addons.cache) {
+		alm.addons.cache_id = listing.dataset.cacheId;
+		alm.addons.cache_path = listing.dataset.cachePath;
+		alm.addons.cache_logged_in = listing.dataset.cacheLoggedIn ? listing.dataset.cacheLoggedIn : false;
+	}
+	return alm;
+}
 
 /**
  * Create unique cache slug from query params.
