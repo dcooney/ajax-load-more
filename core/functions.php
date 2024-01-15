@@ -273,14 +273,14 @@ function alm_parse_tax_terms( $terms ) {
  * Query by custom field values.
  *
  * @since 2.5.0
- * @param  array $array The array of meta query parameters.
- * @return array        The WP_Query args.
+ * @param  array $params The array of meta query parameters.
+ * @return array         The WP_Query args.
  */
-function alm_get_meta_query( $array ) {
-	$meta_key     = esc_sql( $array['key'] );
-	$meta_value   = esc_sql( $array['value'] );
-	$meta_compare = esc_sql( $array['compare'] );
-	$meta_type    = esc_sql( $array['type'] );
+function alm_get_meta_query( $params ) {
+	$meta_key     = esc_sql( $params['key'] );
+	$meta_value   = esc_sql( $params['value'] );
+	$meta_compare = esc_sql( $params['compare'] );
+	$meta_type    = esc_sql( $params['type'] );
 
 	if ( ! empty( $meta_key ) ) {
 		// do_shortcode fix (shortcode was rendering as HTML when using < OR  <==).
@@ -530,7 +530,7 @@ function alm_get_page_id( $post ) {
 		// If not an archive page, set the post slug.
 		if ( is_front_page() || is_home() || is_404() ) {
 			$post_id = '0';
-		} else {
+		} else { // phpcs:ignore Universal.ControlStructures.DisallowLonelyIf.Found
 			// Search.
 			if ( is_search() ) {
 				$search_query = get_search_query();
@@ -621,12 +621,12 @@ function alm_print( $query = '', $title = '' ) {
 /**
  * Convert dashes to underscores.
  *
- * @param string $string String to convert.
- * @return string The converted string without dashes.
+ * @param string $data The string to convert.
+ * @return string      The converted string without dashes.
  * @since 3.7
  */
-function alm_convert_dashes_to_underscore( $string = '' ) {
-	return str_replace( '-', '_', $string );
+function alm_convert_dashes_to_underscore( $data = '' ) {
+	return str_replace( '-', '_', $data );
 }
 
 /**

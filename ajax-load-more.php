@@ -7,109 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 6.2.0.3
+ * Version: 7.0.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
-* NEW: Added new `alm-is-loaded` class that is added to the main ALM container after the initial ajax request.
-* NEW: Added `transition_delay` parameter that allows for staggering the display of each post incrementally as content is loaded.
-* UPDATE: Improved JavaScript code quality and readability which is key for long term maintenance and sustainability of ALM.
-* UPDATE: Improved content loading for infinite scroll and when using Paging add-on.
-* UPDATE: Improved Masonry loading and transition timing.
-* UPDATE: Removed `transition_container_classes` parameter.
-* UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
-* UPDATE: Updated plugin installer class.
-* FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
-* FIX: Fixed issue with Single Posts add-on preview function. This was no longer working but it functional again.
-
-
-TODO:
-- Add shortcode setting for stagger load animation. [DONE]
-- Add fade transition [DONE]
-- Paging (Filters, SEO, NextPage). [DONE]
-- Cache [DONE]
-- Filters. [DONE]
-	- https://wpdev.local/filter-add-on-movie-listing/?movie_type=comedy&pg=2
-- Single Posts. [DONE]
-- Next Page. [DONE]
-- Layouts. [DONE]
-	- Fix grid display. [DONE]
-- Preloaded [DONE]
-	- Remove alm-reveal divs. [DONE]
-- SEO [DONE]
-
-- Improve order of operation in render() function.
-	- Use async/await to complete tasks in order that they are called.
-
-- Results Text no longer working. [DONE]
-	- Preloaded - working
-	- SEO - working
-	- Filters - working
-	- Paging: - working
-	- Next Page - working
-
-- SEO Offset [DONE]
-	- Fix issue with 1st page URL. Inject element before ALM to reset the page number.
-	- https://wpdev.local/seo-offset/page/2
-
-- Preloaded: Update all if(addons.preloaded === 'true') parameters in add-ons to if(addons.preloaded) [DONE]
-- ACF: ACF Blocks not working when passing block ID to shortcode.
-- Single Post: Fix issue with Single Post Preview not working.
-
-- Nested [DONE]
-- ImagesLoaded. [DONE]
-- SetFocus Not Working. [DONE]
-- Remove Transition Container settings. [DONE]
-- Table of Contents [DONE]
-- Lazy Load Images [DONE]
-	- WooCommerce. [DONE]
-	- Elementor. [DONE]
-- Table Container Type [DONE]
-	- Table layouts. [DONE]
-
-
-ADD-ON CHANGES
-
-FILTERS
-* UPDATE: Remove all references and output of `alm-reveal` divs.
-* UPDATE: Updated JS parameters to match updates in ALM 7.0.
-
-Cache
-* FIX: Fixed issue with display of cache URL on the Cache admin page.
-
-Paging [2.0]
-* UPDATE: Reduced Ajax requests on initial page load. Previously Paging add-on dispatched 2 requests and we have reduced this to a single request.
-* UPDATE: Pagination container is now created on the server side and not with Javascript on page load. This reduces the CLS (Cumulative Layout Shift) of the functionality.
-* UPDATE: Adding required changes for Ajax Load More 7.0 and removal of `alm-reveal` wrapper.
-* UPDATE: Improved loading animation and timing of pagination display.
-* UPDATE: Code cleanup, CSS updates and organization.
-* FIX: Fixed issue where first page link in paging naviagtion could result in a JS error.
-
-Preloaded
-* UPDATE: Remove all references and output of `alm-reveal` divs.
-* UPDATE: Code cleanup and oragnization.
-
-Layouts
-* UPDATE: Updated layouts CSS and HTML to remove all references to `alm-reveal` divs.
-* UPDATE: Code cleanup and oragnization.
-
-SEO
-* UPDATE: Updated JS parameters to match updates in ALM 7.0.
-* UPDATE: Code cleanup and oragnization.
-* FIX: Fixed issue with SEO Offset not working to update URL params.
-
-Next Page
-* FIX: Fixed issue with the Auto implementation method attempting to run in the_excerpt() requests. This issue resulted from a core WP bug with excerpt display in Ajax requests.
-
-*/
-
-define( 'ALM_VERSION', '6.2.0.3' );
-define( 'ALM_RELEASE', 'Novemver 6, 2023' );
+define( 'ALM_VERSION', '7.0.0' );
+define( 'ALM_RELEASE', 'January 16, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -530,7 +436,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$id            = isset( $params['id'] ) ? $params['id'] : '';
 			$post_id       = isset( $params['post_id'] ) ? $params['post_id'] : '';
 			$slug          = isset( $params['slug'] ) ? $params['slug'] : '';
-			$canonical_url = isset( $params['canonical_url'] ) ? esc_url( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore
+			$canonical_url = isset( $params['canonical_url'] ) ? esc_attr( $params['canonical_url'] ) : esc_url( $_SERVER['HTTP_REFERER'] ); // phpcs:ignore
 
 			// Ajax Query Type.
 			$query_type = isset( $params['query_type'] ) ? $params['query_type'] : 'standard'; // 'standard' or 'totalposts' - totalposts returns $alm_found_posts.
