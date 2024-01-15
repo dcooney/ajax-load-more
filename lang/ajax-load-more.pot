@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-15T15:02:48+00:00\n"
+"POT-Creation-Date: 2024-01-15T18:14:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:365
+#: ajax-load-more.php:305
 msgid "Settings"
 msgstr ""
 
@@ -165,7 +165,7 @@ msgid "Applying Layout"
 msgstr ""
 
 #: admin/admin.php:560
-#: admin/views/repeater-templates.php:430
+#: admin/views/repeater-templates.php:432
 msgid "Template Updated"
 msgstr ""
 
@@ -271,7 +271,7 @@ msgid "Error Writing File"
 msgstr ""
 
 #: admin/functions/repeater-templates.php:112
-#: admin/views/repeater-templates.php:374
+#: admin/views/repeater-templates.php:376
 msgid "Something went wrong and the data could not be saved."
 msgstr ""
 
@@ -389,7 +389,7 @@ msgstr ""
 #: admin/functions/settings.php:430
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: ajax-load-more.php:460
+#: ajax-load-more.php:400
 msgid "Load More"
 msgstr ""
 
@@ -1817,7 +1817,7 @@ msgstr ""
 #: admin/views/filters.php:41
 #: admin/views/go-pro.php:63
 #: admin/views/repeater-templates.php:133
-#: admin/views/repeater-templates.php:480
+#: admin/views/repeater-templates.php:482
 msgid "Learn More"
 msgstr ""
 
@@ -2646,7 +2646,7 @@ msgid "Theme Repeaters"
 msgstr ""
 
 #: admin/views/repeater-templates.php:93
-#: admin/views/repeater-templates.php:253
+#: admin/views/repeater-templates.php:255
 msgid "Location"
 msgstr ""
 
@@ -2674,31 +2674,31 @@ msgstr ""
 msgid "Enter the PHP and HTML markup for this template."
 msgstr ""
 
-#: admin/views/repeater-templates.php:234
+#: admin/views/repeater-templates.php:236
 msgid "Save Template"
 msgstr ""
 
-#: admin/views/repeater-templates.php:251
+#: admin/views/repeater-templates.php:253
 msgid "It appears you are loading the <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/#default-template\" target=\"_blank\"><b>default template</b></a> (<em>default.php</em>) from your current theme directory. To modify this template, you must edit the file directly on your server."
 msgstr ""
 
-#: admin/views/repeater-templates.php:263
+#: admin/views/repeater-templates.php:265
 msgid "Repeater Templates editing has been disabled for this instance of Ajax Load More. To enable the template editing, please remove the <strong>ALM_DISABLE_REPEATER_TEMPLATES</strong> PHP constant from your wp-config.php (or functions.php) and re-activate the plugin."
 msgstr ""
 
-#: admin/views/repeater-templates.php:338
+#: admin/views/repeater-templates.php:340
 msgid "Saving template..."
 msgstr ""
 
-#: admin/views/repeater-templates.php:409
+#: admin/views/repeater-templates.php:411
 msgid "Updating Template"
 msgstr ""
 
-#: admin/views/repeater-templates.php:474
+#: admin/views/repeater-templates.php:476
 msgid "What's a Repeater Template?"
 msgstr ""
 
-#: admin/views/repeater-templates.php:476
+#: admin/views/repeater-templates.php:478
 msgid "A <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/repeater-templates/\" target=\"_blank\">Repeater Template</a> is a snippet of code that will execute over and over within a <a href=\"https://developer.wordpress.org/themes/basics/the-loop/\" target=\"_blank\">WordPress loop</a>"
 msgstr ""
 
@@ -2722,15 +2722,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:342
+#: ajax-load-more.php:282
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:443
+#: ajax-load-more.php:383
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:444
+#: ajax-load-more.php:384
 msgid "No results found."
 msgstr ""
 

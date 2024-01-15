@@ -54,7 +54,6 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 							// Only display .php files files.
 							if ( 'php' === $file_extension ) {
 								?>
-
 							<div class="row template" id="tr-<?php echo esc_html( $id ); ?>">
 								<h3 class="heading" tabindex="0"><?php echo basename( $file ); ?></h3>
 								<div class="expand-wrap">
@@ -72,16 +71,17 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 												?>
 												<textarea rows="10" id="template-tr-<?php echo $id; ?>" class="_alm_repeater"><?php echo $tr_contents; ?></textarea>
 												<script>
-													var editor_default = CodeMirror.fromTextArea(document.getElementById("template-tr-<?php echo $id; ?>"), {
-													mode:  "application/x-httpd-php",
-													lineNumbers: true,
-													lineWrapping: true,
-													indentUnit: 0,
-													matchBrackets: true,
-													readOnly: true,
-													viewportMargin: Infinity,foldGutter: true,
-		gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-													extraKeys: {"Ctrl-Space": "autocomplete"},
+													var editor_default = CodeMirror.fromTextArea(document.getElementById("template-tr-<?php echo esc_attr( $id ); ?>"), {
+														mode:  "application/x-httpd-php",
+														lineNumbers: true,
+														styleActiveLine: true,
+														lineWrapping: true,
+														matchBrackets: true,
+														viewportMargin: Infinity,
+														foldGutter: true,
+														viewportMargin: Infinity,
+														readOnly: true,
+														gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 													});
 												</script>
 											</div>
@@ -96,12 +96,12 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 											</div>
 										</div>
 										<?php
-											$repeater_options = array(
+											$repeater_options = [
 												'path' => $file,
 												'name' => basename( $file ),
 												'dir'  => $dir,
 												'type' => 'theme-repeater',
-											);
+											];
 											include ALM_PATH . 'admin/includes/components/repeater-options.php';
 											unset( $repeater_options );
 											?>
@@ -110,7 +110,7 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 								</div>
 							</div>
 								<?php
-								$count++;
+								++$count;
 								unset( $template );
 								unset( $file );
 							}
@@ -214,13 +214,15 @@ $alm_theme_repeaters = isset( $_GET['theme-repeaters'] ) ? true : false;
 										var editor_default = CodeMirror.fromTextArea(document.getElementById("template-default"), {
 											mode:  "application/x-httpd-php",
 											lineNumbers: true,
+											styleActiveLine: true,
 											lineWrapping: true,
-											indentUnit: 0,
 											matchBrackets: true,
+											readOnly: true,
+											viewportMargin: Infinity,
+											foldGutter: true,
+											viewportMargin: Infinity,
 											readOnly: <?php echo esc_attr( $alm_read_only ); ?>,
-											viewportMargin: Infinity,foldGutter: true,
-	gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
-											extraKeys: {"Ctrl-Space": "autocomplete"},
+											gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 										});
 									</script>
 								</div>
