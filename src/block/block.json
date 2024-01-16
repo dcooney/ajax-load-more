@@ -1,0 +1,16 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "ajax-load-more/render",
+	"title": "Ajax Load More",
+	"category": "ajax-load-more",
+	"description": "The ultimate infinite scroll and lazy load solution for your WordPress content.",
+	"textdomain": "ajax-load-more",
+	"icon": "share",
+	"supports": {
+		"align": false
+	},
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"render": "file:./render.php"
+}
