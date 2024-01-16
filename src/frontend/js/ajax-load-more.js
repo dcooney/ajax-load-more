@@ -566,6 +566,8 @@ let alm_is_filtering = false;
 						window.almBuildPagination(totalposts, alm, false);
 					}
 					if (total > 0) {
+						// Reset container opacity.
+						alm.addons.paging_container.style.opacity = 0;
 						// Inject content.
 						alm.addons.paging_container.innerHTML = alm.html;
 
@@ -895,18 +897,21 @@ let alm_is_filtering = false;
 			const { paging_container } = alm.addons; // Get content container.
 
 			if (paging_container) {
-				paging_container.style.outline = 'none';
-				alm.AjaxLoadMore.resetBtnText(); // Reset button text.
+				almFadeIn(paging_container, 150); // Fade in paging container.
 
-				// Delay initial paging reveal to avoid positioning issues.
+				// Delay reveal of paging content.
+				setTimeout(function () {
+					alm.main.classList.remove('alm-loading'); // Remove `alm-loading` class
+				}, 125);
+
+				// Delay initial pagination display to avoid positioning issues.
 				setTimeout(function () {
 					if (typeof almFadePageControls === 'function') {
 						window.almFadePageControls(alm.btnWrap); // Show paging controls.
 					}
-					if (paging_container && typeof almPagingSetHeight === 'function') {
+					if (typeof almPagingSetHeight === 'function') {
 						window.almPagingSetHeight(paging_container); // Set container height.
 					}
-					alm.main.classList.remove('alm-loading'); // Remove `alm-loading` class
 				}, 250);
 			}
 		};

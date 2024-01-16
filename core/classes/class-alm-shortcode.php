@@ -1216,7 +1216,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Paging before.
 			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
-				$ajaxloadmore .= apply_filters( 'alm_paging_after', '<div class="alm-paging-content">' );
+				$ajaxloadmore .= apply_filters( 'alm_paging_after', '<div class="alm-paging-content" style="opacity: 0; outline: none;">' );
 			}
 
 			// Preloaded.
