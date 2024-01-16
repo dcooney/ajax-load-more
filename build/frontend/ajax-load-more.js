@@ -12142,17 +12142,19 @@ let alm_is_filtering = false;
 				// Delay reveal of paging content.
 				setTimeout(function () {
 					alm.main.classList.remove('alm-loading'); // Remove `alm-loading` class
-				}, 125);
+				}, 150);
 
 				// Delay initial pagination display to avoid positioning issues.
 				setTimeout(function () {
+					paging_container.style.removeProperty('opacity'); // Remove initial opacity prop.
+
 					if (typeof almFadePageControls === 'function') {
-						window.almFadePageControls(alm.btnWrap); // Show paging controls.
+						window.almFadePageControls(alm.btnWrap); // Fade in paging controls.
 					}
 					if (typeof almPagingSetHeight === 'function') {
-						window.almPagingSetHeight(paging_container); // Set container height.
+						window.almPagingSetHeight(paging_container); // Fade in container height.
 					}
-				}, 250);
+				}, 275);
 			}
 		};
 
