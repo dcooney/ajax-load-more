@@ -213,12 +213,11 @@ global $post;theImplementationGuidehttpstheImplementationGuidehttpstheImplementa
 
 = Which browsers are supported? =
 
--  Firefox (Mac, PC, iOS)
 -  Chrome (Mac, PC, iOS, Android)
+-  Firefox (Mac, PC, iOS)
 -  Safari (Mac, iOS)
--  Opera
 -  Android
--  IE11+
+-  MS Edge
 
 = How Can You Contribute? =
 Issues and pull requests can be submitted via [GitHub](https://github.com/dcooney/wordpress-ajax-load-more).
@@ -267,6 +266,8 @@ This Ajax Load More update may introduce breaking changes for core plugin CSS st
 
 Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the `.alm-reveal` div used to display the Ajax loaded content.
 If you are using the Filters, SEO or Paging add-ons please be sure to update these add-ons after updating the core Ajax Load More plugin.
+
+[View Release Notes](https://connekthq.com/ajax-load-more-7-0/)
 
 * NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
 * NEW: Added `transition_delay` parameter that allows for staggering the display of each post incrementally as content is loaded.
