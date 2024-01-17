@@ -274,7 +274,7 @@ If you are using the Filters, SEO or Paging add-ons please be sure to update the
 * UPDATE: Improved content loading for infinite scroll and when using Paging add-on.
 * UPDATE: Improved Masonry loading and transition timing.
 * UPDATE: Removed `transition_container_classes` parameter.
-* UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
+* UPDATE: Removed legacy browser polyfills and helper functions to lower the overall compiled JS size.
 * UPDATE: Updated plugin installer class.
 * FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
 * FIX: Fixed issue with Single Posts add-on preview function. This was no longer working but it functional again.
