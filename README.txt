@@ -263,8 +263,9 @@ How to install Ajax Load More.
 
 = 7.0.0 - January 16, 2024 =
 UPGRADE NOTICE:
-This Ajax Load More update may introduce breaking changes for add-on functionality.
-Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the .alm-reveal div used to hold the Ajax loaded content.
+This Ajax Load More update may introduce breaking changes for core plugin CSS styling and add-on functionality.
+
+Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the `.alm-reveal` div used to display the Ajax loaded content.
 If you are using the Filters, SEO or Paging add-ons please be sure to update these add-ons after updating the core Ajax Load More plugin.
 
 * NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
