@@ -261,7 +261,8 @@ How to install Ajax Load More.
 == Changelog ==
 
 = 7.0.1 - January 23, 2024 =
-* HOTFIX: Fixed Filters add-on issue that would appear when using the Paging add-on. Filters would remain disabled after interacting with a filter due to a missing callback function.
+* HOTFIX: Fixed issue with Filters add-on that would appear when using the Paging add-on. Filters would remain disabled after interacting with a filter due to a missing callback function.
+* HOTFIX: Fixed issue with display of Single Posts data when being used with Elementor.
 
 
 = 7.0.0 - January 16, 2024 =

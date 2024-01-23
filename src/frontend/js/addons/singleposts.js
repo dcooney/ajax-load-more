@@ -151,15 +151,13 @@ function singlepostsGetCustomElements(content = '', customElements = [], id) {
 /**
  * Create data attributes for a Single Post item.
  *
- * @param {Object} alm      The ALM object.
- * @param {Array}  elements The elements HTML nodes as an array.
+ * @param {Object}  alm     The ALM object.
+ * @param {Element} element The elements HTML element to add data params.
  * @return {Array}          Modified HTML element.
  */
-export function addSinglePostsAttributes(alm, elements) {
-	// Get first element in NodeList.
-	const element = elements?.length ? elements[0] : false;
+export function addSinglePostsAttributes(alm, element) {
 	if (!element) {
-		return elements;
+		return [];
 	}
 
 	const { page, addons } = alm;
@@ -168,5 +166,5 @@ export function addSinglePostsAttributes(alm, elements) {
 	element.dataset.url = addons.single_post_permalink;
 	element.dataset.page = addons.single_post_target ? parseInt(page) + 1 : page;
 	element.dataset.title = addons.single_post_title;
-	return elements;
+	return element;
 }
