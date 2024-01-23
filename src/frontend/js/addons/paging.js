@@ -1,3 +1,5 @@
+import insertScript from '../modules/insertScript';
+
 /**
  * Create add-on params for ALM.
  *
@@ -25,4 +27,32 @@ export function pagingCreateParams(alm) {
 		alm.pause = alm.addons.preloaded ? true : alm.pause; // If preloaded, pause ALM.
 	}
 	return alm;
+}
+
+/**
+ * Function dispatched after paging content has been loaded.
+ *
+ * @param {Object}  alm              The alm object.
+ * @param {boolean} alm_is_filtering Is ALM filtering.
+ */
+export function pagingComplete(alm, alm_is_filtering = false) {
+	const { main, AjaxLoadMore, last_loaded } = alm;
+
+	main.classList.remove('alm-loading');
+	AjaxLoadMore.triggerAddons(alm);
+
+	if (typeof almOnPagingComplete === 'function') {
+		window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
+	}
+
+	if (alm_is_filtering && alm.addons.filters && typeof almFiltersAddonComplete === 'function') {
+		window.almFiltersAddonComplete(main); // Callback: Filters Add-on Complete
+	}
+
+	if (typeof almComplete === 'function') {
+		window.almComplete(alm); // Callback: ALM Complete
+	}
+
+	// Trigger <script /> tags in templates.
+	insertScript.init(last_loaded);
 }

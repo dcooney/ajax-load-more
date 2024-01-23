@@ -8764,7 +8764,102 @@ function nextpageCreateParams(alm) {
 	return alm;
 }
 
+;// CONCATENATED MODULE: ./src/frontend/js/modules/insertScript.js
+/**
+ * Search nodes for <script/> tags and run scripts.
+ * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
+ *
+ * @since 5.0
+ */
+const insertScript = {
+	/**
+	 * Initiate the script insertion.
+	 *
+	 * @param {Array} nodes The HTML nodes.
+	 */
+	init(nodes) {
+		if (!nodes?.length) {
+			return false;
+		}
+		nodes.forEach((node) => {
+			this.check(node);
+		});
+	},
+	/**
+	 * Parse HTML node from script.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The modified HTML node.
+	 */
+	check(node) {
+		if (this.isScript(node) === true) {
+			node.parentNode.replaceChild(this.clone(node), node);
+		} else {
+			let i = 0;
+			let children = node.childNodes;
+
+			if (children === undefined) {
+				const parser = new DOMParser();
+				const data = parser.parseFromString(node, 'text/html');
+				if (data) {
+					children = data.body.childNodes;
+				}
+			}
+			while (i < children.length) {
+				this.replace(children[i++]);
+			}
+		}
+		return node;
+	},
+
+	/**
+	 * Replace the script tag with a clone.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The modified node.
+	 */
+	replace(node) {
+		if (this.isScript(node) === true) {
+			node.parentNode.replaceChild(this.clone(node), node);
+		} else {
+			let i = 0;
+			const children = node.childNodes;
+			while (i < children.length) {
+				this.replace(children[i++]);
+			}
+		}
+		return node;
+	},
+
+	/**
+	 * Clone the tag.
+	 *
+	 * @param {HTMLElement} node The HTML node/element.
+	 * @return {HTMLElement}     The cloned node.
+	 */
+	clone(node) {
+		const script = document.createElement('script');
+		script.text = node.innerHTML;
+		for (let i = node.attributes.length - 1; i >= 0; i--) {
+			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
+		}
+		return script;
+	},
+
+	/**
+	 * Is the node a script tag.
+	 *
+	 * @param {HTMLElement} node The html node.
+	 */
+	isScript(node) {
+		return node.tagName === 'SCRIPT';
+	},
+};
+/* harmony default export */ var modules_insertScript = (insertScript);
+
 ;// CONCATENATED MODULE: ./src/frontend/js/addons/paging.js
+
+
 /**
  * Create add-on params for ALM.
  *
@@ -8792,6 +8887,34 @@ function pagingCreateParams(alm) {
 		alm.pause = alm.addons.preloaded ? true : alm.pause; // If preloaded, pause ALM.
 	}
 	return alm;
+}
+
+/**
+ * Function dispatched after paging content has been loaded.
+ *
+ * @param {Object}  alm              The alm object.
+ * @param {boolean} alm_is_filtering Is ALM filtering.
+ */
+function pagingComplete(alm, alm_is_filtering = false) {
+	const { main, AjaxLoadMore, last_loaded } = alm;
+
+	main.classList.remove('alm-loading');
+	AjaxLoadMore.triggerAddons(alm);
+
+	if (typeof almOnPagingComplete === 'function') {
+		window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
+	}
+
+	if (alm_is_filtering && alm.addons.filters && typeof almFiltersAddonComplete === 'function') {
+		window.almFiltersAddonComplete(main); // Callback: Filters Add-on Complete
+	}
+
+	if (typeof almComplete === 'function') {
+		window.almComplete(alm); // Callback: ALM Complete
+	}
+
+	// Trigger <script /> tags in templates.
+	modules_insertScript.init(last_loaded);
 }
 
 ;// CONCATENATED MODULE: ./src/frontend/js/functions/constants.js
@@ -10710,99 +10833,6 @@ function almSetFilters(speed, data, type, element) {
 	}
 }
 
-;// CONCATENATED MODULE: ./src/frontend/js/modules/insertScript.js
-/**
- * Search nodes for <script/> tags and run scripts.
- * Scripts cannot run with appendChild or innerHTML so this is necessary to function.
- *
- * @since 5.0
- */
-const insertScript = {
-	/**
-	 * Initiate the script insertion.
-	 *
-	 * @param {Array} nodes The HTML nodes.
-	 */
-	init(nodes) {
-		if (!nodes?.length) {
-			return false;
-		}
-		nodes.forEach((node) => {
-			this.check(node);
-		});
-	},
-	/**
-	 * Parse HTML node from script.
-	 *
-	 * @param {HTMLElement} node The HTML node/element.
-	 * @return {HTMLElement}     The modified HTML node.
-	 */
-	check(node) {
-		if (this.isScript(node) === true) {
-			node.parentNode.replaceChild(this.clone(node), node);
-		} else {
-			let i = 0;
-			let children = node.childNodes;
-
-			if (children === undefined) {
-				const parser = new DOMParser();
-				const data = parser.parseFromString(node, 'text/html');
-				if (data) {
-					children = data.body.childNodes;
-				}
-			}
-			while (i < children.length) {
-				this.replace(children[i++]);
-			}
-		}
-		return node;
-	},
-
-	/**
-	 * Replace the script tag with a clone.
-	 *
-	 * @param {HTMLElement} node The HTML node/element.
-	 * @return {HTMLElement}     The modified node.
-	 */
-	replace(node) {
-		if (this.isScript(node) === true) {
-			node.parentNode.replaceChild(this.clone(node), node);
-		} else {
-			let i = 0;
-			const children = node.childNodes;
-			while (i < children.length) {
-				this.replace(children[i++]);
-			}
-		}
-		return node;
-	},
-
-	/**
-	 * Clone the tag.
-	 *
-	 * @param {HTMLElement} node The HTML node/element.
-	 * @return {HTMLElement}     The cloned node.
-	 */
-	clone(node) {
-		const script = document.createElement('script');
-		script.text = node.innerHTML;
-		for (let i = node.attributes.length - 1; i >= 0; i--) {
-			script.setAttribute(node.attributes[i].name, node.attributes[i].value);
-		}
-		return script;
-	},
-
-	/**
-	 * Is the node a script tag.
-	 *
-	 * @param {HTMLElement} node The html node.
-	 */
-	isScript(node) {
-		return node.tagName === 'SCRIPT';
-	},
-};
-/* harmony default export */ var modules_insertScript = (insertScript);
-
 ;// CONCATENATED MODULE: ./src/frontend/js/modules/masonry.js
 
 const masonry_imagesLoaded = __webpack_require__(564);
@@ -11808,8 +11838,9 @@ let alm_is_filtering = false;
 					if (total > 0) {
 						// Reset container opacity.
 						alm.addons.paging_container.style.opacity = 0;
+
 						// Inject content.
-						alm.addons.paging_container.innerHTML = alm.html;
+						//alm.addons.paging_container.innerHTML = alm.html;
 
 						// Start paging functionaity.
 						alm.AjaxLoadMore.pagingInit();
@@ -11973,40 +12004,30 @@ let alm_is_filtering = false;
 					/**
 					 * Paging.
 					 */
+					const { paging_container } = alm.addons;
+
 					if (alm.init) {
-						alm.main.classList.remove('alm-loading');
-						alm.AjaxLoadMore.triggerAddons(alm);
+						// Paging first run.
+						if (paging_container) {
+							await displayPagingResults(alm, nodes); // Inject content.
+
+							// Paging -> Images Loaded: Run complete callbacks and checks.
+							ajax_load_more_imagesLoaded(paging_container, async function () {
+								pagingComplete(alm, alm_is_filtering);
+								alm_is_filtering = false;
+							});
+						}
 					} else {
-						const { paging_container } = alm.addons;
 						if (paging_container) {
 							await almFadeOut(paging_container, 250);
-							await displayPagingResults(alm, nodes);
-							alm.main.classList.remove('alm-loading');
+							await displayPagingResults(alm, nodes); // Inject content.
 
 							// Paging -> Images Loaded: Run complete callbacks and checks.
 							ajax_load_more_imagesLoaded(paging_container, async function () {
 								await almFadeIn(paging_container, 250);
-
 								paging_container.style.opacity = '';
-								alm.AjaxLoadMore.triggerAddons(alm);
 
-								if (typeof almOnPagingComplete === 'function') {
-									window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
-								}
-
-								if (alm_is_filtering && alm.addons.filters) {
-									if (typeof almFiltersAddonComplete === 'function') {
-										window.almFiltersAddonComplete(el); // Callback: Filters Add-on Complete
-									}
-								}
-
-								if (typeof almComplete === 'function') {
-									window.almComplete(alm); // Callback: ALM Complete
-								}
-
-								// Trigger <script /> tags in templates.
-								modules_insertScript.init(alm.last_loaded);
-
+								pagingComplete(alm, alm_is_filtering);
 								alm_is_filtering = false;
 							});
 						}

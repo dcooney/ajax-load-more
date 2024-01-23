@@ -6,7 +6,7 @@ import { commentsCreateParams } from './addons/comments';
 import { elementor, elementorCreateParams, elementorGetContent, elementorInit, elementorLoaded } from './addons/elementor';
 import { filtersCreateParams } from './addons/filters';
 import { nextpageCreateParams } from './addons/next-page';
-import { pagingCreateParams } from './addons/paging';
+import { pagingComplete, pagingCreateParams } from './addons/paging';
 import { preloadedCreateParams, setPreloadedParams } from './addons/preloaded';
 import { createSEOOffset, seoCreateParams } from './addons/seo';
 import { singlepostsCreateParams, singlepostsHTML } from './addons/singleposts';
@@ -568,8 +568,9 @@ let alm_is_filtering = false;
 					if (total > 0) {
 						// Reset container opacity.
 						alm.addons.paging_container.style.opacity = 0;
+
 						// Inject content.
-						alm.addons.paging_container.innerHTML = alm.html;
+						//alm.addons.paging_container.innerHTML = alm.html;
 
 						// Start paging functionaity.
 						alm.AjaxLoadMore.pagingInit();
@@ -733,40 +734,30 @@ let alm_is_filtering = false;
 					/**
 					 * Paging.
 					 */
+					const { paging_container } = alm.addons;
+
 					if (alm.init) {
-						alm.main.classList.remove('alm-loading');
-						alm.AjaxLoadMore.triggerAddons(alm);
+						// Paging first run.
+						if (paging_container) {
+							await displayPagingResults(alm, nodes); // Inject content.
+
+							// Paging -> Images Loaded: Run complete callbacks and checks.
+							imagesLoaded(paging_container, async function () {
+								pagingComplete(alm, alm_is_filtering);
+								alm_is_filtering = false;
+							});
+						}
 					} else {
-						const { paging_container } = alm.addons;
 						if (paging_container) {
 							await almFadeOut(paging_container, 250);
-							await displayPagingResults(alm, nodes);
-							alm.main.classList.remove('alm-loading');
+							await displayPagingResults(alm, nodes); // Inject content.
 
 							// Paging -> Images Loaded: Run complete callbacks and checks.
 							imagesLoaded(paging_container, async function () {
 								await almFadeIn(paging_container, 250);
-
 								paging_container.style.opacity = '';
-								alm.AjaxLoadMore.triggerAddons(alm);
 
-								if (typeof almOnPagingComplete === 'function') {
-									window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
-								}
-
-								if (alm_is_filtering && alm.addons.filters) {
-									if (typeof almFiltersAddonComplete === 'function') {
-										window.almFiltersAddonComplete(el); // Callback: Filters Add-on Complete
-									}
-								}
-
-								if (typeof almComplete === 'function') {
-									window.almComplete(alm); // Callback: ALM Complete
-								}
-
-								// Trigger <script /> tags in templates.
-								insertScript.init(alm.last_loaded);
-
+								pagingComplete(alm, alm_is_filtering);
 								alm_is_filtering = false;
 							});
 						}
