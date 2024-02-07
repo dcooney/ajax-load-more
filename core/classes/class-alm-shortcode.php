@@ -151,8 +151,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'paging'                       => 'false',
 						'paging_controls'              => 'false',
 						'paging_show_at_most'          => '7',
-						'paging_classes'               => '',
 						'paging_scroll'                => false,
+						'paging_classes'               => apply_filters( 'paging_classes', '' ),
+						'paging_container_classes'     => apply_filters( 'alm_paging_container_classes', '' ),
 						'paging_first_label'           => apply_filters( 'alm_paging_first_label', '' ),
 						'paging_last_label'            => apply_filters( 'alm_paging_last_label', '' ),
 						'paging_previous_label'        => apply_filters( 'alm_paging_previous_label', '&laquo;' ),
@@ -376,10 +377,6 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			do_action( 'alm_enqueue_external_scripts', $atts );
 
 			// End Enqueue Scripts.
-
-			if ( $seo === 'true' && has_action( 'alm_seo_installed' ) ) {
-				$filters = false;
-			}
 
 			// Filters - Set initial shortcode state.
 			$filters = $filters === 'true' && class_exists( 'ALMFilters' );
@@ -1216,7 +1213,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			// Paging before.
 			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
-				$ajaxloadmore .= apply_filters( 'alm_paging_after', '<div class="alm-paging-content" style="opacity: 0; outline: none;">' );
+				$paging_container_classes = $paging_container_classes ? ' ' . esc_attr( $paging_container_classes ) : '';
+				$ajaxloadmore .= apply_filters( 'alm_paging_before', '<div class="alm-paging-content' . $paging_container_classes .'" style="opacity: 0; outline: none;">' );
 			}
 
 			// Preloaded.

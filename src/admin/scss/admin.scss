@@ -77,13 +77,13 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	img {
 		max-width: 100%;
 	}
-	.text-left{
+	.text-left {
 		text-align: left;
 	}
-	.text-center{
+	.text-center {
 		text-align: center;
 	}
-	.text-right{
+	.text-right {
 		text-align: right;
 	}
 }
@@ -100,11 +100,11 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 	max-width: 1600px;
 	position: relative;
 	width: 100%;
-	@media screen and (min-width: $break){
+	@media screen and (min-width: $break) {
 		display: flex;
 		justify-content: space-between;
 	}
-	&.no-flex{
+	&.no-flex {
 		display: block;
 	}
 }
@@ -115,15 +115,15 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 .ajax-load-more div.error,
 .ajax-load-more div.notice-success,
 .ajax-load-more div.notice-updated,
-.ajax-load-more div.notice-error{
+.ajax-load-more div.notice-error {
 	margin: 5px 0;
 	border-radius: $radius;
 	overflow: hidden;
 	padding: 5px 10px;
-	p{
+	p {
 		margin: 0.5em 0;
 	}
-	.notice-dismiss{
+	.notice-dismiss {
 		top: 2px;
 	}
 }
@@ -193,6 +193,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 		cursor: help;
 	}
 }
+
 .ajax-load-more {
 	code {
 		background: #fcf3d0;
@@ -205,6 +206,13 @@ body.ajax-load-more_page_ajax-load-more-woocommerce {
 		padding: 0;
 		margin: 0 0 15px;
 		color: $paragraph;
+	}
+
+	table {
+		code {
+			background: $light_grey;
+			color: $paragraph;
+		}
 	}
 }
 
@@ -775,7 +783,7 @@ a.button-small {
 	grid-template-columns: repeat(12, 1fr);
 	align-items: start;
 	gap: 15px;
-	@media screen and (min-width: $break){
+	@media screen and (min-width: $break) {
 		gap: $padding;
 	}
 	padding: $padding;
@@ -783,12 +791,12 @@ a.button-small {
 	+ .alm-row {
 		padding-top: 0;
 	}
-	&.no-padding-btm{
+	&.no-padding-btm {
 		padding-bottom: 0;
 	}
 	.column {
 		grid-column: span 12 / span 12;
-		@media screen and (min-width: $break){
+		@media screen and (min-width: $break) {
 			&.column-3 {
 				grid-column: span 3 / span 3;
 			}
@@ -802,7 +810,7 @@ a.button-small {
 	}
 }
 
-.alm-template-actions{
+.alm-template-actions {
 	display: flex;
 	gap: 10px;
 	width: 100%;
@@ -1360,7 +1368,7 @@ hr.indented {
 /* Columns */
 .ajax-load-more .cnkt-main {
 	width: 100%;
-	@media screen and (min-width: $break){
+	@media screen and (min-width: $break) {
 		width: 70%;
 	}
 	background: #fff;
@@ -1383,7 +1391,7 @@ hr.indented {
 	clear: both;
 }
 .ajax-load-more .cnkt-main .group,
-.ajax-load-more .cnkt-sidebar .cta{
+.ajax-load-more .cnkt-sidebar .cta {
 	border: 1px solid $border;
 	box-shadow: 0 0 5px rgba(#000, 0.1);
 	&.no-shadow {
@@ -1527,7 +1535,7 @@ hr.indented {
 	padding: calc($padding/2);
 
 	// Single column.
-	&--single{
+	&--single {
 		grid-template-columns: repeat(1, 1fr);
 		padding: 0;
 		border-radius: $radius;
@@ -1556,7 +1564,7 @@ hr.indented {
 		a {
 			background: $light_grey;
 			border-radius: $radius_lg;
-			box-shadow: inset 0 0 0 10px #fff;;
+			box-shadow: inset 0 0 0 10px #fff;
 		}
 		img {
 			padding: 10px;
@@ -1669,10 +1677,10 @@ hr.indented {
 		@media screen and (min-width: 1600px) {
 			grid-template-columns: repeat(3, 1fr);
 		}
-		&::after{
+		&::after {
 			display: none;
 		}
-		.plugin{
+		.plugin {
 			width: 100% !important;
 			margin: 0 !important;
 			border-radius: $radius;
@@ -1730,7 +1738,7 @@ hr.indented {
 }
 
 // Add-on callouts.
-.ajax-load-more{
+.ajax-load-more {
 	.call-out {
 		background: $purple;
 		padding: $padding_sm;
@@ -1757,14 +1765,14 @@ hr.indented {
 				display: block;
 				font-size: 22px;
 				opacity: 0.5;
-				@media screen and (max-width: $tablet){
+				@media screen and (max-width: $tablet) {
 					display: none;
 				}
 			}
 		}
 
 		// Centered.
-		&--centered{
+		&--centered {
 			flex-direction: column;
 			p {
 				display: block;
@@ -1778,35 +1786,34 @@ hr.indented {
 					margin-top: 10px;
 				}
 			}
-
 		}
-		&.text-left{
+		&.text-left {
 			text-align: left;
 		}
-		&.radius-normal{
+		&.radius-normal {
 			border-radius: $radius;
 		}
-		&.margin-bottom{
+		&.margin-bottom {
 			margin-bottom: $padding;
 		}
-		&.margin-top{
+		&.margin-top {
 			margin-top: $padding;
-			&-half{
+			&-half {
 				margin-top: calc($padding/2);
 			}
 		}
 		// Used in shortcode builder.
-		&--shortcode-builder{
+		&--shortcode-builder {
 			padding: 0;
 			border-top: 1px solid $border;
-			& .call-out{
+			& .call-out {
 				border-radius: 0 0 $radius $radius;
-				p{
+				p {
 					font-size: 13px;
 				}
 			}
 		}
-		&.blue{
+		&.blue {
 			background-color: $blue_light;
 			border-left: 6px solid #4e99bf;
 			box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05);
@@ -1814,11 +1821,11 @@ hr.indented {
 				color: $grey;
 				text-shadow: none;
 			}
-			.cnkt-button{
+			.cnkt-button {
 				background: $blue;
 				color: #fff;
 				&:hover,
-				&:focus{
+				&:focus {
 					background: $blue_hover;
 				}
 			}
@@ -1835,11 +1842,11 @@ hr.indented {
 					}
 				}
 			}
-			.cnkt-button{
+			.cnkt-button {
 				background: #fff;
 				color: #59574e;
 				&:hover,
-				&:focus{
+				&:focus {
 					color: #3e3d3a;
 					background: rgba(#fff, 0.9);
 				}
@@ -1856,7 +1863,7 @@ hr.indented {
 		}
 
 		.button,
-		.cnkt-button{
+		.cnkt-button {
 			margin-left: auto;
 		}
 		.cnkt-button {
@@ -1869,7 +1876,7 @@ hr.indented {
 			color: #fff;
 			border: none;
 			&:hover,
-			&:focus{
+			&:focus {
 				background: #5a366c;
 				color: #fff;
 				box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -1898,7 +1905,7 @@ span.cnkt-button {
 	}
 }
 a.cnkt-button:hover,
-.group:hover span.cnkt-button{
+.group:hover span.cnkt-button {
 	background-color: $purple_hover;
 	color: #fff;
 }
@@ -1926,7 +1933,7 @@ span.cnkt-button.installed,
 	box-shadow: 0 5px 10px rgba(0, 0, 0, 0.035);
 	border: 1px solid $border;
 	border-radius: $radius_lg;
-	&:first-of-type{
+	&:first-of-type {
 		margin-top: 0;
 	}
 
@@ -1969,7 +1976,7 @@ span.cnkt-button.installed,
 	text-transform: none;
 	border-bottom: 1px solid $light_border;
 	margin: 0 $padding_sm;
-	font-weight: 500;;
+	font-weight: 500;
 }
 
 .ajax-load-more .cnkt-sidebar .item {
@@ -2097,8 +2104,8 @@ span.cnkt-button.installed,
 			position: static;
 			text-decoration: none;
 			&:hover,
-			&:focus{
-				h4{
+			&:focus {
+				h4 {
 					text-decoration: underline;
 				}
 			}
@@ -2114,8 +2121,6 @@ span.cnkt-button.installed,
 		}
 	}
 }
-
-
 
 // Status indicator.
 .alm-status {
@@ -2230,7 +2235,7 @@ span.cnkt-button.installed,
 }
 
 // Add Repeater Template
-.ajax-load-more{
+.ajax-load-more {
 	.alm-add-template {
 		text-align: center;
 		margin: 20px 0 5px !important;
@@ -2308,7 +2313,7 @@ span.cnkt-button.installed,
 }
 
 // Directory Listing
-.ajax-load-more{
+.ajax-load-more {
 	.alm-dir-listing {
 		ul {
 			padding: 0;
@@ -2358,7 +2363,7 @@ span.cnkt-button.installed,
 			label {
 				display: block;
 				width: 100%;
-				i{
+				i {
 					display: none;
 				}
 			}
@@ -2528,7 +2533,7 @@ span.cnkt-button.installed,
 // Default button.
 .alm-drop-btn {
 	&.active {
-		a.target{
+		a.target {
 			background-color: #fff;
 			& > i {
 				color: $grey;
@@ -2554,7 +2559,7 @@ span.cnkt-button.installed,
 			opacity: 0.5;
 		}
 		&:hover,
-		&:focus{
+		&:focus {
 			border-color: $border_hover;
 			& > i {
 				color: $grey;
@@ -2692,7 +2697,7 @@ span.cnkt-button.installed,
 			line-height: 1.2;
 			font-weight: 400;
 			border-bottom: 1px solid $border;
-			&:last-of-type{
+			&:last-of-type {
 				border: none;
 			}
 			button {
@@ -2712,9 +2717,9 @@ span.cnkt-button.installed,
 					color: $paragraph;
 				}
 				&:hover,
-				&:focus{
+				&:focus {
 					color: $grey_dark;
-					i{
+					i {
 						opacity: 1;
 						color: $paragraph;
 					}
@@ -2722,7 +2727,7 @@ span.cnkt-button.installed,
 				&.updating {
 					background: transparent url('../img/ui/loader.gif') no-repeat left center;
 					cursor: wait;
-					i{
+					i {
 						opacity: 0;
 					}
 					span {
@@ -2731,7 +2736,7 @@ span.cnkt-button.installed,
 				}
 			}
 		}
-		.drop-cta{
+		.drop-cta {
 			padding: 10px 0 0;
 		}
 	}

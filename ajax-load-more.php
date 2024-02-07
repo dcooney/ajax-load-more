@@ -14,6 +14,16 @@
  * @package AjaxLoadMore
  */
 
+/*
+* NEW: Added 'alm_licensing_sslverify' hook to allow users to disable SSL verification when checking for updates.
+* NEW: Added new Paging add-on parameter `paging_container_classes` used for adding CSS classes to the paging HTML container.
+* NEW: Added support for Elementor Loop Grid widget when using Elementor add-on.
+* FIX: Fixed issue with Elementor add-on potentially not disabling the Load More button when no content remains.
+* SECURITY: Various security fixes for admin level plugin settings.
+
+
+*/
+
 define( 'ALM_VERSION', '7.0.1' );
 define( 'ALM_RELEASE', 'January 23, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

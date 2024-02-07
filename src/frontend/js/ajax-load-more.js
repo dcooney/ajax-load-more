@@ -1455,9 +1455,8 @@ let alm_is_filtering = false;
 			if (alm.addons.woocommerce) {
 				wooInit(alm);
 
-				// Trigger `Done` if `paged is less than `pages`.
 				if (alm.addons.woocommerce_settings.paged >= parseInt(alm.addons.woocommerce_settings.pages)) {
-					alm.AjaxLoadMore.triggerDone();
+					alm.AjaxLoadMore.triggerDone(); // Done if `paged is less than `pages`.
 				}
 			}
 
@@ -1465,9 +1464,8 @@ let alm_is_filtering = false;
 			if (alm.addons.elementor && alm.addons.elementor_type && alm.addons.elementor_type === 'posts') {
 				elementorInit(alm);
 
-				// Trigger `Done` if `elementor_next_page` is empty.
-				if (alm.addons.elementor_next_page === '') {
-					alm.AjaxLoadMore.triggerDone();
+				if (!alm.addons.elementor_next_page) {
+					alm.AjaxLoadMore.triggerDone(); // Done if `elementor_next_page` is false.
 				}
 			}
 

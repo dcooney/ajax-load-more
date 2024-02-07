@@ -57,8 +57,7 @@ function alm_license_activation() {
 			'method'    => 'POST',
 			'body'      => $api_params,
 			'timeout'   => 30,
-			'sslverify' => false,
-			// phpcs:ignore
+			'sslverify' => apply_filters( 'alm_licensing_sslverify', false ),
 			// 'blocking'  => true
 		]
 	);

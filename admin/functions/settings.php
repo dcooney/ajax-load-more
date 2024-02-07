@@ -88,16 +88,6 @@ function alm_admin_init() {
 		'alm_general_settings'
 	);
 
-	/* // phpcs:ignore
-	add_settings_field(  // Disable REST API.
-		'_alm_use_rest_api',
-		__( 'REST API', 'ajax-load-more' ),
-		'alm_use_rest_api_callback',
-		'ajax-load-more',
-		'alm_general_settings'
-	);
-	*/
-
 	add_settings_field(  // Legacy Callbacks.
 		'_alm_legacy_callbacks',
 		__( 'Legacy Callbacks', 'ajax-load-more' ),
@@ -216,375 +206,283 @@ function alm_sanitize_settings( $input ) {
 }
 
 /**
- * Diabale Ajax Load More CSS.
+ * Setting: Diabale Ajax Load More CSS.
  *
  * @since 2.0.0
  */
 function alm_disable_css_callback() {
 	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_disable_css'] ) ) {
-		$options['_alm_disable_css'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />';
-	$html .= '<input type="checkbox" id="alm_disable_css_input" name="alm_settings[_alm_disable_css]" value="1"' . ( ( $options['_alm_disable_css'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="alm_disable_css_input">' . __( 'I want to use my own CSS styles.', 'ajax-load-more' ) . '<br/><span style="display:block;"><i class="fa fa-file-text-o"></i> &nbsp;<a href="' . ALM_URL . '/build/frontend/ajax-load-more.css" target="blank">' . __( 'View Ajax Load More CSS', 'ajax-load-more' ) . '</a></span></label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_disable_css'] ) ? '0' : $options['_alm_disable_css'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_disable_css]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_disable_css]" id="alm_disable_css_input" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_disable_css_input">
+			<?php esc_html_e( 'I want to use my own CSS styles.', 'ajax-load-more' ); ?>
+			<br/>
+			<span style="display:block;">
+				<i class="fa fa-file-text-o"></i> &nbsp;
+				<a href="<?php echo esc_url( ALM_URL ); ?>/build/frontend/ajax-load-more.css" target="blank">
+					<?php esc_attr_e( 'View Ajax Load More CSS', 'ajax-load-more' ); ?>
+				</a>
+			</span>
+		</label>
+	<?php
 }
 
 /**
- * Display admin error notices in browser console.
+ * Setting: Display admin error notices in browser console.
  *
  * @since 2.7.2
  */
 function alm_error_notices_callback() {
 	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_error_notices'] ) ) {
-		$options['_alm_error_notices'] = '1';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_error_notices]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_error_notices]" id="_alm_error_notices" value="1"' . ( ( $options['_alm_error_notices'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_error_notices">' . __( 'Display error messaging regarding repeater template updates in the browser console.', 'ajax-load-more' ) . '</label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_error_notices'] ) ? '1' : $options['_alm_error_notices'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_error_notices]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_error_notices]" id="alm_error_notices" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_error_notices">
+			<?php esc_html_e( 'Display error messaging regarding repeater template updates in the browser console.', 'ajax-load-more' ); ?>
+		</label>
+	<?php
 }
 
 /**
- * Disable the dynamic population of categories, tags and authors
+ * Setting: Disable the dynamic population of categories, tags and authors
  *
  * @since 2.6.0
  */
 function alm_disable_dynamic_callback() {
 	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_disable_dynamic'] ) ) {
-		$options['_alm_disable_dynamic'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_disable_dynamic]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_disable_dynamic]" id="_alm_disable_dynamic" value="1"' . ( ( $options['_alm_disable_dynamic'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_disable_dynamic">' . __( 'Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style="display:block">Recommended if you have a large number of categories, tags and/or authors.', 'ajax-load-more' ) . '</label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_disable_dynamic'] ) ? '0' : $options['_alm_disable_dynamic'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_disable_dynamic]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_disable_dynamic]" id="alm_disable_dynamic" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_disable_dynamic">
+			<?php esc_html_e( 'Disable dynamic population of categories, tags and authors in the Shortcode Builder.', 'ajax-load-more' ); ?>
+			<br/>
+			<span>
+				<?php esc_html_e( 'Recommended if you have a large number of categories, tags and/or authors.', 'ajax-load-more' ); ?>
+			</span>
+		</label>
+	<?php
 }
 
 /**
- * The type of container ul or div
+ * Setting: The type of container ul or div
  *
  * @since 2.0.0
  */
 function alm_container_type_callback() {
-
 	$options = get_option( 'alm_settings' );
-
-	if ( ! isset( $options['_alm_container_type'] ) ) {
-		$options['_alm_container_type'] = '1';
-	}
-
-	$html  = '<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1"' . checked( 1, $options['_alm_container_type'], false ) . '/>';
-	$html .= '<label for="_alm_container_type_one">&lt;ul&gt; <span style="padding-top: 2px;">&lt;!-- ' . __( 'Ajax Posts Here', 'ajax-load-more' ) . ' --&gt;</span> &lt;/ul&gt;</label><br/>';
-
-	$html .= '<input type="radio" id="_alm_container_type_two" name="alm_settings[_alm_container_type]" value="2"' . checked( 2, $options['_alm_container_type'], false ) . '/>';
-	$html .= '<label for="_alm_container_type_two">&lt;div&gt; <span style="padding-top: 2px;">&lt;!-- ' . __( 'Ajax Posts Here', 'ajax-load-more' ) . ' --&gt;</span> &lt;/div&gt;</label>';
-
-	$html .= '<label style="cursor: default !important"><span style="display:block">' . __( 'You can modify the container type when building a shortcode.', 'ajax-load-more' ) . '</span></label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_container_type'] ) ? '1' : $options['_alm_container_type'];
+	?>
+	<input type="radio" id="_alm_container_type_one" name="alm_settings[_alm_container_type]" value="1" <?php echo checked( 1, $value, false ); ?> />
+	<label for="_alm_container_type_one">
+		&lt;ul&gt; <span style="padding-top: 2px;">&lt;!--<?php esc_attr_e( 'Ajax Posts Here', 'ajax-load-more' ); ?>--&gt;</span> &lt;/ul&gt;
+	</label>
+	<input type="radio" id="_alm_container_type_two" name="alm_settings[_alm_container_type]" value="2" <?php echo checked( 2, $value, false ); ?> />
+	<label for="_alm_container_type_two">
+		&lt;div&gt; <span style="padding-top: 2px;">&lt;!--<?php esc_attr_e( 'Ajax Posts Here', 'ajax-load-more' ); ?>--&gt;</span> &lt;/div&gt;
+	</label>
+	<label style="cursor: default !important">
+		<span style="display:block"><?php esc_attr_e( 'You can modify the container type when building a shortcode.', 'ajax-load-more' ); ?></span>
+	</label>
+	<?php
 }
 
 /**
- * Add classes to the Ajax Load More wrapper.
+ * Setting: Add classes to the Ajax Load More wrapper.
  *
  * @since 2.0.0
  */
 function alm_class_callback() {
 	$options = get_option( 'alm_settings' );
-	$class   = isset( $options ) && isset( $options['_alm_classname'] ) ? $options['_alm_classname'] : '';
-
-	$html  = '<label for="alm_settings[_alm_classname]">' . __( 'Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style="display:block">You can also add classes when building a shortcode.</span>', 'ajax-load-more' ) . '</label><br/>';
-	$html .= '<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="' . $class . '" placeholder="posts listing etc..." /> ';
-
-	echo $html; // phpcs:ignore
+	$value   = isset( $options ) && isset( $options['_alm_classname'] ) ? $options['_alm_classname'] : '';
+	?>
+	<label for="alm_settings[_alm_classname]">
+		<?php
+		// translators: The code tag.
+		$desc = sprintf( __( 'Add custom classes to the %1$s container. Classes are applied globally and will appear with every instance of Ajax Load More.', 'ajax-load-more' ), '<code>.alm-listing</code>' );
+		echo wp_kses_post( $desc );
+		?>
+		<span style="display:block"><?php esc_attr_e( 'You can also add classes when building a shortcode.', 'ajax-load-more' ); ?>
+	</label>
+	<br/>
+	<input type="text" id="alm_settings[_alm_classname]" name="alm_settings[_alm_classname]" value="<?php echo esc_attr( $value ); ?>" placeholder="posts listing etc..." />
+	<?php
 }
 
 /**
- * Get button color.
+ * Setting: Get button color.
  *
  * @since 2.0.0
  */
 function alm_btn_color_callback() {
+	$options       = get_option( 'alm_settings' );
+	$type          = isset( $options ) && isset( $options['_alm_btn_color'] ) ? $options['_alm_btn_color'] : 'default';
+	$selected      = ' selected="selected"';
+	$loading_class = strpos( $type, 'infinite' ) !== false ? ' loading' : ''; // Set loading class for infinite type only.
 
-	$options = get_option( 'alm_settings' );
-	$type    = isset( $options ) && isset( $options['_alm_btn_color'] ) ? $options['_alm_btn_color'] : '';
+	$selected0  = $type === 'default' ? $selected : '';
+	$selected1  = $type === 'blue' ? $selected : '';
+	$selected2  = $type === 'green' ? $selected : '';
+	$selected3  = $type === 'red' ? $selected : '';
+	$selected4  = $type === 'purple' ? $selected : '';
+	$selected5  = $type === 'grey' ? $selected : '';
+	$selected6  = $type === 'white' ? $selected : '';
+	$selected7  = $type === 'infinite classic' ? $selected : '';
+	$selected8  = $type === 'infinite skype' ? $selected : '';
+	$selected9  = $type === 'infinite ring' ? $selected : '';
+	$selected10 = $type === 'infinite fading-blocks' ? $selected : '';
+	$selected11 = $type === 'infinite fading-circles' ? $selected : '';
+	$selected12 = $type === 'infinite chasing-arrows' ? $selected : '';
+	$selected13 = $type === 'light-grey' ? $selected : '';
+	?>
+	<label for="alm_settings_btn_color">
+		<?php esc_attr_e( 'Choose an Ajax loading style. Select between a Button or Infinite Scroll loading style.', 'ajax-load-more' ); ?><br/>
+		<span style="display: block;">
+			<?php esc_attr_e( 'Selecting an Infinite Scroll style will remove the click interaction and load content on scroll.', 'ajax-load-more' ); ?>
+		</span>
+	</label>
+	<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">
+		<optgroup label="<?php esc_attr_e( 'Button Style (Dark)', 'ajax-load-more' ); ?>">
+			<option value="default" class="alm-color default"<?php echo esc_attr( $selected0 ); ?>>Default</option>
+			<option value="blue" class="alm-color blue"<?php echo esc_attr( $selected1 ); ?>>Blue</option>
+			<option value="green" class="alm-color green"<?php echo esc_attr( $selected2 ); ?>>Green</option>
+			<option value="purple" class="alm-color purple"<?php echo esc_attr( $selected4 ); ?>>Purple</option>
+			<option value="grey" class="alm-color grey"<?php echo esc_attr( $selected5 ); ?>>Grey</option>
+		</optgroup>
+		<optgroup label="<?php esc_attr_e( 'Button Style (Light)', 'ajax-load-more' ); ?>">
+			<option value="white" class="alm-color white"<?php echo esc_attr( $selected6 ); ?>>White</option>
+			<option value="grey" class="alm-color light-grey"<?php echo esc_attr( $selected13 ); ?>>Light Grey</option>
+		</optgroup>
+		<optgroup label="<?php esc_attr_e( 'Infinite Scroll (No Button)', 'ajax-load-more' ); ?>">
+			<option value="infinite classic" class="infinite classic"<?php echo esc_attr( $selected7 ); ?>>Classic</option>
+			<option value="infinite skype" class="infinite skype"<?php echo esc_attr( $selected8 ); ?>>Skype</option>
+			<option value="infinite ring" class="infinite ring"<?php echo esc_attr( $selected9 ); ?>>Circle Fill</option>
+			<option value="infinite fading-blocks" class="infinite fading-blocks"<?php echo esc_attr( $selected10 ); ?>>Fading Blocks</option>
+			<option value="infinite fading-circles" class="infinite fading-circles"<?php echo esc_attr( $selected11 ); ?>>Fading Circles</option>
+			<option value="infinite chasing-arrows" class="infinite chasing-arrows"<?php echo esc_attr( $selected12 ); ?>>Chasing Arrows</option>
+		</optgroup>
+	</select>
 
-	if ( ! isset( $type ) ) {
-		$options['_alm_btn_color'] = '0';
-	}
-
-	$selected0 = '';
-	if ( $type === 'default' ) {
-		$selected0 = 'selected="selected"';
-	}
-
-	$selected1 = '';
-	if ( $type === 'blue' ) {
-		$selected1 = 'selected="selected"';
-	}
-
-	$selected2 = '';
-	if ( $type === 'green' ) {
-		$selected2 = 'selected="selected"';
-	}
-
-	$selected3 = '';
-	if ( $type === 'red' ) {
-		$selected3 = 'selected="selected"';
-	}
-
-	$selected4 = '';
-	if ( $type === 'purple' ) {
-		$selected4 = 'selected="selected"';
-	}
-
-	$selected5 = '';
-	if ( $type === 'grey' ) {
-		$selected5 = 'selected="selected"';
-	}
-
-	$selected6 = '';
-	if ( $type === 'white' ) {
-		$selected6 = 'selected="selected"';
-	}
-
-	$selected13 = '';
-	if ( $type === 'light-grey' ) {
-		$selected13 = 'selected="selected"';
-	}
-
-	$selected7 = '';
-	if ( $type === 'infinite classic' ) {
-		$selected7 = 'selected="selected"';
-	}
-
-	$selected8 = '';
-	if ( $type === 'infinite skype' ) {
-		$selected8 = 'selected="selected"';
-	}
-
-	$selected9 = '';
-	if ( $type === 'infinite ring' ) {
-		$selected9 = 'selected="selected"';
-	}
-
-	$selected10 = '';
-	if ( $type === 'infinite fading-blocks' ) {
-		$selected10 = 'selected="selected"';
-	}
-
-	$selected11 = '';
-	if ( $type === 'infinite fading-circles' ) {
-		$selected11 = 'selected="selected"';
-	}
-
-	$selected12 = '';
-	if ( $type === 'infinite chasing-arrows' ) {
-		$selected12 = 'selected="selected"';
-	}
-
-	$html  = '<label for="alm_settings_btn_color">' . __( 'Select an Ajax loading style - you can choose between a <strong>Button</strong> or <strong>Infinite Scroll</strong>', 'ajax-load-more' );
-	$html .= '.<br/><span style="display:block">Selecting an Infinite Scroll style will remove the click interaction and load content on scroll <u>only</u>.</span>';
-	$html .= '</label>';
-	$html .= '<select id="alm_settings_btn_color" name="alm_settings[_alm_btn_color]">';
-
-	$html .= '<optgroup label="' . __( 'Button Style (Dark)', 'ajax-load-more' ) . '">';
-	$html .= '<option value="default" class="alm-color default" ' . $selected0 . '>Default</option>';
-	$html .= '<option value="blue" class="alm-color blue" ' . $selected1 . '>Blue</option>';
-	$html .= '<option value="green" class="alm-color green" ' . $selected2 . '>Green</option>';
-	$html .= '<option value="purple" class="alm-color purple" ' . $selected4 . '>Purple</option>';
-	$html .= '<option value="grey" class="alm-color grey" ' . $selected5 . '>Grey</option>';
-	$html .= '</optgroup>';
-	$html .= '<optgroup label="' . __( 'Button Style (Light)', 'ajax-load-more' ) . '">';
-	$html .= '<option value="white" class="alm-color white" ' . $selected6 . '>White</option>';
-	$html .= '<option value="light-grey" class="alm-color light-grey" ' . $selected13 . '>Light Grey</option>';
-	$html .= '</optgroup>';
-
-		$html .= '<optgroup label="' . __( 'Infinite Scroll (No Button)', 'ajax-load-more' ) . '">';
-		$html .= '<option value="infinite classic" class="infinite classic" ' . $selected7 . '>Classic</option>';
-		$html .= '<option value="infinite skype" class="infinite skype" ' . $selected8 . '>Skype</option>';
-		$html .= '<option value="infinite ring" class="infinite ring" ' . $selected9 . '>Circle Fill</option>';
-		$html .= '<option value="infinite fading-blocks" class="infinite fading-blocks" ' . $selected10 . '>Fading Blocks</option>';
-		$html .= '<option value="infinite fading-circles" class="infinite fading-circles" ' . $selected11 . '>Fading Circles</option>';
-		$html .= '<option value="infinite chasing-arrows" class="infinite chasing-arrows" ' . $selected12 . '>Chasing Arrows</option>';
-		$html .= '</optgroup>';
-
-	$html .= '</select>';
-
-	// Set loading class for infinite type only.
-	$loading_class = strpos( $type, 'infinite' ) !== false ? ' loading' : '';
-
-	$html .= '<div class="clear"></div>';
-	$html .= '<div class="ajax-load-more-wrap core ' . $type . '">';
-	$html .= '<span>' . __( 'Click to Preview', 'ajax-load-more' ) . '</span>';
-	$html .= '<div class="alm-btn-wrap">';
-	$html .= '<button style="cursor: pointer;" type="button" class="alm-load-more-btn' . $loading_class . '" id="test-alm-button">' . apply_filters( 'alm_button_label', __( 'Load More', 'ajax-load-more' ) ) . '</button>';
-	$html .= '</div>';
-	$html .= '</div>';
-
-	echo $html; // phpcs:ignore
+	<div class="clear"></div>
+	<div class="ajax-load-more-wrap core <?php echo esc_attr( $type ); ?>">
+		<span><?php esc_attr_e( 'Click to Preview', 'ajax-load-more' ); ?></span>
+		<div class="alm-btn-wrap">
+			<button style="cursor: pointer;" type="button" class="alm-load-more-btn <?php echo esc_attr( $loading_class ); ?>" id="test-alm-button">
+				<?php echo esc_attr( apply_filters( 'alm_button_label', __( 'Load More', 'ajax-load-more' ) ) ); ?>
+			</button>
+		</div>
+	</div>
+	<?php
 }
 
 /**
- * Load CSS Inline vs the head
+ * Setting: Load CSS Inline vs the page <head/>.
  *
  * @since 3.3.1
  */
 function alm_inline_css_callback() {
 	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_inline_css'] ) ) {
-		$options['_alm_inline_css'] = '1';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_inline_css]" id="alm_inline_css" value="1"' . ( ( $options['_alm_inline_css'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="alm_inline_css">' . __( 'Improve site performance by loading Ajax Load More CSS inline.', 'ajax-load-more' ) . '</label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_inline_css'] ) ? '1' : $options['_alm_inline_css'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_inline_css]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_inline_css]" id="alm_inline_css" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_inline_css">
+			<?php esc_html_e( 'Improve site performance by loading Ajax Load More CSS inline.', 'ajax-load-more' ); ?>
+		</label>
+	<?php
 }
 
 /**
- * Add classes to the Ajax Load More button
+ * Setting: Add classes to the Ajax Load More button.
  *
  * @since 2.4.1
  */
 function alm_btn_class_callback() {
 	$options = get_option( 'alm_settings' );
-
-	if ( ! isset( $options['_alm_btn_classname'] ) ) {
-		$options['_alm_btn_classname'] = '';
-	}
-
-	$html  = '<label for="alm_settings[_alm_btn_classname]">' . __( 'Add classes to your <strong>Load More</strong> button.', 'ajax-load-more' ) . '</label>';
-	$html .= '<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="' . $options['_alm_btn_classname'] . '" placeholder="button bg-black rounded etc..." /> ';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_btn_classname'] ) ? '' : $options['_alm_btn_classname'];
 	?>
-	<script>
-		// Check if Disable CSS  === true
-		if(jQuery( 'input#alm_disable_css_input' ).is(":checked")){
-			jQuery( 'select#alm_settings_btn_color' ).parent().parent().hide(); // Hide button color
-			jQuery( 'input#alm_inline_css' ).parent().parent().hide(); // Hide inline css
-		}
-		jQuery( 'input#alm_disable_css_input' ).change(function() {
-			var el = jQuery(this);
-			if(el.is(":checked")) {
-				el.parent().parent( 'tr' ).next( 'tr' ).hide(); // Hide button color
-				el.parent().parent( 'tr' ).next( 'tr' ).next( 'tr' ).hide(); // Hide inline css
-			}else{
-				el.parent().parent( 'tr' ).next( 'tr' ).show(); // show button color
-				el.parent().parent( 'tr' ).next( 'tr' ).next( 'tr' ).show(); // show inline css
+		<label for="alm_settings[_alm_btn_classname]">
+			<?php esc_html_e( 'Add classes to the Load More button.', 'ajax-load-more' ); ?>
+		</label>
+		<input type="text" class="btn-classes" id="alm_settings[_alm_btn_classname]" name="alm_settings[_alm_btn_classname]" value="<?php echo esc_attr( $value ); ?>" placeholder="button bg-black rounded etc..." />
+		<script>
+			// Check if Disable CSS  === true
+			if(jQuery( 'input#alm_disable_css_input' ).is(":checked")){
+				jQuery( 'select#alm_settings_btn_color' ).parent().parent().hide(); // Hide button color
+				jQuery( 'input#alm_inline_css' ).parent().parent().hide(); // Hide inline css
 			}
-		});
+			jQuery( 'input#alm_disable_css_input' ).change(function() {
+				var el = jQuery(this);
+				if(el.is(":checked")) {
+					el.parent().parent( 'tr' ).next( 'tr' ).hide(); // Hide button color
+					el.parent().parent( 'tr' ).next( 'tr' ).next( 'tr' ).hide(); // Hide inline css
+				}else{
+					el.parent().parent( 'tr' ).next( 'tr' ).show(); // show button color
+					el.parent().parent( 'tr' ).next( 'tr' ).next( 'tr' ).show(); // show inline css
+				}
+			});
 	</script>
 	<?php
 }
 
 /**
- * Custom JS to the shortcode output.
+ * Setting: Custom JS to the shortcode output.
  *
  * @since 5.5.4
  */
 function alm_custom_js_callback() {
 	$options = get_option( 'alm_settings' );
-	$html    = '<label for="_alm_layouts_css">' . __( 'Enter custom JavaScript code.', 'ajax-load-more' ) . '</label>';
-	$html   .= '<textarea id="_alm_custom_js" name="alm_settings[_alm_custom_js]" rows="5">';
-	$html   .= isset( $options['_alm_custom_js'] ) ? $options['_alm_custom_js'] : '';
-	$html   .= '</textarea>';
-	$html   .= '<label><span style="display:block;">' . __( 'JavaScript will be rendered with every Ajax Load More instance.', 'ajax-load-more' ) . '</span></label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_custom_js'] ) ? '' : $options['_alm_custom_js'];
+	?>
+	<label for="alm_custom_js"><?php esc_attr_e( 'Enter custom JavaScript code.', 'ajax-load-more' ); ?></label>
+	<textarea id="alm_custom_js" name="alm_settings[_alm_custom_js]" rows="5"><?php echo wp_kses_post( $value ); ?></textarea>
+	<label style="cursor: default !important">
+		<span style="display:block;"><?php esc_attr_e( 'JavaScript will be rendered with every Ajax Load More instance.', 'ajax-load-more' ); ?> </span>
+	</label>
+	<?php
 }
 
 /**
- * Move window to top of screen on page load.
- *
- * @since 2.6.0
- */
-function alm_scroll_top_callback() {
-	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_scroll_top'] ) ) {
-		$options['_alm_scroll_top'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_scroll_top]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_scroll_top]" id="_alm_scroll_top" value="1"' . ( ( $options['_alm_scroll_top'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_scroll_top">';
-	$html .= __( 'On initial page load, move the user\'s browser window to the top of the screen.', 'ajax-load-more' );
-	$html .= '<span style="display:block">' . __( 'This may help prevent the loading of unnecessary posts.', 'ajax-load-more' ) . '</span>';
-	$html .= '</label>';
-
-	echo $html; // phpcs:ignore
-}
-
-/**
- * Disable REST API in favor of admin-ajax.php.
- *
- * @since 5.1
- */
-function alm_use_rest_api_callback() {
-	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_use_rest_api'] ) ) {
-		$options['_alm_use_rest_api'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_use_rest_api]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_use_rest_api]" id="_alm_use_rest_api" value="1"' . ( ( $options['_alm_use_rest_api'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_use_rest_api">';
-	$html .= __( 'Disable REST API.', 'ajax-load-more' );
-	$html .= '<span style="display:block">' . __( 'Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax requests.', 'ajax-load-more' ) . '</span>';
-	$html .= '</label>';
-
-	echo $html; // phpcs:ignore
-}
-
-/**
- * Load legacy callback actions.
+ * Setting: Load legacy callback.
  *
  * @since 5.0.0
  */
 function alm_legacy_callbacks_callback() {
 	$options = get_option( 'alm_settings' );
-	if ( ! isset( $options['_alm_legacy_callbacks'] ) ) {
-		$options['_alm_legacy_callbacks'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_legacy_callbacks]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_legacy_callbacks]" id="_alm_legacy_callbacks" value="1"' . ( ( $options['_alm_legacy_callbacks'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_legacy_callbacks">';
-	$html .= __( 'Load legacy JavaScript callback functions.', 'ajax-load-more' );
-	$html .= '<span style="display:block">' . __( 'Ajax Load More <a href="https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/" target="_blank">callback functions</a> were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility.', 'ajax-load-more' ) . '</span>';
-	$html .= '</label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_legacy_callbacks'] ) ? '0' : $options['_alm_legacy_callbacks'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_legacy_callbacks]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_legacy_callbacks]" id="alm_legacy_callbacks" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_legacy_callbacks">
+			<?php esc_html_e( 'Load legacy JavaScript callback functions.', 'ajax-load-more' ); ?>
+			<br/>
+			<span>
+				<?php esc_html_e( 'Ajax Load More JS callback functions were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility.', 'ajax-load-more' ); ?>
+			</span>
+		</label>
+	<?php
 }
 
 /**
- * Remove all ALM data on uninstall.
+ * Setting: Remove all ALM data on uninstall.
  *
  * @since 4.1.0
  */
 function alm_uninstall_callback() {
 	$options = get_option( 'alm_settings' );
-
-	if ( ! isset( $options['_alm_uninstall'] ) ) {
-		$options['_alm_uninstall'] = '0';
-	}
-
-	$html  = '<input type="hidden" name="alm_settings[_alm_uninstall]" value="0" />';
-	$html .= '<input type="checkbox" name="alm_settings[_alm_uninstall]" id="_alm_uninstall" value="1"' . ( ( $options['_alm_uninstall'] ) ? ' checked="checked"' : '' ) . ' />';
-	$html .= '<label for="_alm_uninstall">' . __( 'Check this box if Ajax Load More should remove all of its data* when the plugin is deleted.', 'ajax-load-more' );
-	$html .= '<span style="display:block"><em>' . __( '* Database Tables, Options and Repeater Templates', 'ajax-load-more' ) . '</em></span>';
-	$html .= '</label>';
-
-	echo $html; // phpcs:ignore
+	$value   = ! isset( $options['_alm_uninstall'] ) ? '0' : $options['_alm_uninstall'];
+	?>
+		<input type="hidden" name="alm_settings[_alm_uninstall]" value="0" />
+		<input type="checkbox" name="alm_settings[_alm_uninstall]" id="alm_uninstall" value="1" <?php echo $value ? 'checked="checked"' : ''; ?> />
+		<label for="alm_uninstall">
+			<?php esc_html_e( 'Check this box if Ajax Load More should remove all of its data* when the plugin is deleted.', 'ajax-load-more' ); ?>
+			<br/>
+			<span>
+				<?php esc_html_e( '* Database Tables, Options and Repeater Templates', 'ajax-load-more' ); ?>
+			</span>
+		</label>
+	<?php
 }
