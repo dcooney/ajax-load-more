@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 7.0.1
+Stable tag: 7.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -259,6 +259,14 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 7.0.2 - February 8, 2024 =
+* NEW: Added 'alm_licensing_sslverify' hook to allow users to disable SSL verification when checking for updates.
+* NEW: Added new Paging add-on parameter `paging_container_classes` used for adding CSS classes to the paging HTML container.
+* NEW: Added support for Elementor Loop Grid widget when using Elementor add-on.
+* FIX: Fixed issue with Elementor add-on potentially not disabling the Load More button when no content remains.
+* SECURITY: Various security fixes for admin level plugin settings.
+
 
 = 7.0.1 - January 23, 2024 =
 * HOTFIX: Fixed issue with Filters add-on that would appear when using the Paging add-on. Filters would remain disabled after interacting with a filter due to a missing callback function.
