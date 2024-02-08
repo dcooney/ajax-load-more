@@ -4,7 +4,7 @@ import { addSinglePostsAttributes } from '../addons/singleposts';
 import stripEmptyNodes from '../functions/stripEmptyNodes';
 
 /**
- * Create data attributes for SEO and Filter paged results.
+ * Create data attributes for Single Posts, SEO and Filter paged results.
  *
  * @param {Object} alm      The ALM object.
  * @param {Array}  elements The element HTML nodes.
@@ -20,17 +20,20 @@ export default function formatHTML(alm, elements) {
 
 	// Single Posts.
 	if (addons?.single_post) {
-		// Single Posts only.
-		elements = addSinglePostsAttributes(alm, elements);
+		let singleWrap = document.createElement('div');
+		singleWrap.innerHTML = alm.html;
+		singleWrap = addSinglePostsAttributes(alm, singleWrap);
 
 		// Single Post Preview.
-		if (addons.single_post_preview && addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
-			const singlePreview = almSinglePostCreatePreview(elements[0], addons.single_post_id, addons.single_post_preview_data);
+		if (addons?.single_post_preview && addons?.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
+			const singlePreview = almSinglePostCreatePreview(singleWrap, addons.single_post_id, addons.single_post_preview_data);
 			if (singlePreview) {
-				elements[0].replaceChildren(singlePreview);
+				singleWrap.replaceChildren(singlePreview);
 			}
 		}
-		return elements;
+
+		alm.last_loaded = [singleWrap];
+		return [singleWrap];
 	}
 
 	// Exit if not SEO or Filters.

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 7.0.0\n"
+"Project-Id-Version: Ajax Load More 7.0.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-01-15T18:14:16+00:00\n"
+"POT-Creation-Date: 2024-02-08T16:41:03+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -225,40 +225,40 @@ msgstr ""
 msgid "This doesn't look right, what are you trying to do?"
 msgstr ""
 
-#: admin/functions/licensing.php:128
+#: admin/functions/licensing.php:127
 msgid "You have an invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More Pro</b></a> license key - visit the <a href=\"admin.php?page=ajax-load-more-licenses\">License</a> section to input your key or <a href=\"https://connekthq.com/plugins/ajax-load-more/pro/\" target=\"_blank\">purchase</a> one now."
 msgstr ""
 
-#: admin/functions/licensing.php:133
+#: admin/functions/licensing.php:132
 msgid "You have invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More</b></a> license keys - visit the <a href=\"admin.php?page=ajax-load-more-licenses\">Licenses</a> section to input your keys."
 msgstr ""
 
-#: admin/functions/licensing.php:255
+#: admin/functions/licensing.php:254
 msgid "Looks like your subscription has expired."
 msgstr ""
 
-#: admin/functions/licensing.php:256
+#: admin/functions/licensing.php:255
 msgid "Please login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/functions/licensing.php:264
+#: admin/functions/licensing.php:263
 msgid "Looks like your license is inactive and/or invalid."
 msgstr ""
 
-#: admin/functions/licensing.php:265
+#: admin/functions/licensing.php:264
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> or login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/functions/licensing.php:273
+#: admin/functions/licensing.php:272
 msgid "Looks like your license has been deactivated."
 msgstr ""
 
-#: admin/functions/licensing.php:274
+#: admin/functions/licensing.php:273
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> to update."
 msgstr ""
 
 #. translators: %1$s is replaced with link href
-#: admin/functions/licensing.php:305
+#: admin/functions/licensing.php:304
 msgid "%1$sRegister%2$s your copy of %3$s to receive access to automatic upgrades and support. Need a license key? %4$sPurchase one now%5$s."
 msgstr ""
 
@@ -310,134 +310,131 @@ msgstr ""
 msgid "Custom JavaScript"
 msgstr ""
 
-#: admin/functions/settings.php:103
+#: admin/functions/settings.php:93
 msgid "Legacy Callbacks"
 msgstr ""
 
-#: admin/functions/settings.php:111
+#: admin/functions/settings.php:101
 msgid "Dynamic Content"
 msgstr ""
 
-#: admin/functions/settings.php:119
+#: admin/functions/settings.php:109
 msgid "Error Notices"
 msgstr ""
 
-#: admin/functions/settings.php:127
+#: admin/functions/settings.php:117
 msgid "Delete on Uninstall"
 msgstr ""
 
-#: admin/functions/settings.php:196
+#: admin/functions/settings.php:186
 msgid "Customize the user experience of Ajax Load More by updating the fields below."
 msgstr ""
 
-#: admin/functions/settings.php:205
+#: admin/functions/settings.php:195
 msgid "The following settings affect the WordPress admin area only."
 msgstr ""
 
-#: admin/functions/settings.php:231
+#: admin/functions/settings.php:220
 msgid "I want to use my own CSS styles."
 msgstr ""
 
-#: admin/functions/settings.php:231
+#: admin/functions/settings.php:225
 msgid "View Ajax Load More CSS"
 msgstr ""
 
-#: admin/functions/settings.php:249
+#: admin/functions/settings.php:244
 msgid "Display error messaging regarding repeater template updates in the browser console."
 msgstr ""
 
-#: admin/functions/settings.php:267
-msgid "Disable dynamic population of categories, tags and authors in the Shortcode Builder.<span style=\"display:block\">Recommended if you have a large number of categories, tags and/or authors."
+#: admin/functions/settings.php:261
+msgid "Disable dynamic population of categories, tags and authors in the Shortcode Builder."
 msgstr ""
 
-#: admin/functions/settings.php:286
-#: admin/functions/settings.php:289
+#: admin/functions/settings.php:264
+msgid "Recommended if you have a large number of categories, tags and/or authors."
+msgstr ""
+
+#: admin/functions/settings.php:281
+#: admin/functions/settings.php:285
 msgid "Ajax Posts Here"
 msgstr ""
 
-#: admin/functions/settings.php:291
+#: admin/functions/settings.php:288
 msgid "You can modify the container type when building a shortcode."
 msgstr ""
 
+#. translators: The code tag.
 #: admin/functions/settings.php:305
-msgid "Add custom classes to the <i>.alm-listing</i> container - classes are applied globally and will appear with every instance of Ajax Load More. <span style=\"display:block\">You can also add classes when building a shortcode.</span>"
+msgid "Add custom classes to the %1$s container. Classes are applied globally and will appear with every instance of Ajax Load More."
 msgstr ""
 
-#: admin/functions/settings.php:395
-msgid "Select an Ajax loading style - you can choose between a <strong>Button</strong> or <strong>Infinite Scroll</strong>"
+#: admin/functions/settings.php:308
+msgid "You can also add classes when building a shortcode."
 msgstr ""
 
-#: admin/functions/settings.php:400
+#: admin/functions/settings.php:342
+msgid "Choose an Ajax loading style. Select between a Button or Infinite Scroll loading style."
+msgstr ""
+
+#: admin/functions/settings.php:344
+msgid "Selecting an Infinite Scroll style will remove the click interaction and load content on scroll."
+msgstr ""
+
+#: admin/functions/settings.php:348
 #: admin/shortcode-builder/shortcode-builder.php:143
 msgid "Button Style (Dark)"
 msgstr ""
 
-#: admin/functions/settings.php:407
+#: admin/functions/settings.php:355
 #: admin/shortcode-builder/shortcode-builder.php:150
 msgid "Button Style (Light)"
 msgstr ""
 
-#: admin/functions/settings.php:412
+#: admin/functions/settings.php:359
 #: admin/shortcode-builder/shortcode-builder.php:154
 msgid "Infinite Scroll (No Button)"
 msgstr ""
 
-#: admin/functions/settings.php:428
+#: admin/functions/settings.php:371
 msgid "Click to Preview"
 msgstr ""
 
-#: admin/functions/settings.php:430
+#: admin/functions/settings.php:374
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
 #: ajax-load-more.php:400
 msgid "Load More"
 msgstr ""
 
-#: admin/functions/settings.php:450
+#: admin/functions/settings.php:393
 msgid "Improve site performance by loading Ajax Load More CSS inline."
 msgstr ""
 
-#: admin/functions/settings.php:467
-msgid "Add classes to your <strong>Load More</strong> button."
+#: admin/functions/settings.php:408
+msgid "Add classes to the Load More button."
 msgstr ""
 
-#: admin/functions/settings.php:499
+#: admin/functions/settings.php:440
 msgid "Enter custom JavaScript code."
 msgstr ""
 
-#: admin/functions/settings.php:503
+#: admin/functions/settings.php:443
 msgid "JavaScript will be rendered with every Ajax Load More instance."
 msgstr ""
 
-#: admin/functions/settings.php:522
-msgid "On initial page load, move the user's browser window to the top of the screen."
-msgstr ""
-
-#: admin/functions/settings.php:523
-msgid "This may help prevent the loading of unnecessary posts."
-msgstr ""
-
-#: admin/functions/settings.php:543
-msgid "Disable REST API."
-msgstr ""
-
-#: admin/functions/settings.php:544
-msgid "Use `admin-ajax.php` in favour of the WordPress REST API for all Ajax requests."
-msgstr ""
-
-#: admin/functions/settings.php:564
+#: admin/functions/settings.php:460
 msgid "Load legacy JavaScript callback functions."
 msgstr ""
 
-#: admin/functions/settings.php:565
-msgid "Ajax Load More <a href=\"https://connekthq.com/plugins/ajax-load-more/docs/callback-functions/\" target=\"_blank\">callback functions</a> were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility."
+#: admin/functions/settings.php:463
+msgid "Ajax Load More JS callback functions were updated in 5.0. Users who were using callbacks prior to ALM 5.0 can load this helper library to maintain compatibility."
 msgstr ""
 
-#: admin/functions/settings.php:585
+#: admin/functions/settings.php:481
 msgid "Check this box if Ajax Load More should remove all of its data* when the plugin is deleted."
 msgstr ""
 
-#: admin/functions/settings.php:586
+#: admin/functions/settings.php:484
 msgid "* Database Tables, Options and Repeater Templates"
 msgstr ""
 

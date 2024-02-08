@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scro
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.4
-Stable tag: 7.0.0
+Stable tag: 7.0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -213,12 +213,11 @@ global $post;theImplementationGuidehttpstheImplementationGuidehttpstheImplementa
 
 = Which browsers are supported? =
 
--  Firefox (Mac, PC, iOS)
 -  Chrome (Mac, PC, iOS, Android)
+-  Firefox (Mac, PC, iOS)
 -  Safari (Mac, iOS)
--  Opera
 -  Android
--  IE11+
+-  MS Edge
 
 = How Can You Contribute? =
 Issues and pull requests can be submitted via [GitHub](https://github.com/dcooney/wordpress-ajax-load-more).
@@ -261,11 +260,27 @@ How to install Ajax Load More.
 
 == Changelog ==
 
+= 7.0.2 - February 8, 2024 =
+* NEW: Added 'alm_licensing_sslverify' hook to allow users to disable SSL verification when checking for updates.
+* NEW: Added new Paging add-on parameter `paging_container_classes` used for adding CSS classes to the paging HTML container.
+* NEW: Added support for Elementor Loop Grid widget when using Elementor add-on.
+* FIX: Fixed issue with Elementor add-on potentially not disabling the Load More button when no content remains.
+* SECURITY: Various security fixes for admin level plugin settings.
+
+
+= 7.0.1 - January 23, 2024 =
+* HOTFIX: Fixed issue with Filters add-on that would appear when using the Paging add-on. Filters would remain disabled after interacting with a filter due to a missing callback function.
+* HOTFIX: Fixed issue with display of Single Posts data when being used with Elementor.
+
+
 = 7.0.0 - January 16, 2024 =
 UPGRADE NOTICE:
-This Ajax Load More update may introduce breaking changes for add-on functionality.
-Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the .alm-reveal div used to hold the Ajax loaded content.
+This Ajax Load More update may introduce breaking changes for core plugin CSS styling and add-on functionality.
+
+Major changes in this release includes the removal of the `transition_container` parameter which affects the rendered HTML of the plugin by removing the `.alm-reveal` div used to display the Ajax loaded content.
 If you are using the Filters, SEO or Paging add-ons please be sure to update these add-ons after updating the core Ajax Load More plugin.
+
+[View Release Notes](https://connekthq.com/ajax-load-more-7-0/)
 
 * NEW: Removed `alm-reveal` div and transition container. This affects all add-ons and core plugin as there is no more a transition container appended for each load more action.
 * NEW: Added `transition_delay` parameter that allows for staggering the display of each post incrementally as content is loaded.
@@ -274,7 +289,7 @@ If you are using the Filters, SEO or Paging add-ons please be sure to update the
 * UPDATE: Improved content loading for infinite scroll and when using Paging add-on.
 * UPDATE: Improved Masonry loading and transition timing.
 * UPDATE: Removed `transition_container_classes` parameter.
-* UPDATE: Removed lagacy browser polyfills and helper functions to lower the overall compiled JS size.
+* UPDATE: Removed legacy browser polyfills and helper functions to lower the overall compiled JS size.
 * UPDATE: Updated plugin installer class.
 * FIX: Fixed issue with admin_footer_text hook not returning but echoing text content.
 * FIX: Fixed issue with Single Posts add-on preview function. This was no longer working but it functional again.
