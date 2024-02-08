@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-08T16:41:03+00:00\n"
+"POT-Creation-Date: 2024-02-08T19:42:24+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -73,7 +73,7 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:305
+#: ajax-load-more.php:310
 msgid "Settings"
 msgstr ""
 
@@ -402,7 +402,7 @@ msgstr ""
 #: admin/functions/settings.php:374
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: ajax-load-more.php:400
+#: ajax-load-more.php:405
 msgid "Load More"
 msgstr ""
 
@@ -2719,15 +2719,15 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:282
+#: ajax-load-more.php:287
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:383
+#: ajax-load-more.php:388
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:384
+#: ajax-load-more.php:389
 msgid "No results found."
 msgstr ""
 
@@ -2953,4 +2953,14 @@ msgstr ""
 #. translators: 1: Shortcode Builder link tag. 2: Shortcode Builder closing link tag.
 #: core/integration/elementor/module/widget.php:101
 msgid "%1$sBuild Shortcode%2$s"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block title"
+msgid "Ajax Load More"
+msgstr ""
+
+#: src/block/block.json
+msgctxt "block description"
+msgid "The ultimate infinite scroll and lazy load solution for your WordPress content."
 msgstr ""
