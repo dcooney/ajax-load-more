@@ -6,7 +6,6 @@
   "category": "ajax-load-more",
   "description": "The ultimate infinite scroll and lazy load solution for your WordPress content.",
   "textdomain": "ajax-load-more",
-  "icon": "share",
   "supports": {
     "align": false
   },
