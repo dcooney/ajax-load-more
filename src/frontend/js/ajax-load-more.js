@@ -1755,13 +1755,13 @@ export const analytics = function (type = '') {
  * Trigger Ajax Load More from other events.
  *
  * @since 5.0
- * @param {Element} el
+ * @param {Element} instance The HTML element.
  */
-export const start = function (el) {
-	if (!el) {
+export const start = function (instance) {
+	if (!instance) {
 		return false;
 	}
-	window.almInit(el);
+	window.almInit(instance);
 };
 
 /**
@@ -1821,4 +1821,20 @@ export const click = function (id = '') {
 			}
 		}
 	}
+};
+
+/**
+ * Load ALM inside the WP Block Editor.
+ *
+ * @since 8.0
+ * @param {Element} instance The HTML element.
+ */
+export const wpblock = function (instance) {
+	const listing = instance.querySelector('.alm-listing');
+	if (!listing || instance.dataset.blockLoaded === 'true') {
+		return; // Exit if does not exist or block already loaded.
+	}
+	instance.dataset.blockLoaded = 'true';
+	listing.dataset.scroll = 'false'; // Remove scroll.
+	start(instance);
 };

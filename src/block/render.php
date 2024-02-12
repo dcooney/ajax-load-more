@@ -5,5 +5,9 @@
  * @package AjaxLoadMore
  */
 
-$ids = 'farts1';
-echo do_shortcode( '[ajax_load_more id="' . esc_attr( $ids ) . '"]' );
+$shortcode = $attributes['shortcode'];
+if ( $shortcode ) {
+	echo do_shortcode( $shortcode );
+} else {
+	echo '<p>Enter a shortcode.</p>';
+}

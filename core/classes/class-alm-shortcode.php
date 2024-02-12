@@ -1214,7 +1214,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Paging before.
 			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
 				$paging_container_classes = $paging_container_classes ? ' ' . esc_attr( $paging_container_classes ) : '';
-				$ajaxloadmore .= apply_filters( 'alm_paging_before', '<div class="alm-paging-content' . $paging_container_classes .'" style="opacity: 0; outline: none;">' );
+				$ajaxloadmore            .= apply_filters( 'alm_paging_before', '<div class="alm-paging-content' . $paging_container_classes . '" style="opacity: 0; outline: none;">' );
 			}
 
 			// Preloaded.

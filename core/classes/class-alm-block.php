@@ -23,8 +23,28 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		public function __construct() {
 			add_action( 'init', [ $this, 'alm_register_block' ] );
 			add_filter( 'block_categories_all', [ $this, 'alm_add_block_category' ] );
+			add_action( 'enqueue_block_editor_assets', [ $this, 'alm_block_editor_assets' ] );
 		}
 
+		/**
+		 * Equeue block editor assets.
+		 *
+		 * @return void
+		 */
+		public function alm_block_editor_assets() {
+			if ( ! alm_css_disabled( '_alm_disable_css' ) ) {
+				ALM_ENQUEUE::alm_enqueue_css( ALM_SLUG, ALM_CSS_URL );
+			}
+
+			wp_register_script( 'ajax-load-more-block', ALM_CORE_JS_URL, [], ALM_VERSION, true );
+
+			// Localized JS variables.
+			wp_localize_script(
+				'ajax-load-more-block',
+				'alm_localize',
+				AjaxLoadMore::alm_get_localized_defaults()
+			);
+		}
 
 		/**
 		 * Register the Ajax Load More WP Block.

@@ -102,8 +102,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 				require_once 'admin/admin-functions.php';
 				require_once 'admin/vendor/connekt-plugin-installer/class-connekt-plugin-installer.php';
 				if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ) {
-					// Only include this EDD helper if other plugins have not.
-					require_once __DIR__ . '/core/libs/EDD_SL_Plugin_Updater.php';
+					require_once __DIR__ . '/core/libs/EDD_SL_Plugin_Updater.php'; // Include EDD helper if other plugins have not.
 				}
 			}
 		}
@@ -126,6 +125,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			define( 'ALM_CSS_PATH', ALM_PATH . 'build/frontend/ajax-load-more' . $suffix . '.css' );
 			define( 'ALM_CSS_URL', ALM_URL . '/build/frontend/ajax-load-more' . $suffix . '.css' );
+			define( 'ALM_CORE_JS_URL', ALM_URL . '/build/frontend/ajax-load-more.min.js' );
 
 			// Add-on constants.
 			if ( ! defined( 'ALM_CACHE_ITEM_NAME' ) ) {
@@ -373,27 +373,36 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			wp_localize_script(
 				'ajax-load-more',
 				'alm_localize',
-				[
-					'pluginurl'          => ALM_URL,
-					'version'            => ALM_VERSION,
-					'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
-					'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
-					'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),
-					'rest_api'           => esc_url_raw( rest_url() ),
-					'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
-					'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
-					'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
-					'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
-					'speed'              => apply_filters( 'alm_speed', 250 ),
-					'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
-					'no_results_text'    => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
-					'alm_debug'          => apply_filters( 'alm_debug', false ),
-					'a11y_focus'         => apply_filters( 'alm_a11y_focus', true ),
-					'site_title'         => get_bloginfo( 'name' ),
-					'site_tagline'       => get_bloginfo( 'description' ),
-					'button_label'       => $this->alm_default_button_label(),
-				]
+				$this->alm_get_localized_defaults()
 			);
+		}
+
+		/**
+		 * Localized JS variables.
+		 *
+		 * @return array
+		 */
+		public static function alm_get_localized_defaults() {
+			return [
+				'pluginurl'          => ALM_URL,
+				'version'            => ALM_VERSION,
+				'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
+				'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
+				'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),
+				'rest_api'           => esc_url_raw( rest_url() ),
+				'rest_nonce'         => wp_create_nonce( 'wp_rest' ),
+				'trailing_slash'     => substr( get_option( 'permalink_structure' ), -1 ) === '/' ? 'true' : 'false', // Trailing slash in permalink structure.
+				'is_front_page'      => is_home() || is_front_page() ? 'true' : 'false',
+				'retain_querystring' => apply_filters( 'alm_retain_querystring', true ),
+				'speed'              => apply_filters( 'alm_speed', 250 ),
+				'results_text'       => apply_filters( 'alm_display_results', __( 'Viewing {post_count} of {total_posts} results.', 'ajax-load-more' ) ),
+				'no_results_text'    => apply_filters( 'alm_no_results_text', __( 'No results found.', 'ajax-load-more' ) ),
+				'alm_debug'          => apply_filters( 'alm_debug', false ),
+				'a11y_focus'         => apply_filters( 'alm_a11y_focus', true ),
+				'site_title'         => get_bloginfo( 'name' ),
+				'site_tagline'       => get_bloginfo( 'description' ),
+				'button_label'       => self::alm_default_button_label(),
+			];
 		}
 
 		/**
