@@ -715,11 +715,11 @@ let alm_is_filtering = false;
 						if (!alm.addons.single_post) {
 							if (alm.addons.nextpage) {
 								// Nextpage.
-								if (alm.localize.post_count + alm.addons.nextpage_startpage >= alm.localize.total_posts) {
+								if (alm?.localize?.post_count + alm.addons.nextpage_startpage >= alm?.localize?.total_posts) {
 									alm.AjaxLoadMore.triggerDone();
 								}
 							} else {
-								if (alm.localize.post_count >= alm.localize.total_posts) {
+								if (alm?.localize?.post_count >= alm?.localize?.total_posts) {
 									alm.AjaxLoadMore.triggerDone();
 								}
 							}
