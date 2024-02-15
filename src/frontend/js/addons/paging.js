@@ -34,15 +34,23 @@ export function pagingCreateParams(alm) {
  *
  * @param {Object}  alm              The alm object.
  * @param {boolean} alm_is_filtering Is ALM filtering.
+ * @param {boolean} init             Is first run.
  */
-export function pagingComplete(alm, alm_is_filtering = false) {
+export function pagingComplete(alm, alm_is_filtering = false, init = false) {
 	const { main, AjaxLoadMore, last_loaded } = alm;
 
 	main.classList.remove('alm-loading');
 	AjaxLoadMore.triggerAddons(alm);
 
-	if (typeof almOnPagingComplete === 'function') {
-		window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
+	if (init) {
+		if (typeof almPagingComplete === 'function') {
+			window.almPagingComplete();
+		}
+	} else {
+		// Dispatch almOnPagingComplete callback when not alm.init.
+		if (typeof almOnPagingComplete === 'function') {
+			window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete.
+		}
 	}
 
 	if (alm_is_filtering && alm.addons.filters && typeof almFiltersAddonComplete === 'function') {
