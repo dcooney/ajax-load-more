@@ -8912,15 +8912,23 @@ function pagingCreateParams(alm) {
  *
  * @param {Object}  alm              The alm object.
  * @param {boolean} alm_is_filtering Is ALM filtering.
+ * @param {boolean} init             Is first run.
  */
-function pagingComplete(alm, alm_is_filtering = false) {
+function pagingComplete(alm, alm_is_filtering = false, init = false) {
 	const { main, AjaxLoadMore, last_loaded } = alm;
 
 	main.classList.remove('alm-loading');
 	AjaxLoadMore.triggerAddons(alm);
 
-	if (typeof almOnPagingComplete === 'function') {
-		window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete
+	if (init) {
+		if (typeof almPagingComplete === 'function') {
+			window.almPagingComplete();
+		}
+	} else {
+		// Dispatch almOnPagingComplete callback when not alm.init.
+		if (typeof almOnPagingComplete === 'function') {
+			window.almOnPagingComplete(alm); // Callback: Paging Add-on Complete.
+		}
 	}
 
 	if (alm_is_filtering && alm.addons.filters && typeof almFiltersAddonComplete === 'function') {
@@ -11392,7 +11400,12 @@ let alm_is_filtering = false;
 		alm.master_id = alm.master_id.replace(/-/g, '_');
 
 		// Localized <script/> variables.
-		alm.localize = window[alm.master_id + '_vars'];
+		alm.localized_var = `${alm.master_id}_vars`;
+		alm.localize = window[alm.localized_var];
+		if (!alm.localize) {
+			window[alm.localized_var] = {}; // Create empty object if not defined.
+			alm.localize = window[alm.localized_var];
+		}
 
 		// Add ALM object to the global window scope.
 		window[alm.master_id] = alm; // e.g. window.ajax_load_more or window.ajax_load_more_{id}
@@ -12032,7 +12045,7 @@ let alm_is_filtering = false;
 
 							// Paging -> Images Loaded: Run complete callbacks and checks.
 							ajax_load_more_imagesLoaded(paging_container, async function () {
-								pagingComplete(alm, alm_is_filtering);
+								pagingComplete(alm, alm_is_filtering, true);
 								alm_is_filtering = false;
 							});
 						}
@@ -12086,16 +12099,13 @@ let alm_is_filtering = false;
 				setFocus(alm, alm.last_loaded[0], total, alm_is_filtering);
 			}
 
-			// Remove filtering class
-			alm.main.classList.remove('alm-is-filtering');
+			alm.main.classList.remove('alm-is-filtering'); // Remove filtering class.
 
 			if (alm.init) {
-				// Add loaded class to main container on initial page load.
-				alm.main.classList.add('alm-is-loaded');
+				alm.main.classList.add('alm-is-loaded'); // Add loaded class to main container.
 			}
 
-			// Set init flag
-			alm.init = false;
+			alm.init = false; // Set init flag.
 		};
 
 		/**
@@ -12620,7 +12630,7 @@ let alm_is_filtering = false;
 		alm.AjaxLoadMore.setLocalizedVar = function (name = '', value = '') {
 			if (alm?.localize && name !== '' && value !== '') {
 				alm.localize[name] = value; // Set ALM localize var.
-				window[alm.master_id + '_vars'][name] = value; // Update vars.
+				window[alm.localized_var][name] = value; // Update vars.
 			}
 		};
 
