@@ -19,10 +19,10 @@ export default function (props) {
 }
 
 /**
- * Watch for changes to the DOM and initialize any new ALM blocks.
+ * Watch for changes to the DOM and initialize ALM blocks.
  */
 const almBlockCallback = function () {
-	const alm = document.querySelectorAll('.ajax-load-more-wrap');
+	const alm = document.querySelectorAll('.wp-block-ajax-load-more-core .ajax-load-more-wrap');
 	if (alm?.length) {
 		[...alm].forEach((instance) => {
 			ajaxloadmore.wpblock(instance);
@@ -34,6 +34,5 @@ domReady(() => {
 	const observer = new MutationObserver(almBlockCallback);
 	const targetNode = document.querySelector('#editor');
 	const config = { attributes: false, childList: true, subtree: true };
-
 	observer.observe(targetNode, config);
 });

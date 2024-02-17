@@ -14,6 +14,17 @@
  * @package AjaxLoadMore
  */
 
+/*
+TODO:
+- ALM Block
+- ALM Filters Block
+- Save shortcodes.
+- Turn Shortcode Builder into React Component.
+- Open Shortcode builder in Block Editor.
+-
+
+*/
+
 define( 'ALM_VERSION', '7.0.3' );
 define( 'ALM_RELEASE', 'February 15, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
@@ -89,7 +100,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 		 */
 		public function alm_includes() {
 			require_once ALM_PATH . 'core/functions.php'; // Load Core Functions.
-			require_once ALM_PATH . 'core/classes/class-alm-block.php'; // Load Block Class.
+			require_once ALM_PATH . 'core/classes/class-alm-blocks.php'; // Load Block Class.
 			require_once ALM_PATH . 'core/classes/class-alm-shortcode.php'; // Load Shortcode Class.
 			require_once ALM_PATH . 'core/classes/class-alm-woocommerce.php'; // Load Woocommerce Class.
 			require_once ALM_PATH . 'core/classes/class-alm-enqueue.php'; // Load Enqueue Class.

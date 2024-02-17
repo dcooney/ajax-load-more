@@ -20,11 +20,12 @@ if ( ! class_exists( 'ALM_ENQUEUE' ) ) :
 		/**
 		 * Load ALM CSS.
 		 *
-		 * @param string $name The name of the CSS to enqueue.
-		 * @param string $file The file path.
+		 * @param string  $name     The name of the CSS to enqueue.
+		 * @param string  $file     The file path.
+		 * @param boolean $enqueue Enqueue or Register the styles.
 		 * @since 2.10.1
 		 */
-		public static function alm_enqueue_css( $name, $file ) {
+		public static function alm_enqueue_css( $name, $file, $enqueue = true ) {
 			$css      = '';
 			$css_path = '';
 			$dir      = 'alm';
@@ -52,8 +53,12 @@ if ( ! class_exists( 'ALM_ENQUEUE' ) ) :
 				}
 			}
 
-			// Enqueue the css.
-			wp_enqueue_style( $name, $file ); // phpcs:ignore
+			// Enqueue/Register the CSS stylesheets.
+			if ( $enqueue ) {
+				wp_enqueue_style( $name, $file, [], ALM_VERSION );
+			} else {
+				wp_register_style( $name, $file, [], ALM_VERSION );
+			}
 		}
 
 		/**

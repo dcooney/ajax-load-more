@@ -1,28 +1,32 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "ajax-load-more/render",
-  "title": "Ajax Load More",
+  "name": "ajax-load-more/filter",
+  "title": "Ajax Load More: Filter",
+  "icon": "filter",
   "category": "ajax-load-more",
-  "description": "The ultimate infinite scroll and lazy load plugin for WordPress.",
+  "description": "Filter an Ajax Load More instance.",
   "textdomain": "ajax-load-more",
   "supports": {
     "align": false
   },
   "attributes": {
-    "shortcode": {
+    "target": {
       "type": "string",
       "default": ""
     },
-    "params": {
-      "type": "object",
-      "default": {}
+    "id": {
+      "type": "string",
+      "default": ""
     }
   },
   "editorScript": [
     "file:./index.js",
-    "ajax-load-more-block"
+    "ajax-load-more-filters"
   ],
-  "editorStyle": "file:./index.css",
+  "editorStyle": [
+    "file:./index.css",
+    "ajax-load-more-filters"
+  ],
   "render": "file:./render.php"
 }
