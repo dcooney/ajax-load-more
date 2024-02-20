@@ -14,34 +14,46 @@ export default function (props) {
 	const { filters = [], prefix = '' } = alm_filters_localize;
 
 	const filterList =
-		filters?.length &&
-		prefix &&
-		filters.map((filter) => {
-			const name = filter.replace(prefix, '');
-			return { label: name, value: name };
-		});
-
+		(filters?.length &&
+			prefix &&
+			filters.map((filter) => {
+				const name = filter.replace(prefix, '');
+				return { label: name, value: name };
+			})) ||
+		[];
 	filterList.unshift({ label: __('-- Select Filter --', 'ajax-load-more'), value: '' });
 
 	return (
 		<InspectorControls>
 			<PanelBody title={__('Settings', 'ajax-load-more')}>
-				{!!filterList?.length && (
-					<SelectControl
-						label={__('Filter', 'ajax-load-more')}
-						help={__('Select an Ajax Load More filter by ID.', 'ajax-load-more')}
-						value={attributes?.id}
-						options={filterList}
-						onChange={(value) => setAttributes({ id: value })}
-					/>
-				)}
-				<Flex gap="5px" justify="flex-start">
-					<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters&action=new`} size="compact" variant="secondary" target="_blank">
-						{__('Create New', 'ajax-load-more')}
+				<SelectControl
+					label={__('Filter', 'ajax-load-more')}
+					help={__('Select a filter to display by ID.', 'ajax-load-more')}
+					value={attributes?.id}
+					options={filterList}
+					onChange={(value) => setAttributes({ id: value })}
+					disabled={filterList?.length < 2}
+				/>
+				<Flex
+					gap="5px"
+					justify="flex-start"
+					style={{
+						marginTop: '-10px',
+					}}
+				>
+					<Button
+						href={`${adminurl}/admin.php?page=ajax-load-more-filters&action=new`}
+						size="compact"
+						variant={filterList?.length < 2 ? 'primary' : 'secondary'}
+						target="_blank"
+					>
+						{__('Create Filter', 'ajax-load-more')}
 					</Button>
-					<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters`} size="compact" variant="tertiary" target="_blank">
-						{__('View All', 'ajax-load-more')}
-					</Button>
+					{filterList?.length > 1 && (
+						<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters`} size="compact" variant="tertiary" target="_blank">
+							{__('View All', 'ajax-load-more')}
+						</Button>
+					)}
 				</Flex>
 				<hr />
 				<TextControl

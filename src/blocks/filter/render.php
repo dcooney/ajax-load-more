@@ -22,7 +22,7 @@ if ( ! $target || ! $filter_id ) {
 	} else {
 		ALM_BLOCK::alm_block_editor_message(
 			__( 'Ajax Load More: Filters', 'ajax-load-more' ),
-			__( 'Enter a target for this filter in the block settings.', 'ajax-load-more' )
+			__( 'Enter an Ajax Load More target for this filter in the block settings.', 'ajax-load-more' )
 		);
 	}
 }
