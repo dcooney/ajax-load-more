@@ -46,16 +46,14 @@ if ( has_action( 'alm_filters_installed' ) ) { ?>
 								$count  = 0;
 								$return = '';
 								foreach ( $current_filters as $the_filter ) {
-									if ( ! in_array( $the_filter, array( 'alm_filters_license_key', 'alm_filters_license_status' ) ) ) {
-										$count++;
-										$value   = str_replace( ALM_FILTERS_PREFIX, '', $the_filter );
-										$return .= '<option value="' . $value . '">' . $value . '</option>';
-									}
+									$count++;
+									$value   = str_replace( ALM_FILTERS_PREFIX, '', $the_filter );
+									$return .= '<option value="' . $value . '">' . $value . '</option>';
 								}
 								if ( $count > 0 ) {
 									echo '<select class="alm_element" name="filters-id" id="filters-id">';
-										echo '<option value="" selected="selected">' . esc_attr__( '-- Select Filter --', 'ajax-load-more' ) . '</option>';
-										echo $return;
+									echo '<option value="" selected="selected">' . esc_attr__( '-- Select Filter --', 'ajax-load-more' ) . '</option>';
+									echo $return;
 									echo '</select>';
 								} else {
 									?>

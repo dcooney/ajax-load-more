@@ -1,3 +1,8 @@
-.alm-filters {
-	pointer-events: none;
+.editor-styles-wrapper {
+	.alm-filters {
+		pointer-events: none;
+		&.alm-filters-facets {
+			opacity: 1;
+		}
+	}
 }

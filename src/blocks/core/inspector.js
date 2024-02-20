@@ -1,5 +1,5 @@
 import { InspectorControls } from '@wordpress/block-editor';
-import { PanelBody, TextareaControl, TextControl, SelectControl } from '@wordpress/components';
+import { PanelBody, SelectControl, TextControl, TextareaControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -13,7 +13,7 @@ export default function (props) {
 
 	return (
 		<InspectorControls>
-			<PanelBody title={__('Display Settings', 'ajax-load-more')}>
+			<PanelBody title={__('Settings', 'ajax-load-more')}>
 				<TextControl
 					label={__('ID', 'ajax-load-more')}
 					help={__('Set a unique ID for this Ajax Load More instance.', 'ajax-load-more')}

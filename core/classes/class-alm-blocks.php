@@ -48,7 +48,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			); // Localized JS variables.
 
 			// Filters.
-			if ( has_action( 'alm_filters_installed' ) && defined( 'ALM_FILTERS_SLUG' ) ) {
+			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters') ) {
 				if ( ! alm_css_disabled( '_alm_filters_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(
 						ALM_FILTERS_SLUG,
@@ -56,10 +56,18 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 						false
 					);
 				}
+				wp_localize_script(
+					'ajax-load-more',
+					'alm_filters_localize',
+					[
+						'filters' => ALMFilters::alm_get_all_filters(),
+						'prefix'  => ALM_FILTERS_PREFIX,
+					]
+				); // Localized JS variables.
 			}
 
 			// Layouts.
-			if ( has_action( 'alm_layouts_installed' ) && defined( 'ALM_LAYOUTS_URL' ) ) {
+			if ( has_action( 'alm_layouts_installed' ) && class_exists( 'ALMLayouts') ) {
 				ALM_ENQUEUE::alm_enqueue_css(
 					'ajax-load-more-layouts',
 					ALM_LAYOUTS_URL . '/core/css/ajax-load-more-layouts.css',
@@ -68,7 +76,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			}
 
 			// Paging.
-			if ( has_action( 'alm_paging_installed' ) && defined( 'ALM_PAGING_URL' ) ) {
+			if ( has_action( 'alm_paging_installed' )  && class_exists( 'ALM_Paging') ) {
 				if ( ! alm_css_disabled( '_alm_paging_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(
 						'ajax-load-more-paging',
@@ -109,13 +117,14 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		}
 
 		/**
-		 * Display a block editor message.
+		 * Display a block editor message for site editors.
 		 *
 		 * @param string $title The title of the message.
 		 * @param string $desc  The description of the message.
 		 * @return void
 		 */
-		public static function alm_block_message( $title, $desc ) {
+		public static function alm_block_editor_message( $title, $desc ) {
+			if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			?>
 				<div class="ajax-load-more-block-selector">
 					<h3><?php echo esc_attr( $title ); ?></h3>
@@ -125,6 +134,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 					</div>
 				</div>
 				<?php
+			}
 		}
 	}
 

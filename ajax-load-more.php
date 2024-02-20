@@ -136,7 +136,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 			define( 'ALM_CSS_PATH', ALM_PATH . 'build/frontend/ajax-load-more' . $suffix . '.css' );
 			define( 'ALM_CSS_URL', ALM_URL . '/build/frontend/ajax-load-more' . $suffix . '.css' );
-			define( 'ALM_CORE_JS_URL', ALM_URL . '/build/frontend/ajax-load-more.min.js' );
+			define( 'ALM_CORE_JS_URL', ALM_URL . '/build/frontend/ajax-load-more' . $suffix . '.js' );
 
 			// Add-on constants.
 			if ( ! defined( 'ALM_CACHE_ITEM_NAME' ) ) {
@@ -397,6 +397,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			return [
 				'pluginurl'          => ALM_URL,
 				'version'            => ALM_VERSION,
+				'adminurl'				=> get_admin_url(),
 				'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 				'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
 				'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),

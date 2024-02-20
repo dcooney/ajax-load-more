@@ -2,20 +2,20 @@
 	"$schema": "https://schemas.wp.org/trunk/block.json",
 	"apiVersion": 3,
 	"name": "ajax-load-more/filter",
-	"title": "Ajax Load More: Filter",
+	"title": "Ajax Load More: Filters",
 	"icon": "filter",
 	"category": "ajax-load-more",
-	"description": "Filter an Ajax Load More instance.",
+	"description": "Enable filtering of an Ajax Load More instance.",
 	"textdomain": "ajax-load-more",
 	"supports": {
 		"align": false
 	},
 	"attributes": {
-		"target": {
+		"id": {
 			"type": "string",
 			"default": ""
 		},
-		"id": {
+		"target": {
 			"type": "string",
 			"default": ""
 		}
