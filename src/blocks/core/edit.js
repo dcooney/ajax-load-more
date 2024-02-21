@@ -1,6 +1,7 @@
 import { useBlockProps } from '@wordpress/block-editor';
 import domReady from '@wordpress/dom-ready';
 import ServerSideRender from '@wordpress/server-side-render';
+import { openBlockSidebar } from '../utils/blockSidebar';
 import block from './block.json';
 import Inspector from './inspector';
 
@@ -11,7 +12,7 @@ export default function (props) {
 	return (
 		<>
 			<Inspector {...props} />
-			<div {...blockProps}>
+			<div {...blockProps} onFocus={() => openBlockSidebar()}>
 				<ServerSideRender block={block.name} attributes={attributes} />
 			</div>
 		</>

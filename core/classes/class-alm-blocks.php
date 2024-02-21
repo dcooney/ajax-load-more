@@ -76,7 +76,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			}
 
 			// Paging.
-			if ( has_action( 'alm_paging_installed' )  && class_exists( 'ALM_Paging') ) {
+			if ( has_action( 'alm_paging_installed' ) && class_exists( 'ALM_Paging') ) {
 				if ( ! alm_css_disabled( '_alm_paging_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(
 						'ajax-load-more-paging',

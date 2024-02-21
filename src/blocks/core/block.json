@@ -13,10 +13,6 @@
 		"shortcode": {
 			"type": "string",
 			"default": ""
-		},
-		"params": {
-			"type": "object",
-			"default": {}
 		}
 	},
 	"editorScript": [
