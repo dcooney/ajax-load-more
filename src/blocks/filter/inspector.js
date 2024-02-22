@@ -35,22 +35,17 @@ export default function (props) {
 					disabled={filterList?.length < 2}
 				/>
 				<Flex
-					gap="5px"
+					gap="10px"
 					justify="flex-start"
 					style={{
 						marginTop: '-10px',
 					}}
 				>
-					<Button
-						href={`${adminurl}/admin.php?page=ajax-load-more-filters&action=new`}
-						size="compact"
-						variant={filterList?.length < 2 ? 'primary' : 'secondary'}
-						target="_blank"
-					>
+					<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters&action=new`} size="compact" variant="primary" target="_blank">
 						{__('Create Filter', 'ajax-load-more')}
 					</Button>
 					{filterList?.length > 1 && (
-						<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters`} size="compact" variant="tertiary" target="_blank">
+						<Button href={`${adminurl}/admin.php?page=ajax-load-more-filters`} size="compact" variant="secondary" target="_blank">
 							{__('View All', 'ajax-load-more')}
 						</Button>
 					)}

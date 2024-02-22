@@ -5,7 +5,7 @@ import { openBlockSidebar } from '../functions/sidebar';
  * Component wrapper for a block in Edit mode.
  *
  * @param {Object} props Component props.
- * @return {Element} The BlockEditWrapper component.
+ * @return {Element}     The BlockEditWrapper component.
  */
 export default function BlockEditWrapper(props) {
 	const { children, useFocus = true } = props;

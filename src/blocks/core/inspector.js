@@ -30,7 +30,7 @@ export default function (props) {
 						marginTop: '-10px',
 					}}
 				>
-					<Button href={`${adminurl}/admin.php?page=ajax-load-more-shortcode-builder`} size="compact" variant="secondary" target="_blank">
+					<Button href={`${adminurl}/admin.php?page=ajax-load-more-shortcode-builder`} size="compact" variant="primary" target="_blank">
 						{__('Create Shortcode', 'ajax-load-more')}
 					</Button>
 				</Flex>
