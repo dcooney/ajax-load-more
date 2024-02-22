@@ -21,7 +21,7 @@ export default function (props) {
 					value={attributes?.shortcode}
 					onChange={(data) => setAttributes({ shortcode: data })}
 					help={__('Note: Scroll is disabled in the block editor.', 'ajax-load-more')}
-					rows={8}
+					rows={6}
 				/>
 				<Flex
 					gap="5px"

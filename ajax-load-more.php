@@ -15,13 +15,22 @@
  */
 
 /*
+* NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
+
+
 TODO:
-- ALM Block
-- ALM Filters Block
+- ALM Block [DONE]
+- ALM Filters Block [DONE]
 - Save shortcodes.
 - Turn Shortcode Builder into React Component.
-- Open Shortcode builder in Block Editor.
--
+- Open Shortcode builder in Block Editor. [DONE]
+
+
+ADD-ONS
+
+Filters
+- UPDATE: Added console warning when filters is missing the core Ajax Load More instance.
+
 
 */
 

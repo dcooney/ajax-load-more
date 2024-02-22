@@ -8,10 +8,9 @@
 $shortcode = $attributes['shortcode'];
 if ( $shortcode ) {
 	echo do_shortcode( $shortcode );
-}
 
-// Block editor display messages.
-if ( ! $shortcode ) {
+} else {
+	// Block editor display messages.
 	ALM_BLOCK::alm_block_editor_message(
 		__( 'Ajax Load More', 'ajax-load-more' ),
 		__( 'You must enter an Ajax Load More shortcode.', 'ajax-load-more' )
