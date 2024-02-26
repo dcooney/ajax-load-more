@@ -19,11 +19,12 @@
 
 
 TODO:
-- ALM Block [DONE]
+- ALM Core Block [DONE]
 - ALM Filters Block [DONE]
+- Open Shortcode builder in Block Editor. [DONE]
+- Filters, Range Slider, Date Picker not working in admin.
 - Save shortcodes.
 - Turn Shortcode Builder into React Component.
-- Open Shortcode builder in Block Editor. [DONE]
 
 
 ADD-ONS
