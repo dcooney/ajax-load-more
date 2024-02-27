@@ -20,7 +20,7 @@ export default function (props) {
 					placeholder={'[ajax_load_more]'}
 					value={attributes?.shortcode}
 					onChange={(data) => setAttributes({ shortcode: data })}
-					help={__('Note: Scroll is disabled in the block editor.', 'ajax-load-more')}
+					help={__('Note: Scroll is disabled within the block editor.', 'ajax-load-more')}
 					rows={6}
 				/>
 				<Flex
@@ -30,7 +30,7 @@ export default function (props) {
 						marginTop: '-10px',
 					}}
 				>
-					<Button href={`${adminurl}/admin.php?page=ajax-load-more-shortcode-builder`} size="compact" variant="primary" target="_blank">
+					<Button href={`${adminurl}/admin.php?page=ajax-load-more-shortcode-builder`} size="compact" variant="secondary" target="_blank">
 						{__('Create Shortcode', 'ajax-load-more')}
 					</Button>
 				</Flex>

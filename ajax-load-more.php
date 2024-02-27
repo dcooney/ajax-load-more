@@ -22,7 +22,7 @@ TODO:
 - ALM Core Block [DONE]
 - ALM Filters Block [DONE]
 - Open Shortcode builder in Block Editor. [DONE]
-- Filters, Range Slider, Date Picker not working in admin.
+- Filters, Range Slider, Date Picker not working in admin. [DONE]
 - Save shortcodes.
 - Turn Shortcode Builder into React Component.
 
@@ -31,6 +31,7 @@ ADD-ONS
 
 Filters
 - UPDATE: Added console warning when filters is missing the core Ajax Load More instance.
+- NEW: Added Filters WordPress Block for adding a filter directly to the Block Editor.
 
 
 */
@@ -407,7 +408,7 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			return [
 				'pluginurl'          => ALM_URL,
 				'version'            => ALM_VERSION,
-				'adminurl'				=> get_admin_url(),
+				'adminurl'           => get_admin_url(),
 				'ajaxurl'            => apply_filters( 'alm_ajaxurl', admin_url( 'admin-ajax.php' ) ),
 				'alm_nonce'          => wp_create_nonce( 'ajax_load_more_nonce' ),
 				'rest_api_url'       => apply_filters( 'alm_restapi_url', '' ),

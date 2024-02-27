@@ -1828,7 +1828,7 @@ export const click = function (id = '') {
 /**
  * Load ALM inside the WP Block Editor.
  *
- * @since 8.0
+ * @since 7.1.0
  * @param {Element} instance The HTML element.
  */
 export const wpblock = function (instance) {

@@ -26,7 +26,8 @@
 	],
 	"editorStyle": [
 		"file:./index.css",
-		"ajax-load-more-filters"
+		"ajax-load-more-filters",
+		"alm-nouislider"
 	],
 	"render": "file:./render.php"
 }

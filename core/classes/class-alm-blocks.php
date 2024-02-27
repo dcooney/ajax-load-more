@@ -27,6 +27,21 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		}
 
 		/**
+		 * Register the Ajax Load More WP Block.
+		 *
+		 * @return void
+		 */
+		public function alm_register_block() {
+			// Core ALM Block.
+			register_block_type( ALM_PATH . 'build/blocks/core/' );
+
+			// Filters Block.
+			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
+				register_block_type( ALM_PATH . 'build/blocks/filter/' );
+			}
+		}
+
+		/**
 		 * Enqueue block editor assets.
 		 *
 		 * @return void
@@ -35,7 +50,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			// Load Core ALM assets.
 			if ( ! alm_css_disabled( '_alm_disable_css' ) ) {
 				ALM_ENQUEUE::alm_enqueue_css(
-					ALM_SLUG,
+					'ajax-load-more',
 					ALM_CSS_URL,
 					false
 				);
@@ -48,26 +63,34 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			); // Localized JS variables.
 
 			// Filters.
-			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters') ) {
+			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
 				if ( ! alm_css_disabled( '_alm_filters_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(
-						ALM_FILTERS_SLUG,
+						'ajax-load-more-filters',
 						ALM_FILTERS_URL . '/dist/css/styles.css',
 						false
 					);
+					ALM_ENQUEUE::alm_enqueue_css(
+						'alm-nouislider',
+						ALM_FILTERS_URL . '/dist/vendor/nouislider/nouislider.min.css',
+						false
+					);
 				}
+
+				wp_register_script( 'ajax-load-more-filters', ALM_FILTERS_URL . '/dist/js/filters.js', 'ajax-load-more', ALM_FILTERS_VERSION, true );
 				wp_localize_script(
 					'ajax-load-more',
 					'alm_filters_localize',
 					[
-						'filters' => ALMFilters::alm_get_all_filters(),
-						'prefix'  => ALM_FILTERS_PREFIX,
+						'filters'              => ALMFilters::alm_get_all_filters(),
+						'prefix'               => ALM_FILTERS_PREFIX,
+						'remove_active_filter' => __( 'Remove', 'ajax-load-more' ),
 					]
-				); // Localized JS variables.
+				); // Localized Filters JS variables.
 			}
 
 			// Layouts.
-			if ( has_action( 'alm_layouts_installed' ) && class_exists( 'ALMLayouts') ) {
+			if ( has_action( 'alm_layouts_installed' ) && class_exists( 'ALMLayouts' ) ) {
 				ALM_ENQUEUE::alm_enqueue_css(
 					'ajax-load-more-layouts',
 					ALM_LAYOUTS_URL . '/core/css/ajax-load-more-layouts.css',
@@ -76,7 +99,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 			}
 
 			// Paging.
-			if ( has_action( 'alm_paging_installed' ) && class_exists( 'ALM_Paging') ) {
+			if ( has_action( 'alm_paging_installed' ) && class_exists( 'ALM_Paging' ) ) {
 				if ( ! alm_css_disabled( '_alm_paging_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(
 						'ajax-load-more-paging',
@@ -86,16 +109,6 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 				}
 				wp_register_script( 'ajax-load-more-paging', ALM_PAGING_URL . '/core/js/alm-paging.js', [], ALM_PAGING_VERSION, true ); // Register Core ALM JS.
 			}
-		}
-
-		/**
-		 * Register the Ajax Load More WP Block.
-		 *
-		 * @return void
-		 */
-		public function alm_register_block() {
-			register_block_type( ALM_PATH . 'build/blocks/core/' );
-			register_block_type( ALM_PATH . 'build/blocks/filter/' );
 		}
 
 		/**
@@ -125,7 +138,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		 */
 		public static function alm_block_editor_message( $title, $desc ) {
 			if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
-			?>
+				?>
 				<div class="ajax-load-more-block-selector">
 					<h3><?php echo esc_attr( $title ); ?></h3>
 					<div>

@@ -1,6 +1,6 @@
 import domReady from '@wordpress/dom-ready';
 import ServerSideRender from '@wordpress/server-side-render';
-import BlockEditWrapper from '../utils/components/BlockEditWrapper';
+import EditWrapper from '../utils/components/editor/EditWrapper';
 import Loader from '../utils/components/Loader';
 import block from './block.json';
 import Inspector from './inspector';
@@ -10,9 +10,9 @@ export default function (props) {
 	return (
 		<>
 			<Inspector {...props} />
-			<BlockEditWrapper>
+			<EditWrapper>
 				<ServerSideRender block={block.name} attributes={attributes} LoadingResponsePlaceholder={Loader} EmptyResponsePlaceholder={Loader} />
-			</BlockEditWrapper>
+			</EditWrapper>
 		</>
 	);
 }
