@@ -109,7 +109,7 @@ function alm_admin_menu() {
 	$alm_page = add_menu_page(
 		'Ajax Load More',
 		'Ajax Load More',
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more',
 		'alm_settings_page',
 		alm_admin_menu_icon_svg()
@@ -120,7 +120,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Settings', 'ajax-load-more' ),
 		__( 'Settings', 'ajax-load-more' ),
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more',
 		'alm_settings_page'
 	);
@@ -136,7 +136,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Templates', 'ajax-load-more' ),
 		__( 'Templates', 'ajax-load-more' ),
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-repeaters',
 		'alm_repeater_page'
 	);
@@ -152,7 +152,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Shortcode Builder', 'ajax-load-more' ),
 		__( 'Shortcode Builder', 'ajax-load-more' ),
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-shortcode-builder',
 		'alm_shortcode_builder_page'
 	);
@@ -168,7 +168,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Filters', 'ajax-load-more' ),
 		$before_link . __( 'Filters', 'ajax-load-more' ) . $after_link,
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-filters',
 		'alm_filters_page'
 	);
@@ -185,7 +185,7 @@ function alm_admin_menu() {
 			'ajax-load-more',
 			__( 'Cache', 'ajax-load-more' ),
 			__( 'Cache', 'ajax-load-more' ),
-			'edit_theme_options',
+			apply_filters( 'alm_user_role', 'edit_theme_options' ),
 			'ajax-load-more-cache',
 			'alm_cache_page'
 		);
@@ -205,7 +205,7 @@ function alm_admin_menu() {
 			'ajax-load-more',
 			__( 'WooCommerce', 'ajax-load-more' ),
 			__( 'WooCommerce', 'ajax-load-more' ),
-			'edit_theme_options',
+			apply_filters( 'alm_user_role', 'edit_theme_options' ),
 			'ajax-load-more-woocommerce',
 			'alm_woocommerce_page'
 		);
@@ -225,7 +225,7 @@ function alm_admin_menu() {
 			'ajax-load-more',
 			__( 'Add-ons', 'ajax-load-more' ),
 			$before_link . __( 'Add-ons', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
+			apply_filters( 'alm_user_role', 'edit_theme_options' ),
 			'ajax-load-more-add-ons',
 			'alm_add_ons_page'
 		);
@@ -245,7 +245,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Extensions', 'ajax-load-more' ),
 		$alm_extensions_page_before . __( 'Extensions', 'ajax-load-more' ) . $alm_extensions_page_after,
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-extensions',
 		'alm_extensions_page'
 	);
@@ -262,7 +262,7 @@ function alm_admin_menu() {
 			'ajax-load-more',
 			__( 'Pro', 'ajax-load-more' ),
 			$before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' . __( 'Pro', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
+			apply_filters( 'alm_user_role', 'edit_theme_options' ),
 			'ajax-load-more-pro',
 			'alm_pro_page'
 		);
@@ -277,7 +277,7 @@ function alm_admin_menu() {
 			'ajax-load-more',
 			__( 'Pro', 'ajax-load-more' ),
 			$before_link . '<span class="dashicons dashicons-plus-alt" ' . $style_link_icon . '></span> ' . __( 'Go Pro', 'ajax-load-more' ) . $after_link,
-			'edit_theme_options',
+			apply_filters( 'alm_user_role', 'edit_theme_options' ),
 			'ajax-load-more-go-pro',
 			'alm_go_pro_page'
 		);
@@ -294,7 +294,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		$license_title,
 		$before_link . $license_title . $after_link,
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-licenses',
 		'alm_licenses_page'
 	);
@@ -310,7 +310,7 @@ function alm_admin_menu() {
 		'ajax-load-more',
 		__( 'Help', 'ajax-load-more' ),
 		__( 'Help', 'ajax-load-more' ),
-		'edit_theme_options',
+		apply_filters( 'alm_user_role', 'edit_theme_options' ),
 		'ajax-load-more-help',
 		'alm_help_page'
 	);

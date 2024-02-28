@@ -47,7 +47,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		 * @return void
 		 */
 		public function alm_block_editor_assets() {
-			// Load Core ALM assets.
+			// Core ALM assets.
 			if ( ! alm_css_disabled( '_alm_disable_css' ) ) {
 				ALM_ENQUEUE::alm_enqueue_css(
 					'ajax-load-more',
@@ -62,7 +62,7 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 				AjaxLoadMore::alm_get_localized_defaults()
 			); // Localized JS variables.
 
-			// Filters.
+			// Filters Add-on assets.
 			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
 				if ( ! alm_css_disabled( '_alm_filters_disable_css' ) ) {
 					ALM_ENQUEUE::alm_enqueue_css(

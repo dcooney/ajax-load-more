@@ -16,7 +16,8 @@
 
 /*
 * NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
-
+* NEW: Added new `alm_user_role` filter to allow developers to change the user role required to access the Ajax Load More admin. Default is `edit_theme_options`.
+* UPDATE: Various security fixes with regards to layout and directory paths.
 
 TODO:
 - ALM Core Block [DONE]

@@ -14,7 +14,7 @@
 function alm_license_activation() {
 	$form_data = filter_input_array( INPUT_GET );
 
-	if ( ! current_user_can( 'edit_theme_options' ) || ! isset( $form_data['nonce'] ) ) {
+	if ( ! current_user_can( apply_filters( 'alm_user_role', 'edit_theme_options' ) ) || ! isset( $form_data['nonce'] ) ) {
 		// Bail early if missing WP capabilities or nonce.
 		wp_die( esc_attr__( 'You don\'t belong here.', 'ajax-load-more' ) );
 		return;
@@ -58,7 +58,6 @@ function alm_license_activation() {
 			'body'      => $api_params,
 			'timeout'   => 30,
 			'sslverify' => apply_filters( 'alm_licensing_sslverify', false ),
-			// 'blocking'  => true
 		]
 	);
 

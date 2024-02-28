@@ -104,8 +104,8 @@ function alm_loop( $repeater, $type, $theme_repeater, $alm_found_posts = '', $al
  * Get the current repeater template file.
  *
  * @param string $repeater current repater name.
- * @param string $type Type of template.
- * @return $include (file path)
+ * @param string $type     Type of template.
+ * @return string          The template file path.
  * @since 2.5.0
  */
 function alm_get_current_repeater( $repeater, $type ) {
@@ -138,12 +138,10 @@ function alm_get_current_repeater( $repeater, $type ) {
 	} else {
 		// Default repeater.
 		$include = alm_get_default_repeater();
-
 	}
 
 	// Security check.
-	// Confirm $template does NOT contains relative path.
-	if ( false !== strpos( $template, './' ) ) {
+	if ( ! alm_is_valid_path( $template ) ) {
 		$include = alm_get_default_repeater();
 	}
 
@@ -186,6 +184,20 @@ function alm_get_default_repeater() {
 	}
 
 	return $file;
+}
+
+/**
+ * Confirm directory or file path does not contain relative path.
+ *
+ * @since 7.1.0
+ * @param string $path The path to check.
+ * @return boolean       Return true if path is valid.
+ */
+function alm_is_valid_path( $path ) {
+	if ( ! $path ) {
+		return false;
+	}
+	return false !== strpos( $path, './' ) || false !== strpos( $path, '.\\' ) ? false : true;
 }
 
 /**

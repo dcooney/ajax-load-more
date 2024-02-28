@@ -1,7 +1,7 @@
 import domReady from '@wordpress/dom-ready';
 import ServerSideRender from '@wordpress/server-side-render';
 import EditWrapper from '../utils/components/editor/EditWrapper';
-import Loader from '../utils/components/Loader';
+import Loader from '../utils/components/editor/Loader';
 import block from './block.json';
 import Inspector from './inspector';
 
