@@ -1,20 +1,13 @@
-
 .ajax-load-more {
 	// Admin Header.
-	.alm-admin-toolbar{
+	.alm-admin-toolbar {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		width: 100%;
 		padding: $padding;
 		background-color: $alm_red;
-		@media screen and (min-width: $wp_mobile) {
-			position: sticky;
-			top: 32px;
-			z-index: 9999;
-			box-shadow: 0 1px 6px rgba(0, 0, 0, 0.05);
-		}
-		&--logo{
+		&--logo {
 			display: flex;
 			align-items: center;
 			font-weight: 700;
@@ -23,7 +16,7 @@
 			color: #fff;
 			text-decoration: none;
 			&:hover,
-			&:focus{
+			&:focus {
 				color: #fff;
 				text-decoration: none;
 			}
@@ -54,7 +47,7 @@
 			transition: all 0.15s ease;
 			& span {
 				line-height: 1;
-				&.dashicons{
+				&.dashicons {
 					margin-right: 5px;
 					font-size: 16px;
 					width: 16px;
@@ -62,7 +55,7 @@
 				}
 			}
 			&:hover,
-			&:focus{
+			&:focus {
 				color: rgba(255, 255, 255, 0.9);
 				background-color: rgba(#000, 0.4);
 			}
@@ -70,11 +63,16 @@
 	}
 
 	// Plugin Navigation.
-	.alm-admin-nav{
+	.alm-admin-nav {
 		background-color: #fff;
 		border-bottom: 1px solid $border;
 		margin-bottom: $padding_sm;
 		box-shadow: 0 1px 6px rgba(0, 0, 0, 0.025);
+		@media screen and (min-width: $wp_mobile) {
+			position: sticky;
+			top: 32px;
+			z-index: 9999;
+		}
 		nav {
 			width: 100%;
 			display: flex;
@@ -96,11 +94,11 @@
 				transition: all 0.15s ease;
 				&:hover,
 				&:focus,
-				&.current{
+				&.current {
 					background-color: $light_grey;
 					color: #2f2e2e;
 				}
-				&.current{
+				&.current {
 					font-weight: 600;
 				}
 			}

@@ -645,38 +645,43 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * Archive Integration.
 			 * Set required archive config options.
 			 */
-			if ( $archive && is_archive() ) {
-				if ( is_date() ) {
-					$archive_year  = get_the_date( 'Y' );
-					$archive_month = get_the_date( 'm' );
-					$archive_day   = get_the_date( 'd' );
-					if ( is_year() ) {
-						$year = $archive_year;
+			if ( $archive ) {
+				if( is_archive() ) {
+					if ( is_date() ) {
+						$archive_year  = get_the_date( 'Y' );
+						$archive_month = get_the_date( 'm' );
+						$archive_day   = get_the_date( 'd' );
+						if ( is_year() ) {
+							$year = $archive_year;
+						}
+						if ( is_month() ) {
+							$month = $archive_month;
+							$year  = $archive_year;
+						}
+						if ( is_day() ) {
+							$year  = $archive_year;
+							$month = $archive_month;
+							$day   = $archive_day;
+						}
 					}
-					if ( is_month() ) {
-						$month = $archive_month;
-						$year  = $archive_year;
+					if ( is_author() ) {
+						$author = get_the_author_meta( 'ID' );
 					}
-					if ( is_day() ) {
-						$year  = $archive_year;
-						$month = $archive_month;
-						$day   = $archive_day;
+					if ( is_tax() || is_category() || is_tag() ) {
+						$obj               = get_queried_object();
+						$taxonomy          = $obj->taxonomy;
+						$taxonomy_terms    = $obj->slug;
+						$taxonomy_operator = 'IN';
+					}
+					if ( is_post_type_archive() ) {
+						$obj = get_queried_object();
+						if ( isset( $obj->name ) ) {
+							$post_type = $obj->name;
+						}
 					}
 				}
-				if ( is_author() ) {
-					$author = get_the_author_meta( 'ID' );
-				}
-				if ( is_tax() || is_category() || is_tag() ) {
-					$obj               = get_queried_object();
-					$taxonomy          = $obj->taxonomy;
-					$taxonomy_terms    = $obj->slug;
-					$taxonomy_operator = 'IN';
-				}
-				if ( is_post_type_archive() ) {
-					$obj = get_queried_object();
-					if ( isset( $obj->name ) ) {
-						$post_type = $obj->name;
-					}
+				if ( is_search() ) {
+					$search = get_search_query();
 				}
 			}
 

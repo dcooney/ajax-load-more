@@ -17,7 +17,8 @@
 /*
 * NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
 * NEW: Added new `alm_user_role` filter to allow developers to change the user role required to access the Ajax Load More admin. Default is `edit_theme_options`.
-* UPDATE: Various security fixes with regards to layout and directory paths.
+* UPDATE: Various security fixes with regards to accessing layouts and directory paths.
+
 
 TODO:
 - ALM Core Block [DONE]
@@ -27,12 +28,34 @@ TODO:
 - Save shortcodes.
 - Turn Shortcode Builder into React Component.
 
-
 ADD-ONS
 
 Filters
+- NEW: Added ALM Filters WordPress Block for rendering filters directly to the Block Editor.
+- NEW: Added Posts Per Page filter.
+- NEW: When "Hide Inactive Filter Options" is enabled with facets, the entire filter group will be hidden if no filter options are returned.
+- NEW: Added support for Post Type facet filtering.
+- NEW: Added support for deeplink URLs when using multiple Filter instances.
 - UPDATE: Added console warning when filters is missing the core Ajax Load More instance.
-- NEW: Added Filters WordPress Block for adding a filter directly to the Block Editor.
+- UPDATE: Added support for search with use of archive="true".
+- FIX: Fixed issue with Facet checkbox/radios and the Show/Hide More buttons not always functioning correctly.
+- FIX: Fixed issue with sortKey not resetting after clearing the sort value.
+- FIX: Fixed issue with restoring the default value of a filter after a change event.
+- UPDATE: Accessibility updates to filter checkbox/radios.
+- UPDATE: Various UI/UX updates throughout plugin admin and frontend.
+
+TODO:
+- Fix issue with Hiding Inactive Filters. Confirm this is working as expected.
+  - https://wpdev.local/filter-add-on-facets-movie/
+- Posts Per Page [DONE]
+  - Started Posts per Page implementation.
+
+- Fix issue with Single Select Options for Post Type -> alm_filters_single_select_facet_args [DONE]
+- Somewhat working, but other filter values are off. [DONE]
+  - https://wpdev.local/filter-add-on-facets-movie/?postType=post&category=general-design
+- Single Select Facets are not working correctly. [DONE]
+  - Radios are not affecting other facets. [DONE]
+- Turn back on Transients save in facets.php Line #53
 
 
 */
@@ -101,7 +124,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			add_filter( 'widget_text', 'do_shortcode' );
 
 			add_shortcode( 'ajax_load_more', [ &$this, 'alm_shortcode' ] );
-
 			load_plugin_textdomain( 'ajax-load-more', false, dirname( plugin_basename( __FILE__ ) ) . '/lang' );
 		}
 

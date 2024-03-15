@@ -10,7 +10,7 @@ import { __ } from '@wordpress/i18n';
  */
 export default function (props) {
 	const { attributes, setAttributes } = props;
-	const { adminurl = '' } = alm_localize;
+	const { adminurl = '' } = alm_localize || {};
 	const { filters = [], prefix = '' } = alm_filters_localize;
 
 	const filterList =

@@ -16,7 +16,7 @@ export default function (props) {
 		<InspectorControls>
 			<PanelBody title={__('Settings', 'ajax-load-more')}>
 				<TextareaControl
-					label={__('Enter ALM Shortcode', 'ajax-load-more')}
+					label={__('Enter ALM Shortcodes', 'ajax-load-more')}
 					placeholder={'[ajax_load_more]'}
 					value={attributes?.shortcode}
 					onChange={(data) => setAttributes({ shortcode: data })}

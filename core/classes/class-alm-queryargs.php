@@ -125,7 +125,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 					$post_status = $post_status;
 				} else {
 					$post_status = apply_filters( 'alm_allow_future_posts', false ) ? $post_status : 'publish';
-					// e.g. add_filter('alm_allow_future_posts', '__return_true').
+					// e.g. add_filter( 'alm_allow_future_posts', '__return_true' ).
 				}
 			}
 

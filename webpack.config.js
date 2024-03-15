@@ -11,7 +11,7 @@ module.exports = {
 		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
 		'admin/index': './src/admin/js/index.js',
 		'blocks/core/index': './src/blocks/core/index.js',
-		'blocks/filter/index': './src/blocks/filter/index.js',
+		'blocks/filters/index': './src/blocks/filters/index.js',
 	},
 	output: {
 		path: path.join(__dirname, 'build'),

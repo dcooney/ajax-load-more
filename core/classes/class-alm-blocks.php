@@ -32,12 +32,14 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		 * @return void
 		 */
 		public function alm_register_block() {
-			// Core ALM Block.
-			register_block_type( ALM_PATH . 'build/blocks/core/' );
+			if ( apply_filters( 'alm_blocks_enabled', true ) ) {
+				// Core ALM Block.
+				register_block_type( ALM_PATH . 'build/blocks/core/' );
 
-			// Filters Block.
-			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
-				register_block_type( ALM_PATH . 'build/blocks/filter/' );
+				// Filters Block.
+				if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
+					register_block_type( ALM_PATH . 'build/blocks/filters/' );
+				}
 			}
 		}
 
@@ -47,67 +49,49 @@ if ( ! class_exists( 'ALM_BLOCK' ) ) :
 		 * @return void
 		 */
 		public function alm_block_editor_assets() {
-			// Core ALM assets.
-			if ( ! alm_css_disabled( '_alm_disable_css' ) ) {
-				ALM_ENQUEUE::alm_enqueue_css(
-					'ajax-load-more',
-					ALM_CSS_URL,
-					false
-				);
-			}
-			wp_register_script( 'ajax-load-more', ALM_CORE_JS_URL, [], ALM_VERSION, true ); // Register Core ALM JS.
-			wp_localize_script(
-				'ajax-load-more',
-				'alm_localize',
-				AjaxLoadMore::alm_get_localized_defaults()
-			); // Localized JS variables.
-
-			// Filters Add-on assets.
-			if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
-				if ( ! alm_css_disabled( '_alm_filters_disable_css' ) ) {
-					ALM_ENQUEUE::alm_enqueue_css(
-						'ajax-load-more-filters',
-						ALM_FILTERS_URL . '/dist/css/styles.css',
-						false
-					);
-					ALM_ENQUEUE::alm_enqueue_css(
-						'alm-nouislider',
-						ALM_FILTERS_URL . '/dist/vendor/nouislider/nouislider.min.css',
-						false
-					);
+			if ( apply_filters( 'alm_blocks_enabled', true ) ) {
+				// Core ALM assets.
+				if ( ! alm_css_disabled( '_alm_disable_css' ) ) {
+					ALM_ENQUEUE::alm_enqueue_css( 'ajax-load-more', ALM_CSS_URL, false );
 				}
-
-				wp_register_script( 'ajax-load-more-filters', ALM_FILTERS_URL . '/dist/js/filters.js', 'ajax-load-more', ALM_FILTERS_VERSION, true );
+				wp_register_script( 'ajax-load-more', ALM_CORE_JS_URL, [], ALM_VERSION, true ); // Register Core ALM JS.
 				wp_localize_script(
 					'ajax-load-more',
-					'alm_filters_localize',
-					[
-						'filters'              => ALMFilters::alm_get_all_filters(),
-						'prefix'               => ALM_FILTERS_PREFIX,
-						'remove_active_filter' => __( 'Remove', 'ajax-load-more' ),
-					]
-				); // Localized Filters JS variables.
-			}
+					'alm_localize',
+					AjaxLoadMore::alm_get_localized_defaults()
+				); // Localized JS variables.
 
-			// Layouts.
-			if ( has_action( 'alm_layouts_installed' ) && class_exists( 'ALMLayouts' ) ) {
-				ALM_ENQUEUE::alm_enqueue_css(
-					'ajax-load-more-layouts',
-					ALM_LAYOUTS_URL . '/core/css/ajax-load-more-layouts.css',
-					false
-				);
-			}
-
-			// Paging.
-			if ( has_action( 'alm_paging_installed' ) && class_exists( 'ALM_Paging' ) ) {
-				if ( ! alm_css_disabled( '_alm_paging_disable_css' ) ) {
-					ALM_ENQUEUE::alm_enqueue_css(
-						'ajax-load-more-paging',
-						ALM_PAGING_URL . '/core/css/ajax-load-more-paging.css',
-						false
-					);
+				// Layouts Add-on.
+				if ( has_action( 'alm_layouts_installed' ) && class_exists( 'ALMLayouts' ) ) {
+					ALM_ENQUEUE::alm_enqueue_css( 'ajax-load-more-layouts', ALM_LAYOUTS_URL . '/core/css/ajax-load-more-layouts.css', false );
 				}
-				wp_register_script( 'ajax-load-more-paging', ALM_PAGING_URL . '/core/js/alm-paging.js', [], ALM_PAGING_VERSION, true ); // Register Core ALM JS.
+
+				// Paging Add-on.
+				if ( has_action( 'alm_paging_installed' ) && class_exists( 'ALM_Paging' ) ) {
+					if ( ! alm_css_disabled( '_alm_paging_disable_css' ) ) {
+						ALM_ENQUEUE::alm_enqueue_css( 'ajax-load-more-paging', ALM_PAGING_URL . '/core/css/ajax-load-more-paging.css', false );
+					}
+					wp_register_script( 'ajax-load-more-paging', ALM_PAGING_URL . '/core/js/alm-paging.js', [], ALM_PAGING_VERSION, true ); // Register Core ALM JS.
+				}
+
+				// Filters Add-on assets.
+				if ( has_action( 'alm_filters_installed' ) && class_exists( 'ALMFilters' ) ) {
+					if ( ! alm_css_disabled( '_alm_filters_disable_css' ) ) {
+						ALM_ENQUEUE::alm_enqueue_css( 'ajax-load-more-filters', ALM_FILTERS_URL . '/dist/css/styles.css', false );
+						ALM_ENQUEUE::alm_enqueue_css( 'alm-nouislider', ALM_FILTERS_URL . '/dist/vendor/nouislider/nouislider.min.css', false );
+					}
+
+					wp_register_script( 'ajax-load-more-filters', ALM_FILTERS_URL . '/dist/js/filters.js', 'ajax-load-more', ALM_FILTERS_VERSION, true );
+					wp_localize_script(
+						'ajax-load-more',
+						'alm_filters_localize',
+						[
+							'filters'              => ALMFilters::alm_get_all_filters(),
+							'prefix'               => ALM_FILTERS_PREFIX,
+							'remove_active_filter' => __( 'Remove', 'ajax-load-more' ),
+						]
+					); // Localized Filters JS variables.
+				}
 			}
 		}
 
