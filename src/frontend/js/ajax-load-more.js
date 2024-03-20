@@ -720,7 +720,7 @@ let alm_is_filtering = false;
 						if (!alm.addons.single_post) {
 							if (alm.addons.nextpage) {
 								// Nextpage.
-								if (alm?.localize?.post_count + alm.addons.nextpage_startpage >= alm?.localize?.total_posts) {
+								if (alm?.localize?.post_count + (alm.addons.nextpage_startpage - 1) >= alm?.localize?.total_posts) {
 									alm.AjaxLoadMore.triggerDone();
 								}
 							} else {
@@ -1442,7 +1442,7 @@ let alm_is_filtering = false;
 						const nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm?.localize?.total_posts;
 
 						// Disable if last page loaded
-						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
+						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.page) === nextpage_total) {
 							alm.AjaxLoadMore.triggerDone();
 						}
 					}

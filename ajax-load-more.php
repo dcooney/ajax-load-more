@@ -15,25 +15,25 @@
  */
 
 /*
+* NEW: Added Ajax Load More block for the WordPress Block Editor. ALM instances are now able to be rendered inside the Block Editor.
+* NEW: Added Ajax Load More Filters block for the WordPress Block Editor. When activated, ALM Filters can be rendered inside the Block Editor using the Filters block.
 * NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
 * NEW: Added new `alm_user_role` filter to allow developers to change the user role required to access the Ajax Load More admin. Default is `edit_theme_options`.
 * UPDATE: Various security fixes with regards to accessing layouts and directory paths.
-
+* FIX: Fixed bug with Next Page add-on disabling the Load More button when there were pages remaining.
 
 TODO:
 - ALM Core Block [DONE]
 - ALM Filters Block [DONE]
 - Open Shortcode builder in Block Editor. [DONE]
 - Filters, Range Slider, Date Picker not working in admin. [DONE]
-- Save shortcodes.
-- Turn Shortcode Builder into React Component.
 
 ADD-ONS
 
 Filters
 - NEW: Added ALM Filters WordPress Block for rendering filters directly to the Block Editor.
 - NEW: Added Posts Per Page filter.
-- NEW: When "Hide Inactive Filter Options" is enabled with facets, the entire filter group will be hidden if no filter options are returned.
+- NEW: When "Hide Inactive Filter Options" is enabled with facet filtering, the entire filter group will be hidden if no filter options are returned.
 - NEW: Added support for Post Type facet filtering.
 - NEW: Added support for deeplink URLs when using multiple Filter instances.
 - UPDATE: Added console warning when filters is missing the core Ajax Load More instance.
@@ -48,7 +48,7 @@ TODO:
 - Fix issue with Hiding Inactive Filters. Confirm this is working as expected.
   - https://wpdev.local/filter-add-on-facets-movie/
 - Posts Per Page [DONE]
-  - Started Posts per Page implementation.
+  - Started Posts per Page implementation. [DONE]
 
 - Fix issue with Single Select Options for Post Type -> alm_filters_single_select_facet_args [DONE]
 - Somewhat working, but other filter values are off. [DONE]
