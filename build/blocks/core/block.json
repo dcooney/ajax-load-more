@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ajax-load-more/core",
+  "title": "Ajax Load More",
+  "category": "ajax-load-more",
+  "description": "The ultimate infinite scroll and lazy load plugin for WordPress.",
+  "textdomain": "ajax-load-more",
+  "supports": {
+    "align": false
+  },
+  "attributes": {
+    "shortcode": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "editorScript": [
+    "file:./index.js",
+    "ajax-load-more",
+    "ajax-load-more-paging"
+  ],
+  "editorStyle": [
+    "file:./index.css",
+    "ajax-load-more",
+    "ajax-load-more-layouts",
+    "ajax-load-more-paging"
+  ],
+  "render": "file:./render.php"
+}

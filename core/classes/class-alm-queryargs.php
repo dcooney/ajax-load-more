@@ -121,11 +121,11 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			$post_status = empty( $post_status ) ? 'publish' : $post_status;
 			if ( $post_status !== 'publish' && $post_status !== 'inherit' ) {
 				// If not 'publish', confirm user has rights to view these posts.
-				if ( current_user_can( 'edit_theme_options' ) ) {
+				if ( current_user_can( apply_filters( 'alm_user_role_post_status', 'edit_theme_options' ) ) ) {
 					$post_status = $post_status;
 				} else {
 					$post_status = apply_filters( 'alm_allow_future_posts', false ) ? $post_status : 'publish';
-					// e.g. add_filter('alm_allow_future_posts', '__return_true').
+					// e.g. add_filter( 'alm_allow_future_posts', '__return_true' ).
 				}
 			}
 
@@ -134,20 +134,18 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			if ( $is_ajax ) {
 				$acf = ( isset( $a['acf'] ) ) ? true : false;
 				if ( $acf ) {
-					$acf_post_id           = ( isset( $a['acf']['post_id'] ) ) ? $a['acf']['post_id'] : ''; // Post ID.
-					$acf_field_type        = ( isset( $a['acf']['field_type'] ) ) ? $a['acf']['field_type'] : ''; // Field Type.
-					$acf_field_name        = ( isset( $a['acf']['field_name'] ) ) ? $a['acf']['field_name'] : ''; // Field Name.
-					$acf_parent_field_name = ( isset( $a['acf']['parent_field_name'] ) ) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name.
+					$acf_post_id           = isset( $a['acf']['post_id'] ) ? $a['acf']['post_id'] : ''; // Post ID.
+					$acf_field_type        = isset( $a['acf']['field_type'] ) ? $a['acf']['field_type'] : ''; // Field Type.
+					$acf_field_name        = isset( $a['acf']['field_name'] ) ? $a['acf']['field_name'] : ''; // Field Name.
+					$acf_parent_field_name = isset( $a['acf']['parent_field_name'] ) ? $a['acf']['parent_field_name'] : ''; // Parent Field Name.
 				}
-			} else {
+			} else { // phpcs:ignore
 				// If Preloaded, $a needs to access acf data differently.
-				if ( isset( $a['acf'] ) ) {
-					if ( $a['acf'] === 'true' ) {
-						$acf_post_id           = ( isset( $a['acf_post_id'] ) ) ? $a['acf_post_id'] : ''; // Post ID.
-						$acf_field_type        = ( isset( $a['acf_field_type'] ) ) ? $a['acf_field_type'] : ''; // Field Type.
-						$acf_field_name        = ( isset( $a['acf_field_name'] ) ) ? $a['acf_field_name'] : ''; // Field Name.
-						$acf_parent_field_name = ( isset( $a['acf_parent_field_name'] ) ) ? $a['acf_parent_field_name'] : ''; // Parent Field Name.
-					}
+				if ( isset( $a['acf'] ) && $a['acf'] === 'true' ) {
+					$acf_post_id           = isset( $a['acf_post_id'] ) ? $a['acf_post_id'] : ''; // Post ID.
+					$acf_field_type        = isset( $a['acf_field_type'] ) ? $a['acf_field_type'] : ''; // Field Type.
+					$acf_field_name        = isset( $a['acf_field_name'] ) ? $a['acf_field_name'] : ''; // Field Name.
+					$acf_parent_field_name = isset( $a['acf_parent_field_name'] ) ? $a['acf_parent_field_name'] : ''; // Parent Field Name.
 				}
 			}
 
@@ -212,6 +210,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 
 				if ( empty( $taxonomy ) ) {
 					// Post Format only.
+					// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 					$args['tax_query'] = [
 						alm_get_post_format( $post_format ),
 					];
@@ -219,11 +218,13 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				} else {
 					// Post Format.
 					if ( ! empty( $post_format ) ) {
+						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 						$args['tax_query'] = [
 							'relation' => $taxonomy_relation,
 							alm_get_post_format( $post_format ),
 						];
 					} else {
+						// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query
 						$args['tax_query'] = [
 							'relation' => $taxonomy_relation,
 						];
@@ -252,6 +253,8 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 				$meta_type        = explode( ':', $meta_type ); // convert to array.
 
 				// Add the meta relation.
+
+				// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
 				$args['meta_query'] = [
 					'relation' => $meta_relation,
 				];
@@ -271,7 +274,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 			// Sort key.
 			if ( ! empty( $sort_key ) && strpos( $orderby, 'meta_value' ) !== false ) {
 				// Only order by sort_key, if `orderby` is set to meta_value{_num}.
-				$args['meta_key'] = $sort_key;
+				$args['meta_key'] = $sort_key; // phpcs:ignore
 			}
 
 			// Author.
@@ -380,7 +383,7 @@ if ( ! class_exists( 'ALM_QUERY_ARGS' ) ) :
 					if ( empty( $acf_parent_field_name ) ) {
 						// Get field value from ACF.
 						$acf_post_ids = get_field( $acf_field_name, $acf_post_id );
-					} else {
+					} else { // phpcs:ignore
 						// Call function in ACF extension.
 						if ( function_exists( 'alm_acf_loop_gallery_rows' ) ) {
 							// Sub Fields.

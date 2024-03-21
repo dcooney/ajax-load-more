@@ -720,11 +720,11 @@ let alm_is_filtering = false;
 						if (!alm.addons.single_post) {
 							if (alm.addons.nextpage) {
 								// Nextpage.
-								if (alm.localize.post_count + alm.addons.nextpage_startpage >= alm.localize.total_posts) {
+								if (alm?.localize?.post_count + (alm.addons.nextpage_startpage - 1) >= alm?.localize?.total_posts) {
 									alm.AjaxLoadMore.triggerDone();
 								}
 							} else {
-								if (alm.localize.post_count >= alm.localize.total_posts) {
+								if (alm?.localize?.post_count >= alm?.localize?.total_posts) {
 									alm.AjaxLoadMore.triggerDone();
 								}
 							}
@@ -1442,7 +1442,7 @@ let alm_is_filtering = false;
 						const nextpage_total = nextpage_first.dataset.totalPosts ? parseInt(nextpage_first.dataset.totalPosts) : alm?.localize?.total_posts;
 
 						// Disable if last page loaded
-						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.id) === nextpage_total) {
+						if (nextpage_pages.length === nextpage_total || parseInt(nextpage_first.dataset.page) === nextpage_total) {
 							alm.AjaxLoadMore.triggerDone();
 						}
 					}
@@ -1757,13 +1757,13 @@ export const analytics = function (type = '') {
  * Trigger Ajax Load More from other events.
  *
  * @since 5.0
- * @param {Element} el
+ * @param {Element} instance The HTML element.
  */
-export const start = function (el) {
-	if (!el) {
+export const start = function (instance) {
+	if (!instance) {
 		return false;
 	}
-	window.almInit(el);
+	window.almInit(instance);
 };
 
 /**
@@ -1823,4 +1823,20 @@ export const click = function (id = '') {
 			}
 		}
 	}
+};
+
+/**
+ * Load ALM inside the WP Block Editor.
+ *
+ * @since 7.1.0
+ * @param {Element} instance The HTML element.
+ */
+export const wpblock = function (instance) {
+	const listing = instance.querySelector('.alm-listing');
+	if (!listing || instance.dataset.blockLoaded === 'true') {
+		return; // Exit if does not exist or block already loaded.
+	}
+	instance.dataset.blockLoaded = 'true';
+	listing.dataset.scroll = 'false'; // Remove scroll.
+	start(instance);
 };

@@ -2,14 +2,14 @@
 # This file is distributed under the GPL.
 msgid ""
 msgstr ""
-"Project-Id-Version: Ajax Load More 7.0.3\n"
+"Project-Id-Version: Ajax Load More 7.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/ajax-load-more\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-15T17:37:15+00:00\n"
+"POT-Creation-Date: 2024-03-21T12:38:47+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -17,6 +17,7 @@ msgstr ""
 #. Plugin Name of the plugin
 #: admin/admin.php:556
 #: core/integration/elementor/elementor.php:19
+#: src/blocks/core/render.php:15
 msgid "Ajax Load More"
 msgstr ""
 
@@ -38,7 +39,7 @@ msgstr ""
 
 #: admin/admin.php:76
 #: admin/admin.php:592
-#: admin/functions/layouts.php:19
+#: admin/functions/layouts.php:18
 #: admin/functions/licensing.php:19
 #: admin/functions/repeater-templates.php:20
 #: admin/functions/repeater-templates.php:130
@@ -47,7 +48,7 @@ msgstr ""
 
 #: admin/admin.php:81
 #: admin/admin.php:596
-#: admin/functions/layouts.php:24
+#: admin/functions/layouts.php:23
 #: admin/functions/licensing.php:25
 #: admin/functions/repeater-templates.php:25
 #: admin/functions/repeater-templates.php:135
@@ -73,7 +74,9 @@ msgstr ""
 #: admin/admin.php:122
 #: admin/admin.php:130
 #: admin/views/settings.php:9
-#: ajax-load-more.php:310
+#: ajax-load-more.php:309
+#: src/blocks/core/inspector.js:17
+#: src/blocks/filters/inspector.js:28
 msgid "Settings"
 msgstr ""
 
@@ -221,44 +224,46 @@ msgstr ""
 msgid "There is a maximum of 3 tax_query objects while using the shortcode builder"
 msgstr ""
 
-#: admin/functions/layouts.php:36
+#: admin/functions/layouts.php:35
+#: admin/functions/layouts.php:55
+#: admin/functions/layouts.php:67
 msgid "This doesn't look right, what are you trying to do?"
 msgstr ""
 
-#: admin/functions/licensing.php:127
+#: admin/functions/licensing.php:126
 msgid "You have an invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More Pro</b></a> license key - visit the <a href=\"admin.php?page=ajax-load-more-licenses\">License</a> section to input your key or <a href=\"https://connekthq.com/plugins/ajax-load-more/pro/\" target=\"_blank\">purchase</a> one now."
 msgstr ""
 
-#: admin/functions/licensing.php:132
+#: admin/functions/licensing.php:131
 msgid "You have invalid or expired <a href=\"admin.php?page=ajax-load-more\"><b>Ajax Load More</b></a> license keys - visit the <a href=\"admin.php?page=ajax-load-more-licenses\">Licenses</a> section to input your keys."
 msgstr ""
 
-#: admin/functions/licensing.php:254
+#: admin/functions/licensing.php:253
 msgid "Looks like your subscription has expired."
 msgstr ""
 
-#: admin/functions/licensing.php:255
+#: admin/functions/licensing.php:254
 msgid "Please login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/functions/licensing.php:263
+#: admin/functions/licensing.php:262
 msgid "Looks like your license is inactive and/or invalid."
 msgstr ""
 
-#: admin/functions/licensing.php:264
+#: admin/functions/licensing.php:263
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> or login to your <a href=\"https://connekthq.com/account/\" target=\"_blank\">Account</a> to renew the license."
 msgstr ""
 
-#: admin/functions/licensing.php:272
+#: admin/functions/licensing.php:271
 msgid "Looks like your license has been deactivated."
 msgstr ""
 
-#: admin/functions/licensing.php:273
+#: admin/functions/licensing.php:272
 msgid "Please activate the <a href=\"admin.php?page=ajax-load-more-licenses\" target=\"_blank\">license</a> to update."
 msgstr ""
 
 #. translators: %1$s is replaced with link href
-#: admin/functions/licensing.php:304
+#: admin/functions/licensing.php:303
 msgid "%1$sRegister%2$s your copy of %3$s to receive access to automatic upgrades and support. Need a license key? %4$sPurchase one now%5$s."
 msgstr ""
 
@@ -402,7 +407,7 @@ msgstr ""
 #: admin/functions/settings.php:374
 #: admin/shortcode-builder/shortcode-builder.php:168
 #: admin/shortcode-builder/shortcode-builder.php:387
-#: ajax-load-more.php:405
+#: ajax-load-more.php:414
 msgid "Load More"
 msgstr ""
 
@@ -671,10 +676,10 @@ msgstr ""
 #: admin/shortcode-builder/components/comments.php:14
 #: admin/shortcode-builder/components/cta.php:15
 #: admin/shortcode-builder/components/filters.php:22
-#: admin/shortcode-builder/components/filters.php:82
-#: admin/shortcode-builder/components/filters.php:103
-#: admin/shortcode-builder/components/filters.php:124
-#: admin/shortcode-builder/components/filters.php:165
+#: admin/shortcode-builder/components/filters.php:80
+#: admin/shortcode-builder/components/filters.php:101
+#: admin/shortcode-builder/components/filters.php:122
+#: admin/shortcode-builder/components/filters.php:163
 #: admin/shortcode-builder/components/layouts.php:17
 #: admin/shortcode-builder/components/nextpage.php:17
 #: admin/shortcode-builder/components/nextpage.php:121
@@ -709,10 +714,10 @@ msgstr ""
 #: admin/shortcode-builder/components/comments.php:18
 #: admin/shortcode-builder/components/cta.php:19
 #: admin/shortcode-builder/components/filters.php:26
-#: admin/shortcode-builder/components/filters.php:86
-#: admin/shortcode-builder/components/filters.php:107
-#: admin/shortcode-builder/components/filters.php:128
-#: admin/shortcode-builder/components/filters.php:169
+#: admin/shortcode-builder/components/filters.php:84
+#: admin/shortcode-builder/components/filters.php:105
+#: admin/shortcode-builder/components/filters.php:126
+#: admin/shortcode-builder/components/filters.php:167
 #: admin/shortcode-builder/components/layouts.php:21
 #: admin/shortcode-builder/components/nextpage.php:21
 #: admin/shortcode-builder/components/nextpage.php:122
@@ -1000,6 +1005,7 @@ msgstr ""
 
 #: admin/shortcode-builder/components/filters.php:37
 #: admin/shortcode-builder/components/single-post.php:47
+#: src/blocks/filters/inspector.js:55
 msgid "Target"
 msgstr ""
 
@@ -1011,75 +1017,76 @@ msgstr ""
 msgid "Connect Ajax Load More to a specific <a href=\"admin.php?page=ajax-load-more-filters\">filter instance</a> by selecting the filter ID."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:57
+#: admin/shortcode-builder/components/filters.php:55
+#: src/blocks/filters/inspector.js:24
 msgid "-- Select Filter --"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:62
+#: admin/shortcode-builder/components/filters.php:60
 msgid "You don't have any filters! The first step is to create one"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:74
+#: admin/shortcode-builder/components/filters.php:72
 msgid "URLs"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:74
+#: admin/shortcode-builder/components/filters.php:72
 msgid "Querystring URLs allow  users to share deep links to filtered content."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:75
+#: admin/shortcode-builder/components/filters.php:73
 msgid "Update the browser querystring with active filters values."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:95
+#: admin/shortcode-builder/components/filters.php:93
 msgid "Paging Parameters"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:95
+#: admin/shortcode-builder/components/filters.php:93
 msgid "Adding paging parameters will allow for deep linking to a paged filter."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:96
+#: admin/shortcode-builder/components/filters.php:94
 msgid "Add <span>?pg={x}</span> to the browser querystring as users load additional pages."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:116
+#: admin/shortcode-builder/components/filters.php:114
 #: admin/shortcode-builder/components/paging.php:56
 msgid "Scroll"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:116
+#: admin/shortcode-builder/components/filters.php:114
 msgid "When a user filters a list they will be auto scrolled back to the top."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:117
+#: admin/shortcode-builder/components/filters.php:115
 msgid "Automatically scroll users to the top of list after a filter update."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:138
+#: admin/shortcode-builder/components/filters.php:136
 #: admin/shortcode-builder/components/nextpage.php:127
 #: admin/shortcode-builder/components/paging.php:70
 msgid "Scroll Top"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:138
+#: admin/shortcode-builder/components/filters.php:136
 msgid "The Scroll Top value is the pixel position the window will be scrolled to."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:139
+#: admin/shortcode-builder/components/filters.php:137
 msgid "The offset top position of the window used with `Paging Parameters` and `Scroll`."
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:144
+#: admin/shortcode-builder/components/filters.php:142
 msgid "Scroll Top Value"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:157
+#: admin/shortcode-builder/components/filters.php:155
 #: admin/shortcode-builder/components/rest-api.php:103
 msgid "Debug Mode"
 msgstr ""
 
-#: admin/shortcode-builder/components/filters.php:158
+#: admin/shortcode-builder/components/filters.php:156
 msgid "Enable debugging of the Ajax Load More filter object in the browser console."
 msgstr ""
 
@@ -2435,7 +2442,7 @@ msgid "Ajax Load More will automatically create an archive query while viewing s
 msgstr ""
 
 #: admin/shortcode-builder/shortcode-builder.php:1427
-msgid "Taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported."
+msgid "Search, taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported."
 msgstr ""
 
 #: admin/shortcode-builder/shortcode-builder.php:1445
@@ -2719,16 +2726,20 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: ajax-load-more.php:287
+#: ajax-load-more.php:286
 msgid "Error creating repeater template directory"
 msgstr ""
 
-#: ajax-load-more.php:388
+#: ajax-load-more.php:398
 msgid "Viewing {post_count} of {total_posts} results."
 msgstr ""
 
-#: ajax-load-more.php:389
+#: ajax-load-more.php:399
 msgid "No results found."
+msgstr ""
+
+#: core/classes/class-alm-blocks.php:91
+msgid "Remove"
 msgstr ""
 
 #: core/classes/class-alm-noscript.php:140
@@ -2953,4 +2964,73 @@ msgstr ""
 #. translators: 1: Shortcode Builder link tag. 2: Shortcode Builder closing link tag.
 #: core/integration/elementor/module/widget.php:101
 msgid "%1$sBuild Shortcode%2$s"
+msgstr ""
+
+#: src/blocks/core/render.php:16
+msgid "You must enter an Ajax Load More shortcode."
+msgstr ""
+
+#: src/blocks/filters/render.php:18
+#: src/blocks/filters/render.php:23
+msgid "Ajax Load More: Filters"
+msgstr ""
+
+#: src/blocks/filters/render.php:19
+msgid "Select a filter to display from the block settings."
+msgstr ""
+
+#: src/blocks/filters/render.php:24
+msgid "You must enter an Ajax Load More target for this filter."
+msgstr ""
+
+#: src/blocks/core/inspector.js:19
+msgid "Enter ALM Shortcodes"
+msgstr ""
+
+#: src/blocks/core/inspector.js:23
+msgid "Note: Scroll is disabled within the block editor."
+msgstr ""
+
+#: src/blocks/core/inspector.js:34
+msgid "Create Shortcode"
+msgstr ""
+
+#: src/blocks/filters/inspector.js:30
+msgid "Filter"
+msgstr ""
+
+#: src/blocks/filters/inspector.js:31
+msgid "Select a filter to display by ID."
+msgstr ""
+
+#: src/blocks/filters/inspector.js:45
+msgid "Create Filter"
+msgstr ""
+
+#: src/blocks/filters/inspector.js:49
+msgid "View All"
+msgstr ""
+
+#: src/blocks/filters/inspector.js:56
+msgid "The ID of the Ajax Load More instance to filter."
+msgstr ""
+
+#: src/blocks/core/block.json
+msgctxt "block title"
+msgid "Ajax Load More"
+msgstr ""
+
+#: src/blocks/core/block.json
+msgctxt "block description"
+msgid "The ultimate infinite scroll and lazy load plugin for WordPress."
+msgstr ""
+
+#: src/blocks/filters/block.json
+msgctxt "block title"
+msgid "Ajax Load More: Filters"
+msgstr ""
+
+#: src/blocks/filters/block.json
+msgctxt "block description"
+msgid "Enable filtering of an Ajax Load More instance."
 msgstr ""

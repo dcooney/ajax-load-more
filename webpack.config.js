@@ -4,13 +4,14 @@ const StylelintPlugin = require('stylelint-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
 	entry: {
 		'frontend/ajax-load-more': './src/frontend/js/ajax-load-more.js',
 		'frontend/ajax-load-more.min': './src/frontend/js/ajax-load-more.js',
 		'admin/index': './src/admin/js/index.js',
+		'blocks/core/index': './src/blocks/core/index.js',
+		'blocks/filters/index': './src/blocks/filters/index.js',
 	},
 	output: {
 		path: path.join(__dirname, 'build'),
@@ -26,6 +27,16 @@ module.exports = {
 			{
 				test: /\.(webp|png|jpe?g|gif)$/,
 				type: 'asset/resource',
+			},
+			{
+				test: /\.js?$/,
+				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [['@babel/preset-react', { targets: 'defaults' }]],
+					},
+				},
 			},
 			{
 				test: /\.(scss|css)$/,

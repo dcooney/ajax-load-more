@@ -1,0 +1,32 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "ajax-load-more/filters",
+  "title": "Ajax Load More: Filters",
+  "category": "ajax-load-more",
+  "description": "Enable filtering of an Ajax Load More instance.",
+  "textdomain": "ajax-load-more",
+  "supports": {
+    "align": false
+  },
+  "attributes": {
+    "id": {
+      "type": "string",
+      "default": ""
+    },
+    "target": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "editorScript": [
+    "file:./index.js",
+    "ajax-load-more-filters"
+  ],
+  "editorStyle": [
+    "file:./index.css",
+    "ajax-load-more-filters",
+    "alm-nouislider"
+  ],
+  "render": "file:./render.php"
+}

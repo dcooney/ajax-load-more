@@ -224,8 +224,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'button_label'                 => AjaxLoadMore::alm_default_button_label(),
 						'button_loading_label'         => '',
 						'button_done_label'            => '',
+						'wrapper_classes'              => '',
 						'container_type'               => '',
-						'css_classes'                  => '',
+						'container_classes'            => '',
 						'loading_style'                => '',
 						'id'                           => '',
 						'vars'                         => '',
@@ -404,14 +405,17 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Transition Container Classes.
-			$transition_container_classes = ! empty( $transition_container_classes ) ? $transition_container_classes : '';
+			$tcc = ! empty( $transition_container_classes ) ? $transition_container_classes : '';
 
-			// CSS Classes.
+			// Wrapper/CSS Classes.
+			$wrapper_classes = ! empty( $wrapper_classes ) ? ' ' . $wrapper_classes : '';
 			$css_classes = ! empty( $css_classes ) ? ' ' . $css_classes : '';
-			$css_classes = ! empty( $transition_container_classes ) ? $css_classes . ' ' . $transition_container_classes : $css_classes; // Append transition container classes.
+
+			// Append transition container classes.
+			$css_classes = ! empty( $tcc ) ? $css_classes . ' ' . $tcc : $css_classes;
+
 			// Add Layouts add-on classes.
 			if ( $layouts === 'true' && has_filter( 'alm_get_layout_classes' ) ) {
-
 				$css_classes = apply_filters( 'alm_get_layout_classes', $layouts_cols, $layouts_gap, $css_classes );
 			}
 
@@ -553,7 +557,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			}
 
 			// Start $ajaxloadmore element.
-			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . wp_kses_post( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" data-alm-object="' . alm_convert_dashes_to_underscore( $localize_id ) . '">';
+			$ajaxloadmore .= '<div id="' . esc_attr( $div_id ) . '" class="' . esc_attr( $alm_wrapper_class ) . esc_attr( $wrapper_classes ) . esc_attr( $alm_loading_style ) . esc_attr( $paging_color ) . esc_attr( $alm_layouts ) . esc_attr( $alm_direction ) . '" ' . $unique_id . ' data-alm-id="" data-canonical-url="' . esc_attr( $canonical_url ) . '" data-slug="' . esc_attr( $slug ) . '" data-post-id="' . esc_attr( $post_id ) . '" ' . wp_kses_post( $is_search ) . esc_attr( $is_nested ) . ' data-localized="' . alm_convert_dashes_to_underscore( $localize_id ) . '_vars" data-alm-object="' . alm_convert_dashes_to_underscore( $localize_id ) . '">';
 
 			// Masonry Hook (Before).
 			$ajaxloadmore .= apply_filters( 'alm_masonry_before', $transition );
@@ -641,38 +645,43 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * Archive Integration.
 			 * Set required archive config options.
 			 */
-			if ( $archive && is_archive() ) {
-				if ( is_date() ) {
-					$archive_year  = get_the_date( 'Y' );
-					$archive_month = get_the_date( 'm' );
-					$archive_day   = get_the_date( 'd' );
-					if ( is_year() ) {
-						$year = $archive_year;
+			if ( $archive ) {
+				if( is_archive() ) {
+					if ( is_date() ) {
+						$archive_year  = get_the_date( 'Y' );
+						$archive_month = get_the_date( 'm' );
+						$archive_day   = get_the_date( 'd' );
+						if ( is_year() ) {
+							$year = $archive_year;
+						}
+						if ( is_month() ) {
+							$month = $archive_month;
+							$year  = $archive_year;
+						}
+						if ( is_day() ) {
+							$year  = $archive_year;
+							$month = $archive_month;
+							$day   = $archive_day;
+						}
 					}
-					if ( is_month() ) {
-						$month = $archive_month;
-						$year  = $archive_year;
+					if ( is_author() ) {
+						$author = get_the_author_meta( 'ID' );
 					}
-					if ( is_day() ) {
-						$year  = $archive_year;
-						$month = $archive_month;
-						$day   = $archive_day;
+					if ( is_tax() || is_category() || is_tag() ) {
+						$obj               = get_queried_object();
+						$taxonomy          = $obj->taxonomy;
+						$taxonomy_terms    = $obj->slug;
+						$taxonomy_operator = 'IN';
+					}
+					if ( is_post_type_archive() ) {
+						$obj = get_queried_object();
+						if ( isset( $obj->name ) ) {
+							$post_type = $obj->name;
+						}
 					}
 				}
-				if ( is_author() ) {
-					$author = get_the_author_meta( 'ID' );
-				}
-				if ( is_tax() || is_category() || is_tag() ) {
-					$obj               = get_queried_object();
-					$taxonomy          = $obj->taxonomy;
-					$taxonomy_terms    = $obj->slug;
-					$taxonomy_operator = 'IN';
-				}
-				if ( is_post_type_archive() ) {
-					$obj = get_queried_object();
-					if ( isset( $obj->name ) ) {
-						$post_type = $obj->name;
-					}
+				if ( is_search() ) {
+					$search = get_search_query();
 				}
 			}
 
@@ -1214,7 +1223,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			// Paging before.
 			if ( has_action( 'alm_paging_installed' ) && $paging === 'true' ) {
 				$paging_container_classes = $paging_container_classes ? ' ' . esc_attr( $paging_container_classes ) : '';
-				$ajaxloadmore .= apply_filters( 'alm_paging_before', '<div class="alm-paging-content' . $paging_container_classes .'" style="opacity: 0; outline: none;">' );
+				$ajaxloadmore            .= apply_filters( 'alm_paging_before', '<div class="alm-paging-content' . $paging_container_classes . '" style="opacity: 0; outline: none;">' );
 			}
 
 			// Preloaded.

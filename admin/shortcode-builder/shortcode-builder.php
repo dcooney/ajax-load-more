@@ -1424,7 +1424,7 @@ $show_max                = 100; // Max number of items to show.
 						<section class="first">
 							<div class="shortcode-builder--label">
 								<p><?php _e( 'Ajax Load More will automatically create an archive query while viewing site archives.', 'ajax-load-more' ); ?></p>
-								<p><?php _e( 'Taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported.', 'ajax-load-more' ); ?></p>
+								<p><?php _e( 'Search, taxonomy, category, tag, date (year, month, day), post type and author archives are currently supported.', 'ajax-load-more' ); ?></p>
 								<p><a class="button-small" href="https://connekthq.com/plugins/ajax-load-more/docs/archives/" target="_blank"><?php _e( 'View Docs', 'ajax-load-more' ); ?></a></p>
 							</div>
 							<div class="shortcode-builder--fields">
