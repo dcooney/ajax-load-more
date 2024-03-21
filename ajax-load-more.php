@@ -7,61 +7,15 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 7.0.3
+ * Version: 7.1.0
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-/*
-* NEW: Added Ajax Load More block for the WordPress Block Editor. ALM instances are now able to be rendered inside the Block Editor.
-* NEW: Added Ajax Load More Filters block for the WordPress Block Editor. When activated, ALM Filters can be rendered inside the Block Editor using the Filters block.
-* NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
-* NEW: Added new `alm_user_role` filter to allow developers to change the user role required to access the Ajax Load More admin. Default is `edit_theme_options`.
-* UPDATE: Various security fixes with regards to accessing layouts and directory paths.
-* FIX: Fixed bug with Next Page add-on disabling the Load More button when there were pages remaining.
-
-TODO:
-- ALM Core Block [DONE]
-- ALM Filters Block [DONE]
-- Open Shortcode builder in Block Editor. [DONE]
-- Filters, Range Slider, Date Picker not working in admin. [DONE]
-
-ADD-ONS
-
-Filters
-- NEW: Added ALM Filters WordPress Block for rendering filters directly to the Block Editor.
-- NEW: Added Posts Per Page filter.
-- NEW: When "Hide Inactive Filter Options" is enabled with facet filtering, the entire filter group will be hidden if no filter options are returned.
-- NEW: Added support for Post Type facet filtering.
-- NEW: Added support for deeplink URLs when using multiple Filter instances.
-- UPDATE: Added console warning when filters is missing the core Ajax Load More instance.
-- UPDATE: Added support for search with use of archive="true".
-- FIX: Fixed issue with Facet checkbox/radios and the Show/Hide More buttons not always functioning correctly.
-- FIX: Fixed issue with sortKey not resetting after clearing the sort value.
-- FIX: Fixed issue with restoring the default value of a filter after a change event.
-- UPDATE: Accessibility updates to filter checkbox/radios.
-- UPDATE: Various UI/UX updates throughout plugin admin and frontend.
-
-TODO:
-- Fix issue with Hiding Inactive Filters. Confirm this is working as expected.
-  - https://wpdev.local/filter-add-on-facets-movie/
-- Posts Per Page [DONE]
-  - Started Posts per Page implementation. [DONE]
-
-- Fix issue with Single Select Options for Post Type -> alm_filters_single_select_facet_args [DONE]
-- Somewhat working, but other filter values are off. [DONE]
-  - https://wpdev.local/filter-add-on-facets-movie/?postType=post&category=general-design
-- Single Select Facets are not working correctly. [DONE]
-  - Radios are not affecting other facets. [DONE]
-- Turn back on Transients save in facets.php Line #53
-
-
-*/
-
-define( 'ALM_VERSION', '7.0.3' );
-define( 'ALM_RELEASE', 'February 15, 2024' );
+define( 'ALM_VERSION', '7.1.0' );
+define( 'ALM_RELEASE', 'March 21, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
 // Plugin installation helpers.
@@ -700,14 +654,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 
 					$data = ob_get_clean();
 
-					/**
-					 * Cache Add-on.
-					 * Create the cache file.
-					 */
-					if ( $cache_id && method_exists( 'ALMCache', 'create_cache_file' ) && $do_create_cache ) {
-						ALMCache::create_cache_file( $cache_id, $cache_slug, $canonical_url, $data, $alm_current, $alm_found_posts );
-					}
-
 					$return = [
 						'html' => $data,
 						'meta' => [
@@ -718,8 +664,18 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					];
 
 					// Get filter facet options.
+					$facets = [];
 					if ( $is_filters && $filters_target && $filters_facets && function_exists( 'alm_filters_get_facets' ) ) {
-						$return['facets'] = alm_filters_get_facets( $args, $filters_target );
+						$facets = alm_filters_get_facets( $args, $filters_target );
+						$return['facets'] = $facets;
+					}
+
+					/**
+					 * Cache Add-on.
+					 * Create the cache file.
+					 */
+					if ( $cache_id && method_exists( 'ALMCache', 'create_cache_file' ) && $do_create_cache ) {
+						ALMCache::create_cache_file( $cache_id, $cache_slug, $canonical_url, $data, $alm_current, $alm_found_posts, $facets );
 					}
 
 					wp_send_json( $return );

@@ -4,8 +4,8 @@ Donate link: https://connekthq.com/donate/
 Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.4
-Stable tag: 7.0.3
+Tested up to: 6.5
+Stable tag: 7.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,7 +36,7 @@ Check out the **[website](https://connekthq.com/plugins/ajax-load-more/)** for m
 ### What's New
 
 -  **[Pro Bundle](https://connekthq.com/plugins/ajax-load-more/pro/)** - Access to all premium Ajax Load More add-ons in a single installation.
--  **[Filters Add-on](https://connekthq.com/plugins/ajax-load-more/add-ons/filters/)** - The Filters add-on provides front-end and admin functionality for building and managing Ajax filters.
+-  **[Filters Add-on](https://connekthq.com/plugins/ajax-load-more/add-ons/filters/)** - The Filters add-on provides front-end and admin functionality for building and managing Ajax based filters.
 -  **[Elementor Add-on](https://connekthq.com/plugins/ajax-load-more/add-ons/elementor/)** - Infinite scroll Elementor Posts Widget and WooCommerce widget content with Ajax Load More.
 -  **[WooCommerce Add-on](https://connekthq.com/plugins/ajax-load-more/add-ons/woocommerce/)** - Infinite scroll WooCommerce products without updating a line of template code.
 -  **[Advanced Custom Fields](https://connekthq.com/plugins/ajax-load-more/examples/advanced-custom-fields/)** - Compatibility and integration added for infinite scrolling Flexible Content, Gallery, Relationship and Repeater fields for Advanced Custom Fields.
@@ -259,6 +259,16 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 7.1.0 - March 21, 2024 =
+* NEW: Added Ajax Load More block for the WordPress Block Editor. ALM instances are now able to be rendered inside the Block Editor.
+* NEW: Added Ajax Load More Filters block for the WordPress Block Editor. When activated, ALM Filters can be rendered inside the Block Editor using the Filters block.
+* NEW: Added new `wrapper_classes` parameter that injects classnames onto the top level `ajax-load-more-wrap` container.
+* NEW: Added new `alm_user_role` filter to allow developers to change the user role required to access the Ajax Load More admin. Default is `edit_theme_options`.
+* UPDATE: Various security fixes with regards to accessing layouts and directory paths.
+* UPDATE: Added support for caching Filter add-on facets with the Cache add-on.
+* FIX: Fixed bug with Next Page add-on disabling the Load More button early when there were pages remaining.
+* UDPATE: Various UI/UX updates throughout plugin admin and frontend.
 
 = 7.0.3 - February 15, 2024 =
 * FIX: Added fix for Paging add-on scrolling to top of listing on initial page load when `paging_scroll` was `true`.
