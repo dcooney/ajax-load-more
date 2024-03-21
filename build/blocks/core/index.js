@@ -441,7 +441,7 @@ var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
   return /*#__PURE__*/React.createElement(external_wp_blockEditor_namespaceObject.InspectorControls, null, /*#__PURE__*/React.createElement(external_wp_components_namespaceObject.PanelBody, {
     title: (0,external_wp_i18n_namespaceObject.__)('Settings', 'ajax-load-more')
   }, /*#__PURE__*/React.createElement(external_wp_components_namespaceObject.TextareaControl, {
-    label: (0,external_wp_i18n_namespaceObject.__)('Enter ALM Shortcodes', 'ajax-load-more'),
+    label: (0,external_wp_i18n_namespaceObject.__)('ALM Shortcode', 'ajax-load-more'),
     placeholder: '[ajax_load_more]',
     value: attributes === null || attributes === void 0 ? void 0 : attributes.shortcode,
     onChange: function onChange(data) {
@@ -449,7 +449,7 @@ var external_wp_i18n_namespaceObject = window["wp"]["i18n"];
         shortcode: data
       });
     },
-    help: (0,external_wp_i18n_namespaceObject.__)('Note: Scroll is disabled within the block editor.', 'ajax-load-more'),
+    help: (0,external_wp_i18n_namespaceObject.__)('Note: Scroll is disabled within the WP block editor.', 'ajax-load-more'),
     rows: 6
   }), /*#__PURE__*/React.createElement(external_wp_components_namespaceObject.Flex, {
     gap: "5px",

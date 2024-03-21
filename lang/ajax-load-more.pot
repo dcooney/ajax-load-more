@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-03-21T12:38:47+00:00\n"
+"POT-Creation-Date: 2024-03-21T12:45:51+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.9.0\n"
 "X-Domain: ajax-load-more\n"
@@ -2939,6 +2939,7 @@ msgid " The WooCommerce add-on automatically integrates infinite scrolling into 
 msgstr ""
 
 #: core/integration/elementor/module/widget.php:43
+#: src/blocks/core/inspector.js:19
 msgid "ALM Shortcode"
 msgstr ""
 
@@ -2983,12 +2984,8 @@ msgstr ""
 msgid "You must enter an Ajax Load More target for this filter."
 msgstr ""
 
-#: src/blocks/core/inspector.js:19
-msgid "Enter ALM Shortcodes"
-msgstr ""
-
 #: src/blocks/core/inspector.js:23
-msgid "Note: Scroll is disabled within the block editor."
+msgid "Note: Scroll is disabled within the WP block editor."
 msgstr ""
 
 #: src/blocks/core/inspector.js:34

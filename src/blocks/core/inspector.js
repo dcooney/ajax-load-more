@@ -16,11 +16,11 @@ export default function (props) {
 		<InspectorControls>
 			<PanelBody title={__('Settings', 'ajax-load-more')}>
 				<TextareaControl
-					label={__('Enter ALM Shortcodes', 'ajax-load-more')}
+					label={__('ALM Shortcode', 'ajax-load-more')}
 					placeholder={'[ajax_load_more]'}
 					value={attributes?.shortcode}
 					onChange={(data) => setAttributes({ shortcode: data })}
-					help={__('Note: Scroll is disabled within the block editor.', 'ajax-load-more')}
+					help={__('Note: Scroll is disabled within the WP block editor.', 'ajax-load-more')}
 					rows={6}
 				/>
 				<Flex
