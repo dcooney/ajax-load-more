@@ -270,6 +270,7 @@ How to install Ajax Load More.
 * FIX: Fixed bug with Next Page add-on disabling the Load More button early when there were pages remaining.
 * UDPATE: Various UI/UX updates throughout plugin admin and frontend.
 
+
 = 7.0.3 - February 15, 2024 =
 * FIX: Added fix for Paging add-on scrolling to top of listing on initial page load when `paging_scroll` was `true`.
 * FIX: Fixed issue with undefined `post_count` when loading Ajax Load More with Ajax/HTTP request.
