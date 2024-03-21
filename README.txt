@@ -1,7 +1,7 @@
 === WordPress Infinite Scroll - Ajax Load More ===
 Contributors: dcooney, connekthq
 Donate link: https://connekthq.com/donate/
-Tags: infinite scroll, load more, ajax, lazy load, endless scroll, infinite scrolling, lazy loading, pagination, ajax, ajax posts, woocommerce, ajax load more, masonry
+Tags: infinite scroll, load more, lazy load, endless scroll, infinite scrolling
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.5
