@@ -261,7 +261,7 @@ How to install Ajax Load More.
 == Changelog ==
 
 = 7.1.0.1 - March 21, 2024 =
-* HOTFIX: Hotfix for missing `css_classes` parameter in `7.1.0` update.
+* HOTFIX: Hotfix for missing `css_classes` parameter in `7.1.0` release.
 
 
 = 7.1.0 - March 21, 2024 =
