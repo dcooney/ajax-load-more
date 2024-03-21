@@ -7,14 +7,14 @@
  * Author: Darren Cooney
  * Twitter: @KaptonKaos
  * Author URI: https://connekthq.com
- * Version: 7.1.0
+ * Version: 7.1.0.1
  * License: GPL
  * Copyright: Darren Cooney & Connekt Media
  *
  * @package AjaxLoadMore
  */
 
-define( 'ALM_VERSION', '7.1.0' );
+define( 'ALM_VERSION', '7.1.0.1' );
 define( 'ALM_RELEASE', 'March 21, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
 
