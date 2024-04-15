@@ -15,6 +15,7 @@
  */
 
 /*
+* UPDATE: Added required functionality and support to allow for Next Page add-on to be used with Single Posts for full article loading with split pages.
 
 
 ADDONS
