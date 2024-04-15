@@ -14,6 +14,21 @@
  * @package AjaxLoadMore
  */
 
+/*
+
+
+ADDONS
+
+Single Posts
+* NEW: Added official support for using Next Page add-on with Single Posts add-on.
+
+Next Page
+* NEW: Added official support for using Next Page add-on with Single Posts add-on.
+* TODO: Fix issue with back button on next page showing `Undefined` page title. https://wpdev.local/password-protected/
+
+
+*/
+
 define( 'ALM_VERSION', '7.1.0.1' );
 define( 'ALM_RELEASE', 'March 21, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

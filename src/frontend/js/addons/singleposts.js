@@ -109,7 +109,28 @@ export function singlepostsHTML(alm, response, cache_slug) {
 	}
 	return data;
 }
-export default singlepostsHTML;
+
+/**
+ * Find nested Next Page instance and prepend first element to the returned HTML.
+ *
+ * @param {Element} html The wrapper element.
+ * @return {Element}     The modified element.
+ */
+export function getNestedNextPageElement(html) {
+	const nextpageElement = html.querySelector('.ajax-load-more-wrap .alm-nextpage');
+	if (!nextpageElement) {
+		return html;
+	}
+
+	// Clone the nextpage element and clear the contents.
+	const clone = nextpageElement.cloneNode(true);
+	clone.innerHTML = '';
+
+	// Insert the clone before the first child.
+	html.insertBefore(clone, html.querySelector(':first-child'));
+
+	return html;
+}
 
 /**
  * Collect custom target elements and append them to the returned HTML.
