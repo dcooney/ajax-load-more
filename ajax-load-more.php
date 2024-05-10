@@ -14,11 +14,6 @@
  * @package AjaxLoadMore
  */
 
-/*
-* UPDATE: Added required functionality and support to allow for Next Page add-on to be used with Single Posts for full article loading with split pages.
-* UPDATE: Various UI/UX improvementsfor the plugin admin.
-*/
-
 define( 'ALM_VERSION', '7.1.1' );
 define( 'ALM_RELEASE', 'May 10, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );
