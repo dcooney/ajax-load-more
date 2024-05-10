@@ -57,6 +57,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * @return array $options Options array.
 			 */
 			$options            = has_filter( 'alm_settings' ) ? apply_filters( 'alm_settings', $options ) : $options;
+			$options = ! $options ? [] : $options; // Set options to an array by default.
 			$options['post_id'] = $post_id; // Add post ID to options array.
 			$options['slug']    = $slug; // Add post slug to options array.
 
