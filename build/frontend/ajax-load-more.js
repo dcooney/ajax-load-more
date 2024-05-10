@@ -9312,7 +9312,27 @@ function singlepostsHTML(alm, response, cache_slug) {
   }
   return data;
 }
-/* harmony default export */ var singleposts = ((/* unused pure expression or super */ null && (singlepostsHTML)));
+
+/**
+ * Find nested Next Page instance and prepend first element to the returned HTML.
+ *
+ * @param {Element} html The wrapper element.
+ * @return {Element}     The modified element.
+ */
+function getNestedNextPageElement(html) {
+  var nextpageElement = html.querySelector('.ajax-load-more-wrap .alm-nextpage');
+  if (!nextpageElement) {
+    return html;
+  }
+
+  // Clone the nextpage element and clear the contents.
+  var clone = nextpageElement.cloneNode(true);
+  clone.innerHTML = '';
+
+  // Insert the clone before the first child.
+  html.insertBefore(clone, html.querySelector(':first-child'));
+  return html;
+}
 
 /**
  * Collect custom target elements and append them to the returned HTML.
@@ -9961,6 +9981,7 @@ function formatHTML(alm, elements) {
     var singleWrap = document.createElement('div');
     singleWrap.innerHTML = alm.html;
     singleWrap = addSinglePostsAttributes(alm, singleWrap);
+    singleWrap = getNestedNextPageElement(singleWrap);
 
     // Single Post Preview.
     if (addons !== null && addons !== void 0 && addons.single_post_preview && addons !== null && addons !== void 0 && addons.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {

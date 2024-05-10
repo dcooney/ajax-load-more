@@ -1,6 +1,6 @@
 import { addFiltersAttributes } from '../addons/filters';
 import { addSEOAttributes } from '../addons/seo';
-import { addSinglePostsAttributes } from '../addons/singleposts';
+import { addSinglePostsAttributes, getNestedNextPageElement } from '../addons/singleposts';
 import stripEmptyNodes from '../functions/stripEmptyNodes';
 
 /**
@@ -23,6 +23,7 @@ export default function formatHTML(alm, elements) {
 		let singleWrap = document.createElement('div');
 		singleWrap.innerHTML = alm.html;
 		singleWrap = addSinglePostsAttributes(alm, singleWrap);
+		singleWrap = getNestedNextPageElement(singleWrap);
 
 		// Single Post Preview.
 		if (addons?.single_post_preview && addons?.single_post_preview_data && typeof almSinglePostCreatePreview === 'function') {
