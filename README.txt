@@ -262,7 +262,7 @@ How to install Ajax Load More.
 
 = 7.1.1 - May 10, 2024 =
 * UPDATE: Added required functionality and support to allow for Next Page add-on to be used with Single Posts for full article loading with split pages.
-* UPDATE: Various UI/UX improvementsfor the plugin admin.
+* UPDATE: Various UI/UX improvements for the plugin admin.
 
 
 = 7.1.0.1 - March 21, 2024 =
