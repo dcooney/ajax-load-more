@@ -14,6 +14,11 @@
  * @package AjaxLoadMore
  */
 
+/*
+* FIX: Fixed issue with full article loading in Next Page add-on.
+* FIX: Fixed a variety of potential security XSS issues.
+*/
+
 define( 'ALM_VERSION', '7.1.1' );
 define( 'ALM_RELEASE', 'May 10, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

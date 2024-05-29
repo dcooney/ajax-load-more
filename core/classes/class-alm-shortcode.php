@@ -253,7 +253,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			);
 			// phpcs:enable
 
-			$id = sanitize_key( $id );
+			$id   = sanitize_key( $id );
+			$vars = self::alm_strip_tags( $vars );
 
 			// Elementor.
 			$elementor = $elementor === 'true' ? 'single' : $elementor;
@@ -1189,9 +1190,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= $pause === 'true' ? ' data-pause="true"' : '';
 
 			// Button.
-			$ajaxloadmore .= ' data-button-label="' . esc_html( $button_label ) . '"';
-			$ajaxloadmore .= $button_loading_label ? ' data-button-loading-label="' . esc_html( $button_loading_label ) . '"' : '';
-			$ajaxloadmore .= $button_done_label ? ' data-button-done-label="' . esc_html( $button_done_label ) . '"' : '';
+			$ajaxloadmore .= ' data-button-label="' . self::alm_strip_tags( $button_label ) . '"';
+			$ajaxloadmore .= $button_loading_label ? ' data-button-loading-label="' . self::alm_strip_tags( $button_loading_label ) . '"' : '';
+			$ajaxloadmore .= $button_done_label ? ' data-button-done-label="' . self::alm_strip_tags( $button_done_label ) . '"' : '';
 
 			// Destroy After.
 			$ajaxloadmore .= $destroy_after ? ' data-destroy-after="' . esc_attr( $destroy_after ) . '"' : '';
@@ -1272,7 +1273,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				 *
 				 * @return html;
 				 */
-				$ajaxloadmore .= apply_filters( 'alm_init_nextpage', $nextpage_post_id, $nextpage_start, $nextpage_is_paged, $paging, $div_id, $id, $nested, $nextpage_type );
+				$ajaxloadmore .= apply_filters( 'alm_init_nextpage', $nextpage_post_id, $nextpage_start, $nextpage_is_paged, $paging, $div_id, $id, $nextpage_type );
 			}
 
 			// Paging after.
@@ -1407,26 +1408,37 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		/**
 		 * Render the load more button.
 		 *
-		 * @param  string $paging           Is this for the Paging add-on.
-		 * @param  string $button_classname Custom button classnames.
-		 * @param  string $button_label     The label for the button.
-		 * @param  string $elementor_link   Elementor paged link.
-		 * @param  string $id               ALM div ID.
-		 * @return string                   The button html and wrapper.
+		 * @param  string $paging         Is this for the Paging add-on.
+		 * @param  string $classname      Custom classnames.
+		 * @param  string label           The label for the button.
+		 * @param  string $elementor_link Elementor paged link.
+		 * @param  string $id             ALM div ID.
+		 * @return string                 The button html and wrapper.
 		 * @since  3.3.2
 		 */
-		public static function alm_render_button( $paging, $button_classname, $button_label, $elementor_link, $id ) {
-			$classes     = has_filter( 'alm_button_wrap_classes' ) ? ' ' . apply_filters( 'alm_button_wrap_classes', '' ) : '';
-			$btn_element = 'button';
-			$html        = '<div class="alm-btn-wrap' . $classes . '" style="visibility: hidden;" data-rel="' . esc_attr( $id ) . '">';
+		public static function alm_render_button( $paging, $classname, $label, $elementor_link, $id ) {
+			$classes = has_filter( 'alm_button_wrap_classes' ) ? ' ' . apply_filters( 'alm_button_wrap_classes', '' ) : '';
+			$html    = '<div class="alm-btn-wrap' . $classes . '" style="visibility: hidden;" data-rel="' . esc_attr( $id ) . '">';
 
 			if ( $paging !== 'true' ) {
 				$html .= ! empty( $elementor_link ) ? $elementor_link : ''; // Elementor Page Link.
-				$html .= '<' . esc_attr( $btn_element ) . ' class="alm-load-more-btn more' . esc_attr( $button_classname ) . '" rel="next" type="button">' . $button_label . '</' . $btn_element . '>';
+				$html .= '<button class="alm-load-more-btn more' . esc_attr( $classname ) . '" rel="next" type="button">' . self::alm_strip_tags( $label ) . '</button>';
 			}
 
 			$html .= '</div>';
 			return wp_kses_post( $html );
+		}
+
+		/**
+		 * Strip tags from param.
+		 *
+		 * @param string $str String to sanitize.
+		 * @return string 	 Stripped string.
+		 */
+		public static function alm_strip_tags( $str ) {
+			$str = str_replace( [ '&lt;' ], '', $str ); // Remove < entity tag.
+			$str = str_replace( [ '&gt;' ], '', $str ); // Remove > entity tag.
+			return esc_html( strip_tags( $str, '<span><i><b><strong>' ) );
 		}
 
 		/**
