@@ -5,7 +5,7 @@ Tags: infinite scroll, load more, lazy load, endless scroll, ajax load more
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.5
-Stable tag: 7.1.1
+Stable tag: 7.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -259,6 +259,11 @@ How to install Ajax Load More.
 5. Implementation: Insert the Ajax Load More shortcode directly into the WordPress content editor or a theme template file.
 
 == Changelog ==
+
+= 7.1.2 - May 30, 2024 =
+* FIX: Fixed issue with full article loading in Next Page add-on.
+* UPDATE: Various security fixes.
+
 
 = 7.1.1 - May 10, 2024 =
 * UPDATE: Added required functionality and support to allow for Next Page add-on to be used with Single Posts for full article loading with split pages.
