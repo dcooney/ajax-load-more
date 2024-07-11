@@ -1071,21 +1071,18 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 				$ajaxloadmore .= wp_kses_post( $woo_return );
 			}
 
-			// Elementor Add-on.
-			$elementor_page_link = '';
-
 			// phpcs:ignore
 			if ( $elementor === 'posts' && $elementor_target && has_action( 'alm_elementor_params' ) && in_array( 'elementor-pro/elementor-pro.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 				$elementor_params = [
-					'target'    => $elementor_target,
-					'url'       => $elementor_url,
-					'paged'     => $elementor_woo_paged !== 1 ? $elementor_woo_paged : $elementor_paged,
-					'controls'  => $elementor_controls,
-					'scrolltop' => $elementor_scrolltop,
+					'target'     => $elementor_target,
+					'url'        => $elementor_url,
+					'paged'      => $elementor_woo_paged !== 1 ? $elementor_woo_paged : $elementor_paged,
+					'controls'   => $elementor_controls,
+					'scrolltop'  => $elementor_scrolltop,
+					'prev_label' => $elementor_link_label
 				];
 
-				$elementor_page_link = apply_filters( 'alm_elementor_page_link', $elementor_params['paged'], $elementor_link_label );
-				$elementor_return    = apply_filters( 'alm_elementor_params', $elementor_params );
+				$elementor_return = apply_filters( 'alm_elementor_params', $elementor_params );
 
 				$ajaxloadmore .= ' data-elementor="posts"';
 				$ajaxloadmore .= wp_kses_post( $elementor_return );
@@ -1315,7 +1312,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= apply_filters( 'alm_before_button', '' );
 
 			// Create Load More button and button wrapper.
-			$ajaxloadmore .= self::alm_render_button( $paging, $button_classname, $button_label, $elementor_page_link, $div_id );
+			$ajaxloadmore .= self::alm_render_button( $paging, $button_classname, $button_label, $div_id );
 
 			/**
 			 * After Button
@@ -1411,17 +1408,15 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 * @param  string $paging         Is this for the Paging add-on.
 		 * @param  string $classname      Custom classnames.
 		 * @param  string label           The label for the button.
-		 * @param  string $elementor_link Elementor paged link.
 		 * @param  string $id             ALM div ID.
 		 * @return string                 The button html and wrapper.
 		 * @since  3.3.2
 		 */
-		public static function alm_render_button( $paging, $classname, $label, $elementor_link, $id ) {
+		public static function alm_render_button( $paging, $classname, $label, $id ) {
 			$classes = has_filter( 'alm_button_wrap_classes' ) ? ' ' . apply_filters( 'alm_button_wrap_classes', '' ) : '';
 			$html    = '<div class="alm-btn-wrap' . $classes . '" style="visibility: hidden;" data-rel="' . esc_attr( $id ) . '">';
 
 			if ( $paging !== 'true' ) {
-				$html .= ! empty( $elementor_link ) ? $elementor_link : ''; // Elementor Page Link.
 				$html .= '<button class="alm-load-more-btn more' . esc_attr( $classname ) . '" rel="next" type="button">' . self::alm_strip_tags( $label ) . '</button>';
 			}
 

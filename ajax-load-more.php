@@ -14,6 +14,26 @@
  * @package AjaxLoadMore
  */
 
+/*
+
+* UPDATE: Updated Axios HTTP library to latest version.
+* UPDATE: Various admin UI/UX updates.
+* FIX: Fixed z-index issue with ALM navigation in WP admin.
+* UPDATE: Added functionality requred for Elementor Add-on update to support loading previous posts on paged results.
+
+
+ADD-ONS
+
+ELEMENTOR
+* NEW: Added new functionality to load previous posts on paged results.
+* Code cleanup.
+
+NEXT PAGE
+* UPDATE - Add default Next Page shortcode when selecting a post type in the ALM setting section.
+* FIX - Fixed issue with Next page settings not functioning correctly.
+
+*/
+
 define( 'ALM_VERSION', '7.1.2' );
 define( 'ALM_RELEASE', 'May 30, 2024' );
 define( 'ALM_STORE_URL', 'https://connekthq.com' );

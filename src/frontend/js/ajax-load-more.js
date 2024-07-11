@@ -1054,7 +1054,7 @@ let alm_is_filtering = false;
 
 			if (!alm.addons.paging) {
 				alm.buttonPrev.classList.add('done');
-				alm.buttonPrev.removeAttribute('rel');
+				alm.buttonPrev.style.opacity = '0.5';
 				alm.buttonPrev.disabled = true;
 			}
 
@@ -1610,7 +1610,7 @@ let alm_is_filtering = false;
 		setTimeout(function () {
 			alm.proceed = true;
 			alm.AjaxLoadMore.scrollSetup();
-		}, 500);
+		}, 1000);
 
 		// Init Ajax Load More
 		alm.AjaxLoadMore.init();
