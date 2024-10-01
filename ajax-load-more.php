@@ -18,15 +18,21 @@
 
 * UPDATE: Updated Axios HTTP library to latest version.
 * UPDATE: Various admin UI/UX updates.
+* UPDATE: Added feature to re-save default Repeater Template if template was deleted from the filesystem.
+* UDPATE: Modified the `alm` db columns to match new Templates add-on requirements.
 * FIX: Fixed z-index issue with ALM navigation in WP admin.
 * UPDATE: Added functionality requred for Elementor Add-on update to support loading previous posts on paged results.
 
+TODO:
+- Update ALM_TEMPLATES_ITEM_NAME by creating a new item in the store.
+- Remove templates load line -> alm_get_current_repeater() in functions.php
 
 ADD-ONS
 
 ELEMENTOR
 * NEW: Added new functionality to load previous posts on paged results.
 * Code cleanup.
+* TODO: Updated Elementor tested up to version.
 
 NEXT PAGE
 * UPDATE - Add default Next Page shortcode when selecting a post type in the ALM setting section.
@@ -49,7 +55,6 @@ require_once plugin_dir_path( __FILE__ ) . 'core/functions/install.php';
  */
 function alm_install( $network_wide ) {
 	global $wpdb;
-	add_option( 'alm_version', ALM_VERSION ); // Add setting to options table.
 	if ( is_multisite() && $network_wide ) {
 		// Get all blogs in the network and activate plugin on each one.
 		$blog_ids = $wpdb->get_col( "SELECT blog_id FROM $wpdb->blogs" ); // phpcs:ignore
@@ -185,6 +190,9 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 			}
 			if ( ! defined( 'ALM_THEME_REPEATERS_ITEM_NAME' ) ) {
 				define( 'ALM_THEME_REPEATERS_ITEM_NAME', '8860' );
+			}
+			if ( ! defined( 'ALM_TEMPLATES_ITEM_NAME' ) ) {
+				define( 'ALM_TEMPLATES_ITEM_NAME', '8860' );
 			}
 			if ( ! defined( 'ALM_USERS_ITEM_NAME' ) ) {
 				define( 'ALM_USERS_ITEM_NAME', '32311' );
@@ -638,7 +646,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 					$alm_found_posts = $alm_total_posts;
 					$alm_post_count  = $alm_query->post_count;
 					$alm_current     = 0;
-					$alm_has_cta     = false;
 
 					// Build CTA Position Array.
 					$cta_array = $cta && has_action( 'alm_cta_pos_array' ) ? $cta_array = apply_filters( 'alm_cta_pos_array', $seo_start_page, $page, $posts_per_page, $alm_post_count, $cta_val, $paging ) : [];
@@ -657,7 +664,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						// Call to Action [Before].
 						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'before' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
-							$alm_has_cta = true;
 						}
 
 						// Load Repeater.
@@ -666,7 +672,6 @@ if ( ! class_exists( 'AjaxLoadMore' ) ) :
 						// Call to Action [After].
 						if ( $cta && has_action( 'alm_cta_inc' ) && $cta_pos === 'after' && in_array( $alm_current, $cta_array ) ) { // phpcs:ignore
 							do_action( 'alm_cta_inc', $cta_repeater, $cta_theme_repeater, $alm_found_posts, $alm_page, $alm_item, $alm_current, false, $args );
-							$alm_has_cta = true;
 						}
 
 					endwhile; wp_reset_query(); // phpcs:ignore

@@ -1,5 +1,6 @@
 // ALM Modules
 import axios from 'axios';
+import '../scss/ajax-load-more.scss';
 import { cacheCreateParams, getCache } from './addons/cache';
 import { ctaCreateParams } from './addons/call-to-actions';
 import { commentsCreateParams } from './addons/comments';
@@ -8,6 +9,7 @@ import { filtersCreateParams } from './addons/filters';
 import { nextpageCreateParams } from './addons/next-page';
 import { pagingComplete, pagingCreateParams } from './addons/paging';
 import { preloadedCreateParams, setPreloadedParams } from './addons/preloaded';
+import { queryLoopCreateParams, queryLoopGetContent } from './addons/queryLoop';
 import { createSEOOffset, seoCreateParams } from './addons/seo';
 import { singlepostsCreateParams, singlepostsHTML } from './addons/singleposts';
 import { wooCreateParams, wooGetContent, wooInit, wooReset, woocommerce, woocommerceLoaded } from './addons/woocommerce';
@@ -30,8 +32,6 @@ import placeholder from './modules/placeholder';
 import * as resultsText from './modules/resultsText';
 import setLocalizedVars from './modules/setLocalizedVars';
 import { tableOfContents } from './modules/tableofcontents';
-
-import '../scss/ajax-load-more.scss';
 
 // External packages.
 const qs = require('qs');
@@ -174,6 +174,7 @@ let alm_is_filtering = false;
 
 		// Add-on Shortcode Params
 
+		alm = queryLoopCreateParams(alm); // Query Loop add-on
 		alm = elementorCreateParams(alm); // Elementor add-on
 		alm = wooCreateParams(alm); // WooCommerce add-on
 		alm = cacheCreateParams(alm); // Cache add-on
@@ -416,8 +417,8 @@ let alm_is_filtering = false;
 				params = '';
 			}
 
-			// WooCommerce || Elementor.
-			if (alm.addons.woocommerce || (alm.addons.elementor && alm.addons.elementor_type === 'posts')) {
+			// Query Loop || WooCommerce || Elementor.
+			if (alm.addons.query_loop || alm.addons.woocommerce || (alm.addons.elementor && alm.addons.elementor_type === 'posts')) {
 				ajaxurl = getButtonURL(alm, alm.rel);
 				params = '';
 			}
@@ -435,6 +436,9 @@ let alm_is_filtering = false;
 					} else if (alm.addons.elementor) {
 						// Elementor
 						return elementorGetContent(alm, ajaxurl, response, cache_slug);
+					} else if (alm.addons.query_loop) {
+						// Query Loop
+						return queryLoopGetContent(alm, ajaxurl, response, cache_slug);
 					}
 
 					// Standard ALM - Get data from response.

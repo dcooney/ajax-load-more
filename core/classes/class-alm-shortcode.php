@@ -70,9 +70,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			 * Set default shortcode values that can be over written via shortcode atts
 			 * ALM Core Filter Hook
 			 *
-			 * @return $atts;
+			 * @return array
 			 */
-			$default_atts = apply_filters( 'alm_shortcode_defaults', '' );
+			$default_atts = apply_filters( 'alm_shortcode_defaults', [] );
 
 			// Merge arrays. Allows for defaults to be overwritten by the shortcode.
 			$atts = $default_atts ? array_merge( $default_atts, $atts ) : $atts;
@@ -85,6 +85,8 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 						'nested'                       => false,
 						'woo'                          => false,
 						'woo_template'                 => '',
+						'query_loop'                   => false,
+						'query_loop_id'                => false,
 						'layouts'                      => false,
 						'layouts_cols'                 => '3',
 						'layouts_gap'                  => 'default',
@@ -255,6 +257,9 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 
 			$id   = sanitize_key( $id );
 			$vars = self::alm_strip_tags( $vars );
+
+			// Query Loop
+			$query_loop = $query_loop === 'true';
 
 			// Elementor.
 			$elementor = $elementor === 'true' ? 'single' : $elementor;
@@ -838,6 +843,11 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 			$ajaxloadmore .= $paging_transition;
 
 			// Build container data atts.
+
+			if( $query_loop && $query_loop_id ) {
+				$ajaxloadmore .= ' data-query-loop="true"';
+				$ajaxloadmore .= ' data-query-loop-id="' . esc_attr( $query_loop_id ) . '"';
+			}
 
 			// Advanced Custom Fields Extension.
 			if ( has_action( 'alm_acf_installed' ) && $acf === 'true' ) {

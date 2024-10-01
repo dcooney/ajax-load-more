@@ -1244,7 +1244,7 @@ disabled look for disabled choices in the results dropdown
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 15px 20px;
+  padding: 15px 30px;
   background-color: #c24243;
 }
 .ajax-load-more .alm-admin-toolbar--logo {
@@ -1340,7 +1340,7 @@ disabled look for disabled choices in the results dropdown
   font-weight: 600;
 }
 .ajax-load-more .alm-admin-h1-wrap {
-  padding: 0 20px;
+  padding: 0 30px;
 }
 .ajax-load-more .alm-admin-h1-wrap h1 {
   margin: 5px 0;
@@ -2346,7 +2346,7 @@ body.ajax-load-more_page_ajax-load-more-woocommerce #wpfooter p {
 
 .ajax-load-more-inner-wrapper {
   display: block;
-  padding: 10px 20px 20px;
+  padding: 15px 30px 30px;
   max-width: 1600px;
   position: relative;
   width: 100%;
@@ -3668,7 +3668,7 @@ hr.indented {
 }
 @media screen and (min-width: 900px) {
   .ajax-load-more .cnkt-main {
-    width: 70%;
+    width: 69%;
   }
 }
 .ajax-load-more .cnkt-main.stylefree {
@@ -3981,12 +3981,12 @@ hr.indented {
 
 .ajax-load-more p.warning-callout {
   background-color: #eaf6fb;
-  border-left: 6px solid #3d8ed0;
+  border-left: 8px solid #3d8ed0;
   color: #333;
-  font-size: 12px;
+  font-size: 13px;
   margin: 0;
   display: block;
-  padding: 18px 100px 18px 18px;
+  padding: 20px 100px 20px 20px;
   border-radius: 3px;
   margin: 10px;
   width: auto;
@@ -4017,8 +4017,8 @@ hr.indented {
   border-radius: 2px;
 }
 .ajax-load-more p.warning-callout.notify {
-  background-color: #da5858;
-  border-color: #b94848;
+  background-color: #e25656;
+  border-color: #ab3838;
   color: #fff;
 }
 .ajax-load-more p.warning-callout.notify strong {
@@ -4232,7 +4232,7 @@ span.cnkt-button.installed,
 }
 
 .ajax-load-more .cnkt-sidebar .cta-inner {
-  padding: 15px;
+  padding: 20px;
   display: block;
 }
 .ajax-load-more .cnkt-sidebar .cta-inner .cta-inner {
@@ -4255,13 +4255,13 @@ span.cnkt-button.installed,
 }
 
 .ajax-load-more .cnkt-sidebar h3 {
-  padding: 15px 0;
+  padding: 20px 0;
   margin: 0;
   display: block;
   font-size: 15px;
   text-transform: none;
   border-bottom: 1px solid #efefef;
-  margin: 0 15px;
+  margin: 0 20px;
   font-weight: 500;
 }
 
