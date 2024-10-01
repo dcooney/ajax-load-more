@@ -1436,8 +1436,7 @@ if ( ! class_exists( 'ALM_SHORTCODE' ) ) :
 		 * @return string 	 Stripped string.
 		 */
 		public static function alm_strip_tags( $str ) {
-			$str = str_replace( [ '&lt;' ], '', $str ); // Remove < entity tag.
-			$str = str_replace( [ '&gt;' ], '', $str ); // Remove > entity tag.
+			$str = str_replace( [ '&lt;', '&gt;', '&#60;', '&#62;' ], '', $str ); // Remove < & > entity tags.
 			return esc_html( strip_tags( $str, '<span><i><b><strong>' ) );
 		}
 
